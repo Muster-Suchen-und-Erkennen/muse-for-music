@@ -1,3 +1,33 @@
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+################################################################################
+####### Python Stuff ###########################################################
+
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -99,3 +129,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# linter
+.sonarlint

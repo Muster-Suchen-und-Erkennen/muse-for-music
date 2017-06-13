@@ -1,1 +1,60 @@
-# muse-for-music
+# MUSE4Music
+
+
+## First start:
+
+Backend:
+```shell
+# setup virtualenv
+virtualenv venv
+. venv/bin/activate
+
+
+# install requirements
+pip install -r requirements_developement.txt
+pip install -r requirements.txt
+
+pip install -e .
+```
+
+Frontend: TODO
+
+
+## start server:
+
+First start:
+```shell
+. venv/bin/activate
+export FLASK_APP=muse_for_music
+export FLASK_DEBUG=1  # to enable autoreload
+export MODE=debug
+# export MODE=production
+# export MODE=test
+
+# create and init debug db:
+flask crate_populated_db
+
+# start server
+flask run
+```
+
+Subsequent starts:
+```shell
+flask run
+```
+
+Drop and recreate DB:
+```shell
+flask drop_db
+flask crate_populated_db
+```
+
+
+## Sites:
+
+The following sites are available after starting the flask development server:
+
+[Web-App](http://127.0.0.1:5000/)
+[User API](http://127.0.0.1:5000/users/doc)
+[API](http://127.0.0.1:5000/api/doc)
+
