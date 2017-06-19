@@ -1,0 +1,11 @@
+<nav style="margin-top:10px;">
+  <a *ngFor="let part of parts" routerLink="./{{part.path}}" class="wa-part-prg" routerLinkActive="wa-part-selected">{{part.text}}</a>
+</nav>
+
+<router-outlet></router-outlet>
+
+<div style="margin-top: 10px">
+  <span>  <button type="button" class="btn btn-primary" (click)="selectPrevious()">Zurück</button>
+  <button type="button" class="btn btn-primary" (click)="selectNext()">Weiter</button></span>
+</div>
+

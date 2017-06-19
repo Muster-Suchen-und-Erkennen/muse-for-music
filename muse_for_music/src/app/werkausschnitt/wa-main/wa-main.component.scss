@@ -1,0 +1,45 @@
+@keyframes select-animation {
+    from {
+        background-color: powderblue;
+        color: black;    
+    }
+    to {
+        background-color: forestgreen;
+        color: white;
+    }
+}
+
+a.wa-part-prg {
+    padding: 5px 10px;
+    margin-bottom: 15px;
+    border-width: 2px 1px;
+    border-color: powderblue;
+    border-style: solid;
+    color: black;
+    text-decoration: none;
+    margin-bottom: 4px;
+}
+
+a.wa-part-prg:hover {
+    background-color: powderblue;
+}
+
+a.wa-part-selected {
+    background-color: forestgreen;
+    color: white;
+    animation-name: select-animation;
+    animation-duration: 300ms;
+}
+
+a.wa-part-selected:hover {
+    background-color: forestgreen;
+}
+
+nav > :first-child {
+    border-left-width: 2px
+}
+
+nav > :last-child {
+    border-right-width: 2px
+}
+

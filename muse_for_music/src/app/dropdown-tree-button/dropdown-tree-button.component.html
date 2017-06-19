@@ -1,0 +1,8 @@
+<button type="button" class="btn btn-primary"
+        (click)="toggleDropdown($event)">Toggle remote dropdown
+</button>
+<div class="btn-group" dropdown [isOpen]="status.isopen" autoClose="true" style="width:8cm">
+  <div class="btn btn-primary" style="width: calc(100%)">text</div>
+  <m4m-tree-view *dropdownMenu class="dropdown-menu" style="width: calc( 100%)" role="menu"></m4m-tree-view>
+</div>
+
