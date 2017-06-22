@@ -17,10 +17,22 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-Frontend: TODO
+Frontend:
+
+```shell
+cd muse_for_music
+
+npm install
+```
 
 
 ## start server:
+
+Start the webpack developement server:
+```shell
+cd muse_for_music
+npm run start
+```
 
 First start:
 ```shell
@@ -48,6 +60,7 @@ Drop and recreate DB:
 flask drop_db
 flask crate_populated_db
 ```
+
 
 
 ## Sites:

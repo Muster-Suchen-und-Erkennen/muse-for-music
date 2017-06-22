@@ -90,9 +90,6 @@ module.exports = {
     "filename": "[name].[hash:20].bundle.js",
     "chunkFilename": "[id].[hash:20].chunk.js"
   },
-  devServer: {
-    headers: { "Access-Control-Allow-Origin": "http://127.0.0.1:5000" }
-  },
   "module": {
     "rules": [
       {
@@ -438,6 +435,7 @@ module.exports = {
     "setImmediate": false
   },
   "devServer": {
+    "headers": { "Access-Control-Allow-Origin": "http://127.0.0.1:5000" },
     "historyApiFallback": true
   }
 };
