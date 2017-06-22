@@ -1,12 +1,27 @@
 <!doctype html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>{{ title }}</title>
-        {{ stylesheet_tag('app_css') | safe }}
-    </head>
-    <body>
-        {{ javascript_tag('app_js') | safe }}
-    </body>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>{{ title }}</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+
+<body>
+    <script>window.__theme = 'bs4';</script>
+    <m4m-root></m4m-root>
+    {{ javascript_tag('inline') | safe }}
+    {{ javascript_tag('polyfills') | safe }}
+    {{ javascript_tag('styles') | safe }}
+    {{ javascript_tag('vendor') | safe }}
+    {{ javascript_tag('main') | safe }}
+    <script type="text/javascript" src="http://localhost:2992/inline.5aad72f0ec506ca8dbab.bundle.js"></script>
+    <script type="text/javascript" src="http://localhost:2992/polyfills.e5f91807bbbd04923e2e.bundle.js"></script>
+    <script type="text/javascript" src="http://localhost:2992/styles.553967bdc147a48ba17b.bundle.js"></script>
+    <script type="text/javascript" src="http://localhost:2992/vendor.6d6b330f5490264d0bd5.bundle.js"></script>
+    <script type="text/javascript" src="http://localhost:2992/main.df2e4aaf6c3a0a405ff2.bundle.js"></script>
+</body>
+
 </html>

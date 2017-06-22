@@ -16,7 +16,7 @@ const genDirNodeModules = path.join(process.cwd(), 'src', '$$_gendir', 'node_mod
 const entryPoints = ["inline","polyfills","sw-register","styles","vendor","main"];
 const minimizeCss = false;
 const baseHref = "";
-const deployUrl = "http://localhost:2992";
+const deployUrl = "http://localhost:2992/";
 const postcssPlugins = function () {
         // safe settings based on: https://github.com/ben-eb/cssnano/issues/358#issuecomment-283696193
         const importantCommentRe = /@preserve|@license|[@#]\s*source(?:Mapping)?URL|^!/i;
@@ -64,32 +64,34 @@ module.exports = {
       ".js"
     ],
     "modules": [
-      path.join(process.cwd(), "node_modules"),
-      path.join(process.cwd(), "src")
+      "./node_modules",
+      "./node_modules"
     ]
   },
   "resolveLoader": {
     "modules": [
-      path.join(process.cwd(), "node_modules"),
-      path.join(process.cwd(), "src")
+      "./node_modules"
     ]
   },
   "entry": {
     "main": [
-      path.join(process.cwd(), "src/main.ts")
+      "./src/main.ts"
     ],
     "polyfills": [
-      path.join(process.cwd(), "src/polyfills.ts")
+      "./src/polyfills.ts"
     ],
     "styles": [
-      path.join(process.cwd(), "src/styles.scss")
+      "./src/styles.scss"
     ]
   },
   "output": {
     "path": path.join(process.cwd(), "build"),
     "publicPath": deployUrl + "",
-    "filename": "[name].[hash].bundle.js",
-    "chunkFilename": "[id].[hash].chunk.js"
+    "filename": "[name].[hash:20].bundle.js",
+    "chunkFilename": "[id].[hash:20].chunk.js"
+  },
+  devServer: {
+    headers: { "Access-Control-Allow-Origin": "http://127.0.0.1:5000" }
   },
   "module": {
     "rules": [
@@ -357,7 +359,7 @@ module.exports = {
         "favicon.ico"
       ],
       "globOptions": {
-        "cwd": path.join(process.cwd(), "src"),
+        "cwd": "/home/fabian/git/muse/muse-for-music/muse_for_music/src",
         "dot": true,
         "ignore": "**/.gitkeep"
       }
@@ -415,12 +417,12 @@ module.exports = {
         "environments/environment.ts": "environments/environment.ts"
       },
       "exclude": [],
-      "tsConfigPath": path.join(process.cwd(), "src/tsconfig.app.json"),
+      "tsConfigPath": "src/tsconfig.app.json",
       "skipCodeGeneration": true
     }),
     // Create the manifest file that Flask and other frameworks use.
     new ManifestRevisionPlugin(path.join('build', 'manifest.json'), {
-        rootAssetPath: path.join(process.cwd(), "src"),
+        rootAssetPath: ".src",
         ignorePaths: ['/styles', '/scripts']
     })
   ],
