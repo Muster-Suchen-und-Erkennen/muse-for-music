@@ -4,6 +4,7 @@ from flask import Flask
 
 from .. import app, db
 from .users import User, UserRole, RoleEnum
+from . import taxonomies
 
 
 @app.cli.command('create_db')
