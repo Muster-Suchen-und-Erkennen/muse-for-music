@@ -46,6 +46,9 @@ export MODE=debug
 # create and init debug db:
 flask create_populated_db
 
+# load taxonomies:
+flask init_taxonomies taxonomies
+
 # start server
 flask run
 ```
@@ -59,6 +62,13 @@ Drop and recreate DB:
 ```shell
 flask drop_db
 flask crate_populated_db
+flask init_taxonomies taxonomies
+```
+
+
+Reload taxonomies:
+```shell
+flask init_taxonomies -r taxonomies
 ```
 
 
