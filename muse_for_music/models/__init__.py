@@ -48,7 +48,7 @@ def init_db_function():
     app.logger.info('Database populated.')
 
 
-@app.cli.command('crate_populated_db')
+@app.cli.command('create_populated_db')
 def create_populated_db():
     create_db_function()
     click.echo('Database created.')

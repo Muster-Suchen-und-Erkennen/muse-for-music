@@ -1,5 +1,5 @@
 jedi
-mypy-lang
+mypy
 nose
 pep8
 pylint

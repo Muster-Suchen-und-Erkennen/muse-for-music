@@ -44,7 +44,7 @@ export MODE=debug
 # export MODE=test
 
 # create and init debug db:
-flask crate_populated_db
+flask create_populated_db
 
 # start server
 flask run
