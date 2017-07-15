@@ -1,4 +1,354 @@
-name, parent
+name,parent
 root,
-streicher, root
-bläser, root
+Streichinstrument,root
+anderes Streichinstrument,Streichinstrument
+Kontrabass,Streichinstrument
+Viola d'amore,Streichinstrument
+Violoncello,Streichinstrument
+Viola,Streichinstrument
+Violine,Streichinstrument
+Zupfinstrument,root
+anderes Zupfinstrument,Zupfinstrument
+Zither,Zupfinstrument
+Balalaika,Zupfinstrument
+Gitarre,Zupfinstrument
+Mandoline,Zupfinstrument
+Harfe,Zupfinstrument
+Tasteninstrument,root
+idiophones Tasteninstrument,Tasteninstrument
+anderes idiophones Tasteninstrument,idiophones Tasteninstrument
+Celesta,idiophones Tasteninstrument
+aerophones Tasteninstrument,Tasteninstrument
+anderes aerophones Tasteninstrument,aerophones Tasteninstrument
+Harmonium,aerophones Tasteninstrument
+Orgel,aerophones Tasteninstrument
+chordophones Tasteninstrument,Tasteninstrument
+anderes chordophones Tasteninstrument,chordophones Tasteninstrument
+Cembalo,chordophones Tasteninstrument
+Klavier,chordophones Tasteninstrument
+Schlaginstrument,root
+Idiophon,Schlaginstrument
+anderes Idiophon,Idiophon
+Metall-Idiophon,Idiophon
+anderes Metall-Idiophon,Metall-Idiophon
+Donnerblech,Metall-Idiophon
+Kette,Metall-Idiophon
+Amboss,Metall-Idiophon
+Metall-Guiro,Metall-Idiophon
+Glocke,Metall-Idiophon
+andere Glocke,Glocke
+Röhrenglocke,Glocke
+Herdenglocke,Glocke
+Plattenglocke,Glocke
+Gong,Metall-Idiophon
+"Zimbeln (auch cimbales antiques, Krotali)",Metall-Idiophon
+Schellen,Metall-Idiophon
+Schellen unbestimmter Tonhöhe,Schellen
+Schellen bestimmter Tonhöhe,Schellen
+Tamtam,Metall-Idiophon
+Triangel,Metall-Idiophon
+Becken,Metall-Idiophon
+einzelnes Hängebecken,Becken
+doppelte Handbecken,Becken
+Holz-Idiophon,Idiophon
+anderes Holz-Idiophon,Holz-Idiophon
+Holz-Guiro,Holz-Idiophon
+Windmaschine,Holz-Idiophon
+Kastagnetten,Holz-Idiophon
+Holzblock,Holz-Idiophon
+Orchesterpeitsche,Holz-Idiophon
+Ratsche,Holz-Idiophon
+Stabspiel,Schlaginstrument
+anderes Stabspiel,Stabspiel
+Vibraphon,Stabspiel
+Xylophon,Stabspiel
+Marimbaphon,Stabspiel
+Glockenspiel,Stabspiel
+Membranopon,Schlaginstrument
+anderes Membranophon,Membranopon
+Schellentrommel / Tambourin,Membranopon
+Tenortrommel,Membranopon
+Gong Drum,Membranopon
+kleine Trommel,Membranopon
+kleine Trommel ohne Schnarrsaite (auch Rührtrommel),kleine Trommel
+kleine Trommel mit Schnarrsaite,kleine Trommel
+große Trommel,Membranopon
+Pauke,Membranopon
+Blechblasinstrument,root
+sonstiges Blechblasinstrument,Blechblasinstrument
+anderes Blechblasinstrument,sonstiges Blechblasinstrument
+Orphikleide,sonstiges Blechblasinstrument
+Kontrabassorphikleide / Monstrum-Orphikleide,Orphikleide
+Bassorphikleide,Orphikleide
+Altorphikleide,Orphikleide
+Tenorhorn,sonstiges Blechblasinstrument
+Baritonhorn,sonstiges Blechblasinstrument
+Euphonium,sonstiges Blechblasinstrument
+Wagnertuba,sonstiges Blechblasinstrument
+tubenartiges Instrument,Blechblasinstrument
+Sousaphon,tubenartiges Instrument
+Tuba,tubenartiges Instrument
+andere Tuba,Tuba
+unbestimmte Tuba,Tuba
+Kontrabasstuba,Tuba
+Basstuba,Tuba
+Tenortuba,Tuba
+Posaune,Blechblasinstrument
+Kontrabassposaune,Posaune
+unbestimmte Kontrabassposaune,Kontrabassposaune
+Ventil-Kontrabassposaune,Kontrabassposaune
+Zug-Kontrabassposaune,Kontrabassposaune
+Bassposaune,Posaune
+unbestimmte Bassposaune,Bassposaune
+Ventil-Bassposaune,Bassposaune
+Zug-Bassposaune,Bassposaune
+Tenorposaune,Posaune
+unbestimmte Tenorposaune,Tenorposaune
+Ventil-Tenorposaune,Tenorposaune
+Zug-Tenorposaune,Tenorposaune
+Altposaune,Posaune
+unbestimmte Altposaune,Altposaune
+Ventil-Altposaune,Altposaune
+Zug-Altposaune,Altposaune
+trompetenartiges Instrument,Blechblasinstrument
+andere trompeten- oder hornartige Instrumente,trompetenartiges Instrument
+Basstrompete,andere trompeten- oder hornartige Instrumente
+Flügelhorn,andere trompeten- oder hornartige Instrumente
+anderes Flügelhorn,Flügelhorn
+Flügelhorn in D,Flügelhorn
+Flügelhorn in Es,Flügelhorn
+Flügelhorn in E,Flügelhorn
+Flügelhorn in F,Flügelhorn
+Flügelhorn in Ges/Fis,Flügelhorn
+Flügelhorn in G,Flügelhorn
+Flügelhorn in As,Flügelhorn
+Flügelhorn in A,Flügelhorn
+Flügelhorn in B,Flügelhorn
+Flügelhorn in H,Flügelhorn
+Flügelhorn in C,Flügelhorn
+Ventilkornett,andere trompeten- oder hornartige Instrumente
+anderes Ventilkornett,Ventilkornett
+Ventilkornett in D,Ventilkornett
+Ventilkornett in Es,Ventilkornett
+Ventilkornett in E,Ventilkornett
+Ventilkornett in F,Ventilkornett
+Ventilkornett in Ges/Fis,Ventilkornett
+Ventilkornett in G,Ventilkornett
+Ventilkornett in As,Ventilkornett
+Ventilkornett in A,Ventilkornett
+Ventilkornett in B,Ventilkornett
+Ventilkornett in H,Ventilkornett
+Ventilkornett in C,Ventilkornett
+Naturkornett,andere trompeten- oder hornartige Instrumente
+anderes Naturkornett,Naturkornett
+Naturkornett in D,Naturkornett
+Naturkornett in Es,Naturkornett
+Naturkornett in E,Naturkornett
+Naturkornett in F,Naturkornett
+Naturkornett in Ges/Fis,Naturkornett
+Naturkornett in G,Naturkornett
+Naturkornett in As,Naturkornett
+Naturkornett in A,Naturkornett
+Naturkornett in B,Naturkornett
+Naturkornett in H,Naturkornett
+Naturkornett in C,Naturkornett
+Piccolo-Trompete,trompetenartiges Instrument
+Hoch-H/C-Piccolo-Trompete,Piccolo-Trompete
+Hoch-B/A-Piccolo-Trompete,Piccolo-Trompete
+G-Piccolo-Trompete,Piccolo-Trompete
+F-Piccolo-Trompete,Piccolo-Trompete
+Trompete,trompetenartiges Instrument
+unbestimmte Trompete,Trompete
+andere unbestimmte Trompete,unbestimmte Trompete
+unbestimmte Trompete in tief As,unbestimmte Trompete
+unbestimmte Trompete in A,unbestimmte Trompete
+unbestimmte Trompete in B,unbestimmte Trompete
+unbestimmte Trompete in H,unbestimmte Trompete
+unbestimmte Trompete in C,unbestimmte Trompete
+unbestimmte Trompete in Des,unbestimmte Trompete
+unbestimmte Trompete in D,unbestimmte Trompete
+unbestimmte Trompete in Es,unbestimmte Trompete
+unbestimmte Trompete in E,unbestimmte Trompete
+unbestimmte Trompete in F,unbestimmte Trompete
+unbestimmte Trompete in Ges/Fis,unbestimmte Trompete
+unbestimmte Trompete in G,unbestimmte Trompete
+unbestimmte Trompete in hoch As,unbestimmte Trompete
+Klappentrompete,Trompete
+andere Klappentrompete,Klappentrompete
+Klappentrompete in tief As,Klappentrompete
+Klappentrompete in A,Klappentrompete
+Klappentrompete in B,Klappentrompete
+Klappentrompete in H,Klappentrompete
+Klappentrompete in C,Klappentrompete
+Klappentrompete in Des,Klappentrompete
+Klappentrompete in D,Klappentrompete
+Klappentrompete in Es,Klappentrompete
+Klappentrompete in E,Klappentrompete
+Klappentrompete in F,Klappentrompete
+Klappentrompete in Ges/Fis,Klappentrompete
+Klappentrompete in G,Klappentrompete
+Klappentrompete in hoch As,Klappentrompete
+Ventiltrompete,Trompete
+andere Ventiltrompete,Ventiltrompete
+Ventiltrompete in tief As,Ventiltrompete
+Ventiltrompete in A,Ventiltrompete
+Ventiltrompete in B,Ventiltrompete
+Ventiltrompete in H,Ventiltrompete
+Ventiltrompete in C,Ventiltrompete
+Ventiltrompete in Des,Ventiltrompete
+Ventiltrompete in D,Ventiltrompete
+Ventiltrompete in Es,Ventiltrompete
+Ventiltrompete in E,Ventiltrompete
+Ventiltrompete in F,Ventiltrompete
+Ventiltrompete in Ges/Fis,Ventiltrompete
+Ventiltrompete in G,Ventiltrompete
+Ventiltrompete in hoch As,Ventiltrompete
+Naturtrompete,Trompete
+andere Naturtrompete,Naturtrompete
+Naturtrompete in tief As,Naturtrompete
+Naturtrompete in A,Naturtrompete
+Naturtrompete in B,Naturtrompete
+Naturtrompete in H,Naturtrompete
+Naturtrompete in C,Naturtrompete
+Naturtrompete in Des,Naturtrompete
+Naturtrompete in D,Naturtrompete
+Naturtrompete in Es,Naturtrompete
+Naturtrompete in E,Naturtrompete
+Naturtrompete in F,Naturtrompete
+Naturtrompete in Ges/Fis,Naturtrompete
+Naturtrompete in G,Naturtrompete
+Naturtrompete in hoch As,Naturtrompete
+Horn,Blechblasinstrument
+unbestimmtes Horn,Horn
+anderes unbestimmtes Horn,unbestimmtes Horn
+unbestimmtes Horn in A (basso),unbestimmtes Horn
+unbestimmtes Horn in B (basso),unbestimmtes Horn
+unbestimmtes Horn in H (basso),unbestimmtes Horn
+unbestimmtes Horn in C (basso),unbestimmtes Horn
+unbestimmtes Horn in Des,unbestimmtes Horn
+unbestimmtes Horn in D,unbestimmtes Horn
+unbestimmtes Horn in Es,unbestimmtes Horn
+unbestimmtes Horn in E,unbestimmtes Horn
+unbestimmtes Horn in F,unbestimmtes Horn
+unbestimmtes Horn in Ges/Fis,unbestimmtes Horn
+unbestimmtes Horn in G,unbestimmtes Horn
+unbestimmtes Horn in As,unbestimmtes Horn
+unbestimmtes Horn in A (alto),unbestimmtes Horn
+unbestimmtes Horn in B (alto),unbestimmtes Horn
+unbestimmtes Horn in H (alto),unbestimmtes Horn
+unbestimmtes Horn in C (alto),unbestimmtes Horn
+Klappenhorn,Horn
+anderes Klappenhorn,Klappenhorn
+Klappenhorn in A (basso),Klappenhorn
+Klappenhorn in B (basso),Klappenhorn
+Klappenhorn in H (basso),Klappenhorn
+Klappenhorn in C (basso),Klappenhorn
+Klappenhorn in Des,Klappenhorn
+Klappenhorn in D,Klappenhorn
+Klappenhorn in Es,Klappenhorn
+Klappenhorn in E,Klappenhorn
+Klappenhorn in F,Klappenhorn
+Klappenhorn in Ges/Fis,Klappenhorn
+Klappenhorn in G,Klappenhorn
+Klappenhorn in As,Klappenhorn
+Klappenhorn in A (alto),Klappenhorn
+Klappenhorn in B (alto),Klappenhorn
+Klappenhorn in H (alto),Klappenhorn
+Klappenhorn in C (alto),Klappenhorn
+Ventilhorn,Horn
+anderes Ventilhorn,Ventilhorn
+Ventilhorn in A (basso),Ventilhorn
+Ventilhorn in B (basso),Ventilhorn
+Ventilhorn in H (basso),Ventilhorn
+Ventilhorn in C (basso),Ventilhorn
+Ventilhorn in Des,Ventilhorn
+Ventilhorn in D,Ventilhorn
+Ventilhorn in Es,Ventilhorn
+Ventilhorn in E,Ventilhorn
+Ventilhorn in F,Ventilhorn
+Ventilhorn in Ges/Fis,Ventilhorn
+Ventilhorn in G,Ventilhorn
+Ventilhorn in As,Ventilhorn
+Ventilhorn in A (alto),Ventilhorn
+Ventilhorn in B (alto),Ventilhorn
+Ventilhorn in H (alto),Ventilhorn
+Ventilhorn in C (alto),Ventilhorn
+Naturhorn,Horn
+anderes Naturhorn,Naturhorn
+Naturhorn in A (basso),Naturhorn
+Naturhorn in B (basso),Naturhorn
+Naturhorn in H (basso),Naturhorn
+Nautrhorn in C (basso),Naturhorn
+Naturhorn in Des,Naturhorn
+Naturhorn in D,Naturhorn
+Naturhorn in Es,Naturhorn
+Naturhorn in E,Naturhorn
+Naturhorn in F,Naturhorn
+Naturhorn in Ges/Fis,Naturhorn
+Naturhorn in G,Naturhorn
+Naturhorn in As,Naturhorn
+Naturhorn in A (alto),Naturhorn
+Naturhorn in B (alto),Naturhorn
+Naturhorn in H (alto),Naturhorn
+Naturhorn in C (alto),Naturhorn
+Holzblasinstrument,root
+Rohrblattinstrument,Holzblasinstrument
+anderes Rohrblattinstrument,Rohrblattinstrument
+Doppelrohrblattinstrument,Rohrblattinstrument
+anderes Doppelrohrblattinstrument,Doppelrohrblattinstrument
+oboenartiges Instrument,Doppelrohrblattinstrument
+Schalmei,oboenartiges Instrument
+Baritonoboe / Bassoboe,oboenartiges Instrument
+Heckelphon,oboenartiges Instrument
+Englischhorn,oboenartiges Instrument
+Oboe d'amore,oboenartiges Instrument
+Oboe,oboenartiges Instrument
+fagottartiges Isntrument,Doppelrohrblattinstrument
+Kontrafagott,fagottartiges Isntrument
+Fagott,fagottartiges Isntrument
+Einfachrohrblattinstrument,Rohrblattinstrument
+anderes Einfachrohrblattinstrument,Einfachrohrblattinstrument
+Saxophon,Einfachrohrblattinstrument
+Baritonsaxophon,Saxophon
+Tenorsaxophon,Saxophon
+Altsaxophon,Saxophon
+Sopransaxophon,Saxophon
+klarinettenartiges Instrument,Einfachrohrblattinstrument
+Kontrabassklarinette,klarinettenartiges Instrument
+Kontrabassklarinette in B,Kontrabassklarinette
+Kontrabassklarinette in Es (Kontraaltklarinette),Kontrabassklarinette
+Kontrabassklarinette in F (Kontraaltklarinette),Kontrabassklarinette
+Bassklarinette,klarinettenartiges Instrument
+Bassklarinette in A,Bassklarinette
+Bassklarinette in B,Bassklarinette
+Altklarinette,klarinettenartiges Instrument
+Altklarinette in Es,Altklarinette
+Altklarinette in F,Altklarinette
+Bassetthorn,klarinettenartiges Instrument
+Chalumeau,klarinettenartiges Instrument
+gewöhnliche Klarinette,klarinettenartiges Instrument
+gewöhnliche Klarinette in A,gewöhnliche Klarinette
+gewöhnliche Klarinette in B,gewöhnliche Klarinette
+gewöhnliche Klarinette in H,gewöhnliche Klarinette
+gewöhnliche Klarinette in C,gewöhnliche Klarinette
+kleine Klarinette,klarinettenartiges Instrument
+kleine Klarinette in D,kleine Klarinette
+kleine Klarinette in F,kleine Klarinette
+kleine Klarinette in Es,kleine Klarinette
+kleine Klarinette in As,kleine Klarinette
+Luftblattinstrument / Flöte,Holzblasinstrument
+Blockflöte,Luftblattinstrument / Flöte
+andere Blockflöte,Blockflöte
+Bassblockflöte,Blockflöte
+Tenorblockflöte,Blockflöte
+Altblockflöte,Blockflöte
+Sopranblockflöte,Blockflöte
+Sopraninoblockflöte,Blockflöte
+Querflöte,Luftblattinstrument / Flöte
+andere Querflöte,Querflöte
+Bassflöte,Querflöte
+Tenorflöte,Querflöte
+Altflöte,Querflöte
+Flauto d'Amore,Querflöte
+(Große) Flöte,Querflöte
+Piccolo-Flöte,Querflöte
