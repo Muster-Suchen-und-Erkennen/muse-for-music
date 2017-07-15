@@ -5,27 +5,13 @@ from . import ns
 
 from .models import tree_model, tree_model_json
 
+from ...models.taxonomies.instruments import Instrument
+
 
 @ns.route('/instruments')
 class TestItems(Resource):
 
     @ns.response(200, 'Success', tree_model_json)
     def get(self):
-        test = {
-            'name': 'root',
-            'children': [
-                {
-                    'name': 'child1',
-                    'children': [
-                        {
-                            'name': 'leaf1'
-                        }
-                    ]
-                },
-                {
-                    'name': 'child2'
-                }
-            ]
-        }
-        return marshal(test, tree_model), 200
+        return marshal(Instrument.get_root(), tree_model), 200
 

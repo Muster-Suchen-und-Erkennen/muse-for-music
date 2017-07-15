@@ -3,6 +3,7 @@ from ... import db
 from .loadable_mixin import LoadableMixin
 
 
+
 class Instrument(db.Model, LoadableMixin):
     id = db.Column(db.Integer, primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('instrument.id', ondelete='CASCADE'))
@@ -23,20 +24,24 @@ class Instrument(db.Model, LoadableMixin):
         return '<Instrument {}, children {}>'.format(self.name, [child.__repr__() for child in self.children])
 
     @staticmethod
+    def get_root():
+        return Instrument.query.filter_by(name='root').first()
+
+    @staticmethod
     def load(input_data: DictReader):
         instruments = {}
         for row in input_data:
             name = row['name']
             if name in instruments:
                 # FIXME proper logging
-                print('No duplicate names allowed!')
+                print('No duplicate names allowed!', name)
                 break
             if not row.get('parent'):
                 instruments[name] = Instrument(name)
             else:
                 if not row['parent'] in instruments:
                     # FIXME proper logging
-                    print('Child defined before parent!')
+                    print('Child defined before parent!', name)
                     break
                 parent = instruments[row['parent']]
                 instruments[name] = Instrument(name, parent)

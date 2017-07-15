@@ -26,6 +26,7 @@ from . import ns
 
 tree_model_json = ns.schema_model('TreeModelJSON', {
     'required': ['name'],
+    'title': 'TreeModelJSON',
     'type': 'object',
     'properties': {
         'name': {
@@ -34,7 +35,7 @@ tree_model_json = ns.schema_model('TreeModelJSON', {
         'children': {
             'type': 'array',
             'items': {
-                '$ref': '#/definitions/TreeModel'
+                '$ref': '#/definitions/TreeModelJSON'
             }
         }
     }
@@ -49,3 +50,10 @@ tree_model = ns.model('TreeModel', {
 })
 
 tree_model['children'] = fields.List(fields.Nested(tree_model), default=[])
+
+
+# model for list items:
+
+list_item_model = ns.model('ListItemModel', {
+    'name': fields.String
+})
