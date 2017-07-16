@@ -1,0 +1,44 @@
+name,parent
+root,
+unbestimmte funktionale Rolle,root
+andere funktionale Rolle,root
+akzentuiert,root
+akzentuiert andere Zählzeit,akzentuiert
+akzentuiert die Zählzeit 6,akzentuiert
+akzentuiert die Zählzeit 5,akzentuiert
+akzentuiert die Zählzeit 4,akzentuiert
+akzentuiert die Zählzeit 3,akzentuiert
+akzentuiert die Zählzeit 2,akzentuiert
+akzentuiert die Zählzeit 1,akzentuiert
+spielt Begleitung,root
+spielt folgende Begleitfigur,spielt Begleitung
+Begleitfigur,spielt folgende Begleitfigur
+Akkord-Akzent,Begleitfigur
+Viertelpause und drei Viertelnoten,Begleitfigur
+Trommelbass,Begleitfigur
+Murky-Bässe,Begleitfigur
+Alberti-Bass,Begleitfigur
+andere Begleitfigur,Begleitfigur
+Umspielung,Begleitfigur
+Ostinato,Begleitfigur
+Orgelpunkt,Begleitfigur
+anderer Orgelpunkt,Orgelpunkt
+Bordun,Orgelpunkt
+Melodie-Ergänzung,Begleitfigur
+Parallelführung,Begleitfigur
+Walzer,Begleitfigur
+Tonrepetitionen,Begleitfigur
+Tremolo,Begleitfigur
+Blockakkorde,Begleitfigur
+Haltetöne,Begleitfigur
+"Dreinklangs-brechungen",Begleitfigur
+andere Dreiklangsbrechungen,"Dreinklangs-brechungen"
+Arpeggio,"Dreinklangs-brechungen"
+Präsenz,spielt Begleitung
+eher zurückhaltend,Präsenz
+eher präsent,Präsenz
+spielt Melodie,root
+anderweitig melodisch tätig,spielt Melodie
+gleichberechtigt in melodischem Geflecht,spielt Melodie
+spielt Gegenstimme zur führenden Melodie,spielt Melodie
+spielt Melodieführung,spielt Melodie

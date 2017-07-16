@@ -1,0 +1,47 @@
+name,parent
+root,
+Rückungen,root
+Rückung um eine Quint,Rückungen
+Rückung um eine Quart,Rückungen
+chromatische Rückung,Rückungen
+mediantische Rückung,Rückungen
+diatonische Rückung,Rückungen
+Schweifen,root
+Changieren,root
+Kadenz,root
+andere Kadenz,Kadenz
+Trugschluss (D-Tp o.ä.),Kadenz
+Quartvorhalt-Kadenz,Kadenz
+plagale Kadenz (T-S-T),Kadenz
+plagaler Schluss (S-T),Kadenz
+Vollkadenz (T-S(Sp)-D-T),Kadenz
+authentische Kadenz (T-D-T),Kadenz
+authentischer Schluss (D-T),Kadenz
+Teufelsmühle / Omnibus,root
+harmonsiches Sequenzmuster,root
+anderes harmonisches Sequenzmuster,harmonsiches Sequenzmuster
+Quartfallsequenz,harmonsiches Sequenzmuster
+Quintfallsequenz,harmonsiches Sequenzmuster
+mehrmaliger schneller Wechsel von Dominante und Tonika (im Stile einer Schlusskadenz),root
+Pendeln,root
+Stillstand,root
+Stillstand auf einer Tonart und ihrer Dominante,Stillstand
+Stillstand auf einer Tonart,Stillstand
+Modulation,root
+entfernte harmonische Funktion,Modulation
+sonstige Tonart,entfernte harmonische Funktion
+andere Mediante,entfernte harmonische Funktion
+mittelweit entfernte harmonische Funktion,Modulation
+Moll-Subdominante in Dur,mittelweit entfernte harmonische Funktion
+Dur-Subdominante in Moll,mittelweit entfernte harmonische Funktion
+Moll-Dominante,mittelweit entfernte harmonische Funktion
+"Variantklang (Moll-Tonika in Dur, Dur-Tonika in Moll)",mittelweit entfernte harmonische Funktion
+Dominantgegenklang,mittelweit entfernte harmonische Funktion
+Dominantparallele bzw. Tonikagegenklang,mittelweit entfernte harmonische Funktion
+nahe harmonische Funktion,Modulation
+Subdominantparallele,nahe harmonische Funktion
+Tonikaparallele,nahe harmonische Funktion
+Subdominante,nahe harmonische Funktion
+Dominante,nahe harmonische Funktion
+andere Funktion,Modulation
+unklare Funktion,Modulation

@@ -1,0 +1,22 @@
+name,parent
+root,
+Atonalität,root
+modale Tonalität,root
+Ganztonleiter,modale Tonalität
+Kirchentonleiter,modale Tonalität
+hypoionische Tonleiter,Kirchentonleiter
+hypoäolische Tonleiter,Kirchentonleiter
+hypomixolydische Tonleiter,Kirchentonleiter
+mixolydische Tonleiter,Kirchentonleiter
+hypolydische Tonleiter,Kirchentonleiter
+lydische Tonleiter,Kirchentonleiter
+hypophrygische Tonleiter,Kirchentonleiter
+phrygische Tonleiter,Kirchentonleiter
+hypodorische Tonleiter,Kirchentonleiter
+dorische Tonleiter,Kirchentonleiter
+Dur-Moll-Tonalität,root
+unbestimmtes Tongeschlecht,Dur-Moll-Tonalität
+wechselndes Tongeschlecht,Dur-Moll-Tonalität
+changierendes Tongeschlecht,Dur-Moll-Tonalität
+Moll,Dur-Moll-Tonalität
+Dur,Dur-Moll-Tonalität

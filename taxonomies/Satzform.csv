@@ -1,0 +1,64 @@
+name,parent
+root,
+Allegroform,root
+A-A-B-C-Form,root
+A-B-A-C-Form,root
+A-A-B-A-Form,root
+A-B-A-B-Form,root
+Reihungsform,root
+Dualform / Suitensatzform / Tanzsatzform / zweiteiliges Lied,root
+Adagioform,root
+Fughetta,root
+Fuge,root
+Steigerungsfuge,Fuge
+Spiegelfuge,Fuge
+Permutationsfuge,Fuge
+Periodische Fuge,Fuge
+Mosaikfuge,Fuge
+Krebsfuge,Fuge
+Kanonische Fuge,Fuge
+Inversionsfuge,Fuge
+Fuge mit homophonen Abschnitten,Fuge
+Fächerfuge,Fuge
+Episodenfuge,Fuge
+Entwicklungsfuge,Fuge
+Fuga a 5 Soggetti,Fuge
+Fuga a 4 Soggetti,Fuge
+Fuga a 3 Soggetti,Fuge
+Fuga a 2 Soggetti,Fuge
+synthetische Fuge,Fuge
+Quadrupelfuge,Fuge
+Tripelfuge,Fuge
+Doppelfuge,Fuge
+Choralfuge,Fuge
+Einfache Fuge,Fuge
+Strophenform (A-A-A...),root
+Passacaglia,root
+Entwicklungsform,root
+Entwicklungsform A-B-AB,Entwicklungsform
+Entwicklungsform A-AB-B,Entwicklungsform
+Liedform,root
+Barform,Liedform
+Gegenbar (A-B-B),Barform
+Reprisenbar (A-A-B-A),Barform
+gewöhnliche Barform (A-B-B),Barform
+dreiteilige Liedform (A-B-A),Liedform
+zweiteilige Liedform,Liedform
+Liedform A-B,zweiteilige Liedform
+Liedform A-A,zweiteilige Liedform
+einteilige Liedform (A),Liedform
+"Scherzoform, erweiterte Dualform",root
+zweiteilige Reprisenform (A-BA),root
+Kanzonenform (A-A-B-C),root
+Kavatinenform,root
+Lied/Arienform,root
+Menuett,root
+Variation,root
+Suite,root
+Fuge,root
+Rondo,root
+Variationsrondo,Rondo
+"Sonaten-, Bogenrondo",Rondo
+Kettenrondo,Rondo
+Rücklaufrondo,Rondo
+Sonatensatzform,root

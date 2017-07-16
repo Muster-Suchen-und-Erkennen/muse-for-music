@@ -1,0 +1,16 @@
+name,parent
+root,
+polyphone Satzart,root
+unbestimmte polyphone Satzart,polyphone Satzart
+andere polyphone Satzart,polyphone Satzart
+Imitation,polyphone Satzart
+Kontrapunkt,polyphone Satzart
+Texturwechsel,polyphone Satzart
+Durchbrochene Arbeit,polyphone Satzart
+Melodie und eigenständige Begleitung,polyphone Satzart
+homophone Satzart,root
+unbestimmte homophone Satzart,homophone Satzart
+andere homophone Satzart,homophone Satzart
+Akkordsatz,homophone Satzart
+Melodie und Begleitung (homophon),homophone Satzart
+einstimmiges Spiel,root

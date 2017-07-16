@@ -1,0 +1,14 @@
+name,parent
+root,
+andere Verzierung,root
+Triller,root
+nicht ausgeschriebener Triller,Triller
+ausgeschriebener Triller,Triller
+Doppelschlag,root
+Pralltriller oder Mordent,root
+doppelter Nachschlag,root
+einfacher Nachschlag,root
+Schleifer,root
+Doppelvorschlag,root
+langer Vorschlag,root
+kurzer Vorschlag,root

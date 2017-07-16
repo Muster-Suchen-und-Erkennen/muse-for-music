@@ -1,0 +1,14 @@
+name,parent
+root,
+andere Tonschritte ,root
+Wirbel,root
+lange Haltetöne,root
+lange Tonrepetitionen,root
+Akkordbrechung,root
+skalare Intervallik,root
+Grundton der Skala entspricht,skalare Intervallik
+folgt folgender Skala,skalare Intervallik
+sprungbasierte Intervallik,root
+"Terzsprünge, aber keine Akkordbrechungen",sprungbasierte Intervallik
+"mittlere Sprünge (4, 5, kl. 6)",sprungbasierte Intervallik
+große Sprünge (ab gr. 6),sprungbasierte Intervallik

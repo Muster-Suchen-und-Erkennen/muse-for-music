@@ -1,0 +1,28 @@
+name,parent
+root,
+Sechs- oder Siebenklang,root
+Tredezimakkord,Sechs- oder Siebenklang
+alterierter Undezimakkord,Sechs- oder Siebenklang
+Undezimakkord,Sechs- oder Siebenklang
+Fünfklang,root
+anderer Fünfklang,Fünfklang
+Dominantseptnonakkord,Fünfklang
+Vierklang,root
+Sixte ajoutée,Vierklang
+Septakkord,Vierklang
+übermäßiger Quintsextakkord,Septakkord
+großer übermäßiger Septakkord,Septakkord
+verminderter Septakkord,Septakkord
+verminderter Septakkord (nicht als verkürzter Dominantseptnonakkord),verminderter Septakkord
+verminderter Septakkord als verkürzter Dominantseptnonakkord,verminderter Septakkord
+kleiner Septakkord (halbverminderter Septakkord),Septakkord
+(kleiner) Moll-Septakkord (Moll-Sieben),Septakkord
+großer Moll-Septakkord (Moll-Major-Sieben),Septakkord
+kleiner Dur-Septakkord (Dominantseptakkord),Septakkord
+großer Dur-Septakkord (Dur-Major-Sieben),Septakkord
+Dreiklang,root
+verselbstständigter Neapolitaner,Dreiklang
+verkürzter Sixte-ajoutée-Akkord,Dreiklang
+Neapolitanischer Sextakkord,Dreiklang
+Moll-Dreiklang,Dreiklang
+Dur-Dreiklang,Dreiklang

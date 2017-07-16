@@ -1,0 +1,23 @@
+name,parent
+root,
+Funktion als Formteil,root
+unbestimmte Funktion,Funktion als Formteil
+anderer Formteil,Funktion als Formteil
+Teil einer Rondoform,Funktion als Formteil
+Teil eines Refrains,Teil einer Rondoform
+Teil eines Couplets,Teil einer Rondoform
+Teil einer Sonatensatzform,Funktion als Formteil
+Teil der Coda,Teil einer Sonatensatzform
+Teil der Reprise,Teil einer Sonatensatzform
+Teil des Mittelteils,Teil einer Sonatensatzform
+Teil der Exposition,Teil einer Sonatensatzform
+Teil der langsamen Einleitung,Teil einer Sonatensatzform
+Fugenteil,Funktion als Formteil
+Teil einer Durchführung,Fugenteil
+Teil eines Zwischenspiels,Fugenteil
+Teil der Fugenexposition,Fugenteil
+Einleitung eines Schlussabschnitts,root
+Schluss,root
+Höhepunkt,root
+Eröffnung,root
+Thema,root

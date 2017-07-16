@@ -1,0 +1,20 @@
+name,parent
+root,
+kein erkennbarer Melodietyp,root
+anderer Melodietyp,root
+marschartig,root
+fanfarenartig,root
+vokalmelodisch,root
+(instrumental-) rezitativisch,vokalmelodisch
+arienartig,vokalmelodisch
+liedartig,vokalmelodisch
+anderweitig liedartig,liedartig
+unbestimmt liedartig,liedartig
+kirchenliedartig,liedartig
+volksliedartig,liedartig
+unbestimmt volksliedartig,volksliedartig
+anderweitig volksliedartig,volksliedartig
+romanzenartig,volksliedartig
+kinderliedartig,volksliedartig
+wiegenliedartig,volksliedartig
+wanderliedartig,volksliedartig

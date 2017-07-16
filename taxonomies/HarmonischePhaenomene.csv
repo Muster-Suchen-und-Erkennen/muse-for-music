@@ -1,0 +1,35 @@
+name,parent
+root,
+Vorhalt,root
+Septimvorhalt,Vorhalt
+kleiner Septimvorhalt,Septimvorhalt
+großer Septimvorhalt,Septimvorhalt
+Quartsextvorhalt,Vorhalt
+Sextvorhalt,Vorhalt
+Quartvorhalt,Vorhalt
+reiner Quartvorhalt,Quartvorhalt
+übermäßiger Quartvorhalt,Quartvorhalt
+Sekundvorhalt,Vorhalt
+Nonvorhalt,Vorhalt
+abrupter Wechsel von Moll zu Dur,root
+abrupter Wechsel von Dur zu Moll,root
+Fauxbourdon,root
+Tritonussubstitution (der Dominante),root
+Mediante,root
+Mediante in scheinbarer Terzverwandtschaft (keine gemeinsamen Töne),Mediante
+Mediante in chromatischer Terzverwandtschaft (ein gemeinsamer Ton),Mediante
+Molldominant-Mollgegenklang (dg),Mediante in chromatischer Terzverwandtschaft (ein gemeinsamer Ton)
+Molldominant-Mollparallele (dp),Mediante in chromatischer Terzverwandtschaft (ein gemeinsamer Ton)
+Mollsubdominant-Mollgegenklang (sg),Mediante in chromatischer Terzverwandtschaft (ein gemeinsamer Ton)
+Mollsubdominant-Mollparallele (sp),Mediante in chromatischer Terzverwandtschaft (ein gemeinsamer Ton)
+Molltonika-Mollgegenklang (tg),Mediante in chromatischer Terzverwandtschaft (ein gemeinsamer Ton)
+Molltonika-Mollparallele (tp),Mediante in chromatischer Terzverwandtschaft (ein gemeinsamer Ton)
+Dominant-Durgegenklang (DG),Mediante in chromatischer Terzverwandtschaft (ein gemeinsamer Ton)
+Dominant-Durparallele (DP),Mediante in chromatischer Terzverwandtschaft (ein gemeinsamer Ton)
+Dursubdominant-Gegenklang (SG),Mediante in chromatischer Terzverwandtschaft (ein gemeinsamer Ton)
+Dursubdominant-Durparallele (SP),Mediante in chromatischer Terzverwandtschaft (ein gemeinsamer Ton)
+Durtonika-Gegenklang (DG),Mediante in chromatischer Terzverwandtschaft (ein gemeinsamer Ton)
+Durtonika-Durparallele (DP),Mediante in chromatischer Terzverwandtschaft (ein gemeinsamer Ton)
+Mediante in leitereigener Terzverwandtschaft (zwei gemeinsame Töne im Akk.),Mediante
+Gegenklang,Mediante in leitereigener Terzverwandtschaft (zwei gemeinsame Töne im Akk.)
+Parallelklang,Mediante in leitereigener Terzverwandtschaft (zwei gemeinsame Töne im Akk.)
