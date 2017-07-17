@@ -1,9 +1,22 @@
 import click
-from flask import Flask
+from flask import Flask, logging
+from logging import Logger, StreamHandler, Formatter
+from sys import stdout
 
 
 from .. import app, db
 from .users import User, UserRole, RoleEnum
+
+DB_COMMAND_LOGGER = logging.create_logger(app)  # type: Logger
+
+formatter = Formatter(fmt='[%(levelname)s] [%(name)-16s] %(message)s')
+
+handler = StreamHandler(stream=stdout)
+
+handler.setFormatter(formatter)
+
+DB_COMMAND_LOGGER.addHandler(handler)
+
 from . import taxonomies
 
 

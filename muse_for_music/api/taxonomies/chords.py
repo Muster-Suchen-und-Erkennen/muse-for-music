@@ -5,13 +5,13 @@ from . import ns
 
 from .models import tree_model, tree_model_json
 
-from ...models.taxonomies.instruments import Instrument
+from ...models.taxonomies.chords import Akkord
 
 
-@ns.route('/instruments')
-class InstrumentResource(Resource):
+@ns.route('/chords')
+class ChordsResource(Resource):
 
     @ns.response(200, 'Success', tree_model_json)
     def get(self):
-        return marshal(Instrument.get_root(), tree_model), 200
+        return marshal(Akkord.get_root(), tree_model), 200
 
