@@ -13,7 +13,7 @@ class RatioResource(Resource):
 
     @ns.marshal_list_with(list_item_model)
     def get(self):
-        return Anteil.query.all()
+        return Anteil.get_all()
 
 
 @ns.route('/occurrence-in-part')
@@ -21,7 +21,7 @@ class OccurrenceInPartResource(Resource):
 
     @ns.marshal_list_with(list_item_model)
     def get(self):
-        return AuftretenWerkausschnitt.query.all()
+        return AuftretenWerkausschnitt.get_all()
 
 
 @ns.route('/occurrence-in-movement')
@@ -29,5 +29,5 @@ class OccurrenceInMovementResource(Resource):
 
     @ns.marshal_list_with(list_item_model)
     def get(self):
-        return AuftretenSatz.query.all()
+        return AuftretenSatz.get_all()
 

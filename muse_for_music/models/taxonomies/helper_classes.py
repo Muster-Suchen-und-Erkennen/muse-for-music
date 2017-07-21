@@ -31,6 +31,11 @@ class ListTaxonomy(LoadableMixin):
         return '<{} "{}">'.format(type(self).__name__, self.name)
 
     @classmethod
+    def get_all(cls) -> List['ListTaxonomy']:
+        """Get all elements of taxonomy."""
+        return cls.query.all()
+
+    @classmethod
     def load(cls, input_data: DictReader, logger: Logger):
         """Load taxonomy from csv file."""
         items = {}  # type: Dict[str, ListTaxonomy]
