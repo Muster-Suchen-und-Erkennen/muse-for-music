@@ -5,9 +5,9 @@ import csv
 from glob import glob
 from os import path
 from inspect import getmembers, isclass
-from typing import Dict
+from typing import Dict, TypeVar
 
-from .loadable_mixin import LoadableMixin
+from .helper_classes import LoadableMixin
 from .. import DB_COMMAND_LOGGER
 from ... import app
 
@@ -15,6 +15,8 @@ from ... import app
 from .instruments import Instrument
 from .chords import Akkord
 from .misc import Anteil, AuftretenWerkausschnitt, AuftretenSatz
+
+T = TypeVar('T', bound=LoadableMixin)
 
 
 @app.cli.command('init_taxonomies')
@@ -28,7 +30,7 @@ def init_taxonomies(reload, folder_path: str):
     folder_path = path.abspath(folder_path)
     click.echo('Scanning folder "{}"'.format(folder_path))
     files = glob(path.join(folder_path, '*.csv'))
-    taxonomies = get_taxonomies()  # type: Dict[str, LoadableMixin]
+    taxonomies = get_taxonomies()  # type: Dict[str, T]
     for file in files:
         name = path.splitext(path.basename(file))[0].upper()
         if name in taxonomies:
@@ -47,7 +49,7 @@ def init_taxonomies(reload, folder_path: str):
     click.echo('Finished processing all taxonomies.')
 
 
-def get_taxonomies() -> Dict[str, LoadableMixin]:
+def get_taxonomies() -> Dict[str, T]:
     temp = {}
     for name, member in getmembers(sys.modules[__name__], isclass):
         if member is LoadableMixin:
