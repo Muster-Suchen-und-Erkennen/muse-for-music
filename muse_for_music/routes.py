@@ -6,6 +6,10 @@ from . import app
 from . import user_api
 from . import api
 
+if app.config['DEBUG']:
+    from . import debug_routes
+    pass
+
 
 @app.route('/')
 @app.route('/index')
