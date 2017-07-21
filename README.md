@@ -81,3 +81,6 @@ The following sites are available after starting the flask development server:
 [User API](http://127.0.0.1:5000/users/doc)
 [API](http://127.0.0.1:5000/api/doc)
 
+Only in debug mode:
+[debug](http://127.0.0.1:5000/debug)
+
