@@ -57,3 +57,4 @@ tree_model['children'] = fields.List(fields.Nested(tree_model), default=[])
 list_item_model = ns.model('ListItemModel', {
     'name': fields.String
 })
+
