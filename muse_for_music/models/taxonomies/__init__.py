@@ -12,9 +12,17 @@ from .. import DB_COMMAND_LOGGER
 from ... import app
 
 
+# Import taxonomy models:
 from .instruments import Instrument
 from .chords import Akkord
-from .misc import Anteil, AuftretenWerkausschnitt, AuftretenSatz
+from .misc import Anteil, AuftretenWerkausschnitt, AuftretenSatz, Frequenz
+from .dissonance import Dissonanzen, Dissonanzgrad
+from .epoch import Epoche
+from .form import FormaleFunktion, Formschema
+from .gattung import Gattung, GattungNew
+from .harmony import HarmonischeEntwicklung
+from .notes import Grundton
+
 
 T = TypeVar('T', bound=LoadableMixin)
 
