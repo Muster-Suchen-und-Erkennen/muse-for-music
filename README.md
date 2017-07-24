@@ -61,8 +61,10 @@ flask run
 Drop and recreate DB:
 ```shell
 flask drop_db
-flask crate_populated_db
+flask create_populated_db
 flask init_taxonomies taxonomies
+
+# flask drop_db && flask create_populated_db && flask init_taxonomies taxonomies
 ```
 
 
