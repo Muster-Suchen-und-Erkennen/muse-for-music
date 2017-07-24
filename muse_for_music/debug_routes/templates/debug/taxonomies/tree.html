@@ -8,6 +8,7 @@
     <base href="/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" type="text/css" href="{{url_for('debug_routes.static', filename="debug/taxonomies/taxonomies.css")}}">
 </head>
 
 <body>
@@ -15,16 +16,27 @@
 
     <a href="{{url_for('debug_routes.taxonomies')}}">back</a>
 
-    <ul>
-        {%- for item in content  recursive -%}
-        <li>{{item.name}}</li>
+
+    <div class="css-treeview">
+        <ul>
+            {%- for item in content  recursive -%}
             {%- if item.children -%}
-            <ul>
-                {{ loop(item.children) }}
-            </ul>
+            <li style="list-style: none">
+            {%- else -%}
+            <li>
             {%- endif -%}
-        {%- endfor -%}
-    </ul>
+                {%- if item.children -%}
+                <input type="checkbox" id="{{loop.depth}}-{{loop.index}}", checked="true"/><label for="{{loop.depth}}-{{loop.index}}">{{item.name}}</label>
+                <ul>
+                    {{ loop(item.children) }}
+                </ul>
+                {%- else -%}
+                {{item.name}}
+                {%- endif -%}
+            </li>
+            {%- endfor -%}
+        </ul>
+    </div>
 
 </body>
 

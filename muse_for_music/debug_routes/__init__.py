@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template
 from .. import app
 
-debug_blueprint = Blueprint('debug_routes', __name__, template_folder='templates')
+debug_blueprint = Blueprint('debug_routes', __name__, template_folder='templates',
+                            static_folder='static')
 
 from . import debug_taxonomies
 

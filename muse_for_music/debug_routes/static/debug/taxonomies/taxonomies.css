@@ -1,0 +1,9 @@
+.css-treeview input + label + ul
+{
+    display: none;
+}
+
+.css-treeview input:checked + label + ul
+{
+    display: block;
+}
