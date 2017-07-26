@@ -1,0 +1,67 @@
+name,parent
+root,
+Spielfiguren,root
+"(Triller s. ""Spielanweisungen"")",Spielfiguren
+Mannheimer Rakete,Spielfiguren
+absteigende Sekunde am Phrasenende (auch „Seufzer“),Spielfiguren
+"schneller Wechsel zweier Töne im punktierten Rhythmus (auch ""Ribattuta"")",Spielfiguren
+"ansteigende Sekunde am Phrasenende (auch ""Interrogatio"")",Spielfiguren
+schneller Lauf auf kleinem Intervallraum,Spielfiguren
+"Umspielen eines Tons mit dessen Ober-, dann Untersekunde (auch ""Doppelschlag"")",Spielfiguren
+"Umkreisen eines Tons in Sekunden (auch ""Circulatio"")",Spielfiguren
+"rasche Tonwiederholung (auch ""Bombus"")",Spielfiguren
+Walze,root
+Kette von absteigenden Sekunden,root
+Wirbel,root
+harmonisches Motiv,root
+Tristanakkord,harmonisches Motiv
+Schreckensakkord,harmonisches Motiv
+phrygischer Schluss,harmonisches Motiv
+mystischer Akkord,harmonisches Motiv
+Dresdner Amen,harmonisches Motiv
+Quartsprungmotiv,harmonisches Motiv
+Quintfallmotiv,harmonisches Motiv
+marschartige Auftaktfloskel,root
+Kuckucksmotiv (absteigende kleine Terz),root
+Kreuzmotiv,root
+"""Tonleiter-Lauf mit jeweils zwei Schritten vor und einem zurück""",root
+... in ungerader Aufteilung des Notenwerts (Triolen etc.),"""Tonleiter-Lauf mit jeweils zwei Schritten vor und einem zurück"""
+...abwechselnd aufwärts und abwärts,... in ungerader Aufteilung des Notenwerts (Triolen etc.)
+... abwärts,... in ungerader Aufteilung des Notenwerts (Triolen etc.)
+... aufwärts,... in ungerader Aufteilung des Notenwerts (Triolen etc.)
+"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)","""Tonleiter-Lauf mit jeweils zwei Schritten vor und einem zurück"""
+...abwechselnd aufwärts und abwärts,"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+... abwärts,"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+... aufwärts,"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+markante Drei- oder Vierklangsbrechung,root
+Akkordbrechung mit Sprung,markante Drei- oder Vierklangsbrechung
+... in ungerader Aufteilung des Notenwerts (Triolen etc.),Akkordbrechung mit Sprung
+"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)",Akkordbrechung mit Sprung
+... in anderem Stil,"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+... im Stile eines Alberti-Basses,"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+Arpeggio,markante Drei- oder Vierklangsbrechung
+... in ungerader Aufteilung des Notenwerts (Triolen etc.),Arpeggio
+...abwechselnd aufwärts und abwärts,... in ungerader Aufteilung des Notenwerts (Triolen etc.)
+... abwärts,... in ungerader Aufteilung des Notenwerts (Triolen etc.)
+... aufwärts,... in ungerader Aufteilung des Notenwerts (Triolen etc.)
+"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)",Arpeggio
+...abwechselnd aufwärts und abwärts,"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+... abwärts,"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+... aufwärts,"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+"""Arpeggio mit Sekunde""",root
+"""Arpeggio mit Sekunde"" abwärts","""Arpeggio mit Sekunde"""
+"""Arpeggio mit Sekunde"" aufwärts","""Arpeggio mit Sekunde"""
+"""Tonleiter mit eingeschobenen Nebentönen""",root
+aufsteigende Tonleiter mit eingeschobenen oberen Nebentönen,"""Tonleiter mit eingeschobenen Nebentönen"""
+... mit eingeschobenen kleinen Sekunden als oberen Nebentönen,aufsteigende Tonleiter mit eingeschobenen oberen Nebentönen
+... mit eingeschobenen leitereigenen oberen Nebentönen,aufsteigende Tonleiter mit eingeschobenen oberen Nebentönen
+absteigende Tonleiter mit eingeschobenen unteren Nebentönen,"""Tonleiter mit eingeschobenen Nebentönen"""
+... mit eingeschobenen kleinen Sekunden als unteren Nebentönen,absteigende Tonleiter mit eingeschobenen unteren Nebentönen
+... mit eingeschobenen leitereigenen unteren Nebentönen,absteigende Tonleiter mit eingeschobenen unteren Nebentönen
+"""Walking Bass""",root
+absteigender Walking Bass,"""Walking Bass"""
+diatonisch absteigender Walking Bass,absteigender Walking Bass
+chromatisch absteigender Walking Bass,absteigender Walking Bass
+aufsteigender Walking Bass,"""Walking Bass"""
+diatonisch aufsteigender Walking Bass,aufsteigender Walking Bass
+chromatisch aufsteigender Walking Bass,aufsteigender Walking Bass

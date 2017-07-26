@@ -1,0 +1,21 @@
+name,parent
+root,
+asymmetrisch zusammengesetzte Taktart,root
+anderer zusammengesetzter Takt,asymmetrisch zusammengesetzte Taktart
+7/8,asymmetrisch zusammengesetzte Taktart
+7/4,asymmetrisch zusammengesetzte Taktart
+5/8,asymmetrisch zusammengesetzte Taktart
+5/4,asymmetrisch zusammengesetzte Taktart
+tenär unterteilte Taktart (symmetrisch zusammengesetzt),root
+12/8,tenär unterteilte Taktart (symmetrisch zusammengesetzt)
+9/8,tenär unterteilte Taktart (symmetrisch zusammengesetzt)
+3/8,tenär unterteilte Taktart (symmetrisch zusammengesetzt)
+6/8,tenär unterteilte Taktart (symmetrisch zusammengesetzt)
+binär unterteilte Taktart (symmetrisch zusammengesetzt),root
+8/8,binär unterteilte Taktart (symmetrisch zusammengesetzt)
+8/4,binär unterteilte Taktart (symmetrisch zusammengesetzt)
+4/8,binär unterteilte Taktart (symmetrisch zusammengesetzt)
+4/4,binär unterteilte Taktart (symmetrisch zusammengesetzt)
+3/4,binär unterteilte Taktart (symmetrisch zusammengesetzt)
+2/4,binär unterteilte Taktart (symmetrisch zusammengesetzt)
+2/2,binär unterteilte Taktart (symmetrisch zusammengesetzt)

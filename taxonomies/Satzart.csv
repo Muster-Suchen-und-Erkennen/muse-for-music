@@ -1,0 +1,21 @@
+name,parent
+root,
+Satzart,root
+polyphone Satzart,Satzart
+andere polyphone Satzart,polyphone Satzart
+unbestimmte polyphone Satzart,polyphone Satzart
+Imitation,polyphone Satzart
+Kontrapunkt,polyphone Satzart
+andere kontrapunktische Satzart,Kontrapunkt
+fugierte Satzart,Kontrapunkt
+Texturwechsel,polyphone Satzart
+Durchbrochene Arbeit,polyphone Satzart
+Melodie und eigenständige Begleitung (polyphon),polyphone Satzart
+homophone Satzart,Satzart
+andere homophone Satzart,homophone Satzart
+unbestimmte homophone Satzart,homophone Satzart
+Akkordsatz,homophone Satzart
+anderer Akkordsatz,Akkordsatz
+Choralsatz / Kantionalsatz,Akkordsatz
+Melodie und Begleitung (homophon),homophone Satzart
+solistische Satzart,Satzart

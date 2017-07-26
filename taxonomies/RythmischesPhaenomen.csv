@@ -1,0 +1,46 @@
+name,parent
+root,
+"rhythmisches Phänomen, das auch nur eine Stimme betreffen kann",root
+Corta,"rhythmisches Phänomen, das auch nur eine Stimme betreffen kann"
+andere Corta-Figur,Corta
+andere Corta-Figur mit längerer Note in der Mitte,andere Corta-Figur
+andere Corta-Figur mit kürzerer Note zuerst,andere Corta-Figur
+andere Corta-Figur mit längerer Note zuerst,andere Corta-Figur
+Corta-Figur aus einer Sechzehntel und zwei Zweiundreißigsteln,Corta
+Corta-Figur aus einer Sechzehntel und zwei Zweiundreißigsteln mit längerer Note in der Mitte,Corta-Figur aus einer Sechzehntel und zwei Zweiundreißigsteln
+Corta-Figur aus einer Sechzehntel und zwei Zweiundreißigsteln mit kürzerer Note zuerst,Corta-Figur aus einer Sechzehntel und zwei Zweiundreißigsteln
+Corta-Figur aus einer Sechzehntel und zwei Zweiundreißigsteln mit längerer Note zuerst,Corta-Figur aus einer Sechzehntel und zwei Zweiundreißigsteln
+Corta-Figur aus einer Achtel und zwei Sechzehnteln,Corta
+Corta-Figur aus einer Achtel und zwei Sechzehnteln mit längerer Note in der Mitte,Corta-Figur aus einer Achtel und zwei Sechzehnteln
+Corta-Figur aus einer Achtel und zwei Sechzehnteln mit kürzerer Note zuerst,Corta-Figur aus einer Achtel und zwei Sechzehnteln
+Corta-Figur aus einer Achtel und zwei Sechzehnteln mit längerer Note zuerst,Corta-Figur aus einer Achtel und zwei Sechzehnteln
+Auftakt,"rhythmisches Phänomen, das auch nur eine Stimme betreffen kann"
+Hemiole,"rhythmisches Phänomen, das auch nur eine Stimme betreffen kann"
+Akzent,"rhythmisches Phänomen, das auch nur eine Stimme betreffen kann"
+Akzent gegen den Schlag,Akzent
+Akzent auf dem Schlag,Akzent
+Akzent auf (eher) leichter Zählzeit,Akzent auf dem Schlag
+Akzent auf (eher) schwerer Zählzeit,Akzent auf dem Schlag
+Reiterrhythmus,"rhythmisches Phänomen, das auch nur eine Stimme betreffen kann"
+punktierter Rhythmus,"rhythmisches Phänomen, das auch nur eine Stimme betreffen kann"
+andere punktierte Noten,punktierter Rhythmus
+lombardischer Rhythmus,punktierter Rhythmus
+besondere Aufteilung von Notenwerten,"rhythmisches Phänomen, das auch nur eine Stimme betreffen kann"
+andere besondere Aufteilung von Notenwerten,besondere Aufteilung von Notenwerten
+N-tolen > Nonolen,besondere Aufteilung von Notenwerten
+Nonolen,besondere Aufteilung von Notenwerten
+Septolen,besondere Aufteilung von Notenwerten
+Sextolen,besondere Aufteilung von Notenwerten
+Quintolen,besondere Aufteilung von Notenwerten
+Quartolen,besondere Aufteilung von Notenwerten
+Triolen,besondere Aufteilung von Notenwerten
+Halbetriolen,Triolen
+Vierteltriolen,Triolen
+Achteltriolen,Triolen
+Sechzehnteltriolen,Triolen
+Duolen,besondere Aufteilung von Notenwerten
+Synkope,"rhythmisches Phänomen, das auch nur eine Stimme betreffen kann"
+"rhythmisches Phänomen, das Tutti betrifft",root
+Fermate,"rhythmisches Phänomen, das Tutti betrifft"
+Generalpause,"rhythmisches Phänomen, das Tutti betrifft"
+Metrumswechsel,"rhythmisches Phänomen, das Tutti betrifft"
