@@ -18,6 +18,7 @@ handler.setFormatter(formatter)
 DB_COMMAND_LOGGER.addHandler(handler)
 
 from . import taxonomies
+from . import data
 
 
 @app.cli.command('create_db')
