@@ -6,6 +6,8 @@ from ..models import api_resource
 ns = api.namespace('data', description='All data objects.')
 
 from . import people
+from . import opus
+from . import instrumentation
 
 
 @ns.route('/')
@@ -15,11 +17,11 @@ class DataResources(Resource):
     def get(self):
         data_endpoints = [
             {
-                'name': 'chords',
+                'name': 'people',
                 'description': 'test'
             },
             {
-                'name': 'instruments',
+                'name': 'opus',
                 'description': 'test'
             }
         ]

@@ -19,7 +19,7 @@ from .misc import Anteil, AuftretenWerkausschnitt, AuftretenSatz, Frequenz
 from .dissonance import Dissonanzen, Dissonanzgrad
 from .epoch import Epoche
 from .form import FormaleFunktion, Formschema
-from .gattung import Gattung, GattungNew
+from .gattung import GattungNineteenthCentury, Gattung
 from .harmony import HarmonischeEntwicklung
 from .notes import Grundton
 

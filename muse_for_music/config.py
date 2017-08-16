@@ -4,6 +4,7 @@
 class Config(object):
     DEBUG = False
     TESTING = False
+    RESTPLUS_VALIDATE = True
     BCRYPT_HANDLE_LONG_PASSWORDS = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://:memory:'
     WEBPACK_MANIFEST_PATH = './build/manifest.json'
