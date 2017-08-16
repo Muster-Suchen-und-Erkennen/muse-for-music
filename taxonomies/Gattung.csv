@@ -1,14 +1,25 @@
 name,parent
 root,
-unbestimmte Gattung,root
 andere Gattung,root
+Solo-Klaviermusik allgemein,root
 Serenade,root
-Konzertstück,root
-symphonischer Marsch,root
-symphonischer Tanz,root
-Ouvertüre,root
-Symphonische Dichtung,root
-Instrumentalkonzert,root
-Sinfonia,root
+Präludium,root
+Passion,root
 Sinfonietta,root
+Ballett,root
+Marsch,root
+Symphonischer Tanz,root
+Ouvertüre,root
+Oratorium,root
+Motette,root
+Madrigal,root
+Kantate,root
+Choral,root
 Symphonie,root
+Symphonische Dichtung,root
+Messe,root
+Oratorium**,root
+Kunstlied,root
+Oper,root
+Streichquartett,root
+Instrumentalkonzert,root
