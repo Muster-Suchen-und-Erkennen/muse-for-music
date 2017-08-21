@@ -42,7 +42,8 @@ class EmbeddedFields(Raw):
         for name in self.embedded_models:
             key = name if not self.embedded_models[name].attribute else self.embedded_models[name].attribute
             value = get_value(key, obj)
-            data[name] = marshal(value, self.nested_model(name))
+            if value is not None and not (self.embedded_models[name].as_list and (len(value) == 0)):
+                data[name] = marshal(value, self.nested_model(name))
         return data
 
     def schema(self):
@@ -95,7 +96,10 @@ class HaLUrl(StringMixin, Raw):
         try:
             data = {}
             for key in self.data:
-                data[key] = get_value(self.data[key], obj)
+                value = get_value(self.data[key], obj)
+                if value is None:
+                    return None
+                data[key] = value
             endpoint = self.endpoint if self.endpoint is not None else request.endpoint
             o = urlparse(url_for(endpoint, _external=self.absolute, **data))
             path = ''

@@ -4,7 +4,7 @@ Models for data objects.
 
 
 from flask_restplus import fields
-from ...hal_field import HaLUrl, NestedFields
+from ...hal_field import HaLUrl, NestedFields, EmbeddedFields, NestedModel
 from . import api
 
 from enum import Enum
@@ -34,8 +34,8 @@ class GenderField(fields.Raw, fields.StringMixin):
 
 
 person_links = api.model('PersonLinks', {
-    'self': HaLUrl('api.data_person_resource', absolute=True, required=False, data={'id': 'id'}),
-    'find': HaLUrl('api.data_person_list_resource', absolute=True, required=False, templated=True, path_variables=['id']),
+    'self': HaLUrl('api.person_person_resource', absolute=True, required=False, data={'id': 'id'}),
+    'find': HaLUrl('api.person_person_list_resource', absolute=True, required=False, templated=True, path_variables=['id']),
 })
 
 person_model = api.model('Person', {
@@ -49,7 +49,7 @@ person_model = api.model('Person', {
 })
 
 instrumentation_links = api.model('InstrumentationLinks', {
-    'self': HaLUrl('api.data_instrumentation_resource', absolute=True, required=False, data={'id': 'id'}),
+    'self': HaLUrl('api.instrumentation_instrumentation_resource', absolute=True, required=False, data={'id': 'id'}),
 })
 
 instrumentation_model = api.model('Instrumentation', {
@@ -59,19 +59,23 @@ instrumentation_model = api.model('Instrumentation', {
 })
 
 opus_links = api.model('OpusLinks', {
-    'self': HaLUrl('api.data_opus_resource', absolute=True, required=False, data={'id': 'id'}),
-    'find': HaLUrl('api.data_opus_list_resource', absolute=True, required=False, templated=True, path_variables=['id']),
-    'instrumentation': HaLUrl('api.data_instrumentation_resource', absolute=True, required=False, data={'id': 'instrumentation.id'}),
+    'self': HaLUrl('api.opus_opus_resource', absolute=True, required=False, data={'id': 'id'}),
+    'find': HaLUrl('api.opus_opus_list_resource', absolute=True, required=False, templated=True, path_variables=['id']),
+    'person': HaLUrl('api.person_person_resource', absolute=True, required=False, data={'id': 'composer.id'}),
+    'instrumentation': HaLUrl('api.instrumentation_instrumentation_resource', absolute=True, required=False, data={'id': 'instrumentation.id'}),
 })
 
 opus_model = api.model('Opus', {
     'id': fields.Integer(required=False, readonly=True),
     '_links': NestedFields(opus_links),
-    '_embedded': NestedFields(instrumentation_model, required=True, attribute='instrumentation'),
+    '_embedded': EmbeddedFields({
+        'instrumentation': NestedModel(instrumentation_model),
+        'person': NestedModel(person_model, attribute='composer'),
+    }, required=True),
     'name': fields.String(required=True, example='duett in g moll'),
     'original_name': fields.String(required=False),
     'opus_name': fields.String(required=False),
-    'composer': fields.Nested(person_model, allow_null=True),
+    'composer': fields.Integer(attribute='composer.id'),
     'composition_year': fields.Integer(required=False),
     'composition_place': fields.String(required=False, example='TODO'),
     'occasion': fields.String(required=False),
