@@ -5,7 +5,7 @@ Models for data objects.
 
 from flask_restplus import fields
 from ...hal_field import HaLUrl, NestedFields
-from . import ns
+from . import api
 
 from enum import Enum
 
@@ -33,12 +33,12 @@ class GenderField(fields.Raw, fields.StringMixin):
         return schema
 
 
-person_links = ns.model('PersonLinks', {
+person_links = api.model('PersonLinks', {
     'self': HaLUrl('api.data_person_resource', absolute=True, required=False, data={'id': 'id'}),
     'find': HaLUrl('api.data_person_list_resource', absolute=True, required=False, templated=True, path_variables=['id']),
 })
 
-person_model = ns.model('Person', {
+person_model = api.model('Person', {
     'id': fields.Integer(required=False, readonly=True),
     '_links': NestedFields(person_links),
     'name': fields.String(required=True, example='admin'),
@@ -48,23 +48,23 @@ person_model = ns.model('Person', {
     'gender': GenderField(required=True, example='male', enum=['male', 'female', 'other'])
 })
 
-instrumentation_links = ns.model('InstrumentationLinks', {
+instrumentation_links = api.model('InstrumentationLinks', {
     'self': HaLUrl('api.data_instrumentation_resource', absolute=True, required=False, data={'id': 'id'}),
 })
 
-instrumentation_model = ns.model('Instrumentation', {
+instrumentation_model = api.model('Instrumentation', {
     'id': fields.Integer(required=False, readonly=True),
     '_links': NestedFields(instrumentation_links),
     'instruments': fields.List(fields.String(), required=True),
 })
 
-opus_links = ns.model('OpusLinks', {
+opus_links = api.model('OpusLinks', {
     'self': HaLUrl('api.data_opus_resource', absolute=True, required=False, data={'id': 'id'}),
     'find': HaLUrl('api.data_opus_list_resource', absolute=True, required=False, templated=True, path_variables=['id']),
     'instrumentation': HaLUrl('api.data_instrumentation_resource', absolute=True, required=False, data={'id': 'instrumentation.id'}),
 })
 
-opus_model = ns.model('Opus', {
+opus_model = api.model('Opus', {
     'id': fields.Integer(required=False, readonly=True),
     '_links': NestedFields(opus_links),
     '_embedded': NestedFields(instrumentation_model, required=True, attribute='instrumentation'),

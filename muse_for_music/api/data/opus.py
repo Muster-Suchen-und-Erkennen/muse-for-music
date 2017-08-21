@@ -3,7 +3,7 @@ from flask_restplus import Resource, marshal
 from sqlalchemy.exc import IntegrityError
 
 
-from . import ns
+from . import api
 
 from .models import opus_model
 
@@ -11,8 +11,10 @@ from ... import db
 from ...models.data.opus import Opus
 
 
+ns = api.namespace('opus', description='TODO.')
 
-@ns.route('/opus')
+
+@ns.route('/')
 class OpusListResource(Resource):
 
     @ns.marshal_list_with(opus_model)
@@ -34,7 +36,7 @@ class OpusListResource(Resource):
             return {'error': str(err)}, 501
 
 
-@ns.route('/opus/<int:id>')
+@ns.route('/<int:id>')
 class OpusResource(Resource):
 
     @ns.marshal_with(opus_model)

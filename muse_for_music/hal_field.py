@@ -2,6 +2,7 @@ from collections import OrderedDict
 from flask_restplus import marshal
 from flask_restplus.fields import Raw, Nested, StringMixin, MarshallingError, get_value, urlparse, urlunparse
 from flask import url_for, request
+from typing import Dict
 
 
 class NestedFields(Nested):
@@ -12,6 +13,55 @@ class NestedFields(Nested):
     def output(self, key, obj):
 
         return marshal(obj, self.nested)
+
+
+class NestedModel():
+
+    def __init__(self, model, attribute: str=None, as_list: bool=False):
+        self.model = model
+        self.attribute = attribute
+        self.as_list = as_list
+
+    @property
+    def nested(self):
+        return getattr(self.model, 'resolved', self.model)
+
+
+class EmbeddedFields(Raw):
+
+    def __init__(self, embedded_models: Dict[str, NestedModel], **kwargs):
+        self.embedded_models = embedded_models
+        super().__init__(**kwargs)
+
+    def nested_model(self, name):
+        return self.embedded_models[name].nested
+
+    def output(self, key, obj):
+        data = {}
+
+        for name in self.embedded_models:
+            key = name if not self.embedded_models[name].attribute else self.embedded_models[name].attribute
+            value = get_value(key, obj)
+            data[name] = marshal(value, self.nested_model(name))
+        return data
+
+    def schema(self):
+        schema = super().schema()
+        schema['type'] = 'object'
+        schema['required'] = list(self.embedded_models.keys())
+        props = OrderedDict()
+
+        for name in self.embedded_models:
+            ref = '#/definitions/{0}'.format(self.nested_model(name).name)
+            if not self.embedded_models[name].as_list:
+                props[name] = {'$ref': ref}
+            else:
+                props[name] = {'type': 'array', 'items': {'$ref': ref}}
+        schema['properties'] = props
+
+        print(schema)
+
+        return schema
 
 
 class HaLUrl(StringMixin, Raw):
@@ -46,7 +96,6 @@ class HaLUrl(StringMixin, Raw):
             data = {}
             for key in self.data:
                 data[key] = get_value(self.data[key], obj)
-            print(data, self.data, obj, key)
             endpoint = self.endpoint if self.endpoint is not None else request.endpoint
             o = urlparse(url_for(endpoint, _external=self.absolute, **data))
             path = ''

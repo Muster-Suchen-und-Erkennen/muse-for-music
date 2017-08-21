@@ -5,7 +5,14 @@ from ... import db
 from typing import Dict, List
 
 
-class LoadableMixin():
+class Taxonomy():
+
+    taxonomy_type = None  # type: str
+
+    @classmethod
+    def class_name(cls):
+        print(cls, cls.__name__)
+        return cls.__name__
 
     @classmethod
     def clear_all(cls, logger: Logger):
@@ -18,9 +25,15 @@ class LoadableMixin():
     def load(cls, input_data: DictReader, logger: Logger):
         NotImplementedError
 
+    @classmethod
+    def items(cls):
+        NotImplementedError
 
-class ListTaxonomy(LoadableMixin):
+
+class ListTaxonomy(Taxonomy):
     """Base class for list taxonomies."""
+
+    taxonomy_type = 'list'  # type: str
 
     def __init__(self, name: str) -> None:
         """Create new List Taxonomy object."""
@@ -34,6 +47,8 @@ class ListTaxonomy(LoadableMixin):
     def get_all(cls) -> List['ListTaxonomy']:
         """Get all elements of taxonomy."""
         return cls.query.all()
+
+    items = get_all
 
     @classmethod
     def load(cls, input_data: DictReader, logger: Logger):
@@ -57,8 +72,11 @@ class ListTaxonomy(LoadableMixin):
         logger.error('Taxonomy "{}" could not be loaded!'.format(cls.__name__))
 
 
-class TreeTaxonomy(LoadableMixin):
+class TreeTaxonomy(Taxonomy):
     """Base class for tree taxonomies."""
+
+    taxonomy_type = 'tree'  # type: str
+    select_leafs_only = False  # type: bool
 
     children = []  # type: List[TreeTaxonomy]
 
@@ -76,6 +94,8 @@ class TreeTaxonomy(LoadableMixin):
     def get_root(cls):
         """Get root node of taxonomy."""
         return cls.query.filter_by(name='root').first()
+
+    items = get_root
 
     @classmethod
     def load(cls, input_data: DictReader, logger: Logger):

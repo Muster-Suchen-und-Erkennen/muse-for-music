@@ -3,19 +3,18 @@ from flask_restplus import Resource, marshal, reqparse
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 
-from . import ns
+from .. import api
+
 
 from .models import person_model
 
 from ... import db
 from ...models.data.people import Person
 
-
-parser = reqparse.RequestParser()
-parser.add_argument('person', location='json')
+ns = api.namespace('person', description='TODO.')
 
 
-@ns.route('/person')
+@ns.route('/')
 class PersonListResource(Resource):
 
     @ns.marshal_list_with(person_model)
@@ -36,7 +35,7 @@ class PersonListResource(Resource):
             return {'error': str(err)}, 501
 
 
-@ns.route('/person/<int:id>')
+@ns.route('/<int:id>')
 class PersonResource(Resource):
 
     @ns.marshal_with(person_model)

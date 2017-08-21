@@ -7,7 +7,7 @@ from os import path
 from inspect import getmembers, isclass
 from typing import Dict, TypeVar
 
-from .helper_classes import LoadableMixin
+from .helper_classes import Taxonomy
 from .. import DB_COMMAND_LOGGER
 from ... import app
 
@@ -24,7 +24,7 @@ from .harmony import HarmonischeEntwicklung
 from .notes import Grundton
 
 
-T = TypeVar('T', bound=LoadableMixin)
+T = TypeVar('T', bound=Taxonomy)
 
 
 @app.cli.command('init_taxonomies')
@@ -60,8 +60,8 @@ def init_taxonomies(reload, folder_path: str):
 def get_taxonomies() -> Dict[str, T]:
     temp = {}
     for name, member in getmembers(sys.modules[__name__], isclass):
-        if member is LoadableMixin:
+        if member is Taxonomy:
             continue
-        if issubclass(member, LoadableMixin):
+        if issubclass(member, Taxonomy):
             temp[name.upper()] = member
     return temp
