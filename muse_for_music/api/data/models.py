@@ -4,7 +4,7 @@ Models for data objects.
 
 
 from flask_restplus import fields
-from ...hal_field import HaLUrl, NestedFields, EmbeddedFields, NestedModel
+from ...hal_field import HaLUrl, NestedFields, EmbeddedFields, NestedModel, UrlData
 from . import api
 
 from enum import Enum
@@ -34,8 +34,10 @@ class GenderField(fields.Raw, fields.StringMixin):
 
 
 person_links = api.model('PersonLinks', {
-    'self': HaLUrl('api.person_person_resource', absolute=True, required=False, data={'id': 'id'}),
-    'find': HaLUrl('api.person_person_list_resource', absolute=True, required=False, templated=True, path_variables=['id']),
+    'self': HaLUrl(UrlData('api.person_person_resource', absolute=True, url_data={'id': 'id'}),
+                   required=False),
+    'find': HaLUrl(UrlData('api.person_person_list_resource', absolute=True, templated=True,
+                           path_variables=['id']), required=False),
 })
 
 person_model = api.model('Person', {
@@ -49,7 +51,8 @@ person_model = api.model('Person', {
 })
 
 instrumentation_links = api.model('InstrumentationLinks', {
-    'self': HaLUrl('api.instrumentation_instrumentation_resource', absolute=True, required=False, data={'id': 'id'}),
+    'self': HaLUrl(UrlData('api.instrumentation_instrumentation_resource', absolute=True,
+                           url_data={'id': 'id'}), required=False),
 })
 
 instrumentation_model = api.model('Instrumentation', {
@@ -59,10 +62,15 @@ instrumentation_model = api.model('Instrumentation', {
 })
 
 opus_links = api.model('OpusLinks', {
-    'self': HaLUrl('api.opus_opus_resource', absolute=True, required=False, data={'id': 'id'}),
-    'find': HaLUrl('api.opus_opus_list_resource', absolute=True, required=False, templated=True, path_variables=['id']),
-    'person': HaLUrl('api.person_person_resource', absolute=True, required=False, data={'id': 'composer.id'}),
-    'instrumentation': HaLUrl('api.instrumentation_instrumentation_resource', absolute=True, required=False, data={'id': 'instrumentation.id'}),
+    'self': HaLUrl(UrlData('api.opus_opus_resource', absolute=True, url_data={'id': 'id'}),
+                   required=False),
+    'find': HaLUrl(UrlData('api.opus_opus_list_resource', absolute=True,
+                           templated=True, path_variables=['id']), required=False),
+    'person': HaLUrl(UrlData('api.person_person_resource', absolute=True,
+                             url_data={'id': 'composer.id'}), required=False),
+    'instrumentation': HaLUrl(UrlData('api.instrumentation_instrumentation_resource',
+                                      absolute=True, url_data={'id': 'instrumentation.id'}),
+                              required=False),
 })
 
 opus_model = api.model('Opus', {

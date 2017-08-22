@@ -2,7 +2,7 @@ from collections import OrderedDict
 from flask_restplus import marshal
 from flask_restplus.fields import Raw, Nested, StringMixin, MarshallingError, get_value, urlparse, urlunparse
 from flask import url_for, request
-from typing import Dict
+from typing import Dict, List, Union
 
 
 class NestedFields(Nested):
@@ -60,9 +60,46 @@ class EmbeddedFields(Raw):
                 props[name] = {'type': 'array', 'items': {'$ref': ref}}
         schema['properties'] = props
 
-        print(schema)
-
         return schema
+
+
+class UrlData():
+
+    def __init__(self, endpoint: str, absolute=False, scheme=None, url: str=None,
+                 title: str=None, templated: bool=False, url_data: dict={},
+                 path_variables: list=[]):
+        self.endpoint = endpoint
+        self.absolute = absolute
+        self.scheme = scheme
+        self._url = url
+        self.title = title
+        self.templated = bool(templated)
+        self.url_data = url_data
+        self.path_variables = ''
+        if path_variables:
+            self.path_variables = '/'.join('{{?{}}}'.format(var) for var in path_variables)
+
+    def url(self, obj):
+        if self._url:
+            return self._url
+        url_data = {}
+        for key in self.url_data:
+            value = get_value(self.url_data[key], obj)
+            if value is None:
+                return None
+            url_data[key] = value
+        endpoint = self.endpoint if self.endpoint is not None else request.endpoint
+        o = urlparse(url_for(endpoint, _external=self.absolute, **url_data))
+        path = ''
+        if o.path.endswith('/'):
+            path = o.path + self.path_variables
+        else:
+            path = o.path + '/' + self.path_variables
+        if self.absolute:
+            scheme = self.scheme if self.scheme is not None else o.scheme
+            return urlunparse((scheme, o.netloc, path, "", "", ""))
+        else:
+            return urlunparse(("", "", path, "", "", ""))
 
 
 class HaLUrl(StringMixin, Raw):
@@ -75,43 +112,29 @@ class HaLUrl(StringMixin, Raw):
     '''
     __schema_type__ = 'link'
 
-    def __init__(self, endpoint=None, absolute=False, scheme=None, title: str=None,
-                 templated: bool=False, data: dict={}, path_variables: list=[], **kwargs):
+    def __init__(self, url_data: Union[UrlData, List[UrlData]], **kwargs):
         super().__init__(readonly=True, **kwargs)
-        self.endpoint = endpoint
-        self.absolute = absolute
-        self.scheme = scheme
-        self.title = title
-        self.templated = bool(templated)
-        self.data = data
-        self.path_variables = ''
-        if path_variables:
-            self.path_variables = '/'.join('{{?{}}}'.format(var) for var in path_variables)
+        self.url_data = url_data
+        self.is_list = isinstance(url_data, list)
 
     def output(self, key, obj):
+        output
+        if self.is_list:
+            output = []
+            for data in UrlData:
+                output.append(self.generate_link(data, obj))
+        else:
+            output = self.generate_link(self.url_data, obj)
+
+        return output
+
+    def generate_link(self, url_data: UrlData, obj):
         link = OrderedDict()
-        link['templated'] = self.templated
-        if self.title:
-            link['title'] = str(self.title)
+        link['templated'] = url_data.templated
+        if url_data.title:
+            link['title'] = str(url_data.title)
         try:
-            data = {}
-            for key in self.data:
-                value = get_value(self.data[key], obj)
-                if value is None:
-                    return None
-                data[key] = value
-            endpoint = self.endpoint if self.endpoint is not None else request.endpoint
-            o = urlparse(url_for(endpoint, _external=self.absolute, **data))
-            path = ''
-            if o.path.endswith('/'):
-                path = o.path + self.path_variables
-            else:
-                path = o.path + '/' + self.path_variables
-            if self.absolute:
-                scheme = self.scheme if self.scheme is not None else o.scheme
-                link['href'] = urlunparse((scheme, o.netloc, path, "", "", ""))
-            else:
-                link['href'] = urlunparse(("", "", path, "", "", ""))
+            link['href'] = url_data.url(obj)
         except TypeError as te:
             raise MarshallingError(te)
         return link
@@ -119,12 +142,19 @@ class HaLUrl(StringMixin, Raw):
     def schema(self):
         schema = super().schema()
 
-        schema['type'] = 'object'
-        schema['required'] = ['href']
+        link_schema = schema
+
+        if self.is_list:
+            link_schema = {}
+            schema['type'] = 'array'
+            schema['items'] = link_schema
+
+        link_schema['type'] = 'object'
+        link_schema['required'] = ['href']
         props = OrderedDict()
         props['href'] = {'type': 'string', 'readOnly': True, 'example': 'http://www.example.com/api'}
         props['templated'] = {'type': 'boolean', 'readOnly': True}
         props['title'] = {'type': 'string', 'readOnly': True}
-        schema['properties'] = props
+        link_schema['properties'] = props
 
         return schema

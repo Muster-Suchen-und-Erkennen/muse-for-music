@@ -16,7 +16,7 @@ return marshal(test, tree_model), 200
 from flask_restplus import fields, marshal
 from . import ns
 
-from ...hal_field import HaLUrl, NestedFields, EmbeddedFields, NestedModel
+from ...hal_field import HaLUrl, NestedFields, EmbeddedFields, NestedModel, UrlData
 
 
 # Two tree models because of bugs in flask restplus:
@@ -62,7 +62,6 @@ list_item_model = ns.model('ListItemModel', {
 })
 
 
-
 class TaxonomyItems(fields.Raw):
 
     def format(self, items):
@@ -73,11 +72,26 @@ class TaxonomyItems(fields.Raw):
         else:
             return marshal(items, tree_model)
 
+    def schema(self):
+        # does not work with swagger api!
+        schema = {}
+        listRef = '#/definitions/{0}'.format(list_item_model.name)
+        treeRef = '#/definitions/{0}'.format(tree_model.name)
+        schema['oneOf'] = [
+            {'type': 'array', 'items': {'$ref': listRef}},
+            {'$ref': treeRef},
+        ]
+
+        return schema
+
 
 # models for taxonomies
 taxonomy_links = ns.model('TaxonomyLinks', {
-    'self': HaLUrl('api.taxonomies_taxonomy_resource', absolute=True, required=False, data={'taxonomy': '__name__'}),
-    'collection': HaLUrl('api.taxonomies_taxonomy_list_resource', absolute=True, required=False),
+    'self': HaLUrl(UrlData('api.taxonomies_taxonomy_resource', absolute=True,
+                           url_data={'taxonomy': '__name__'}),
+                   required=False,),
+    'collection': HaLUrl(UrlData('api.taxonomies_taxonomy_list_resource', absolute=True),
+                         required=False),
 })
 
 taxonomy_model = ns.model('TaxonomyModel', {
@@ -91,9 +105,10 @@ taxonomy_model = ns.model('TaxonomyModel', {
 
 # models for list of taxonomies:
 taxonomy_list_links = ns.model('TaxonomyListLinks', {
-    'self': HaLUrl('api.taxonomies_taxonomy_list_resource', absolute=True, required=False),
-    'taxonomy': HaLUrl('api.taxonomies_taxonomy_list_resource', absolute=True, required=False,
-                       templated=True, path_variables=['taxonomy']),
+    'self': HaLUrl(UrlData('api.taxonomies_taxonomy_list_resource', absolute=True), required=False),
+    'taxonomy': HaLUrl(UrlData('api.taxonomies_taxonomy_list_resource', absolute=True,
+                               templated=True, path_variables=['taxonomy']),
+                       required=False),
 })
 
 taxonomy_list_resource = ns.model('TaxonomyList', {
