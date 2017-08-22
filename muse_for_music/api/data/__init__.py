@@ -2,6 +2,8 @@ from flask_restplus import fields, Resource
 
 from .. import api
 
+from .models import data_model
+
 ns = api.namespace('data', description='All data objects.')
 
 from . import people
@@ -10,19 +12,9 @@ from . import instrumentation
 
 
 @ns.route('/')
-class DataResources(Resource):
+class DataResource(Resource):
 
-    #@ns.marshal_list_with(api_resource)
+    @ns.marshal_list_with(data_model)
     def get(self):
-        data_endpoints = [
-            {
-                'name': 'people',
-                'description': 'test'
-            },
-            {
-                'name': 'opus',
-                'description': 'test'
-            }
-        ]
-        return data_endpoints
+        return {}
 

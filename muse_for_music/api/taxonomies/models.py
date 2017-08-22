@@ -15,6 +15,7 @@ return marshal(test, tree_model), 200
 
 from flask_restplus import fields, marshal
 from . import ns
+from ..models import with_curies
 
 from ...hal_field import HaLUrl, NestedFields, EmbeddedFields, NestedModel, UrlData
 
@@ -104,11 +105,11 @@ taxonomy_model = ns.model('TaxonomyModel', {
 
 
 # models for list of taxonomies:
-taxonomy_list_links = ns.model('TaxonomyListLinks', {
+taxonomy_list_links = ns.inherit('TaxonomyListLinks', with_curies, {
     'self': HaLUrl(UrlData('api.taxonomies_taxonomy_list_resource', absolute=True), required=False),
-    'taxonomy': HaLUrl(UrlData('api.taxonomies_taxonomy_list_resource', absolute=True,
-                               templated=True, path_variables=['taxonomy']),
-                       required=False),
+    'rel:taxonomy': HaLUrl(UrlData('api.taxonomies_taxonomy_list_resource', absolute=True,
+                                   templated=True, path_variables=['taxonomy']),
+                           required=False),
 })
 
 taxonomy_list_resource = ns.model('TaxonomyList', {

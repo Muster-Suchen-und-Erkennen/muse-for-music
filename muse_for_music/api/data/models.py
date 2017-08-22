@@ -6,8 +6,21 @@ Models for data objects.
 from flask_restplus import fields
 from ...hal_field import HaLUrl, NestedFields, EmbeddedFields, NestedModel, UrlData
 from . import api
+from ..models import with_curies
 
 from enum import Enum
+
+
+data_links = api.inherit('DataLinks', with_curies, {
+    'self': HaLUrl(UrlData('api.data_data_resource', absolute=True)),
+    'rel:person': HaLUrl(UrlData('api.person_person_list_resource', absolute=True)),
+    'rel:opus': HaLUrl(UrlData('api.opus_opus_list_resource', absolute=True)),
+    'rel:instrumentation': HaLUrl(UrlData('api.instrumentation_instrumentation_list_resource', absolute=True)),
+})
+
+data_model = api.model('DataModel', {
+    '_links': NestedFields(data_links),
+})
 
 
 class GenderField(fields.Raw, fields.StringMixin):
@@ -61,14 +74,14 @@ instrumentation_model = api.model('Instrumentation', {
     'instruments': fields.List(fields.String(), required=True),
 })
 
-opus_links = api.model('OpusLinks', {
+opus_links = api.inherit('OpusLinks', with_curies, {
     'self': HaLUrl(UrlData('api.opus_opus_resource', absolute=True, url_data={'id': 'id'}),
                    required=False),
     'find': HaLUrl(UrlData('api.opus_opus_list_resource', absolute=True,
                            templated=True, path_variables=['id']), required=False),
-    'person': HaLUrl(UrlData('api.person_person_resource', absolute=True,
+    'rel:person': HaLUrl(UrlData('api.person_person_resource', absolute=True,
                              url_data={'id': 'composer.id'}), required=False),
-    'instrumentation': HaLUrl(UrlData('api.instrumentation_instrumentation_resource',
+    'rel:instrumentation': HaLUrl(UrlData('api.instrumentation_instrumentation_resource',
                                       absolute=True, url_data={'id': 'instrumentation.id'}),
                               required=False),
 })

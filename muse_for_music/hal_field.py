@@ -66,18 +66,22 @@ class EmbeddedFields(Raw):
 class UrlData():
 
     def __init__(self, endpoint: str, absolute=False, scheme=None, url: str=None,
-                 title: str=None, templated: bool=False, url_data: dict={},
-                 path_variables: list=[]):
+                 title: str=None, name: str=None, templated: bool=False, url_data: dict={},
+                 path_variables: list=[], hashtag: str=None):
         self.endpoint = endpoint
         self.absolute = absolute
         self.scheme = scheme
         self._url = url
         self.title = title
+        self.name = name
         self.templated = bool(templated)
         self.url_data = url_data
         self.path_variables = ''
         if path_variables:
-            self.path_variables = '/'.join('{{?{}}}'.format(var) for var in path_variables)
+            self.path_variables = '/'.join('{{{}}}'.format(var) for var in path_variables)
+        self.hashtag = ''
+        if hashtag is not None:
+            self.hashtag = hashtag
 
     def url(self, obj):
         if self._url:
@@ -97,9 +101,9 @@ class UrlData():
             path = o.path + '/' + self.path_variables
         if self.absolute:
             scheme = self.scheme if self.scheme is not None else o.scheme
-            return urlunparse((scheme, o.netloc, path, "", "", ""))
+            return urlunparse((scheme, o.netloc, path, "", "", self.hashtag))
         else:
-            return urlunparse(("", "", path, "", "", ""))
+            return urlunparse(("", "", path, "", "", self.hashtag))
 
 
 class HaLUrl(StringMixin, Raw):
@@ -118,7 +122,7 @@ class HaLUrl(StringMixin, Raw):
         self.is_list = isinstance(url_data, list)
 
     def output(self, key, obj):
-        output
+        output = {}
         if self.is_list:
             output = []
             for data in UrlData:
@@ -133,6 +137,8 @@ class HaLUrl(StringMixin, Raw):
         link['templated'] = url_data.templated
         if url_data.title:
             link['title'] = str(url_data.title)
+        if url_data.name:
+            link['name'] = str(url_data.name)
         try:
             link['href'] = url_data.url(obj)
         except TypeError as te:
@@ -155,6 +161,7 @@ class HaLUrl(StringMixin, Raw):
         props['href'] = {'type': 'string', 'readOnly': True, 'example': 'http://www.example.com/api'}
         props['templated'] = {'type': 'boolean', 'readOnly': True}
         props['title'] = {'type': 'string', 'readOnly': True}
+        props['name'] = {'type': 'string', 'readOnly': True}
         link_schema['properties'] = props
 
         return schema

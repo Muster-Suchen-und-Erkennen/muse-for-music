@@ -4,7 +4,7 @@ from .. import app
 
 api_blueprint = Blueprint('api', __name__)
 
-api = Api(api_blueprint, version='0.1', title='MUSE4Music API', doc='/doc',
+api = Api(api_blueprint, version='0.1', title='MUSE4Music API', doc='/doc/',
           description='The reatful api for muse 4 music.')
 
 from . import root, taxonomies, data

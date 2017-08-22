@@ -67,7 +67,7 @@ auth_logger.addHandler(fh)
 
 user_api_blueprint = Blueprint('user_api', __name__)
 
-user_api = Api(user_api_blueprint, version='0.1', title='User API', doc='/doc',
+user_api = Api(user_api_blueprint, version='0.1', title='User API', doc='/doc/',
                authorizations=authorizations, security='jwt',
                description='API for Authentication and User Management.')
 

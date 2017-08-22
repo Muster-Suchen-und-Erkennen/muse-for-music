@@ -13,6 +13,13 @@ from ...models.data.instrumentation import Instrumentation
 ns = api.namespace('instrumentation', description='TODO.')
 
 
+@ns.route('/')
+class InstrumentationListResource(Resource):
+
+    @ns.marshal_list_with(instrumentation_model)
+    def get(self):
+        return Instrumentation.query.all()
+
 @ns.route('/<int:id>')
 class InstrumentationResource(Resource):
 
