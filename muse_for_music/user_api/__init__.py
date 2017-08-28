@@ -125,12 +125,7 @@ def log_unauthorized(message):
     auth_logger.debug('Unauthorized access: %s', message)
 
 
-from .authentication import ns as authentication_endpoint
-from .administration import ns as administration_endpoint
-
-
-user_api.add_namespace(authentication_endpoint)
-user_api.add_namespace(administration_endpoint)
+from . import authentication, administration
 
 
 app.register_blueprint(user_api_blueprint, url_prefix='/users')
