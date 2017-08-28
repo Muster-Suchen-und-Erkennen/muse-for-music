@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 
 from . import api
 
-from .models import opus_post, opus_push, opus_get
+from .models import opus_post, opus_put, opus_get
 
 from ... import db
 from ...models.data.opus import Opus
@@ -47,7 +47,7 @@ class OpusResource(Resource):
             abort(404, 'Requested opus not found!')
         return opus
 
-    @ns.doc(model=opus_get, body=opus_push)
+    @ns.doc(model=opus_get, body=opus_put)
     @ns.response(404, 'Opus not found.')
     def put(self, id):
         opus = Opus.query.filter_by(id=id).first()

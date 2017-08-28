@@ -58,13 +58,13 @@ person_post = api.model('PersonPOST', {
     'gender': GenderField(required=True, example='male', enum=['male', 'female', 'other'])
 })
 
-person_push = api.inherit('PersonPUSH', person_post, {
+person_put = api.inherit('PersonPUSH', person_post, {
     'canonical_name': fields.String(required=False, example='admin'),
     'birth_date': fields.Date(required=False, example='1921-2-4'),
     'death_date': fields.Date(required=False, example='1921-3-23'),
 })
 
-person_get = api.inherit('PersonGET', person_push, {
+person_get = api.inherit('PersonGET', person_put, {
     'id': fields.Integer(required=False, readonly=True),
     '_links': NestedFields(person_links),
 })
@@ -97,7 +97,7 @@ opus_post = api.model('OpusPOST', {
     'name': fields.String(required=True, example='duett in g moll'),
 })
 
-opus_push = api.inherit('OpusPUSH', opus_post, {
+opus_put = api.inherit('OpusPUSH', opus_post, {
     'original_name': fields.String(required=False),
     'opus_name': fields.String(required=False),
     'composer': fields.Integer(attribute='composer.id'),
@@ -114,7 +114,7 @@ opus_push = api.inherit('OpusPUSH', opus_post, {
     'genre': fields.String(required=False),
 })
 
-opus_get = api.inherit('OpusGET', opus_push, {
+opus_get = api.inherit('OpusGET', opus_put, {
     'id': fields.Integer(required=False, readonly=True),
     '_links': NestedFields(opus_links),
     '_embedded': EmbeddedFields({

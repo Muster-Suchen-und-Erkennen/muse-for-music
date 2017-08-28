@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from .. import api
 
 
-from .models import person_post, person_push, person_get
+from .models import person_post, person_put, person_get
 
 from ... import db
 from ...models.data.people import Person
@@ -47,7 +47,7 @@ class PersonResource(Resource):
             abort(404, 'Requested person not found!')
         return person
 
-    @ns.doc(model=person_get, body=person_push, vaidate=True)
+    @ns.doc(model=person_get, body=person_put, vaidate=True)
     @ns.response(404, 'Person not found.')
     def put(self, id):
         person = Person.query.filter_by(id=id).first()
@@ -55,7 +55,7 @@ class PersonResource(Resource):
             abort(404, 'Requested person not found!')
         new_values = request.get_json()
 
-        attrs = ('name', 'gender', 'canonical_name') #, 'birth_date', 'death_date'
+attrs = ('name', 'gender', 'canonical_name') #, 'birth_date', 'death_date'
         for attribute in attrs:
             if attribute in new_values:
                 setattr(person, attribute, new_values[attribute])
