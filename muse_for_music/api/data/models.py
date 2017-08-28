@@ -53,14 +53,20 @@ person_links = api.model('PersonLinks', {
                            path_variables=['id']), required=False),
 })
 
-person_model = api.model('Person', {
+person_post = api.model('PersonPOST', {
+    'name': fields.String(required=True, example='admin'),
+    'gender': GenderField(required=True, example='male', enum=['male', 'female', 'other'])
+})
+
+person_push = api.inherit('PersonPUSH', person_post, {
+    'canonical_name': fields.String(required=False, example='admin'),
+    'birth_date': fields.Date(required=False, example='1921-2-4'),
+    'death_date': fields.Date(required=False, example='1921-3-23'),
+})
+
+person_get = api.inherit('PersonGET', person_push, {
     'id': fields.Integer(required=False, readonly=True),
     '_links': NestedFields(person_links),
-    'name': fields.String(required=True, example='admin'),
-    'canonical_name': fields.String(required=False, example='admin'),
-    'birth_date': fields.Date(required=True, example='1921-2-4'),
-    'death_date': fields.Date(required=False, example='1921-3-23'),
-    'gender': GenderField(required=True, example='male', enum=['male', 'female', 'other'])
 })
 
 instrumentation_links = api.model('InstrumentationLinks', {
@@ -80,20 +86,18 @@ opus_links = api.inherit('OpusLinks', with_curies, {
     'find': HaLUrl(UrlData('api.opus_opus_list_resource', absolute=True,
                            templated=True, path_variables=['id']), required=False),
     'rel:person': HaLUrl(UrlData('api.person_person_resource', absolute=True,
-                             url_data={'id': 'composer.id'}), required=False),
+                                 url_data={'id': 'composer.id'}), required=False),
     'rel:instrumentation': HaLUrl(UrlData('api.instrumentation_instrumentation_resource',
-                                      absolute=True, url_data={'id': 'instrumentation.id'}),
-                              required=False),
+                                          absolute=True, url_data={'id': 'instrumentation.id'}),
+                                  required=False),
 })
 
-opus_model = api.model('Opus', {
-    'id': fields.Integer(required=False, readonly=True),
-    '_links': NestedFields(opus_links),
-    '_embedded': EmbeddedFields({
-        'instrumentation': NestedModel(instrumentation_model),
-        'person': NestedModel(person_model, attribute='composer'),
-    }, required=True),
+
+opus_post = api.model('OpusPOST', {
     'name': fields.String(required=True, example='duett in g moll'),
+})
+
+opus_push = api.inherit('OpusPUSH', opus_post, {
     'original_name': fields.String(required=False),
     'opus_name': fields.String(required=False),
     'composer': fields.Integer(attribute='composer.id'),
@@ -108,4 +112,13 @@ opus_model = api.model('Opus', {
     'publisher': fields.String(required=False),
     'movements': fields.Integer(required=True, default=1),
     'genre': fields.String(required=False),
+})
+
+opus_get = api.inherit('OpusGET', opus_push, {
+    'id': fields.Integer(required=False, readonly=True),
+    '_links': NestedFields(opus_links),
+    '_embedded': EmbeddedFields({
+        'instrumentation': NestedModel(instrumentation_model),
+        'person': NestedModel(person_get, attribute='composer'),
+    }, required=True),
 })

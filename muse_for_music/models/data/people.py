@@ -15,11 +15,12 @@ class Person(db.Model):
     name = db.Column(db.String(255), unique=True, index=True)
     canonical_name = db.Column(db.String(255), index=True)
     gender = db.Column(db.Enum(GenderEnum))
-    birth_date = db.Column(db.Date(), nullable=False)
+    birth_date = db.Column(db.Date(), nullable=True)
     death_date = db.Column(db.Date(), nullable=True)
     nationality = db.Column(db.String(40), nullable=True)
 
-    def __init__(self, name: str, gender: Union[str, GenderEnum], birth_date: Union[int, str, date],
+    def __init__(self, name: str, gender: Union[str, GenderEnum],
+                 birth_date: Union[int, str, date]=None,
                  death_date: Union[int, str, date]=None, canonical_name: str=None,
                  nationality: str=None, **kwargs) -> None:
         self.name = name
