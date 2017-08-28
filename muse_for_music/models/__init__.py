@@ -19,6 +19,7 @@ DB_COMMAND_LOGGER.addHandler(handler)
 
 from . import taxonomies
 from . import data
+from .data.people import Person
 
 
 @app.cli.command('create_db')
@@ -57,8 +58,11 @@ def init_db_function():
     admin_role = UserRole(admin, RoleEnum.admin)
     db.session.add(admin)
     db.session.add(admin_role)
+
+    #add person unknown
+    unknown = Person('Unbekannt', 'other')
+    db.session.add(unknown)
     db.session.commit()
-    print(admin.roles)
     app.logger.info('Database populated.')
 
 
