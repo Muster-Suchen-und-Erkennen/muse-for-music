@@ -2,6 +2,7 @@ from ... import db
 
 from ..taxonomies.gattung import GattungNineteenthCentury
 from .instrumentation import Instrumentation
+from .people import Person
 
 
 class Opus(db.Model):
@@ -29,7 +30,8 @@ class Opus(db.Model):
     # TODO form
     genre = db.relationship('GattungNineteenthCentury', lazy='joined')
 
-    def __init__(self, name: str, movements:int =1, printed: bool=False, **kwargs) -> None:
+    def __init__(self, name: str, composer: any=None, movements:int =1,
+                 printed: bool=False, **kwargs) -> None:
         self.name = name
         self.printed = printed
         self.movements = movements
@@ -38,6 +40,16 @@ class Opus(db.Model):
                        'occasion', 'dedication', 'notes', 'first_printed_in',
                        'publisher'):
                 setattr(self, key, kwargs[key])
+
+        if composer:
+            composer_id = None
+            if isinstance(composer, int):
+                composer_id = composer
+            else:
+                composer_id = composer.get('id')
+            if composer_id is not None:
+                comp = Person.query.filter_by(id=id).first()  # type: Person
+                self.composer = comp
 
         self.instrumentation = Instrumentation()
 
