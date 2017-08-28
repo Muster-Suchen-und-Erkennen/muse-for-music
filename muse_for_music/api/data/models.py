@@ -9,6 +9,12 @@ from . import api
 from ..models import with_curies
 
 from enum import Enum
+from datetime import datetime, date
+
+
+def parse_date(date_str: str) -> date:
+    parsed_date = datetime.strptime(date_str, '%Y-%m-%d')
+    return parsed_date.date()
 
 
 data_links = api.inherit('DataLinks', with_curies, {

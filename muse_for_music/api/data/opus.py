@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 
 from . import api
 
-from .models import opus_post, opus_put, opus_get
+from .models import opus_post, opus_put, opus_get, parse_date
 
 from ... import db
 from ...models.data.opus import Opus
@@ -55,8 +55,8 @@ class OpusResource(Resource):
             abort(404, 'Requested opus not found!')
         new_values = request.get_json()
 
-        attrs = ('name', 'publisher', 'dedication', 'printed', 'composition_year',
-                 'occasion', 'original_name', 'movements', 'opus_name', 'first_printed_in',
+        attrs = ('name', 'publisher', 'dedication', 'printed',
+                 'occasion', 'original_name', 'movements', 'opus_name',
                  'notes')
         # "composition_place": "TODO",
         # "genre": "string",
@@ -66,6 +66,12 @@ class OpusResource(Resource):
             if attribute in new_values:
                 setattr(opus, attribute, new_values[attribute])
                 print(attribute, new_values[attribute])
+
+        for attribute in ('composition_year', 'first_printed_in'):
+            if attribute in new_values:
+                value = parse_date(new_values[attribute])
+                setattr(opus, attribute, value)
+
         db.session.add(opus)
         db.session.commit()
         return marshal(opus, opus_get)
