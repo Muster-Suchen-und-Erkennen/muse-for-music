@@ -106,9 +106,10 @@ opus_post = api.model('OpusPOST', {
 opus_put = api.inherit('OpusPUSH', opus_post, {
     'original_name': fields.String(required=False),
     'opus_name': fields.String(required=False),
-    'composer': fields.Integer(attribute='composer.id'),
+    'composer': fields.Nested(person_put),
     'composition_year': fields.Integer(required=False),
     'composition_place': fields.String(required=False, example='TODO'),
+    'instrumentation': fields.Nested(instrumentation_model),
     'occasion': fields.String(required=False),
     'dedication': fields.String(required=False),
     'notes': fields.String(required=False),
@@ -123,8 +124,4 @@ opus_put = api.inherit('OpusPUSH', opus_post, {
 opus_get = api.inherit('OpusGET', opus_put, {
     'id': fields.Integer(required=False, readonly=True),
     '_links': NestedFields(opus_links),
-    '_embedded': EmbeddedFields({
-        'instrumentation': NestedModel(instrumentation_model),
-        'person': NestedModel(person_get, attribute='composer'),
-    }, required=True),
 })

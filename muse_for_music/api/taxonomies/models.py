@@ -126,8 +126,5 @@ taxonomy_list_links = ns.inherit('TaxonomyListLinks', with_curies, {
 
 taxonomy_list_resource = ns.model('TaxonomyList', {
     '_links': NestedFields(taxonomy_list_links),
-    '_embedded': EmbeddedFields({
-        'taxonomy': NestedModel(taxonomy_model, 'taxonomies', True),
-    }),
+    'taxonomies': fields.Nested(taxonomy_model, 'taxonomies', as_list=True),
 })
-
