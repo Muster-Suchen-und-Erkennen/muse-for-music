@@ -42,3 +42,8 @@ class PersonResource(Resource):
     @ns.marshal_with(person_get)
     def get(self, id):
         return Person.query.filter_by(id=id).first()
+
+    def delete(self, id):
+        person = Person.query.filter_by(id=id).first()
+        db.session.delete(person)
+        db.session.commit()

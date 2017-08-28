@@ -43,3 +43,8 @@ class OpusResource(Resource):
     @ns.marshal_with(opus_get)
     def get(self, id):
         return Opus.query.filter_by(id=id).first()
+
+    def delete(self, id):
+        opus = Opus.query.filter_by(id=id).first()
+        db.session.delete(opus)
+        db.session.commit()
