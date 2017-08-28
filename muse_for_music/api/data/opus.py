@@ -1,5 +1,5 @@
 from flask import jsonify, url_for, request
-from flask_restplus import Resource, marshal
+from flask_restplus import Resource, marshal, abort
 from sqlalchemy.exc import IntegrityError
 
 
@@ -23,6 +23,7 @@ class OpusListResource(Resource):
         return Opus.query.all()
 
     @ns.doc(model=opus_get, body=opus_post)
+    @ns.response(409, 'Name is not unique.')
     def post(self):
         new_opus = Opus(**request.get_json())
         try:
@@ -32,8 +33,8 @@ class OpusListResource(Resource):
         except IntegrityError as err:
             message = str(err)
             if 'UNIQUE constraint failed' in message:
-                return {'error': 'Name not unique!'}, 501
-            return {'error': str(err)}, 501
+                abort(409, 'Name is not unique!')
+            abort(500, str(err))
 
 
 @ns.route('/<int:id>')
