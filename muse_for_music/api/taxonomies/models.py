@@ -89,7 +89,7 @@ class TaxonomyItems(fields.Raw):
 # models for taxonomies
 taxonomy_links = ns.model('TaxonomyLinks', {
     'self': HaLUrl(UrlData('api.taxonomies_taxonomy_resource', absolute=True,
-                           url_data={'taxonomy': '__name__'}),
+                           url_data={'taxonomy': '__name__', 'taxonomy_type': 'taxonomy_type'}),
                    required=False,),
     'collection': HaLUrl(UrlData('api.taxonomies_taxonomy_list_resource', absolute=True),
                          required=False),
@@ -103,6 +103,18 @@ taxonomy_model = ns.model('TaxonomyModel', {
     'items': TaxonomyItems(required=False),
 }, mask='{name,_links,taxonomy_type,select_only_leafs}')
 
+
+list_taxonomy_model = ns.inherit('ListTaxonomy', taxonomy_model, {
+    'items': fields.List(fields.Nested(list_item_model)),
+})
+
+tree_taxonomy_model = ns.inherit('TreeTaxonomyModel', taxonomy_model, {
+    'items': fields.Nested(tree_model),
+})
+
+tree_taxonomy_model_json = ns.inherit('TreeTaxonomyModelJSON', taxonomy_model, {
+    'items': fields.Nested(tree_model_json),
+})
 
 # models for list of taxonomies:
 taxonomy_list_links = ns.inherit('TaxonomyListLinks', with_curies, {
