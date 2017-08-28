@@ -40,10 +40,34 @@ class PersonListResource(Resource):
 class PersonResource(Resource):
 
     @ns.marshal_with(person_get)
+    @ns.response(404, 'Person not found.')
     def get(self, id):
-        return Person.query.filter_by(id=id).first()
+        person = Person.query.filter_by(id=id).first()
+        if person is None:
+            abort(404, 'Requested person not found!')
+        return person
 
+    @ns.doc(model=person_get, body=person_push, vaidate=True)
+    @ns.response(404, 'Person not found.')
+    def put(self, id):
+        person = Person.query.filter_by(id=id).first()
+        if person is None:
+            abort(404, 'Requested person not found!')
+        new_values = request.get_json()
+
+        attrs = ('name', 'gender', 'canonical_name') #, 'birth_date', 'death_date'
+        for attribute in attrs:
+            if attribute in new_values:
+                setattr(person, attribute, new_values[attribute])
+                print(attribute, new_values[attribute])
+        db.session.add(person)
+        db.session.commit()
+        return marshal(person, person_get)
+
+    @ns.response(404, 'Person not found.')
     def delete(self, id):
         person = Person.query.filter_by(id=id).first()
+        if person is None:
+            abort(404, 'Requested person not found!')
         db.session.delete(person)
         db.session.commit()

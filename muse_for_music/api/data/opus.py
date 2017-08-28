@@ -19,7 +19,6 @@ class OpusListResource(Resource):
 
     @ns.marshal_list_with(opus_get)
     def get(self):
-        print(Opus.query.first())
         return Opus.query.all()
 
     @ns.doc(model=opus_get, body=opus_post)
@@ -41,10 +40,40 @@ class OpusListResource(Resource):
 class OpusResource(Resource):
 
     @ns.marshal_with(opus_get)
+    @ns.response(404, 'Opus not found.')
     def get(self, id):
-        return Opus.query.filter_by(id=id).first()
+        opus = Opus.query.filter_by(id=id).first()
+        if opus is None:
+            abort(404, 'Requested opus not found!')
+        return opus
 
+    @ns.doc(model=opus_get, body=opus_push)
+    @ns.response(404, 'Opus not found.')
+    def put(self, id):
+        opus = Opus.query.filter_by(id=id).first()
+        if opus is None:
+            abort(404, 'Requested opus not found!')
+        new_values = request.get_json()
+
+        attrs = ('name', 'publisher', 'dedication', 'printed', 'composition_year',
+                 'occasion', 'original_name', 'movements', 'opus_name', 'first_printed_in',
+                 'notes')
+        # "composition_place": "TODO",
+        # "genre": "string",
+        # "composer": 0,
+        # "first_printed_at": "TODO",
+        for attribute in attrs:
+            if attribute in new_values:
+                setattr(opus, attribute, new_values[attribute])
+                print(attribute, new_values[attribute])
+        db.session.add(opus)
+        db.session.commit()
+        return marshal(opus, opus_get)
+
+    @ns.response(404, 'Opus not found.')
     def delete(self, id):
         opus = Opus.query.filter_by(id=id).first()
+        if opus is None:
+            abort(404, 'Requested opus not found!')
         db.session.delete(opus)
         db.session.commit()
