@@ -19,7 +19,6 @@
         <thead>
             <tr>
                 <th>URL</th>
-                <th>Arguments</th>
                 <th>Methods</th>
                 <th>Endpoint</th>
             </tr>
@@ -28,7 +27,6 @@
             {% for route in routes: %}
             <tr>
                 <td>{{route.url}}</td>
-                <td>{{route.args}}</td>
                 <td>{{route.methods}}</td>
                 <td>{{route.endpoint}}</td>
             </tr>
