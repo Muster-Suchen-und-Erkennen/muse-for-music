@@ -7,6 +7,7 @@ class Dissonanzen(db.Model, ListTaxonomy):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
+    description = db.Column(db.Text(), nullable=True)
 
 
 class Dissonanzgrad(db.Model, ListTaxonomy):
@@ -14,3 +15,4 @@ class Dissonanzgrad(db.Model, ListTaxonomy):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
+    description = db.Column(db.Text(), nullable=True)

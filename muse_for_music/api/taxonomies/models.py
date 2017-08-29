@@ -5,11 +5,11 @@ Two tree models because of bugs in flask restplus:
 https://github.com/noirbizarre/flask-restplus/issues/280
 https://github.com/noirbizarre/flask-restplus/issues/293
 
-Use tree_model_json for documentation:
-@api.response(200, 'Success', tree_model_json)
+Use taxonomy_tree_item_get_json for documentation:
+@api.response(200, 'Success', taxonomy_tree_item_get_json)
 
-Use tree_model for marshalling:
-return marshal(test, tree_model), 200
+Use taxonomy_tree_item_get for marshalling:
+return marshal(test, taxonomy_tree_item_get), 200
 """
 
 
@@ -20,46 +20,60 @@ from ..models import with_curies
 from ...hal_field import HaLUrl, NestedFields, EmbeddedFields, NestedModel, UrlData
 
 
+taxonomy_item_links = ns.model('TaxonomyItemLinks', {
+    'self': HaLUrl(UrlData('api.taxonomies_taxonomy_item_resource', absolute=True,
+                           url_data={'taxonomy': '__class__.__name__',
+                                     'taxonomy_type': 'taxonomy_type',
+                                     'item_id': 'id'}),
+                   required=False),
+    'taxonomy': HaLUrl(UrlData('api.taxonomies_taxonomy_resource', absolute=True,
+                               url_data={'taxonomy': '__class__.__name__',
+                                         'taxonomy_type': 'taxonomy_type'}),
+                       required=False,),
+})
+
+
+taxonomy_item_post = ns.model('TaxonomyItemPOST', {
+    'name': fields.String(required=True),
+    'description': fields.String(required=False),
+})
+
+
+taxonomy_item_get = ns.inherit('TaxonomyItemGET', taxonomy_item_post, {
+    'id': fields.Integer(readonly=True),
+    '_links': NestedFields(taxonomy_item_links),
+})
+
+# Use taxonomy_tree_item_get for marshalling:
+# return marshal(test, taxonomy_tree_item_get), 200
+taxonomy_tree_item_get = ns.inherit('TaxonomyTreeItemGET', taxonomy_item_get, {})
+
+taxonomy_tree_item_get['children'] = fields.List(fields.Nested(taxonomy_tree_item_get), default=[])
+
+
 # Two tree models because of bugs in flask restplus:
 # https://github.com/noirbizarre/flask-restplus/issues/280
 # https://github.com/noirbizarre/flask-restplus/issues/293
 
-# Use tree_model_json for documentation:
-# @api.response(200, 'Success', tree_model_json)
+# Use taxonomy_tree_item_get_json for documentation:
+# @api.response(200, 'Success', taxonomy_tree_item_get_json)
 
-tree_model_json = ns.schema_model('TreeModelJSON', {
-    'required': ['name'],
-    'title': 'TreeModelJSON',
-    'type': 'object',
-    'properties': {
-        'name': {
-            'type': 'string'
+taxonomy_tree_item_get_json = ns.schema_model('TaxonomyTreeItemGETJSON', {
+    'allOf': [
+        {
+            '$ref': '#/definitions/{0}'.format(taxonomy_item_get.name),
         },
-        'children': {
-            'type': 'array',
-            'items': {
-                '$ref': '#/definitions/TreeModelJSON'
+        {
+            'properties': {
+                'children': {
+                    'type': 'array',
+                    'items': {
+                        '$ref': '#/definitions/TaxonomyTreeItemGETJSON'
+                    }
+                }
             }
         }
-    }
-})
-
-
-# Use tree_model for marshalling:
-# return marshal(test, tree_model), 200
-
-tree_model = ns.model('TreeModel', {
-    'id': fields.String(),
-    'name': fields.String(),
-})
-
-tree_model['children'] = fields.List(fields.Nested(tree_model), default=[])
-
-
-# model for list items:
-list_item_model = ns.model('ListItemModel', {
-    'id': fields.String(),
-    'name': fields.String(),
+    ]
 })
 
 
@@ -69,15 +83,15 @@ class TaxonomyItems(fields.Raw):
         if callable(items):
             items = items()
         if isinstance(items, list):
-            return marshal(items, list_item_model)
+            return marshal(items, taxonomy_item_get)
         else:
-            return marshal(items, tree_model)
+            return marshal(items, taxonomy_tree_item_get)
 
     def schema(self):
         # does not work with swagger api!
         schema = {}
-        listRef = '#/definitions/{0}'.format(list_item_model.name)
-        treeRef = '#/definitions/{0}'.format(tree_model.name)
+        listRef = '#/definitions/{0}'.format(taxonomy_item_get.name)
+        treeRef = '#/definitions/{0}'.format(taxonomy_tree_item_get.name)
         schema['oneOf'] = [
             {'type': 'array', 'items': {'$ref': listRef}},
             {'$ref': treeRef},
@@ -105,15 +119,15 @@ taxonomy_model = ns.model('TaxonomyModel', {
 
 
 list_taxonomy_model = ns.inherit('ListTaxonomy', taxonomy_model, {
-    'items': fields.List(fields.Nested(list_item_model)),
+    'items': fields.List(fields.Nested(taxonomy_item_get)),
 })
 
 tree_taxonomy_model = ns.inherit('TreeTaxonomyModel', taxonomy_model, {
-    'items': fields.Nested(tree_model),
+    'items': fields.Nested(taxonomy_tree_item_get),
 })
 
 tree_taxonomy_model_json = ns.inherit('TreeTaxonomyModelJSON', taxonomy_model, {
-    'items': fields.Nested(tree_model_json),
+    'items': fields.Nested(taxonomy_tree_item_get_json),
 })
 
 # models for list of taxonomies:

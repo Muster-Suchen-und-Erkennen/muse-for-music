@@ -2,12 +2,29 @@ from csv import DictReader
 from logging import Logger
 from ... import db
 
-from typing import Dict, List
+from typing import Dict, List, Sequence, Any
 
 
-class Taxonomy():
+class GetByID():
+
+    @classmethod
+    def get_by_id(cls, id: int):
+        return cls.query.filter_by(id=id).first()
+
+    @classmethod
+    def get_multiple_by_id(cls, ids: Sequence[int]) -> Dict[int, Any]:
+        result = cls.query.filter(cls.id.in_(ids))
+        return {obj.id: obj for obj in result}
+
+
+class Taxonomy(GetByID):
 
     taxonomy_type = None  # type: str
+
+    def __init__(self, name: str, description: None) -> None:
+        """Create new List Taxonomy object."""
+        self.name = name
+        self.description = description
 
     @classmethod
     def class_name(cls):
@@ -34,10 +51,6 @@ class ListTaxonomy(Taxonomy):
     """Base class for list taxonomies."""
 
     taxonomy_type = 'list'  # type: str
-
-    def __init__(self, name: str) -> None:
-        """Create new List Taxonomy object."""
-        self.name = name
 
     def __repr__(self):
         """Get repr of taxonomy."""
@@ -80,10 +93,10 @@ class TreeTaxonomy(Taxonomy):
 
     children = []  # type: List[TreeTaxonomy]
 
-    def __init__(self, name: str, parent: 'TreeTaxonomy'=None) -> None:
+    def __init__(self, name: str, description=None, parent: 'TreeTaxonomy'=None) -> None:
         """Create new TreeTaxonomy object."""
-        self.name = name
         self.parent = parent
+        super().__init__(name=name, description=description)
 
     def __repr__(self):
         """Get repr of taxonomy."""

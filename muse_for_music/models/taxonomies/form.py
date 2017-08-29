@@ -8,6 +8,7 @@ class FormaleFunktion(db.Model, TreeTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('formale_funktion.id', ondelete='CASCADE'))
     name = db.Column(db.String(120))
+    description = db.Column(db.Text(), nullable=True)
     children = db.relationship('FormaleFunktion',
                                backref=db.backref('parent',
                                                   remote_side=[id],
@@ -22,3 +23,4 @@ class Formschema(db.Model, ListTaxonomy):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
+    description = db.Column(db.Text(), nullable=True)
