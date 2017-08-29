@@ -2,17 +2,19 @@ from csv import DictReader
 from logging import Logger
 from ... import db
 
-from typing import Dict, List, Sequence, Any
+from typing import Dict, List, Sequence, Any, Type, TypeVar
+
+T = TypeVar('T', bound=db.Model)
 
 
 class GetByID():
 
     @classmethod
-    def get_by_id(cls, id: int):
+    def get_by_id(cls: Type[T], id: int) -> T:
         return cls.query.filter_by(id=id).first()
 
     @classmethod
-    def get_multiple_by_id(cls, ids: Sequence[int]) -> Dict[int, Any]:
+    def get_multiple_by_id(cls: Type[T], ids: Sequence[int]) -> Dict[int, T]:
         result = cls.query.filter(cls.id.in_(ids))
         return {obj.id: obj for obj in result}
 
@@ -57,7 +59,7 @@ class ListTaxonomy(Taxonomy):
         return '<{} "{}">'.format(type(self).__name__, self.name)
 
     @classmethod
-    def get_all(cls) -> List['ListTaxonomy']:
+    def get_all(cls: Type[T]) -> List[T]:
         """Get all elements of taxonomy."""
         return cls.query.all()
 
@@ -104,7 +106,7 @@ class TreeTaxonomy(Taxonomy):
                                                [child.__repr__() for child in self.children])
 
     @classmethod
-    def get_root(cls):
+    def get_root(cls: Type[T]) -> T:
         """Get root node of taxonomy."""
         return cls.query.filter_by(name='root').first()
 

@@ -15,7 +15,7 @@ from .models import taxonomy_list_resource, taxonomy_model, list_taxonomy_model,
                     taxonomy_tree_item_get_json, taxonomy_item_post
 
 
-taxonomies = get_taxonomies()  # type:Dict[str, T]
+taxonomies = get_taxonomies()  # type:Dict[str, Type[T]]
 
 
 @ns.route('/')
@@ -31,7 +31,7 @@ def get_taxonomy(taxonomy_type: str, taxonomy_name: str):
         taxonomy_name = taxonomy_name.upper()
         if taxonomy_name not in taxonomies:
             abort(404, 'The reqested Taxonomy could not be found.')
-        taxonomy = taxonomies[taxonomy_name]  # type: T
+        taxonomy = taxonomies[taxonomy_name]  # type: Type[T]
         if taxonomy_type != taxonomy.taxonomy_type:
             abort(400, 'The type of the requested taxonomy does not match the requested taxonomy type. (requested type: {}, taxonomy_type: {})'
                   .format(taxonomy_type, taxonomy.taxonomy_type))
@@ -97,7 +97,7 @@ def edit_taxonomy_item(item: T, new_values: Dict):
     db.session.commit()
 
 
-def delete_taxonomy_item(taxonomy: T, item_id: int):
+def delete_taxonomy_item(taxonomy: Type[T], item_id: int):
     item = get_taxonomy_item(taxonomy, item_id)
     db.session.delete(item)
     db.session.commit()

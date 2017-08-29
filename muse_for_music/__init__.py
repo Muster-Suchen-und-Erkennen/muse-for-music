@@ -10,12 +10,12 @@ from flask_webpack import Webpack
 from flask_cors import CORS, cross_origin
 
 
-webpack = Webpack()
+webpack = Webpack()  # type: Webpack
 
 
 # Setup Config
 
-app = Flask(__name__, instance_relative_config=True)
+app = Flask(__name__, instance_relative_config=True)  # type: Flask
 app.config['MODE'] = environ['MODE'].upper()
 if app.config['MODE'] == 'PRODUCTION':
     app.config.from_object('muse_for_music.config.ProductionConfig')
@@ -42,11 +42,11 @@ app.logger.info('Connecting to database %s.', app.config['SQLALCHEMY_DATABASE_UR
 
 
 # Setup DB and bcrypt
-db = SQLAlchemy(app)
-bcrypt = Bcrypt(app)
+db = SQLAlchemy(app)  # type: SQLAlchemy
+bcrypt = Bcrypt(app)  # type: Bcrypt
 
 # Setup JWT
-jwt = JWTManager(app)
+jwt = JWTManager(app)  # type: JWTManager
 
 # Setup Headers
 CORS(app)
