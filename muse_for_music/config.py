@@ -7,6 +7,7 @@ class Config(object):
     RESTPLUS_VALIDATE = True
     BCRYPT_HANDLE_LONG_PASSWORDS = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://:memory:'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     WEBPACK_MANIFEST_PATH = './build/manifest.json'
     LOG_FORMAT = '%(asctime)s [%(levelname)s] [%(name)-16s] %(message)s <%(module)s, \
                  %(funcName)s, %(lineno)s; %(pathname)s>'
