@@ -5,7 +5,7 @@ from ...models.taxonomies import get_taxonomies, T
 from .. import api
 from ... import app, db
 
-from typing import TypeVar, Dict
+from typing import TypeVar, Dict, Type, cast
 
 ns = api.namespace('taxonomies', description='All Taxonomies.')
 
@@ -27,7 +27,7 @@ class TaxonomyListResource(Resource):
         return{'taxonomies': taxonomy_list}
 
 
-def get_taxonomy(taxonomy_type: str, taxonomy_name: str):
+def get_taxonomy(taxonomy_type: str, taxonomy_name: str) -> Type[T]:
         taxonomy_name = taxonomy_name.upper()
         if taxonomy_name not in taxonomies:
             abort(404, 'The reqested Taxonomy could not be found.')
@@ -35,7 +35,7 @@ def get_taxonomy(taxonomy_type: str, taxonomy_name: str):
         if taxonomy_type != taxonomy.taxonomy_type:
             abort(400, 'The type of the requested taxonomy does not match the requested taxonomy type. (requested type: {}, taxonomy_type: {})'
                   .format(taxonomy_type, taxonomy.taxonomy_type))
-        return taxonomy
+        return cast(Type[T], taxonomy)
 
 
 @ns.route('/<string:taxonomy_type>/<string:taxonomy>', doc=False)
@@ -76,14 +76,14 @@ class TreeTaxonomyResource(Resource):
         return marshal(get_taxonomy('tree', taxonomy), tree_taxonomy_model)
 
 
-def get_taxonomy_item(tax, item_id):
+def get_taxonomy_item(tax: Type[T], item_id) -> T:
     item = tax.get_by_id(item_id)
     if item is None:
         abort(404, 'Requested taxonomy item not found!')
     return item
 
 
-def create_taxonomy_item(tax, new_values):
+def create_taxonomy_item(tax: Type[T], new_values) -> T:
     item = tax(**new_values)
     db.session.add(item)
     return item
