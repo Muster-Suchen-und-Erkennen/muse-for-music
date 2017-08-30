@@ -1,22 +1,8 @@
 from csv import DictReader
 from logging import Logger
 from ... import db
-
+from ..helper_classes import GetByID, T
 from typing import Dict, List, Sequence, Any, Type, TypeVar
-
-T = TypeVar('T', bound=db.Model)
-
-
-class GetByID():
-
-    @classmethod
-    def get_by_id(cls: Type[T], id: int) -> T:
-        return cls.query.filter_by(id=id).first()
-
-    @classmethod
-    def get_multiple_by_id(cls: Type[T], ids: Sequence[int]) -> Dict[int, T]:
-        result = cls.query.filter(cls.id.in_(ids))
-        return {obj.id: obj for obj in result}
 
 
 class Taxonomy(GetByID):

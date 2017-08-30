@@ -2,6 +2,7 @@ import enum
 from datetime import date, datetime
 from typing import Union
 from ... import db
+from ..helper_classes import GetByID
 
 
 class GenderEnum(enum.Enum):
@@ -10,7 +11,7 @@ class GenderEnum(enum.Enum):
     other = 3
 
 
-class Person(db.Model):
+class Person(db.Model, GetByID):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True, index=True)
     canonical_name = db.Column(db.String(255), index=True)

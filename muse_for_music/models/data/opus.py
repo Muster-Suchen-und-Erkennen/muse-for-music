@@ -1,11 +1,12 @@
 from ... import db
+from ..helper_classes import GetByID
 
 from ..taxonomies.gattung import GattungNineteenthCentury
 from .instrumentation import Instrumentation
 from .people import Person
 
 
-class Opus(db.Model):
+class Opus(db.Model, GetByID):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True, index=True)
     original_name = db.Column(db.String(255), unique=True, index=True, nullable=True)

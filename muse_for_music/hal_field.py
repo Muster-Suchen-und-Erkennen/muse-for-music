@@ -95,6 +95,7 @@ class UrlData():
                 app.logger.debug('Could not build url because some provided values were none.\n' +
                                  'UrlParam: "%s", ObjectKey: "%s"',
                                  key, self.url_data[key])
+                print(obj)
                 return None
             url_data[key] = value
         endpoint = self.endpoint if self.endpoint is not None else request.endpoint

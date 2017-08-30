@@ -7,6 +7,7 @@ from flask_restplus import fields
 from ...hal_field import HaLUrl, NestedFields, EmbeddedFields, NestedModel, UrlData
 from . import api
 from ..models import with_curies
+from ..taxonomies.models import taxonomy_item_get
 
 from enum import Enum
 from datetime import datetime, date
@@ -83,7 +84,7 @@ instrumentation_links = api.model('InstrumentationLinks', {
 instrumentation_model = api.model('Instrumentation', {
     'id': fields.Integer(required=False, readonly=True),
     '_links': NestedFields(instrumentation_links),
-    'instruments': fields.List(fields.String(), required=True),
+    'instruments': fields.List(fields.Nested(taxonomy_item_get), required=True),
 })
 
 opus_links = api.inherit('OpusLinks', with_curies, {

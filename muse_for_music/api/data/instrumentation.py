@@ -25,4 +25,8 @@ class InstrumentationResource(Resource):
 
     @ns.marshal_with(instrumentation_model)
     def get(self, id):
-        return Instrumentation.query.filter_by(id=id).first()
+        instr = Instrumentation.query.filter_by(id=id).first()
+        return instr
+
+    def put(self, id):
+        pass
