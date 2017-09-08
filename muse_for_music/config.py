@@ -23,6 +23,7 @@ class DebugConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test.db'
     JWT_SECRET_KEY = 'debug'  # FIXME
     LOG_PATH = '/tmp'
+    SQLALCHEMY_ECHO = True
 
 
 class TestingConfig(Config):
