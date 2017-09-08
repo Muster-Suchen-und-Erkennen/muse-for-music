@@ -42,7 +42,7 @@ class OpusResource(Resource):
     @ns.marshal_with(opus_get)
     @ns.response(404, 'Opus not found.')
     def get(self, id):
-        opus = Opus.query.filter_by(id=id).first()
+        opus = Opus.get_by_id(id)  # type: Opus
         if opus is None:
             abort(404, 'Requested opus not found!')
         return opus
@@ -50,7 +50,7 @@ class OpusResource(Resource):
     @ns.doc(model=opus_get, body=opus_put)
     @ns.response(404, 'Opus not found.')
     def put(self, id):
-        opus = Opus.query.filter_by(id=id).first()
+        opus = Opus.get_by_id(id)  # type: Opus
         if opus is None:
             abort(404, 'Requested opus not found!')
         new_values = request.get_json()
@@ -72,13 +72,16 @@ class OpusResource(Resource):
                 value = parse_date(new_values[attribute])
                 setattr(opus, attribute, value)
 
+        if 'instrumentation' in new_values:
+            opus.instrumentation.instruments = new_values['instrumentation']['instruments']
+
         db.session.add(opus)
         db.session.commit()
         return marshal(opus, opus_get)
 
     @ns.response(404, 'Opus not found.')
     def delete(self, id):
-        opus = Opus.query.filter_by(id=id).first()
+        opus = Opus.get_by_id(id)  # type: Opus
         if opus is None:
             abort(404, 'Requested opus not found!')
         db.session.delete(opus)

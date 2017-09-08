@@ -13,6 +13,7 @@ class Opus(db.Model, GetByID):
     opus_name = db.Column(db.String(255), index=True, nullable=True)
     composer = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=True)
     # TODO add mitarbeiter
+    score_link = db.Column(db.Text, nullable=True)
     composition_year = db.Column(db.Integer, nullable=True)
     composition_place_id = db.Column(db.Integer, nullable=True)  # TODO Foreign key
     occasion = db.Column(db.Text, nullable=True)
@@ -30,6 +31,7 @@ class Opus(db.Model, GetByID):
     instrumentation = db.relationship('Instrumentation', lazy='joined')
     # TODO form
     genre = db.relationship(GattungNineteenthCentury, lazy='joined')
+    # TODO metadata
 
     def __init__(self, name: str, composer: any=None, movements:int =1,
                  printed: bool=False, **kwargs) -> None:

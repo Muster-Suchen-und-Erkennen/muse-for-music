@@ -7,7 +7,7 @@ from flask_restplus import fields
 from ...hal_field import HaLUrl, NestedFields, EmbeddedFields, NestedModel, UrlData
 from . import api
 from ..models import with_curies
-from ..taxonomies.models import taxonomy_item_get
+from ..taxonomies.models import taxonomy_item_get, taxonomy_item_put
 
 from enum import Enum
 from datetime import datetime, date
@@ -82,12 +82,13 @@ instrumentation_links = api.model('InstrumentationLinks', {
 })
 
 instrumentation_put = api.model('InstrumentationPUT', {
-    'instruments': fields.List(fields.Nested(taxonomy_item_get), required=True),
+    'instruments': fields.List(fields.Nested(taxonomy_item_put), required=True),
 })
 
 instrumentation_get = api.inherit('InstrumentationGET', instrumentation_put, {
     'id': fields.Integer(required=False, readonly=True),
     '_links': NestedFields(instrumentation_links),
+    'instruments': fields.List(fields.Nested(taxonomy_item_get), required=True),
 })
 
 opus_links = api.inherit('OpusLinks', with_curies, {
@@ -111,9 +112,10 @@ opus_post = api.model('OpusPOST', {
 opus_put = api.inherit('OpusPUT', opus_post, {
     'original_name': fields.String(required=False),
     'opus_name': fields.String(required=False),
+    'score_link': fields.String(required=False, description='A url linking to the sheet music.'),
     'composition_year': fields.Integer(required=False),
     'composition_place': fields.String(required=False, example='TODO'),
-    'instrumentation': fields.Nested(instrumentation_get),
+    'instrumentation': fields.Nested(instrumentation_put),
     'occasion': fields.String(required=False),
     'dedication': fields.String(required=False),
     'notes': fields.String(required=False),
@@ -128,4 +130,6 @@ opus_put = api.inherit('OpusPUT', opus_post, {
 opus_get = api.inherit('OpusGET', opus_put, {
     'id': fields.Integer(required=False, readonly=True),
     '_links': NestedFields(opus_links),
+    'composer': fields.Nested(person_get),
+    'instrumentation': fields.Nested(instrumentation_get),
 })
