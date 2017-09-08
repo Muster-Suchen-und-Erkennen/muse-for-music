@@ -30,9 +30,9 @@ class InstrumentationResource(Resource):
 
     @ns.doc(model=instrumentation_get, body=instrumentation_put)
     def put(self, id):
-        instr = Instrumentation.get_by_id(id)
+        instr = Instrumentation.get_by_id(id)  # type: Instrumentation
         new_instr = request.get_json()
-        instr.update(new_instr['instruments'])
+        instr.instruments = new_instr['instruments']
         db.session.add(instr)
         db.session.commit()
         return marshal(instr, instrumentation_put)

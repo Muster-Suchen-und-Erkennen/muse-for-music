@@ -12,8 +12,8 @@ class Instrumentation(db.Model, GetByID, UpdateListMixin):
     def instruments(self):
         return [mapping.instrument for mapping in self._instruments]
 
-    def update(self, instrument_list: Union[Sequence[int], Sequence[dict]]):
-
+    @instruments.setter
+    def instruments(self, instrument_list: Union[Sequence[int], Sequence[dict]]):
         old_items = {mapping.instrument.id: mapping for mapping in self._instruments}
         self.update_list(instrument_list, old_items, InstumentationToInstrument,
                          Instrument, 'instrument')
