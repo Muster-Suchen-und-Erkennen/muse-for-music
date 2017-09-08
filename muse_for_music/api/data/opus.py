@@ -5,10 +5,12 @@ from sqlalchemy.exc import IntegrityError
 
 from . import api
 
-from .models import opus_post, opus_put, opus_get, parse_date
+from .models import opus_post, opus_put, opus_get, parse_date, opus_get, opus_post, \
+                    part_get, part_post
 
 from ... import db
 from ...models.data.opus import Opus
+from ...models.data.part import Part
 
 
 ns = api.namespace('opus', description='TODO.')
@@ -86,3 +88,25 @@ class OpusResource(Resource):
             abort(404, 'Requested opus not found!')
         db.session.delete(opus)
         db.session.commit()
+
+
+
+
+@ns.route('/<int:id>/parts')
+class OpusResource(Resource):
+
+    @ns.marshal_list_with(part_get)
+    def get(self, id):
+        parts = Part.query.filter_by(opus_id=id).all()
+        print('M'*100)
+        print(parts[0].measure_end.from_page, type(parts[0].measure_end.from_page))
+        return parts
+
+    @ns.doc(model=part_get, body=part_post)
+    def post(self, id):
+        new_values = request.get_json()
+        new_values['opus_id'] = id
+        new_part = Part(**new_values)
+        db.session.add(new_part)
+        db.session.commit()
+        return marshal(new_part, part_get)

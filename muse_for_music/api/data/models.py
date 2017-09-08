@@ -91,6 +91,33 @@ instrumentation_get = api.inherit('InstrumentationGET', instrumentation_put, {
     'instruments': fields.List(fields.Nested(taxonomy_item_get), required=True),
 })
 
+measure_model = api.model('Measure', {
+    'measure': fields.Integer(min=0, required=True),
+    'from_page': fields.Integer(min=0, required=False),
+})
+
+part_links = api.inherit('PartLinks', with_curies, {
+    'self': HaLUrl(UrlData('api.part_part_resource', absolute=True,
+                           url_data={'id': 'id'}), rquired=False),
+})
+
+part_post = api.model('PartPOST', {
+    'opus_id': fields.Integer(),
+    'measure_start': fields.Nested(measure_model),
+    'measure_end': fields.Nested(measure_model),
+    'occurence_in_movement': fields.Nested(taxonomy_item_put),
+})
+
+part_put = api.inherit('PartPUT', part_post, {
+
+})
+
+part_get = api.inherit('PartGET', part_put, {
+    'id': fields.Integer(required=False, readonly=True),
+    '_links': NestedFields(part_links),
+    'occurence_in_movement': fields.Nested(taxonomy_item_get),
+})
+
 opus_links = api.inherit('OpusLinks', with_curies, {
     'self': HaLUrl(UrlData('api.opus_opus_resource', absolute=True, url_data={'id': 'id'}),
                    required=False),
@@ -132,4 +159,5 @@ opus_get = api.inherit('OpusGET', opus_put, {
     '_links': NestedFields(opus_links),
     'composer': fields.Nested(person_get),
     'instrumentation': fields.Nested(instrumentation_get),
+    'parts': fields.List(fields.Raw),
 })

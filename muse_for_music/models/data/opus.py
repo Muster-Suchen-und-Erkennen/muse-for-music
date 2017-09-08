@@ -11,7 +11,7 @@ class Opus(db.Model, GetByID):
     name = db.Column(db.String(255), unique=True, index=True)
     original_name = db.Column(db.String(255), unique=True, index=True, nullable=True)
     opus_name = db.Column(db.String(255), index=True, nullable=True)
-    composer = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=True)
+    composer_id = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=True)
     # TODO add mitarbeiter
     score_link = db.Column(db.Text, nullable=True)
     composition_year = db.Column(db.Integer, nullable=True)
@@ -28,10 +28,13 @@ class Opus(db.Model, GetByID):
     #form = db.Column(db.Integer, db.ForeignKey('.id'))  # TODO Foreign key
     genre_id = db.Column(db.Integer, db.ForeignKey('gattung_nineteenth_century.id'))
 
-    instrumentation = db.relationship('Instrumentation', lazy='joined')
+    composer = db.relationship('Person', lazy='select')
+    instrumentation = db.relationship('Instrumentation', lazy='subquery')
     # TODO form
     genre = db.relationship(GattungNineteenthCentury, lazy='joined')
     # TODO metadata
+
+    _subquery_load = ['instrumentation', 'composer', 'parts']
 
     def __init__(self, name: str, composer: any=None, movements:int =1,
                  printed: bool=False, **kwargs) -> None:

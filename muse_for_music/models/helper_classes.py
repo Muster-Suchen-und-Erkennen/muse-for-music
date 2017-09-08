@@ -1,22 +1,42 @@
 from typing import TypeVar, Sequence, Dict, Type, List, Union, cast
 from .. import db
+from sqlalchemy.orm import joinedload, subqueryload, Query
 
 X = TypeVar('X', bound=db.Model)
 
 
 class GetByID():
 
+    _joined_load = []  # type: List[str]
+    _subquery_load = []  # type: List[str]
+
+    @classmethod
+    def prepare_query(cls: Type[X]) -> Query:
+        query = cls.query
+        options = []
+        for attr in cls._joined_load:
+            options.append(joinedload(attr))
+        for attr in cls._subquery_load:
+            options.append(subqueryload(attr))
+
+        if options:
+            query = query.options(*options)
+        return query
+
     @classmethod
     def get_by_id(cls: Type[X], id: int) -> X:
-        return cls.query.filter_by(id=id).first()
+        query = cls.prepare_query()
+        return query.filter_by(id=id).first()
 
     @classmethod
     def get_list_by_id(cls: Type[X], ids: Sequence[int]) -> List[X]:
-        return cls.query.filter(cls.id.in_(ids))
+        query = cls.prepare_query()
+        return query.filter(cls.id.in_(ids)).all()
 
     @classmethod
     def get_multiple_by_id(cls: Type[X], ids: Sequence[int]) -> Dict[int, X]:
-        result = cls.query.filter(cls.id.in_(ids))
+        query = cls.prepare_query()
+        result = query.filter(cls.id.in_(ids)).all()
         return {obj.id: obj for obj in result}
 
 
