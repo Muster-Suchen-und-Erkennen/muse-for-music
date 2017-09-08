@@ -133,9 +133,9 @@ tree_taxonomy_model_json = ns.inherit('TreeTaxonomyModelJSON', taxonomy_model, {
 # models for list of taxonomies:
 taxonomy_list_links = ns.inherit('TaxonomyListLinks', with_curies, {
     'self': HaLUrl(UrlData('api.taxonomies_taxonomy_list_resource', absolute=True), required=False),
-    'rel:taxonomy': HaLUrl(UrlData('api.taxonomies_taxonomy_list_resource', absolute=True,
-                                   templated=True, path_variables=['taxonomy']),
-                           required=False),
+    'taxonomy': HaLUrl(UrlData('api.taxonomies_taxonomy_list_resource', absolute=True,
+                               templated=True, path_variables=['taxonomy']),
+                       required=False),
 })
 
 taxonomy_list_resource = ns.model('TaxonomyList', {

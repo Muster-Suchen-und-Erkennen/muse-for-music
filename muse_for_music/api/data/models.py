@@ -20,9 +20,9 @@ def parse_date(date_str: str) -> date:
 
 data_links = api.inherit('DataLinks', with_curies, {
     'self': HaLUrl(UrlData('api.data_data_resource', absolute=True)),
-    'rel:person': HaLUrl(UrlData('api.person_person_list_resource', absolute=True)),
-    'rel:opus': HaLUrl(UrlData('api.opus_opus_list_resource', absolute=True)),
-    'rel:instrumentation': HaLUrl(UrlData('api.instrumentation_instrumentation_list_resource', absolute=True)),
+    'person': HaLUrl(UrlData('api.person_person_list_resource', absolute=True)),
+    'opus': HaLUrl(UrlData('api.opus_opus_list_resource', absolute=True)),
+    'instrumentation': HaLUrl(UrlData('api.instrumentation_instrumentation_list_resource', absolute=True)),
 })
 
 data_model = api.model('DataModel', {
@@ -65,7 +65,7 @@ person_post = api.model('PersonPOST', {
     'gender': GenderField(required=True, example='male', enum=['male', 'female', 'other'])
 })
 
-person_put = api.inherit('PersonPUSH', person_post, {
+person_put = api.inherit('PersonPUT', person_post, {
     'canonical_name': fields.String(required=False, example='admin'),
     'birth_date': fields.Date(required=False, example='1921-2-4'),
     'death_date': fields.Date(required=False, example='1921-3-23'),
@@ -92,11 +92,11 @@ opus_links = api.inherit('OpusLinks', with_curies, {
                    required=False),
     'find': HaLUrl(UrlData('api.opus_opus_list_resource', absolute=True,
                            templated=True, path_variables=['id']), required=False),
-    'rel:person': HaLUrl(UrlData('api.person_person_resource', absolute=True,
-                                 url_data={'id': 'composer.id'}), required=False),
-    'rel:instrumentation': HaLUrl(UrlData('api.instrumentation_instrumentation_resource',
-                                          absolute=True, url_data={'id': 'instrumentation.id'}),
-                                  required=False),
+    'person': HaLUrl(UrlData('api.person_person_resource', absolute=True,
+                             url_data={'id': 'composer.id'}), required=False),
+    'instrumentation': HaLUrl(UrlData('api.instrumentation_instrumentation_resource',
+                                      absolute=True, url_data={'id': 'instrumentation.id'}),
+                              required=False),
 })
 
 
@@ -105,7 +105,7 @@ opus_post = api.model('OpusPOST', {
     'composer': fields.Nested(person_put),
 })
 
-opus_put = api.inherit('OpusPUSH', opus_post, {
+opus_put = api.inherit('OpusPUT', opus_post, {
     'original_name': fields.String(required=False),
     'opus_name': fields.String(required=False),
     'composition_year': fields.Integer(required=False),
