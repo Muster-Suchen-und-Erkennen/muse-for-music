@@ -81,10 +81,13 @@ instrumentation_links = api.model('InstrumentationLinks', {
                            url_data={'id': 'id'}), required=False),
 })
 
-instrumentation_model = api.model('Instrumentation', {
+instrumentation_put = api.model('InstrumentationPUT', {
+    'instruments': fields.List(fields.Nested(taxonomy_item_get), required=True),
+})
+
+instrumentation_get = api.inherit('InstrumentationGET', instrumentation_put, {
     'id': fields.Integer(required=False, readonly=True),
     '_links': NestedFields(instrumentation_links),
-    'instruments': fields.List(fields.Nested(taxonomy_item_get), required=True),
 })
 
 opus_links = api.inherit('OpusLinks', with_curies, {
@@ -110,7 +113,7 @@ opus_put = api.inherit('OpusPUT', opus_post, {
     'opus_name': fields.String(required=False),
     'composition_year': fields.Integer(required=False),
     'composition_place': fields.String(required=False, example='TODO'),
-    'instrumentation': fields.Nested(instrumentation_model),
+    'instrumentation': fields.Nested(instrumentation_get),
     'occasion': fields.String(required=False),
     'dedication': fields.String(required=False),
     'notes': fields.String(required=False),
