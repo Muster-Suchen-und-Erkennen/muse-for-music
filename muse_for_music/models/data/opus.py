@@ -29,7 +29,7 @@ class Opus(db.Model, GetByID):
 
     instrumentation = db.relationship('Instrumentation', lazy='joined')
     # TODO form
-    genre = db.relationship('GattungNineteenthCentury', lazy='joined')
+    genre = db.relationship(GattungNineteenthCentury, lazy='joined')
 
     def __init__(self, name: str, composer: any=None, movements:int =1,
                  printed: bool=False, **kwargs) -> None:
