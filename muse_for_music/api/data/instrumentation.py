@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 
 from . import api
 
-from .models import instrumentation_model
+from .models import instrumentation_get, instrumentation_put
 
 from ... import db
 from ...models.data.instrumentation import Instrumentation
@@ -16,17 +16,23 @@ ns = api.namespace('instrumentation', description='TODO.')
 @ns.route('/')
 class InstrumentationListResource(Resource):
 
-    @ns.marshal_list_with(instrumentation_model)
+    @ns.marshal_list_with(instrumentation_get)
     def get(self):
         return Instrumentation.query.all()
 
 @ns.route('/<int:id>')
 class InstrumentationResource(Resource):
 
-    @ns.marshal_with(instrumentation_model)
+    @ns.marshal_with(instrumentation_get)
     def get(self, id):
-        instr = Instrumentation.query.filter_by(id=id).first()
+        instr = Instrumentation.get_by_id(id)
         return instr
 
+    @ns.doc(model=instrumentation_get, body=instrumentation_put)
     def put(self, id):
-        pass
+        instr = Instrumentation.get_by_id(id)
+        new_instr = request.get_json()
+        instr.update(new_instr['instruments'])
+        db.session.add(instr)
+        db.session.commit()
+        return marshal(instr, instrumentation_put)
