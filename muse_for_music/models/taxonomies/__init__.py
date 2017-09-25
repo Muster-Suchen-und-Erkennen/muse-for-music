@@ -17,6 +17,7 @@ from .instruments import Instrument, InstrumentierungEinbettungQualitaet, Instru
 from .chords import Akkord
 from .misc import Anteil, AuftretenWerkausschnitt, AuftretenSatz, Frequenz
 from .dissonance import Dissonanzen, Dissonanzgrad
+from .dynamic import *
 from .epoch import Epoche
 from .form import FormaleFunktion, Formschema
 from .gattung import GattungNineteenthCentury, Gattung

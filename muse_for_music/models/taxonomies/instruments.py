@@ -22,7 +22,7 @@ class Instrument(db.Model, TreeTaxonomy):
 
 class InstrumentierungEinbettungQualitaet(db.Model, ListTaxonomy):
     """DB Model for choices."""
-    __tablename__ = 'instrumentierung_einbettung_qualitaet"
+    __tablename__ = 'instrumentierung_einbettung_qualitaet'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
@@ -31,7 +31,7 @@ class InstrumentierungEinbettungQualitaet(db.Model, ListTaxonomy):
 
 class InstrumentierungEinbettungQuantitaet(db.Model, ListTaxonomy):
     """DB Model for choices."""
-    __tablename__ = 'instrumentierung_einbettung_quantitaet"
+    __tablename__ = 'instrumentierung_einbettung_quantitaet'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
