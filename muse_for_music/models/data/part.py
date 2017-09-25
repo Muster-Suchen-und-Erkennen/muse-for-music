@@ -5,6 +5,7 @@ from .measure import Measure
 from .opus import Opus
 from .instrumentation import InstrumentationContext
 from .dynamic import DynamicContext
+from .tempo import TempoContext
 from ..taxonomies import Anteil
 
 
@@ -17,6 +18,7 @@ class Part(db.Model, GetByID):
     occurence_in_movement_id = db.Column(db.Integer, db.ForeignKey('anteil.id'), nullable=True)
     instrumentation_context_id = db.Column(db.Integer, db.ForeignKey('instrumentation_context.id'), nullable=True)
     dynamic_context_id = db.Column(db.Integer, db.ForeignKey('dynamic_context.id'), nullable=True)
+    tempo_context_id = db.Column(db.Integer, db.ForeignKey('tempo_context.id'), nullable=True)
 
     opus = db.relationship(Opus, lazy='select', backref=db.backref('parts'))
     measure_start = db.relationship(Measure, foreign_keys=[measure_start_id], lazy='joined')
@@ -24,6 +26,7 @@ class Part(db.Model, GetByID):
     occurence_in_movement = db.relationship(Anteil, lazy='joined')
     instrumentation_context = db.relationship(InstrumentationContext, lazy='joined')
     dynamic_context = db.relationship(DynamicContext, lazy='joined')
+    tempo_context = db.relationship(TempoContext, lazy='joined')
 
     def __init__(self, opus_id: int, measure_start: dict, measure_end: dict,
                  occurence_in_movement, movement: int=1):

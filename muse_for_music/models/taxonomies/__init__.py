@@ -23,6 +23,7 @@ from .form import FormaleFunktion, Formschema
 from .gattung import GattungNineteenthCentury, Gattung
 from .harmony import HarmonischeEntwicklung
 from .notes import Grundton
+from .tempo import *
 
 
 T = TypeVar('T', bound=Taxonomy)
