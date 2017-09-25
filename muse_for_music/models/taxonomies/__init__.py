@@ -13,7 +13,7 @@ from ... import app
 
 
 # Import taxonomy models:
-from .instruments import Instrument
+from .instruments import Instrument, InstrumentierungEinbettungQualitaet, InstrumentierungEinbettungQuantitaet
 from .chords import Akkord
 from .misc import Anteil, AuftretenWerkausschnitt, AuftretenSatz, Frequenz
 from .dissonance import Dissonanzen, Dissonanzgrad

@@ -3,6 +3,7 @@ from ..helper_classes import GetByID
 
 from .measure import Measure
 from .opus import Opus
+from .instrumentation import InstrumentationContext
 from ..taxonomies import Anteil
 
 
@@ -13,11 +14,13 @@ class Part(db.Model, GetByID):
     measure_start_id = db.Column(db.Integer, db.ForeignKey('measure.id'), nullable=False)
     measure_end_id = db.Column(db.Integer, db.ForeignKey('measure.id'), nullable=False)
     occurence_in_movement_id = db.Column(db.Integer, db.ForeignKey('anteil.id'), nullable=True)
+    instrumentation_context_id = db.Column(db.Integer, db.ForeignKey('instrumentation_context.id'), nullable=True)
 
     opus = db.relationship(Opus, lazy='select', backref=db.backref('parts'))
     measure_start = db.relationship(Measure, foreign_keys=[measure_start_id], lazy='joined')
     measure_end = db.relationship(Measure, foreign_keys=[measure_end_id], lazy='joined')
     occurence_in_movement = db.relationship(Anteil, lazy='joined')
+    instrumentation_context = db.relationship(InstrumentationContext, lazy='joined')
 
     def __init__(self, opus_id: int, measure_start: dict, measure_end: dict,
                  occurence_in_movement, movement: int=1):

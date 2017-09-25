@@ -1,7 +1,8 @@
 from typing import Union, Sequence
 
 from ... import db
-from ..taxonomies import Instrument
+from ..taxonomies import Instrument, InstrumentierungEinbettungQualitaet, \
+                         InstrumentierungEinbettungQuantitaet
 from ..helper_classes import GetByID, UpdateListMixin
 
 
@@ -29,3 +30,29 @@ class InstumentationToInstrument(db.Model):
     def __init__(self, instrumentation, instrument):
         self.instrumentation = instrumentation
         self.instrument = instrument
+
+
+class InstrumentationContext(db.Model, GetByID):
+    __tablename__ = 'instrumentation_context'
+    id = db.Column(db.Integer, primary_key=True)
+    instr_quantity_before_id = db.Column(db.Integer,
+                                         db.ForeignKey('instrumentierung_einbettung_quantitaet.id'),
+                                         nullable=True)
+    instr_quantity_after_id = db.Column(db.Integer,
+                                        db.ForeignKey('instrumentierung_einbettung_quantitaet.id'),
+                                        nullable=True)
+    instr_quality_before_id = db.Column(db.Integer,
+                                        db.ForeignKey('instrumentierung_einbettung_qualitaet.id'),
+                                        nullable=True)
+    instr_quality_after_id = db.Column(db.Integer,
+                                       db.ForeignKey('instrumentierung_einbettung_qualitaet.id'),
+                                       nullable=True)
+
+    instrumentation_quantity_before = db.relationship(InstrumentierungEinbettungQuantitaet,
+                                                      foreign_keys=[instr_quantity_before_id])
+    instrumentation_quantity_after = db.relationship(InstrumentierungEinbettungQuantitaet,
+                                                     foreign_keys=[instr_quantity_after_id])
+    instrumentation_quality_before = db.relationship(InstrumentierungEinbettungQualitaet,
+                                                     foreign_keys=[instr_quality_before_id])
+    instrumentation_quality_after = db.relationship(InstrumentierungEinbettungQualitaet,
+                                                    foreign_keys=[instr_quality_after_id])
