@@ -66,13 +66,13 @@ person_post = api.model('PersonPOST', {
 })
 
 person_put = api.inherit('PersonPUT', person_post, {
-    'canonical_name': fields.String(required=False, example='admin'),
-    'birth_date': fields.Date(required=False, example='1921-2-4'),
-    'death_date': fields.Date(required=False, example='1921-3-23'),
+    'canonical_name': fields.String(example='admin'),
+    'birth_date': fields.Date(example='1921-2-4'),
+    'death_date': fields.Date(example='1921-3-23'),
 })
 
 person_get = api.inherit('PersonGET', person_put, {
-    'id': fields.Integer(required=False, readonly=True),
+    'id': fields.Integer(readonly=True),
     '_links': NestedFields(person_links),
 })
 
@@ -137,25 +137,25 @@ opus_post = api.model('OpusPOST', {
 })
 
 opus_put = api.inherit('OpusPUT', opus_post, {
-    'original_name': fields.String(required=False),
-    'opus_name': fields.String(required=False),
-    'score_link': fields.String(required=False, description='A url linking to the sheet music.'),
-    'composition_year': fields.Integer(required=False),
-    'composition_place': fields.String(required=False, example='TODO'),
+    'original_name': fields.String(),
+    'opus_name': fields.String(),
+    'score_link': fields.String(description='A url linking to the sheet music.'),
+    'composition_year': fields.Integer(),
+    'composition_place': fields.String(example='TODO'),
     'instrumentation': fields.Nested(instrumentation_put),
-    'occasion': fields.String(required=False),
-    'dedication': fields.String(required=False),
-    'notes': fields.String(required=False),
-    'printed': fields.Boolean(required=False, default=False),
-    'first_printed_at': fields.String(required=False, example='TODO'),
-    'first_printed_in': fields.Integer(required=False),
-    'publisher': fields.String(required=False),
-    'movements': fields.Integer(required=True, default=1),
-    'genre': fields.String(required=False),
+    'occasion': fields.String(),
+    'dedication': fields.String(),
+    'notes': fields.String(),
+    'printed': fields.Boolean(default=False),
+    'first_printed_at': fields.String(example='TODO'),
+    'first_printed_in': fields.Integer(),
+    'publisher': fields.String(),
+    'movements': fields.Integer(default=1),
+    'genre': fields.String(),
 })
 
 opus_get = api.inherit('OpusGET', opus_put, {
-    'id': fields.Integer(required=False, readonly=True),
+    'id': fields.Integer(readonly=True),
     '_links': NestedFields(opus_links),
     'composer': fields.Nested(person_get),
     'instrumentation': fields.Nested(instrumentation_get),
