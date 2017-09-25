@@ -8,6 +8,8 @@ from typing import Dict, List, Sequence, Any, Type, TypeVar
 class Taxonomy(GetByID):
 
     taxonomy_type = None  # type: str
+    select_multiple = False  # type: bool
+    radio_buttons = False  # type: bool
 
     def __init__(self, name: str, description: None) -> None:
         """Create new List Taxonomy object."""

@@ -115,8 +115,10 @@ taxonomy_links = ns.model('TaxonomyLinks', {
 taxonomy_model = ns.model('TaxonomyModel', {
     'name': fields.String(required=True, attribute='__name__'),
     '_links': NestedFields(taxonomy_links),
-    'taxonomy_type': fields.String(enum=['list', 'tree'], discriminator=True, readonly=None),
-    'select_only_leafs': fields.Boolean(default=False, readonly=None, required=False),
+    'taxonomy_type': fields.String(enum=['list', 'tree'], discriminator=True, readonly=True),
+    'select_only_leafs': fields.Boolean(default=False, readonly=True, required=False),
+    'select_multiple': fields.Boolean(default=False, readonly=True, required=False),
+    'radio_buttons': fields.Boolean(default=False, readonly=True, required=False),
     'items': TaxonomyItems(required=False),
 }, mask='{name,_links,taxonomy_type,select_only_leafs}')
 
