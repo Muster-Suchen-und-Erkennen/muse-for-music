@@ -91,6 +91,48 @@ instrumentation_get = api.inherit('InstrumentationGET', instrumentation_put, {
     'instruments': fields.List(fields.Nested(taxonomy_item_get), required=True),
 })
 
+instrumentation_context_put = api.model('InstrumentationContextPUT', {
+    'instrumentation_quantity_before': fields.Nested(taxonomy_item_put),
+    'instrumentation_quantity_after': fields.Nested(taxonomy_item_put),
+    'instrumentation_quality_before': fields.Nested(taxonomy_item_put),
+    'instrumentation_quality_after': fields.Nested(taxonomy_item_put),
+})
+
+instrumentation_context_get = api.model('InstrumentationContextGET', {
+    'instrumentation_quantity_before': fields.Nested(taxonomy_item_get),
+    'instrumentation_quantity_after': fields.Nested(taxonomy_item_get),
+    'instrumentation_quality_before': fields.Nested(taxonomy_item_get),
+    'instrumentation_quality_after': fields.Nested(taxonomy_item_get),
+})
+
+dynamic_context_put = api.model('DynamicContextPUT', {
+    'loudness_before': fields.Nested(taxonomy_item_put),
+    'loudness_after': fields.Nested(taxonomy_item_put),
+    'dynamic_trend_before': fields.Nested(taxonomy_item_put),
+    'dynamic_trend_after': fields.Nested(taxonomy_item_put),
+})
+
+dynamic_context_get = api.model('DynamicContextGET', {
+    'loudness_before': fields.Nested(taxonomy_item_get),
+    'loudness_after': fields.Nested(taxonomy_item_get),
+    'dynamic_trend_before': fields.Nested(taxonomy_item_get),
+    'dynamic_trend_after': fields.Nested(taxonomy_item_get),
+})
+
+tempo_context_put = api.model('TempoContextPUT', {
+    'tempo_context_before': fields.Nested(taxonomy_item_put),
+    'tempo_context_after': fields.Nested(taxonomy_item_put),
+    'tempo_trend_before': fields.Nested(taxonomy_item_put),
+    'tempo_trend_after': fields.Nested(taxonomy_item_put),
+})
+
+tempo_context_get = api.model('TempoContextGET', {
+    'tempo_context_before': fields.Nested(taxonomy_item_get),
+    'tempo_context_after': fields.Nested(taxonomy_item_get),
+    'tempo_trend_before': fields.Nested(taxonomy_item_get),
+    'tempo_trend_after': fields.Nested(taxonomy_item_get),
+})
+
 measure_model = api.model('Measure', {
     'measure': fields.Integer(min=0, required=True),
     'from_page': fields.Integer(min=0, required=False),
@@ -109,13 +151,38 @@ part_post = api.model('PartPOST', {
 })
 
 part_put = api.inherit('PartPUT', part_post, {
+    'instrumentation_context': fields.Nested(instrumentation_context_put),
+    'dynamic_context': fields.Nested(dynamic_context_put),
+    'tempo_context': fields.Nested(tempo_context_put),
+})
 
+subpart_links = api.inherit('SubPartLinks', with_curies, {
+    #'self': HaLUrl(UrlData('api.part_part_resource', absolute=True,
+    #                       url_data={'id': 'id'}), rquired=False),
+})
+
+subpart_post = api.model('SubPartPOST', {
+    'part_id': fields.Integer(),
+    'label': fields.String(pattern='^[A-Z]+$'),
+})
+
+subpart_put = api.inherit('SubPartPUT', subpart_post, {
+
+})
+
+subpart_get = api.inherit('SubPartGET', subpart_put, {
+    'id': fields.Integer(required=False, readonly=True),
+    '_links': NestedFields(subpart_links),
 })
 
 part_get = api.inherit('PartGET', part_put, {
     'id': fields.Integer(required=False, readonly=True),
     '_links': NestedFields(part_links),
     'occurence_in_movement': fields.Nested(taxonomy_item_get),
+    'instrumentation_context': fields.Nested(instrumentation_context_get),
+    'dynamic_context': fields.Nested(dynamic_context_get),
+    'tempo_context': fields.Nested(tempo_context_get),
+    'subparts': fields.List(fields.Nested(subpart_get), default=[]),
 })
 
 opus_links = api.inherit('OpusLinks', with_curies, {
@@ -159,5 +226,5 @@ opus_get = api.inherit('OpusGET', opus_put, {
     '_links': NestedFields(opus_links),
     'composer': fields.Nested(person_get),
     'instrumentation': fields.Nested(instrumentation_get),
-    'parts': fields.List(fields.Raw),
+    'parts': fields.List(fields.Nested(part_get), default=[]),
 })

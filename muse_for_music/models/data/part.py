@@ -39,3 +39,10 @@ class Part(db.Model, GetByID):
         if isinstance(occurence_in_movement, dict):
             occurence_in_movement = occurence_in_movement['id']
         self.occurence_in_movement = Anteil.get_by_id(occurence_in_movement)
+
+        self.instrumentation_context = InstrumentationContext()
+        self.dynamic_context = DynamicContext()
+        self.tempo_context = TempoContext()
+        db.session.add(self.instrumentation_context)
+        db.session.add(self.dynamic_context)
+        db.session.add(self.tempo_context)
