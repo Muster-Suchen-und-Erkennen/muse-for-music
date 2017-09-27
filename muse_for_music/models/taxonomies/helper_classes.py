@@ -104,7 +104,7 @@ class TreeTaxonomy(Taxonomy):
     @classmethod
     def load(cls, input_data: DictReader, logger: Logger):
         """Load taxonomy from csv file."""
-        items = OrderedDict  # type: Dict[str, TreeTaxonomy]
+        items = OrderedDict()  # type: Dict[str, TreeTaxonomy]
         for row in input_data:
             name = row['name']  # type: str
             if name in items:
