@@ -200,7 +200,7 @@ opus_links = api.inherit('OpusLinks', with_curies, {
 
 opus_post = api.model('OpusPOST', {
     'name': fields.String(required=True, example='duett in g moll'),
-    'composer': fields.Nested(person_put),
+    'composer': fields.Nested(person_post),
 })
 
 opus_put = api.inherit('OpusPUT', opus_post, {
