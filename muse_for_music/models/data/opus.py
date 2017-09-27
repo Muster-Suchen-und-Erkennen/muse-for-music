@@ -29,7 +29,7 @@ class Opus(db.Model, GetByID):
     genre_id = db.Column(db.Integer, db.ForeignKey('gattung_nineteenth_century.id'))
 
     composer = db.relationship('Person', lazy='select')
-    instrumentation = db.relationship('Instrumentation', lazy='subquery')
+    _instrumentation = db.relationship('Instrumentation', lazy='subquery')  # type: Instrumentation
     # TODO form
     genre = db.relationship(GattungNineteenthCentury, lazy='joined')
     # TODO metadata
@@ -57,7 +57,7 @@ class Opus(db.Model, GetByID):
                 comp = Person.query.filter_by(id=id).first()  # type: Person
                 self.composer = comp
 
-        self.instrumentation = Instrumentation()
+        self._instrumentation = Instrumentation()
 
         if 'instrumentation' in kwargs:
             pass  # TODO load instrumentation
@@ -72,3 +72,11 @@ class Opus(db.Model, GetByID):
 
     def __repr__(self):
         return '<Werk %r>' % self.name
+
+    @property
+    def instrumentation(self):
+        return self._instrumentation.instruments
+
+    @instrumentation.setter
+    def instrumentation(self, data: list):
+        self._instrumentation.instruments = data

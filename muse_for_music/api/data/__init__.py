@@ -8,7 +8,7 @@ ns = api.namespace('data', description='All data objects.')
 
 from . import people
 from . import opus
-from . import instrumentation
+#from . import instrumentation
 from . import part
 
 

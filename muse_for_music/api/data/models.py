@@ -81,16 +81,6 @@ instrumentation_links = api.model('InstrumentationLinks', {
                            url_data={'id': 'id'}), required=False),
 })
 
-instrumentation_put = api.model('InstrumentationPUT', {
-    'instruments': fields.List(fields.Nested(taxonomy_item_put), required=True),
-})
-
-instrumentation_get = api.inherit('InstrumentationGET', instrumentation_put, {
-    'id': fields.Integer(required=False, readonly=True),
-    '_links': NestedFields(instrumentation_links),
-    'instruments': fields.List(fields.Nested(taxonomy_item_get), required=True),
-})
-
 instrumentation_context_put = api.model('InstrumentationContextPUT', {
     'instrumentation_quantity_before': fields.Nested(taxonomy_item_put),
     'instrumentation_quantity_after': fields.Nested(taxonomy_item_put),
@@ -209,7 +199,7 @@ opus_put = api.inherit('OpusPUT', opus_post, {
     'score_link': fields.String(description='A url linking to the sheet music.'),
     'composition_year': fields.Integer(),
     'composition_place': fields.String(example='TODO'),
-    'instrumentation': fields.Nested(instrumentation_put),
+    'instrumentation': fields.List(fields.Nested(taxonomy_item_get), required=True),
     'occasion': fields.String(),
     'dedication': fields.String(),
     'notes': fields.String(),
@@ -225,6 +215,6 @@ opus_get = api.inherit('OpusGET', opus_put, {
     'id': fields.Integer(readonly=True),
     '_links': NestedFields(opus_links),
     'composer': fields.Nested(person_get),
-    'instrumentation': fields.Nested(instrumentation_get),
+    'instrumentation': fields.List(fields.Nested(taxonomy_item_get), required=True),
     'parts': fields.List(fields.Nested(part_get), default=[]),
 })
