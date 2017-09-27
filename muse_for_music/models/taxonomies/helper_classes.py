@@ -1,4 +1,5 @@
 from csv import DictReader
+from collections import OrderedDict
 from logging import Logger
 from ... import db
 from ..helper_classes import GetByID, X
@@ -56,7 +57,7 @@ class ListTaxonomy(Taxonomy):
     @classmethod
     def load(cls, input_data: DictReader, logger: Logger):
         """Load taxonomy from csv file."""
-        items = {}  # type: Dict[str, ListTaxonomy]
+        items = OrderedDict()  # type: Dict[str, ListTaxonomy]
         for row in input_data:
             name = row['name']  # type: str
             if name.upper() == 'ROOT':
@@ -103,7 +104,7 @@ class TreeTaxonomy(Taxonomy):
     @classmethod
     def load(cls, input_data: DictReader, logger: Logger):
         """Load taxonomy from csv file."""
-        items = {}  # type: Dict[str, TreeTaxonomy]
+        items = OrderedDict  # type: Dict[str, TreeTaxonomy]
         for row in input_data:
             name = row['name']  # type: str
             if name in items:
