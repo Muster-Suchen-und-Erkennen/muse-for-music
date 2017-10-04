@@ -1,9 +1,14 @@
 from ... import db
 from ..helper_classes import GetByID
 
+from typing import Union
+
 from .measure import Measure
 from .part import Part
-from .instrumentation import InstrumentationContext
+from .form import Form
+from .satz import Satz
+from .instrumentation import InstrumentationContext, Instrumentation
+from ..taxonomies import Anteil
 #from .dynamic import DynamicContext
 #from .tempo import TempoContext
 #from ..taxonomies import Anteil
@@ -14,13 +19,35 @@ class SubPart(db.Model, GetByID):
     part_id = db.Column(db.Integer, db.ForeignKey('part.id'), nullable=False)
     label = db.Column(db.String(1), nullable=False)
     occurence_in_part_id = db.Column(db.Integer, db.ForeignKey('anteil.id'), nullable=True)
+    instrumentation_id = db.Column(db.Integer, db.ForeignKey('instrumentation.id'))
+    instrumentation_context_id = db.Column(db.Integer, db.ForeignKey('instrumentation_context.id'), nullable=True)
+    satz_id = db.Column(db.Integer, db.ForeignKey('satz.id'), nullable=True)
+    form_id = db.Column(db.Integer, db.ForeignKey('form.id'), nullable=True)
 
     part = db.relationship(Part, lazy='select', backref=db.backref('subparts'))
     occurence_in_part = db.relationship(Anteil, lazy='joined')
-    #instrumentation_context = db.relationship(InstrumentationContext, lazy='joined')
-    #dynamic_context = db.relationship(DynamicContext, lazy='joined')
-    #tempo_context = db.relationship(TempoContext, lazy='joined')
+    _instrumentation = db.relationship('Instrumentation', lazy='subquery')  # type: Instrumentation
+    instrumentation_context = db.relationship(InstrumentationContext, lazy='joined')
+    satz = db.relationship(Satz, lazy='joined')
+    form = db.relationship(Form, lazy='joined')
 
-    def __init__(self, part_id: int, label: str='A'):
-        self.part = Part.get_by_id(part_id)
+    def __init__(self, part_id: Union[int, Part], label: str='A'):
+        if isinstance(part_id, Part):
+            self.part = part_id
+        else:
+            self.part = Part.get_by_id(part_id)
         self.label = label
+
+        self.form = Form()
+        db.session.add(self.form)
+
+        self.satz = Satz()
+        db.session.add(self.satz)
+
+    @property
+    def instrumentation(self):
+        return self._instrumentation.instruments
+
+    @instrumentation.setter
+    def instrumentation(self, data: list):
+        self._instrumentation.instruments = data

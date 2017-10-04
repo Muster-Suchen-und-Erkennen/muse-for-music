@@ -137,6 +137,7 @@ part_post = api.model('PartPOST', {
     'opus_id': fields.Integer(),
     'measure_start': fields.Nested(measure_model),
     'measure_end': fields.Nested(measure_model),
+    'length': fields.Integer(min=1),
     'occurence_in_movement': fields.Nested(taxonomy_item_put),
 })
 
@@ -153,7 +154,7 @@ subpart_links = api.inherit('SubPartLinks', with_curies, {
 
 subpart_post = api.model('SubPartPOST', {
     'part_id': fields.Integer(),
-    'label': fields.String(pattern='^[A-Z]+$'),
+    'label': fields.String(pattern='^[A-Z]+[1-9]?$'),
 })
 
 subpart_put = api.inherit('SubPartPUT', subpart_post, {

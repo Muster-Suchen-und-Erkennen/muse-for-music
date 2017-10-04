@@ -93,7 +93,7 @@ class OpusResource(Resource):
 
 
 @ns.route('/<int:id>/parts')
-class OpusResource(Resource):
+class OpusPartsResource(Resource):
 
     @ns.marshal_list_with(part_get)
     def get(self, id):

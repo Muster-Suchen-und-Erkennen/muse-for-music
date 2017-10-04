@@ -1,6 +1,7 @@
 from ... import db
 from .helper_classes import ListTaxonomy
 
+__all__ = ['AuftretenWerkausschnitt', 'AuftretenSatz', 'Anteil', 'Frequenz']
 
 class AuftretenWerkausschnitt(db.Model, ListTaxonomy):
     """DB Model for choices."""
