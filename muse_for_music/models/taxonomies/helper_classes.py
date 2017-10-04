@@ -59,6 +59,7 @@ class ListTaxonomy(Taxonomy):
         items = OrderedDict()  # type: Dict[str, ListTaxonomy]
         for row in input_data:
             name = row['name']  # type: str
+            description = row.get('description')  # type: str
             if name.upper() == 'ROOT':
                 continue
             if name in items:
@@ -66,7 +67,7 @@ class ListTaxonomy(Taxonomy):
                                 Found "%s" but name is already used.',
                                name)
                 break
-            items[name] = cls(name=name)
+            items[name] = cls(name=name, description=description)
         else:
             for name, value in items.items():
                 db.session.add(value)
@@ -106,6 +107,7 @@ class TreeTaxonomy(Taxonomy):
         items = OrderedDict()  # type: Dict[str, TreeTaxonomy]
         for row in input_data:
             name = row['name']  # type: str
+            description = row.get('description')  # type: str
             if name in items:
                 logger.warning('Duplicate names are not allowed! \
                                 Found "%s" but "%r" is already used.',
@@ -120,7 +122,7 @@ class TreeTaxonomy(Taxonomy):
                                    name, parent_name)
                     break
                 parent = items[parent_name]
-                items[name] = cls(name=name, parent=parent)
+                items[name] = cls(name=name, parent=parent, description=description)
         else:
             for name, value in items.items():
                 db.session.add(value)

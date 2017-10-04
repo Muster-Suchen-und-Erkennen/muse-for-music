@@ -15,7 +15,7 @@ from ... import app
 # Import taxonomy models:
 from .instruments import Instrument, InstrumentierungEinbettungQualitaet, InstrumentierungEinbettungQuantitaet
 from .chords import Akkord
-from .misc import Anteil, AuftretenWerkausschnitt, AuftretenSatz, Frequenz
+from .misc import *
 from .dissonance import Dissonanzen, Dissonanzgrad
 from .dynamic import *
 from .epoch import Epoche
@@ -23,6 +23,7 @@ from .form import FormaleFunktion, Formschema
 from .gattung import GattungNineteenthCentury, Gattung
 from .harmony import HarmonischeEntwicklung
 from .notes import Grundton
+from .satz import *
 from .tempo import *
 
 
@@ -50,7 +51,7 @@ def init_taxonomies(reload, folder_path: str):
                 tax.clear_all(DB_COMMAND_LOGGER)
             click.echo('Loading taxonomy "{}"'.format(name))
             with open(file) as csv_file:
-                dialect = csv.Sniffer().sniff(csv_file.read(1024))
+                dialect = csv.Sniffer().sniff(csv_file.readline())
                 csv_file.seek(0)
                 reader = csv.DictReader(csv_file, dialect=dialect)
                 tax.load(reader, DB_COMMAND_LOGGER)
