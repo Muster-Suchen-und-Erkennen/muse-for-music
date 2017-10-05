@@ -2,7 +2,7 @@ from typing import TypeVar, Sequence, Dict, Type, List, Union, cast
 from .. import db
 from sqlalchemy.orm import joinedload, subqueryload, Query
 
-X = TypeVar('X', bound=[db.Model, 'GetByID'])
+X = TypeVar('X', bound=db.Model)
 
 
 class GetByID():

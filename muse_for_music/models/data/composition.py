@@ -9,8 +9,8 @@ class Composition(db.Model, GetByID, UpdateListMixin):
     __tablename__ = 'composition'
     id = db.Column(db.Integer, primary_key=True)
 
-    nr_exact_repetitions = db.Column(db.Integer, server_default=0)
-    nr_varied_repetitions = db.Column(db.Integer, server_default=0)
+    nr_exact_repetitions = db.Column(db.Integer, server_default=db.text("'0'"))
+    nr_varied_repetitions = db.Column(db.Integer, server_default=db.text("'0'"))
 
     @property
     def composition_techniques(self):
@@ -26,7 +26,7 @@ class Composition(db.Model, GetByID, UpdateListMixin):
     def sequences(self):
         return self._sequences
 
-    @sequences
+    @sequences.setter
     def sequences(self, sequence_list: Sequence[dict]):
         old_items = {seq.id: seq for seq in self._sequences}
         to_add = []  # type: List[MusicialSequence]
