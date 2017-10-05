@@ -34,7 +34,7 @@ class Opus(db.Model, GetByID):
     genre = db.relationship(GattungNineteenthCentury, lazy='joined')
     # TODO metadata
 
-    _subquery_load = ['instrumentation', 'composer', 'parts']
+    _subquery_load = ['composer', 'parts']
 
     def __init__(self, name: str, composer: any=None, movements:int =1,
                  printed: bool=False, **kwargs) -> None:

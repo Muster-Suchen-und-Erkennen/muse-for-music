@@ -154,7 +154,7 @@ subpart_links = api.inherit('SubPartLinks', with_curies, {
 
 subpart_post = api.model('SubPartPOST', {
     'part_id': fields.Integer(),
-    'label': fields.String(pattern='^[A-Z]+[1-9]?$'),
+    'label': fields.String(pattern='^[A-Z]\'{0,4}$', max_length=5),
 })
 
 subpart_put = api.inherit('SubPartPUT', subpart_post, {

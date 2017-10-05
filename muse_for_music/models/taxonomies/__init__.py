@@ -13,16 +13,18 @@ from ... import app
 
 
 # Import taxonomy models:
+from .ambitus import *
 from .instruments import Instrument, InstrumentierungEinbettungQualitaet, InstrumentierungEinbettungQuantitaet
 from .chords import Akkord
 from .misc import *
 from .dissonance import Dissonanzen, Dissonanzgrad
 from .dynamic import *
 from .epoch import Epoche
-from .form import FormaleFunktion, Formschema
+from .form import *
 from .gattung import GattungNineteenthCentury, Gattung
 from .harmony import HarmonischeEntwicklung
 from .notes import Grundton
+from .melody import *
 from .satz import *
 from .tempo import *
 

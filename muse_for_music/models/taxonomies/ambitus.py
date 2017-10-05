@@ -4,15 +4,15 @@ from .helper_classes import ListTaxonomy, TreeTaxonomy
 __all__ = ['FormaleFunktion', 'Formschema']
 
 
-class FormaleFunktion(db.Model, TreeTaxonomy):
-    """DB Model for formal function."""
-    __tablename__ = 'formale_funktion'
+class AmbitusEntwicklung(db.Model, TreeTaxonomy):
+    """DB Model for ambitus change."""
+    __tablename__ = 'ambitus_entwicklung'
 
     id = db.Column(db.Integer, primary_key=True)
-    parent_id = db.Column(db.Integer, db.ForeignKey('formale_funktion.id', ondelete='CASCADE'))
+    parent_id = db.Column(db.Integer, db.ForeignKey('ambitus_entwicklung.id', ondelete='CASCADE'))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship('FormaleFunktion',
+    children = db.relationship('AmbitusEntwicklung',
                                backref=db.backref('parent',
                                                   remote_side=[id],
                                                   lazy='joined',
@@ -21,8 +21,9 @@ class FormaleFunktion(db.Model, TreeTaxonomy):
                               )
 
 
-class Formschema(db.Model, ListTaxonomy):
+class AmbitusEinbettung(db.Model, ListTaxonomy):
     """DB Model for choices."""
+    __tablename__ = 'ambitus_einbettung'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
