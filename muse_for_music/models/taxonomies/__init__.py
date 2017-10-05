@@ -23,10 +23,11 @@ from .epoch import Epoche
 from .form import *
 from .gattung import GattungNineteenthCentury, Gattung
 from .harmony import HarmonischeEntwicklung
-from .notes import Grundton
+from .notes import *
 from .melody import *
 from .satz import *
 from .tempo import *
+from .composition import *
 
 
 T = TypeVar('T', bound=Taxonomy)

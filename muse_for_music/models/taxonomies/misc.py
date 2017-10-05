@@ -1,7 +1,8 @@
 from ... import db
 from .helper_classes import ListTaxonomy
 
-__all__ = ['AuftretenWerkausschnitt', 'AuftretenSatz', 'Anteil', 'Frequenz']
+__all__ = ['AuftretenWerkausschnitt', 'AuftretenSatz', 'Anteil', 'Frequenz', 'BewegungImTonraum']
+
 
 class AuftretenWerkausschnitt(db.Model, ListTaxonomy):
     """DB Model for choices."""
@@ -29,6 +30,15 @@ class Anteil(db.Model, ListTaxonomy):
 
 class Frequenz(db.Model, ListTaxonomy):
     """DB Model for choices."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120))
+    description = db.Column(db.Text(), nullable=True)
+
+
+class BewegungImTonraum(db.Model, ListTaxonomy):
+    """DB Model for choices."""
+    __tablename__ = 'bewegung_im_tonraum'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))

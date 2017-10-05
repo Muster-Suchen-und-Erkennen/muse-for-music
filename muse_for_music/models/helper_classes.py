@@ -2,7 +2,7 @@ from typing import TypeVar, Sequence, Dict, Type, List, Union, cast
 from .. import db
 from sqlalchemy.orm import joinedload, subqueryload, Query
 
-X = TypeVar('X', bound=db.Model)
+X = TypeVar('X', bound=[db.Model, 'GetByID'])
 
 
 class GetByID():
@@ -22,6 +22,12 @@ class GetByID():
         if options:
             query = query.options(*options)
         return query
+
+    @classmethod
+    def get_by_id_or_dict(cls: Type[X], id: Union[int, dict]) -> X:
+        if isinstance(id, dict):  # for lazy dict passing
+            id = id['id']
+        return cls.get_by_id(id)
 
     @classmethod
     def get_by_id(cls: Type[X], id: int) -> X:

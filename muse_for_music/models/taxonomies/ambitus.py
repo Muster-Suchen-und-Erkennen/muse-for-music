@@ -1,7 +1,7 @@
 from ... import db
 from .helper_classes import ListTaxonomy, TreeTaxonomy
 
-__all__ = ['FormaleFunktion', 'Formschema']
+__all__ = ['AmbitusEntwicklung', 'AmbitusEinbettung']
 
 
 class AmbitusEntwicklung(db.Model, TreeTaxonomy):
