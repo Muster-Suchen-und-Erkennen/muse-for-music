@@ -6,6 +6,7 @@ from typing import Union
 from .measure import Measure
 from .part import Part
 from .form import Form
+from .harmonics import Harmonics
 from .satz import Satz
 from .dramaturgic_context import DramaturgicContext
 from .dynamic import Dynamic, DynamicContext
@@ -29,6 +30,7 @@ class SubPart(db.Model, GetByID):
     rythm_id = db.Column(db.Integer, db.ForeignKey('rythm.id'), nullable=True)
     dynamic_id = db.Column(db.Integer, db.ForeignKey('dynamic.id'), nullable=True)
     dynamic_context_id = db.Column(db.Integer, db.ForeignKey('dynamic_context.id'), nullable=True)
+    harmonics_id = db.Column(db.Integer, db.ForeignKey('harmonics.id'), nullable=True)
 
     part = db.relationship(Part, lazy='select', backref=db.backref('subparts'))
     occurence_in_part = db.relationship(Anteil, lazy='joined')
@@ -41,9 +43,10 @@ class SubPart(db.Model, GetByID):
     rythm = db.relationship(Rythm)
     dynamic = db.relationship(Dynamic)
     dynamic_context = db.relationship(DynamicContext, lazy='subquery')
+    harmonics = db.relationship(Harmonics)
 
     _subquery_load = ['satz', 'form', 'dramaturgic_context', 'composition', 'rythm'
-                      'dynamic']
+                      'dynamic', 'harmonics']
 
     def __init__(self, part_id: Union[int, Part], label: str = 'A'):
         if isinstance(part_id, Part):

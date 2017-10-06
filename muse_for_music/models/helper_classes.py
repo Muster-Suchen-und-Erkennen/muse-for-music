@@ -24,7 +24,9 @@ class GetByID():
         return query
 
     @classmethod
-    def get_by_id_or_dict(cls: Type[X], id: Union[int, dict]) -> X:
+    def get_by_id_or_dict(cls: Type[X], id: Union[int, dict, X]) -> X:
+        if isinstance(id, cls):  # for lazy direct object passing
+            return id
         if isinstance(id, dict):  # for lazy dict passing
             id = id['id']
         return cls.get_by_id(id)

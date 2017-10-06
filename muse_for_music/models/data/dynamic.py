@@ -82,8 +82,8 @@ class DynamicMarking(db.Model, GetByID):
         self.update(lautstaerke, lautstaerke_zusatz)
 
     def update(self, lautstaerke, lautstaerke_zusatz=None):
-        self.lautstaerke = lautstaerke
-        self.lautstaerke_zusatz = lautstaerke_zusatz
+        self.lautstaerke = Lautstaerke.get_by_id_or_dict(lautstaerke)
+        self.lautstaerke_zusatz = LautstaerkeZusatz.get_by_id_or_dict(lautstaerke_zusatz)
 
 
 class LautstaerkeEntwicklungToDynamic(db.Model):
