@@ -71,11 +71,11 @@ class DynamicMarking(db.Model, GetByID):
     id = db.Column(db.Integer, primary_key=True)
     dynamic_id = db.Column(db.Integer, db.ForeignKey('dynamic.id'))
     lautstaerke_id = db.Column(db.Integer, db.ForeignKey('lautstaerke.id'))
-    lautstaerke_zusatz_id = db.Column(db.Integer, db.ForeignKey('lautstaerke_zusatz.id'))
+    lautstaerke_zusatz_id = db.Column(db.Integer, db.ForeignKey('lautstaerke_zusatz.id'), nullable=True)
 
     dynamic = db.relationship(Dynamic, backref=db.backref('_dynamic_markings', lazy='joined'))
     lautstaerke = db.relationship('Lautstaerke')
-    lautstaerke_zusatz = db.relationship('LautstaerkeZusatz', nullable=True)
+    lautstaerke_zusatz = db.relationship('LautstaerkeZusatz')
 
     def __init__(self, dynamic, lautstaerke, lautstaerke_zusatz=None):
         self.dynamic = dynamic

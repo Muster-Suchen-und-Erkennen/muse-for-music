@@ -54,14 +54,14 @@ class TaktartToRythm(db.Model):
 
 class RhythmustypToRythm(db.Model):
     rythm_id = db.Column(db.Integer, db.ForeignKey('rythm.id'), primary_key=True)
-    rhytmustyp_id = db.Column(db.Integer, db.ForeignKey('rhytmustyp.id'), primary_key=True)
+    rhythmustyp_id = db.Column(db.Integer, db.ForeignKey('rhythmustyp.id'), primary_key=True)
 
     rythm = db.relationship(Rythm, backref=db.backref('_rythm_types', lazy='joined'))
-    rhytmustyp = db.relationship('Rhythmustyp')
+    rhythmustyp = db.relationship('Rhythmustyp')
 
-    def __init__(self, rythm, rhytmustyp):
+    def __init__(self, rythm, rhythmustyp):
         self.rythm = rythm
-        self.rhytmustyp = rhytmustyp
+        self.rhythmustyp = rhythmustyp
 
 
 class RhythmischesPhaenomenToRythm(db.Model):
