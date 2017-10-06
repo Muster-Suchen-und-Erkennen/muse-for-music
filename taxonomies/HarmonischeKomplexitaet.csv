@@ -1,0 +1,5 @@
+name,parent,description
+root,,
+niedrig,root,"Sämtliche Klänge lassen sich aus dem diatonischen Material des tonalen Zentrums oder dem Doppeldominantklang bilden."
+eher niedrig,root,"Einsatz von Zwischendominanten und -subdominanten, Verwendung von Terzverwandtschaften 2. bis 4. Ordnung im Umfang von 20% der verwendeten Klänge."
+hoch,root,"Einsatz erweiterter Zwischendominantik, Ellipsen, Verwendung von Terzverwandtschaften 2. bis 4. Ordnung im Umfang von mehr als 20% der verwendeten Klänge."
