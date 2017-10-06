@@ -9,11 +9,9 @@ from .form import Form
 from .satz import Satz
 from .dramaturgic_context import DramaturgicContext
 from .composition import Composition
+from .rythm import Rythm
 from .instrumentation import InstrumentationContext, Instrumentation
 from ..taxonomies import Anteil
-#from .dynamic import DynamicContext
-#from .tempo import TempoContext
-#from ..taxonomies import Anteil
 
 
 class SubPart(db.Model, GetByID):
@@ -27,6 +25,7 @@ class SubPart(db.Model, GetByID):
     form_id = db.Column(db.Integer, db.ForeignKey('form.id'), nullable=True)
     dramaturgic_context_id = db.Column(db.Integer, db.ForeignKey('dramaturgic_context.id'), nullable=True)
     composition_id = db.Column(db.Integer, db.ForeignKey('composition.id'), nullable=True)
+    rythm_id = db.Column(db.Integer, db.ForeignKey('rythm.id'), nullable=True)
 
     part = db.relationship(Part, lazy='select', backref=db.backref('subparts'))
     occurence_in_part = db.relationship(Anteil, lazy='joined')
@@ -36,10 +35,11 @@ class SubPart(db.Model, GetByID):
     form = db.relationship(Form)
     dramaturgic_context = db.relationship(DramaturgicContext)
     composition = db.relationship(Composition)
+    rythm = db.relationship(Rythm)
 
-    _subquery_load = ['satz', 'form', 'dramaturgic_context', 'composition']
+    _subquery_load = ['satz', 'form', 'dramaturgic_context', 'composition', 'rythm']
 
-    def __init__(self, part_id: Union[int, Part], label: str='A'):
+    def __init__(self, part_id: Union[int, Part], label: str = 'A'):
         if isinstance(part_id, Part):
             self.part = part_id
         else:

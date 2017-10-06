@@ -25,6 +25,7 @@ from .gattung import GattungNineteenthCentury, Gattung
 from .harmony import HarmonischeEntwicklung
 from .notes import *
 from .melody import *
+from .rythm import *
 from .satz import *
 from .tempo import *
 from .composition import *
