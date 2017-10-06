@@ -1,6 +1,10 @@
 from ... import db
 from .helper_classes import ListTaxonomy
 
+
+__all__ = ['GattungNineteenthCentury', 'Gattung']
+
+
 class GattungNineteenthCentury(db.Model, ListTaxonomy):
     """DB Model for choices."""
     __tablename__ = 'gattung_nineteenth_century'

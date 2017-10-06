@@ -2,6 +2,9 @@ from ... import db
 from .helper_classes import ListTaxonomy
 
 
+__all__ = ['Dissonanzen', 'Dissonanzgrad']
+
+
 class Dissonanzen(db.Model, ListTaxonomy):
     """DB Model for choices."""
 

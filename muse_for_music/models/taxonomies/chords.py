@@ -3,6 +3,8 @@ from logging import Logger
 from ... import db
 from .helper_classes import TreeTaxonomy
 
+__all__ = ['Akkord']
+
 
 class Akkord(db.Model, TreeTaxonomy):
     """DB Model for chords."""

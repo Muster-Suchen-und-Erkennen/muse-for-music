@@ -14,15 +14,15 @@ from ... import app
 
 # Import taxonomy models:
 from .ambitus import *
-from .instruments import Instrument, InstrumentierungEinbettungQualitaet, InstrumentierungEinbettungQuantitaet
-from .chords import Akkord
+from .instruments import *
+from .chords import *
 from .misc import *
-from .dissonance import Dissonanzen, Dissonanzgrad
+from .dissonance import *
 from .dynamic import *
-from .epoch import Epoche
+from .epoch import *
 from .form import *
-from .gattung import GattungNineteenthCentury, Gattung
-from .harmony import HarmonischeEntwicklung
+from .gattung import *
+from .harmonics import *
 from .notes import *
 from .melody import *
 from .rythm import *

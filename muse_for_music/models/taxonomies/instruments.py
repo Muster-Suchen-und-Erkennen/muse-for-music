@@ -4,6 +4,9 @@ from ... import db
 from .helper_classes import TreeTaxonomy, ListTaxonomy
 
 
+__all__ = ['Instrument', 'InstrumentierungEinbettungQualitaet', 'InstrumentierungEinbettungQuantitaet']
+
+
 class Instrument(db.Model, TreeTaxonomy):
     """DB Model for instruments."""
 

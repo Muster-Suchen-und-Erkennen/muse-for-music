@@ -2,6 +2,9 @@ from ... import db
 from .helper_classes import ListTaxonomy
 
 
+__all__ = ['Epoche']
+
+
 class Epoche(db.Model, ListTaxonomy):
     """DB Model for choices."""
 
