@@ -19,7 +19,7 @@ from ..taxonomies import Anteil
 class SubPart(db.Model, GetByID):
     id = db.Column(db.Integer, primary_key=True)
     part_id = db.Column(db.Integer, db.ForeignKey('part.id'), nullable=False)
-    label = db.Column(db.String(5), nullable=False)
+    label = db.Column(db.String(5), nullable=False, default='A')
     occurence_in_part_id = db.Column(db.Integer, db.ForeignKey('anteil.id'), nullable=True)
     instrumentation_id = db.Column(db.Integer, db.ForeignKey('instrumentation.id'))
     instrumentation_context_id = db.Column(db.Integer, db.ForeignKey('instrumentation_context.id'), nullable=True)

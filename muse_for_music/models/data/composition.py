@@ -44,7 +44,6 @@ class Composition(db.Model, GetByID, UpdateListMixin):
         to_delete = list(old_items.values())  # type: List[MusicialSequence]
         for seq in to_delete:
             db.session.delete(seq)
-        raise NotImplementedError
 
 
 class CompositionTechniqueToComposition(db.Model):

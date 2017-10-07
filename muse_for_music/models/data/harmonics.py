@@ -23,6 +23,29 @@ class Harmonics(db.Model, GetByID, UpdateListMixin):
     harmonic_complexity = db.relationship('HarmonischeKomplexitaet', lazy='joined')
 
     @property
+    def harmonic_centers(self):
+        return self._harmonic_centers
+
+    @harmonic_centers.setter
+    def harmonic_centers(self, harmonic_centers_list: Sequence[dict]):
+        old_items = {center.id: center for center in self._harmonic_centers}
+        to_add = []  # type: List[HarmonicCenter]
+
+        for harmonic_center in harmonic_centers_list:
+            harmonic_center_id = harmonic_center.get('id')
+            if harmonic_center_id in old_items:
+                old_items[harmonic_center_id].update(**harmonic_center)
+                del old_items[harmonic_center_id]
+            else:
+                to_add.append(HarmonicCenter(self, **harmonic_center))
+
+        for center in to_add:
+            db.session.add(center)
+        to_delete = list(old_items.values())  # type: List[HarmonicCenter]
+        for center in to_delete:
+            db.session.delete(center)
+
+    @property
     def harmonic_phenomenons(self):
         return [mapping.harmonische_phaenomene for mapping in self._harmonic_phenomenons]
 
