@@ -4,7 +4,7 @@ from .. import app
 debug_blueprint = Blueprint('debug_routes', __name__, template_folder='templates',
                             static_folder='static')
 
-from . import debug_taxonomies, routes
+from . import debug_taxonomies, routes, debug_db_models
 
 
 @debug_blueprint.route('/')

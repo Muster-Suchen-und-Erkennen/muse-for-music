@@ -1,0 +1,47 @@
+<!doctype html>
+{% autoescape true %}
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>{{ title }}</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+
+<body>
+    <h1>DB Model for "{{classname}}":</h1>
+
+    <a href="{{url_for('debug_routes.model_overview')}}">back</a>
+
+
+    <div>
+        <p>Code for fields:</p>
+        <code>
+            {% for field in model_data['model_fields']: %}
+            {{field}}<br />
+            {% endfor %}
+        </code>
+        <p>Normal fields:</p>
+        <code>{{model_data['normal_attributes']}}</code>
+        <p>Fields containing lists:</p>
+        <code>{{model_data['attributes_containing_lists']}}</code>
+        <p>Fields containing a taxonomy item:</p>
+        <code>
+            {<br />
+            {% for field, tax in model_data['attr_to_tax_map'].items(): %}
+            <span>    </span>'{{field}}': {{tax}}<br />
+            {% endfor %}
+            }<br />
+        </code>
+        <p>Nested fields:</p>
+        <code>{{model_data['nested_attributes']}}</code>
+        <p>Unknown fields:</p>
+        <code>{{model_data['unknown_attributes']}}</code>
+    </div>
+
+</body>
+
+</html>
+{% endautoescape %}

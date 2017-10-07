@@ -13,10 +13,11 @@
 <body>
     <h1>Debug overview:</h1>
 
-    <a href="{{url_for('debug_routes.taxonomies')}}">Taxonomies</a>
-
-
-    <a href="{{url_for('debug_routes.routes')}}">Routes</a>
+    <ul>
+        <li><a href="{{url_for('debug_routes.taxonomies')}}">Taxonomies</a></li>
+        <li><a href="{{url_for('debug_routes.routes')}}">Routes</a></li>
+        <li><a href="{{url_for('debug_routes.model_overview')}}">DB Models</a></li>
+    </ul>
 
 </body>
 
