@@ -24,19 +24,9 @@
             {% endfor %}
         </code>
         <p>Normal fields:</p>
-        <code>{{model_data['normal_attributes']}}</code>
+        <code>({% for field, class in model_data['normal_attributes']: %}('{{field}}', {{class.__name__}}){%- if not loop.last -%}, {%- endif %}{% endfor %})</code>
         <p>Fields containing lists:</p>
         <code>{{model_data['attributes_containing_lists']}}</code>
-        <p>Fields containing a taxonomy item:</p>
-        <code>
-            {<br />
-            {% for field, tax in model_data['attr_to_tax_map'].items(): %}
-            <span>    </span>'{{field}}': {{tax}}<br />
-            {% endfor %}
-            }<br />
-        </code>
-        <p>Nested fields:</p>
-        <code>{{model_data['nested_attributes']}}</code>
         <p>Unknown fields:</p>
         <code>{{model_data['unknown_attributes']}}</code>
     </div>

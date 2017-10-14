@@ -1,9 +1,12 @@
 from ... import db
 from ..taxonomies import SatzartAllgemein, SatzartSpeziell
-from ..helper_classes import GetByID
+from ..helper_classes import GetByID, UpdateableModelMixin
 
 
-class Satz(db.Model, GetByID):
+class Satz(db.Model, GetByID, UpdateableModelMixin):
+
+    _normal_attributes = (('satzart_allgemein', SatzartAllgemein), ('satzart_speziell', SatzartSpeziell))
+
     __tablename__ = 'satz'
     id = db.Column(db.Integer, primary_key=True)
     satzart_allgemein_id = db.Column(db.Integer, db.ForeignKey('satzart_allgemein.id'), nullable=True)

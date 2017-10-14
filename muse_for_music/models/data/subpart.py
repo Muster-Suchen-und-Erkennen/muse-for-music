@@ -1,5 +1,5 @@
 from ... import db
-from ..helper_classes import GetByID
+from ..helper_classes import GetByID, UpdateableModelMixin
 
 from typing import Union
 
@@ -16,9 +16,16 @@ from .instrumentation import InstrumentationContext, Instrumentation
 from ..taxonomies import Anteil
 
 
-class SubPart(db.Model, GetByID):
+class SubPart(db.Model, GetByID, UpdateableModelMixin):
+
+    _normal_attributes = (('dynamic_context', DynamicContext),
+                          ('instrumentation_context', InstrumentationContext),
+                          ('label', str), ('occurence_in_part', Anteil))
+
+    _list_attributes = ('instrumentation',)
+
     id = db.Column(db.Integer, primary_key=True)
-    part_id = db.Column(db.Integer, db.ForeignKey('part.id'), nullable=False)
+    part_id = db.Column(db.Integer, db.ForeignKey('part.id', ondelete='CASCADE'), nullable=False)
     label = db.Column(db.String(5), nullable=False, default='A')
     occurence_in_part_id = db.Column(db.Integer, db.ForeignKey('anteil.id'), nullable=True)
     instrumentation_id = db.Column(db.Integer, db.ForeignKey('instrumentation.id'))

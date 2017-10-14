@@ -1,11 +1,15 @@
 from ... import db
 from ..taxonomies import Verarbeitungstechnik, Intervall, BewegungImTonraum
-from ..helper_classes import GetByID, UpdateListMixin
+from ..helper_classes import GetByID, UpdateListMixin, UpdateableModelMixin
 
 from typing import Union, Sequence, List
 
 
-class Composition(db.Model, GetByID, UpdateListMixin):
+class Composition(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
+
+    _normal_attributes = (('nr_varied_repetitions', int), ('nr_exact_repetitions', int))
+    _list_attributes = ('sequences',)
+
     __tablename__ = 'composition'
     id = db.Column(db.Integer, primary_key=True)
 
@@ -62,7 +66,7 @@ class MusicialSequence(db.Model, GetByID):
     __tablename__ = 'sequence'
     id = db.Column(db.Integer, primary_key=True)
     composition_id = db.Column(db.Integer, db.ForeignKey('composition.id'))
-    tonal_corrected = db.Column(db.Boolean, server_default=db.text('FALSE'))
+    tonal_corrected = db.Column(db.Boolean, default=False)
     starting_interval_id = db.Column(db.Integer, db.ForeignKey('intervall.id'))
     flow_id = db.Column(db.Integer, db.ForeignKey('bewegung_im_tonraum.id'))
     beats = db.Column(db.Integer)

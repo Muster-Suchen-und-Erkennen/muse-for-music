@@ -1,5 +1,5 @@
 from ... import db
-from ..helper_classes import GetByID
+from ..helper_classes import GetByID, UpdateableModelMixin
 
 from .measure import Measure
 from .opus import Opus
@@ -10,7 +10,18 @@ from .form import Form
 from ..taxonomies import AuftretenSatz, Anteil
 
 
-class Part(db.Model, GetByID):
+class Part(db.Model, GetByID, UpdateableModelMixin):
+
+    _normal_attributes = (('measure_start', Measure),
+                          ('measure_end', Measure),
+                          ('length', int),
+                          ('movement', int),
+                          ('occurence_in_movement', Anteil),
+                          ('form', Form),
+                          ('tempo_context', TempoContext),
+                          ('dynamic_context', DynamicContext),
+                          ('instrumentation_context', InstrumentationContext))
+
     id = db.Column(db.Integer, primary_key=True)
     opus_id = db.Column(db.Integer, db.ForeignKey('opus.id'), nullable=False)
     movement = db.Column(db.Integer, nullable=False)

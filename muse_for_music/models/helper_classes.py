@@ -1,6 +1,8 @@
 from typing import TypeVar, Sequence, Dict, Type, List, Union, cast
-from .. import db
+from logging import Logger
+from .. import db, app
 from sqlalchemy.orm import joinedload, subqueryload, Query
+from datetime import datetime, date
 
 X = TypeVar('X', bound=db.Model)
 
@@ -82,3 +84,59 @@ class UpdateListMixin():
                 db.session.add(mapping)
         for mapping in to_delete:
             db.session.delete(mapping)
+
+
+class UpdateableModelMixin():
+
+    _normal_attributes = tuple()  # type: Tuple[Tuple(str,Type)]
+    _reference_only_attributes = tuple()  # type: Tuple[str]
+    _list_attributes = tuple()  # type: Tuple[str]
+
+    def _update_normal_attributes(self, new_values: Dict):
+        for name, cls in self._normal_attributes:
+            value = new_values[name]
+            if issubclass(cls, UpdateableModelMixin):
+                attr_to_update = getattr(self, name)  # type: UpdateableModelMixin
+                if value is None:
+                    setattr(self, name, None)
+                    if attr_to_update is not None:
+                        db.session.delete(attr_to_update)
+                elif attr_to_update is None:
+                    try:
+                        attr_to_update = cls()
+                        setattr(self, name, attr_to_update)
+                        db.session.add(attr_to_update)
+                        if name not in self._reference_only_attributes:
+                            attr_to_update.update(value)
+                    except Exception as e:
+                        logger = app.logger  # type: Logger
+                        logger.exception("Failed to auto instantiate class %s on update of %s",
+                                         cls.__name__, self.__class__.__name__)
+                else:
+                    if name not in self._reference_only_attributes:
+                        attr_to_update.update(value)
+            elif issubclass(cls, GetByID):
+                if value is None:
+                    setattr(self, name, None)
+                    continue
+                cls = cast(GetByID, cls)
+                resolved_value = cls.get_by_id_or_dict(value)
+                setattr(self, name, resolved_value)
+            elif cls in (int, float, str, bool):
+                setattr(self, name, resolved_value)
+            elif cls is date:
+                if value is None:
+                    setattr(self, name, None)
+                    continue
+                parsed_value = datetime.strptime(value, '%Y-%m-%d')
+                parsed_date = parsed_value.date()
+                setattr(self, name, parsed_date)
+
+    def _update_list_attributes(self, new_values: Dict):
+        for name in self._list_attributes:
+            value = new_values[name]
+            setattr(self, name, value)
+
+    def update(self, new_values: Dict):
+        self._update_normal_attributes(new_values)
+        self._update_list_attributes(new_values)

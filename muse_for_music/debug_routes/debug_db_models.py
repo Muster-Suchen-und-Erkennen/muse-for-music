@@ -4,9 +4,10 @@ from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.properties import ColumnProperty
 from sqlalchemy.orm.relationships import RelationshipProperty
 from sqlalchemy.sql.schema import Column
-from sqlalchemy.sql.sqltypes import Integer, Float, String, Boolean
+from sqlalchemy.sql.sqltypes import Integer, Float, String, Boolean, Date, DateTime
 from sqlalchemy.inspection import inspect
 from typing import cast, List, Dict, Union
+from datetime import datetime, date
 
 from flask import render_template, url_for, abort
 from . import debug_blueprint
@@ -80,16 +81,14 @@ def _analyze_db_model(cls):
     _get_class_attributes(attributes, cls, properties, mapper_attrs, table_attributes)
 
     model_fields = []
-    attr_to_tax_map = {}
     attributes_containing_lists = []
-    nested_attributes = []
     normal_attributes = []
     unknown_attributes = []
     for name, attr in table_attributes.items():
         if isinstance(attr, RelationshipProperty):
             mapper = attr.mapper  # type: Mapper
             if issubclass(mapper.class_, Taxonomy):
-                attr_to_tax_map[name] = mapper.class_.__name__
+                normal_attributes.append((name, mapper.class_))
                 model_fields.append("'{}': fields.Nested(taxonomy_item_get, description='{}'),".format(name, mapper.class_.__name__))
             else:
                 if name in properties:
@@ -103,7 +102,7 @@ def _analyze_db_model(cls):
                         model_fields.append("'{}': fields.List(fields.Raw(description='{}')),".format(name, classname))
                 else:
                     model_fields.append("'{}': fields.Raw(description='{}'),".format(name, mapper.class_.__name__))
-                    nested_attributes.append((name, mapper.class_.__name__))
+                    normal_attributes.append((name, mapper.class_))
         if isinstance(attr, ColumnProperty):
             col = attr.columns[0]  # type: Column
             zusatz = ''
@@ -115,25 +114,27 @@ def _analyze_db_model(cls):
                     zusatz = 'default={}'.format(default)
             if isinstance(col.type, Integer):
                 model_fields.append("'{}': fields.Integer({}),".format(name, zusatz))
-                normal_attributes.append(name)
+                if name != 'id':
+                    normal_attributes.append((name, int))
             elif isinstance(col.type, Float):
                 model_fields.append("'{}': fields.Float({}),".format(name, zusatz))
-                normal_attributes.append(name)
+                normal_attributes.append((name, float))
             elif isinstance(col.type, String):
                 model_fields.append("'{}': fields.String({}),".format(name, zusatz))
-                normal_attributes.append(name)
+                normal_attributes.append((name, str))
             elif isinstance(col.type, Boolean):
                 model_fields.append("'{}': fields.Boolean({}),".format(name, zusatz))
-                normal_attributes.append(name)
+                normal_attributes.append((name, bool))
+            elif isinstance(col.type, Date):
+                model_fields.append("'{}': fields.Date({}),".format(name, zusatz))
+                normal_attributes.append((name, date))
             else:
                 unknown_attributes.append((name, col.type))
 
     return {
         'model_fields': model_fields,
-        'attributes_containing_lists': tuple(attributes_containing_lists),
         'normal_attributes': tuple(normal_attributes),
-        'attr_to_tax_map': attr_to_tax_map,
-        'nested_attributes': tuple(nested_attributes),
+        'attributes_containing_lists': tuple(attributes_containing_lists),
         'unknown_attributes': tuple(unknown_attributes),
     }
 

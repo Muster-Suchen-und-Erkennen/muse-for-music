@@ -3,12 +3,21 @@ from ..taxonomies import Frequenz, Grundton, Tonalitaet, HarmonischeFunktion, \
                          HarmonischeEntwicklung, HarmonischeKomplexitaet, \
                          HarmonischeStufe, HarmonischeFunktionVerwandschaft, \
                          HarmonischePhaenomene, Akkord, Dissonanzen, Dissonanzgrad
-from ..helper_classes import GetByID, UpdateListMixin
+from ..helper_classes import GetByID, UpdateListMixin, UpdateableModelMixin
 
 from typing import Union, Sequence, List
 
 
-class Harmonics(db.Model, GetByID, UpdateListMixin):
+class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
+
+    _normal_attributes = (('degree_of_dissonance', Dissonanzgrad),
+                          ('nr_of_different_chords_per_measure', float),
+                          ('frequence_of_harmony_change', Frequenz),
+                          ('harmonic_complexity', HarmonischeKomplexitaet),
+                          ('harmonische_funktion', HarmonischeFunktionVerwandschaft))
+
+    _list_attributes = ('harmonic_centers', 'harmonic_changes', 'harmonic_phenomenons', 'dissonances')
+
     __tablename__ = 'harmonics'
     id = db.Column(db.Integer, primary_key=True)
     harmonic_function_modulation_id = db.Column(db.Integer, db.ForeignKey('harmonische_funktion_verwandschaft.id'))

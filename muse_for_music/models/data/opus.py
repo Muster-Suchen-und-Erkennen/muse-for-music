@@ -1,12 +1,24 @@
 from ... import db
-from ..helper_classes import GetByID
+from ..helper_classes import GetByID, UpdateableModelMixin
 
 from ..taxonomies.gattung import GattungNineteenthCentury
 from .instrumentation import Instrumentation
 from .people import Person
 
 
-class Opus(db.Model, GetByID):
+class Opus(db.Model, GetByID, UpdateableModelMixin):
+
+    _normal_attributes = (('opus_name', str), ('composition_year', int),
+                          ('notes', str), ('score_link', str), ('publisher', str),
+                          ('printed', bool), ('composer', Person), ('name', str),
+                          ('occasion', str), ('original_name', str),
+                          ('movements', int), ('genre', GattungNineteenthCentury),
+                          ('first_printed_in', int), ('dedication', str))
+
+    _reference_only_attributes = ('composer', )
+
+    _list_attributes = ('instrumentation', )
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True, index=True)
     original_name = db.Column(db.String(255), unique=True, index=True, nullable=True)

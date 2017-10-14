@@ -1,12 +1,15 @@
 
 from ... import db
-from ..helper_classes import GetByID
+from ..helper_classes import GetByID, UpdateableModelMixin
 from ..taxonomies import Lautstaerke, LautstaerkeEinbettung, LautstaerkeZusatz, LautstaerkeEntwicklung
 
 from typing import Union, Sequence, List
 
 
-class Dynamic(db.Model, GetByID):
+class Dynamic(db.Model, GetByID, UpdateableModelMixin):
+
+    _list_attributes = ('dynamic_markings', 'dynamic_changes')
+
     __tablename__ = 'dynamic'
     id = db.Column(db.Integer, primary_key=True)
 

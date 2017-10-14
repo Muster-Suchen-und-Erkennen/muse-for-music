@@ -1,13 +1,17 @@
 from ... import db
 from ..taxonomies import Taktart, Rhythmustyp, RhythmischesPhaenomen
-from ..helper_classes import GetByID, UpdateListMixin
+from ..helper_classes import GetByID, UpdateListMixin, UpdateableModelMixin
 from typing import Union, Sequence, List
 
 
-class Rythm(db.Model, GetByID, UpdateListMixin):
+class Rythm(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
+
+    _normal_attributes = (('polymetric', bool), )
+    _list_attributes = ('rythmic_phenomenons', 'measure_times', 'rythm_types')
+
     __tablename__ = 'rythm'
     id = db.Column(db.Integer, primary_key=True)
-    polymetric = db.Column(db.Boolean, server_default=db.text('FALSE'))
+    polymetric = db.Column(db.Boolean, default=False)
 
     @property
     def measure_times(self):

@@ -1,10 +1,16 @@
 
 from ... import db
-from ..helper_classes import GetByID
+from ..helper_classes import GetByID, UpdateableModelMixin
 from ..taxonomies import TempoEinbettung, TempoEntwicklung
 
 
-class TempoContext(db.Model, GetByID):
+class TempoContext(db.Model, GetByID, UpdateableModelMixin):
+
+    _normal_attributes = (('tempo_trend_before', TempoEntwicklung),
+                          ('tempo_trend_after', TempoEntwicklung),
+                          ('tempo_context_before', TempoEinbettung),
+                          ('tempo_context_after', TempoEinbettung))
+
     __tablename__ = 'tempo_context'
     id = db.Column(db.Integer, primary_key=True)
 
