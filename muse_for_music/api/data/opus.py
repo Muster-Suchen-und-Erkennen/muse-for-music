@@ -59,7 +59,7 @@ class OpusResource(Resource):
 
         attrs = ('name', 'publisher', 'dedication', 'printed',
                  'occasion', 'original_name', 'movements', 'opus_name',
-                 'notes')
+                 'notes', 'instrumentation')
         # "composition_place": "TODO",
         # "genre": "string",
         # "composer": 0,
@@ -67,15 +67,11 @@ class OpusResource(Resource):
         for attribute in attrs:
             if attribute in new_values:
                 setattr(opus, attribute, new_values[attribute])
-                print(attribute, new_values[attribute])
 
         for attribute in ('composition_year', 'first_printed_in'):
             if attribute in new_values:
                 value = parse_date(new_values[attribute])
                 setattr(opus, attribute, value)
-
-        if 'instrumentation' in new_values:
-            opus.instrumentation.instruments = new_values['instrumentation']['instruments']
 
         db.session.add(opus)
         db.session.commit()

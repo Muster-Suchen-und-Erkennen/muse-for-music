@@ -41,7 +41,7 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
     genre_id = db.Column(db.Integer, db.ForeignKey('gattung_nineteenth_century.id'))
 
     composer = db.relationship('Person', lazy='select')
-    _instrumentation = db.relationship('Instrumentation', lazy='subquery')  # type: Instrumentation
+    _instrumentation = db.relationship('Instrumentation', lazy='subquery', single_parent=True, cascade="all, delete-orphan")  # type: Instrumentation
     # TODO form
     genre = db.relationship(GattungNineteenthCentury, lazy='joined')
     # TODO metadata

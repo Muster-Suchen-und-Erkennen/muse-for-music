@@ -18,9 +18,17 @@ from ..taxonomies import Anteil
 
 class SubPart(db.Model, GetByID, UpdateableModelMixin):
 
-    _normal_attributes = (('dynamic_context', DynamicContext),
+    _normal_attributes = (('label', str),
+                          ('occurence_in_part', Anteil),
+                          ('dynamic', Dynamic),
+                          ('composition', Composition),
                           ('instrumentation_context', InstrumentationContext),
-                          ('label', str), ('occurence_in_part', Anteil))
+                          ('satz', Satz),
+                          ('harmonics', Harmonics),
+                          ('rythm', Rythm),
+                          ('dynamic_context', DynamicContext),
+                          ('form', Form),
+                          ('dramaturgic_context', DramaturgicContext))
 
     _list_attributes = ('instrumentation',)
 
@@ -39,20 +47,20 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin):
     dynamic_context_id = db.Column(db.Integer, db.ForeignKey('dynamic_context.id'), nullable=True)
     harmonics_id = db.Column(db.Integer, db.ForeignKey('harmonics.id'), nullable=True)
 
-    part = db.relationship(Part, lazy='select', backref=db.backref('subparts'))
-    occurence_in_part = db.relationship(Anteil, lazy='joined')
-    _instrumentation = db.relationship('Instrumentation', lazy='subquery')  # type: Instrumentation
-    instrumentation_context = db.relationship(InstrumentationContext, lazy='subquery')
-    satz = db.relationship(Satz)
-    form = db.relationship(Form)
-    dramaturgic_context = db.relationship(DramaturgicContext)
-    composition = db.relationship(Composition)
-    rythm = db.relationship(Rythm)
-    dynamic = db.relationship(Dynamic)
-    dynamic_context = db.relationship(DynamicContext, lazy='subquery')
-    harmonics = db.relationship(Harmonics)
+    part = db.relationship(Part, lazy='select', backref=db.backref('subparts', single_parent=True, cascade="all, delete-orphan"))
+    occurence_in_part = db.relationship(Anteil, lazy='joined', single_parent=True, cascade="all, delete-orphan")
+    _instrumentation = db.relationship('Instrumentation', lazy='subquery', single_parent=True, cascade="all, delete-orphan")  # type: Instrumentation
+    instrumentation_context = db.relationship(InstrumentationContext, lazy='subquery', single_parent=True, cascade="all, delete-orphan")
+    satz = db.relationship(Satz, single_parent=True, cascade="all, delete-orphan")
+    form = db.relationship(Form, single_parent=True, cascade="all, delete-orphan")
+    dramaturgic_context = db.relationship(DramaturgicContext, single_parent=True, cascade="all, delete-orphan")
+    composition = db.relationship(Composition, single_parent=True, cascade="all, delete-orphan")
+    rythm = db.relationship(Rythm, single_parent=True, cascade="all, delete-orphan")
+    dynamic = db.relationship(Dynamic, single_parent=True, cascade="all, delete-orphan")
+    dynamic_context = db.relationship(DynamicContext, single_parent=True, lazy='subquery', cascade="all, delete-orphan")
+    harmonics = db.relationship(Harmonics, single_parent=True, cascade="all, delete-orphan")
 
-    _subquery_load = ['satz', 'form', 'dramaturgic_context', 'composition', 'rythm'
+    _subquery_load = ['satz', 'form', 'dramaturgic_context', 'composition', 'rythm',
                       'dynamic', 'harmonics']
 
     def __init__(self, part_id: Union[int, Part], label: str = 'A'):
@@ -67,6 +75,9 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin):
 
         self.satz = Satz()
         db.session.add(self.satz)
+
+        self._instrumentation = Instrumentation()
+        db.session.add(self._instrumentation)
 
     @property
     def instrumentation(self):

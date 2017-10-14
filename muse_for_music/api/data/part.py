@@ -47,63 +47,8 @@ class PartResource(Resource):
             abort(404, 'Requested part not found!')
         new_values = request.get_json()
 
-        if 'movement' in new_values:
-            part.movement = new_values['movement']
+        part.update(new_values)
 
-        if 'length' in new_values:
-            part.length = new_values['length']
-
-        for attribute in ('measure_start', 'measure_end'):
-            if attribute in new_values:
-                measure = getattr(part, attribute)  # type: Measure
-                new = new_values[attribute]
-                measure.from_page = new['from_page']
-                measure.measure = new['measure']
-                db.session.add(measure)
-
-        if 'occurence_in_movement' in new_values:
-            pass
-
-        if 'instrumentation_context' in new_values:
-            context = part.instrumentation_context
-            # quantity
-            id_before = new_values['instrumentation_quantity_before']['id']
-            id_after = new_values['instrumentation_quantity_after']['id']
-            context.instr_quantity_before = InstrumentierungEinbettungQuantitaet.get_by_id(id_before)
-            context.instr_quantity_after = InstrumentierungEinbettungQuantitaet.get_by_id(id_after)
-            # quality
-            id_before = new_values['instrumentation_quantity_before']['id']
-            id_after = new_values['instrumentation_quantity_after']['id']
-            context.instr_quality_before = InstrumentierungEinbettungQualitaet.get_by_id(id_before)
-            context.instr_quality_after = InstrumentierungEinbettungQualitaet.get_by_id(id_after)
-
-        if 'dynamic_context' in new_values:
-            context = part.dynamic_context
-            # loudness
-            id_before = new_values['loudness_before']['id']
-            id_after = new_values['loudness_after']['id']
-            context.loudness_before = Lautstaerke.get_by_id(id_before)
-            context.loudness_after = Lautstaerke.get_by_id(id_after)
-            # dynamic trend
-            id_before = new_values['dynamic_trend_before']['id']
-            id_after = new_values['dynamic_trend_after']['id']
-            context.dynamic_trend_before = LautstaerkeEinbettung.get_by_id(id_before)
-            context.dynamic_trend_after = LautstaerkeEinbettung.get_by_id(id_after)
-
-        if 'tempo_context' in new_values:
-            context = part.tempo_context
-            # context
-            id_before = new_values['tempo_context_before']['id']
-            id_after = new_values['tempo_context_after']['id']
-            context.tempo_context_before = TempoEinbettung.get_by_id(id_before)
-            context.tempo_context_after = TempoEinbettung.get_by_id(id_after)
-            # trend
-            id_before = new_values['tempo_trend_before']['id']
-            id_after = new_values['tempo_trend_after']['id']
-            context.tempo_trend_before = TempoEntwicklung.get_by_id(id_before)
-            context.tempo_trend_after = TempoEntwicklung.get_by_id(id_after)
-
-        db.session.add(part)
         db.session.commit()
         return marshal(part, part_get)
 

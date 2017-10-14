@@ -34,14 +34,14 @@ class Part(db.Model, GetByID, UpdateableModelMixin):
     tempo_context_id = db.Column(db.Integer, db.ForeignKey('tempo_context.id'), nullable=True)
     form_id = db.Column(db.Integer, db.ForeignKey('form.id'), nullable=True)
 
-    opus = db.relationship(Opus, lazy='select', backref=db.backref('parts'))
-    measure_start = db.relationship(Measure, foreign_keys=[measure_start_id], lazy='joined')
-    measure_end = db.relationship(Measure, foreign_keys=[measure_end_id], lazy='joined')
+    opus = db.relationship(Opus, lazy='select', backref=db.backref('parts', cascade="all, delete-orphan"))
+    measure_start = db.relationship(Measure, foreign_keys=[measure_start_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
+    measure_end = db.relationship(Measure, foreign_keys=[measure_end_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
     occurence_in_movement = db.relationship(Anteil, lazy='joined')
-    instrumentation_context = db.relationship(InstrumentationContext, lazy='joined')
-    dynamic_context = db.relationship(DynamicContext, lazy='joined')
-    tempo_context = db.relationship(TempoContext, lazy='joined')
-    form = db.relationship(Form, lazy='joined')
+    instrumentation_context = db.relationship(InstrumentationContext, lazy='joined', single_parent=True, cascade="all, delete-orphan")
+    dynamic_context = db.relationship(DynamicContext, lazy='joined', single_parent=True, cascade="all, delete-orphan")
+    tempo_context = db.relationship(TempoContext, lazy='joined', single_parent=True, cascade="all, delete-orphan")
+    form = db.relationship(Form, lazy='joined', single_parent=True, cascade="all, delete-orphan")
 
     def __init__(self, opus_id: int, measure_start: dict, measure_end: dict,
                  occurence_in_movement, length: int=1, movement: int=1):
