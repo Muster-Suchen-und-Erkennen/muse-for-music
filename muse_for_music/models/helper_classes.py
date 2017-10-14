@@ -140,3 +140,4 @@ class UpdateableModelMixin():
     def update(self, new_values: Dict):
         self._update_normal_attributes(new_values)
         self._update_list_attributes(new_values)
+        db.session.add(self)
