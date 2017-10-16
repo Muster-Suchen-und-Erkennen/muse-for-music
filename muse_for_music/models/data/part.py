@@ -44,7 +44,7 @@ class Part(db.Model, GetByID, UpdateableModelMixin):
     form = db.relationship(Form, lazy='joined', single_parent=True, cascade="all, delete-orphan")
 
     def __init__(self, opus_id: int, measure_start: dict, measure_end: dict,
-                 occurence_in_movement, length: int=1, movement: int=1):
+                 occurence_in_movement, length: int=1, movement: int=1, **kwargs):
         self.opus = Opus.get_by_id(opus_id)
         self.movement = movement
         self.measure_start = Measure(**measure_start)

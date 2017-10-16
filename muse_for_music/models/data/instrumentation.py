@@ -27,7 +27,7 @@ class InstumentationToInstrument(db.Model):
     instrumentation = db.relationship(Instrumentation, backref=db.backref('_instruments', lazy='joined'))
     instrument = db.relationship('Instrument')
 
-    def __init__(self, instrumentation, instrument):
+    def __init__(self, instrumentation, instrument, **kwargs):
         self.instrumentation = instrumentation
         self.instrument = instrument
 

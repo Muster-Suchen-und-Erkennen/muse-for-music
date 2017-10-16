@@ -80,7 +80,7 @@ class DynamicMarking(db.Model, GetByID):
     lautstaerke = db.relationship('Lautstaerke')
     lautstaerke_zusatz = db.relationship('LautstaerkeZusatz')
 
-    def __init__(self, dynamic, lautstaerke, lautstaerke_zusatz=None):
+    def __init__(self, dynamic, lautstaerke, lautstaerke_zusatz=None, **kwargs):
         self.dynamic = dynamic
         self.update(lautstaerke, lautstaerke_zusatz)
 
@@ -96,6 +96,6 @@ class LautstaerkeEntwicklungToDynamic(db.Model):
     dynamic = db.relationship(Dynamic, backref=db.backref('_dynamic_changes', lazy='joined'))
     lautstaerke_entwicklung = db.relationship('LautstaerkeEntwicklung')
 
-    def __init__(self, dynamic, lautstaerke_entwicklung):
+    def __init__(self, dynamic, lautstaerke_entwicklung, **kwargs):
         self.dynamic = dynamic
         self.lautstaerke_entwicklung = lautstaerke_entwicklung

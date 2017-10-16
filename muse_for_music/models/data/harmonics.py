@@ -109,7 +109,7 @@ class HarmonicCenter(db.Model):
     harmonische_funktion = db.relationship('HarmonischeFunktion', lazy='joined')
     harmonische_stufe = db.relationship('HarmonischeStufe', lazy='joined')
 
-    def __init__(self, harmonics, grundton, tonalitaet, harmonische_funktion, harmonische_stufe):
+    def __init__(self, harmonics, grundton, tonalitaet, harmonische_funktion, harmonische_stufe, **kwargs):
         self.harmonics = harmonics
         self.update(grundton, tonalitaet, harmonische_funktion, harmonische_stufe)
 
@@ -127,7 +127,7 @@ class HarmonischePhaenomeneToHarmonics(db.Model):
     harmonics = db.relationship(Harmonics, backref=db.backref('_harmonic_phenomenons', lazy='joined'))
     harmonische_phaenomene = db.relationship('HarmonischePhaenomene')
 
-    def __init__(self, harmonics, harmonische_phaenomene):
+    def __init__(self, harmonics, harmonische_phaenomene, **kwargs):
         self.harmonics = harmonics
         self.harmonische_phaenomene = harmonische_phaenomene
 
@@ -139,7 +139,7 @@ class HarmonischeEntwicklungToHarmonics(db.Model):
     harmonics = db.relationship(Harmonics, backref=db.backref('_harmonic_changes', lazy='joined'))
     harmonische_entwicklung = db.relationship('HarmonischeEntwicklung')
 
-    def __init__(self, harmonics, harmonische_entwicklung):
+    def __init__(self, harmonics, harmonische_entwicklung, **kwargs):
         self.harmonics = harmonics
         self.harmonische_entwicklung = harmonische_entwicklung
 
@@ -151,7 +151,7 @@ class AkkordToHarmonics(db.Model):
     harmonics = db.relationship(Harmonics, backref=db.backref('_special_cords', lazy='joined'))
     akkord = db.relationship('Akkord')
 
-    def __init__(self, harmonics, akkord):
+    def __init__(self, harmonics, akkord, **kwargs):
         self.harmonics = harmonics
         self.akkord = akkord
 
@@ -163,6 +163,6 @@ class DissonanzenToHarmonics(db.Model):
     harmonics = db.relationship(Harmonics, backref=db.backref('_dissonances', lazy='joined'))
     dissonanzen = db.relationship('Dissonanzen')
 
-    def __init__(self, harmonics, dissonanzen):
+    def __init__(self, harmonics, dissonanzen, **kwargs):
         self.harmonics = harmonics
         self.dissonanzen = dissonanzen

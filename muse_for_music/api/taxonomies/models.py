@@ -39,11 +39,11 @@ taxonomy_item_post = ns.model('TaxonomyItemPOST', {
 })
 
 taxonomy_item_put = ns.inherit('TaxonomyItemPUT', taxonomy_item_post, {
-    'id': fields.Integer(required=True),
+    'id': fields.Integer(required=True, example=1),
 })
 
 taxonomy_item_get = ns.inherit('TaxonomyItemGET', taxonomy_item_put, {
-    'id': fields.Integer(readonly=True),
+    'id': fields.Integer(readonly=True, example=1),
     '_links': NestedFields(taxonomy_item_links),
 })
 

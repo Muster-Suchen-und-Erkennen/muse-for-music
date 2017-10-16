@@ -18,18 +18,6 @@ def parse_date(date_str: str) -> date:
     return parsed_date.date()
 
 
-data_links = api.inherit('DataLinks', with_curies, {
-    'self': HaLUrl(UrlData('api.data_data_resource', absolute=True)),
-    'person': HaLUrl(UrlData('api.person_person_list_resource', absolute=True)),
-    'opus': HaLUrl(UrlData('api.opus_opus_list_resource', absolute=True)),
-    'instrumentation': HaLUrl(UrlData('api.instrumentation_instrumentation_list_resource', absolute=True)),
-})
-
-data_model = api.model('DataModel', {
-    '_links': NestedFields(data_links),
-})
-
-
 class GenderField(fields.Raw, fields.StringMixin):
     __schema_type__ = 'string'
 
@@ -72,7 +60,7 @@ person_put = api.inherit('PersonPUT', person_post, {
 })
 
 person_get = api.inherit('PersonGET', person_put, {
-    'id': fields.Integer(readonly=True),
+    'id': fields.Integer(readonly=True, example=1),
     '_links': NestedFields(person_links),
 })
 
@@ -82,6 +70,7 @@ instrumentation_links = api.model('InstrumentationLinks', {
 })
 
 instrumentation_context_put = api.model('InstrumentationContextPUT', {
+    'id': fields.Integer(readonly=True, example=1),
     'instrumentation_quantity_before': fields.Nested(taxonomy_item_put),
     'instrumentation_quantity_after': fields.Nested(taxonomy_item_put),
     'instrumentation_quality_before': fields.Nested(taxonomy_item_put),
@@ -89,6 +78,7 @@ instrumentation_context_put = api.model('InstrumentationContextPUT', {
 })
 
 instrumentation_context_get = api.model('InstrumentationContextGET', {
+    'id': fields.Integer(readonly=True, example=1),
     'instrumentation_quantity_before': fields.Nested(taxonomy_item_get),
     'instrumentation_quantity_after': fields.Nested(taxonomy_item_get),
     'instrumentation_quality_before': fields.Nested(taxonomy_item_get),
@@ -96,6 +86,7 @@ instrumentation_context_get = api.model('InstrumentationContextGET', {
 })
 
 dynamic_context_put = api.model('DynamicContextPUT', {
+    'id': fields.Integer(readonly=True, example=1),
     'loudness_before': fields.Nested(taxonomy_item_put),
     'loudness_after': fields.Nested(taxonomy_item_put),
     'dynamic_trend_before': fields.Nested(taxonomy_item_put),
@@ -103,6 +94,7 @@ dynamic_context_put = api.model('DynamicContextPUT', {
 })
 
 dynamic_context_get = api.model('DynamicContextGET', {
+    'id': fields.Integer(readonly=True, example=1),
     'loudness_before': fields.Nested(taxonomy_item_get),
     'loudness_after': fields.Nested(taxonomy_item_get),
     'dynamic_trend_before': fields.Nested(taxonomy_item_get),
@@ -110,6 +102,7 @@ dynamic_context_get = api.model('DynamicContextGET', {
 })
 
 tempo_context_put = api.model('TempoContextPUT', {
+    'id': fields.Integer(readonly=True, example=1),
     'tempo_context_before': fields.Nested(taxonomy_item_put),
     'tempo_context_after': fields.Nested(taxonomy_item_put),
     'tempo_trend_before': fields.Nested(taxonomy_item_put),
@@ -117,6 +110,7 @@ tempo_context_put = api.model('TempoContextPUT', {
 })
 
 tempo_context_get = api.model('TempoContextGET', {
+    'id': fields.Integer(readonly=True, example=1),
     'tempo_context_before': fields.Nested(taxonomy_item_get),
     'tempo_context_after': fields.Nested(taxonomy_item_get),
     'tempo_trend_before': fields.Nested(taxonomy_item_get),
@@ -124,29 +118,50 @@ tempo_context_get = api.model('TempoContextGET', {
 })
 
 form_put = api.model('FormPUT', {
-    'id': fields.Integer(),
+    'id': fields.Integer(readonly=True, example=1),
     'contains_theme': fields.Boolean(default=True),
     'form_schema': fields.Nested(taxonomy_item_put, description='Formschema'),
     'formal_function': fields.Nested(taxonomy_item_put, description='FormaleFunktion'),
 })
 
 form_get = api.model('FormGET', {
-    'id': fields.Integer(),
+    'id': fields.Integer(readonly=True, example=1),
     'contains_theme': fields.Boolean(default=True),
     'form_schema': fields.Nested(taxonomy_item_get, description='Formschema'),
     'formal_function': fields.Nested(taxonomy_item_get, description='FormaleFunktion'),
 })
 
+harmonic_center_put = api.model('HarmonicCenterPUT', {
+    'id': fields.Integer(readonly=True, example=1),
+    'tonalitaet': fields.Nested(taxonomy_item_put, description='Tonalitaet'),
+    'harmonische_funktion': fields.Nested(taxonomy_item_put, description='HarmonischeFunktion'),
+    'grundton': fields.Nested(taxonomy_item_put, description='Grundton'),
+    'harmonische_stufe': fields.Nested(taxonomy_item_put, description='HarmonischeStufe'),
+})
+
 harmonic_center_get = api.model('HarmonicCenterGET', {
-    'id': fields.Integer(),
+    'id': fields.Integer(readonly=True, example=1),
     'tonalitaet': fields.Nested(taxonomy_item_get, description='Tonalitaet'),
     'harmonische_funktion': fields.Nested(taxonomy_item_get, description='HarmonischeFunktion'),
     'grundton': fields.Nested(taxonomy_item_get, description='Grundton'),
     'harmonische_stufe': fields.Nested(taxonomy_item_get, description='HarmonischeStufe'),
 })
 
+harmonics_put = api.model('HarmonicsPUT', {
+    'id': fields.Integer(readonly=True, example=1),
+    'degree_of_dissonance': fields.Nested(taxonomy_item_put, description='Dissonanzgrad'),
+    'dissonances': fields.List(fields.Nested(taxonomy_item_put, description='Dissonanzen')),
+    'harmonic_complexity': fields.Nested(taxonomy_item_put, description='HarmonischeKomplexitaet'),
+    'nr_of_different_chords_per_measure': fields.Float(),
+    'frequence_of_harmony_change': fields.Nested(taxonomy_item_put, description='Frequenz'),
+    'harmonic_phenomenons': fields.List(fields.Nested(taxonomy_item_put, description='HarmonischePhaenomene')),
+    'harmonic_changes': fields.List(fields.Nested(taxonomy_item_put, description='HarmonischeEntwicklung')),
+    'harmonische_funktion': fields.Nested(taxonomy_item_put, description='HarmonischeFunktionVerwandschaft'),
+    'harmonic_centers': fields.List(fields.Nested(harmonic_center_put, description='HarmonicCenter')),
+})
+
 harmonics_get = api.model('HarmonicsGET', {
-    'id': fields.Integer(),
+    'id': fields.Integer(readonly=True, example=1),
     'degree_of_dissonance': fields.Nested(taxonomy_item_get, description='Dissonanzgrad'),
     'dissonances': fields.List(fields.Nested(taxonomy_item_get, description='Dissonanzen')),
     'harmonic_complexity': fields.Nested(taxonomy_item_get, description='HarmonischeKomplexitaet'),
@@ -158,8 +173,18 @@ harmonics_get = api.model('HarmonicsGET', {
     'harmonic_centers': fields.List(fields.Nested(harmonic_center_get, description='HarmonicCenter')),
 })
 
+dramaturgic_context_put = api.model('DramaturgicContextPUT', {
+    'id': fields.Integer(readonly=True, example=1),
+    'ambitus_context_after': fields.Nested(taxonomy_item_put, description='AmbitusEinbettung'),
+    'melodic_line_before': fields.Nested(taxonomy_item_put, description='Melodiebewegung'),
+    'ambitus_change_after': fields.Nested(taxonomy_item_put, description='AmbitusEntwicklung'),
+    'ambitus_context_before': fields.Nested(taxonomy_item_put, description='AmbitusEinbettung'),
+    'ambitus_change_before': fields.Nested(taxonomy_item_put, description='AmbitusEntwicklung'),
+    'melodic_line_after': fields.Nested(taxonomy_item_put, description='Melodiebewegung'),
+})
+
 dramaturgic_context_get = api.model('DramaturgicContextGET', {
-    'id': fields.Integer(),
+    'id': fields.Integer(readonly=True, example=1),
     'ambitus_context_after': fields.Nested(taxonomy_item_get, description='AmbitusEinbettung'),
     'melodic_line_before': fields.Nested(taxonomy_item_get, description='Melodiebewegung'),
     'ambitus_change_after': fields.Nested(taxonomy_item_get, description='AmbitusEntwicklung'),
@@ -168,42 +193,83 @@ dramaturgic_context_get = api.model('DramaturgicContextGET', {
     'melodic_line_after': fields.Nested(taxonomy_item_get, description='Melodiebewegung'),
 })
 
+rhythm_put = api.model('RhythmPUT', {
+    'id': fields.Integer(readonly=True, example=1),
+    'measure_times': fields.List(fields.Nested(taxonomy_item_put, description='Taktart')),
+    'rythmic_phenomenons': fields.List(fields.Nested(taxonomy_item_put, description='RhythmischesPhaenomen')),
+    'rythm_types': fields.List(fields.Nested(taxonomy_item_put, description='Rhythmustyp')),
+    'polymetric': fields.Boolean(default=False),
+})
+
 rhythm_get = api.model('RhythmGET', {
-    'id': fields.Integer(),
+    'id': fields.Integer(readonly=True, example=1),
     'measure_times': fields.List(fields.Nested(taxonomy_item_get, description='Taktart')),
     'rythmic_phenomenons': fields.List(fields.Nested(taxonomy_item_get, description='RhythmischesPhaenomen')),
     'rythm_types': fields.List(fields.Nested(taxonomy_item_get, description='Rhythmustyp')),
     'polymetric': fields.Boolean(default=False),
 })
 
+dynamic_marking_put = api.model('DynamicMarkingPUT', {
+    'id': fields.Integer(readonly=True, example=1),
+    'lautstaerke_zusatz': fields.Nested(taxonomy_item_put, description='LautstaerkeZusatz'),
+    'lautstaerke': fields.Nested(taxonomy_item_put, description='Lautstaerke'),
+})
+
 dynamic_marking_get = api.model('DynamicMarkingGET', {
-    'id': fields.Integer(),
+    'id': fields.Integer(readonly=True, example=1),
     'lautstaerke_zusatz': fields.Nested(taxonomy_item_get, description='LautstaerkeZusatz'),
     'lautstaerke': fields.Nested(taxonomy_item_get, description='Lautstaerke'),
 })
 
+dynamic_put = api.model('DynamicPUT', {
+    'id': fields.Integer(readonly=True, example=1),
+    'dynamic_changes': fields.List(fields.Nested(taxonomy_item_put, description='LautstaerkeEntwicklung')),
+    'dynamic_markings': fields.List(fields.Nested(dynamic_marking_put, description='DynamicMarking')),
+})
+
 dynamic_get = api.model('DynamicGET', {
-    'id': fields.Integer(),
+    'id': fields.Integer(readonly=True, example=1),
     'dynamic_changes': fields.List(fields.Nested(taxonomy_item_get, description='LautstaerkeEntwicklung')),
     'dynamic_markings': fields.List(fields.Nested(dynamic_marking_get, description='DynamicMarking')),
 })
 
+satz_put = api.model('SatzPUT', {
+    'id': fields.Integer(readonly=True, example=1),
+    'satzart_allgemein': fields.Nested(taxonomy_item_put, description='SatzartAllgemein'),
+    'satzart_speziell': fields.Nested(taxonomy_item_put, description='SatzartSpeziell'),
+})
+
 satz_get = api.model('SatzGET', {
-    'id': fields.Integer(),
+    'id': fields.Integer(readonly=True, example=1),
     'satzart_allgemein': fields.Nested(taxonomy_item_get, description='SatzartAllgemein'),
     'satzart_speziell': fields.Nested(taxonomy_item_get, description='SatzartSpeziell'),
 })
 
+musicial_sequence_put = api.model('MusicialSequencePUT', {
+    'id': fields.Integer(readonly=True, example=1),
+    'beats': fields.Integer(),
+    'flow': fields.Nested(taxonomy_item_put, description='BewegungImTonraum'),
+    'tonal_corrected': fields.Boolean(default=False),
+    'starting_interval': fields.Nested(taxonomy_item_put, description='Intervall'),
+})
+
 musicial_sequence_get = api.model('MusicialSequenceGET', {
-    'id': fields.Integer(),
+    'id': fields.Integer(readonly=True, example=1),
     'beats': fields.Integer(),
     'flow': fields.Nested(taxonomy_item_get, description='BewegungImTonraum'),
     'tonal_corrected': fields.Boolean(default=False),
     'starting_interval': fields.Nested(taxonomy_item_get, description='Intervall'),
 })
 
+composition_put = api.model('CompositionPUT', {
+    'id': fields.Integer(readonly=True, example=1),
+    'sequences': fields.List(fields.Nested(musicial_sequence_put, description='MusicialSequence')),
+    'nr_varied_repetitions': fields.Integer(),
+    'nr_exact_repetitions': fields.Integer(),
+})
+
 composition_get = api.model('CompositionGET', {
-    'id': fields.Integer(),
+    'id': fields.Integer(readonly=True, example=1),
     'sequences': fields.List(fields.Nested(musicial_sequence_get, description='MusicialSequence')),
     'nr_varied_repetitions': fields.Integer(),
     'nr_exact_repetitions': fields.Integer(),
@@ -222,18 +288,17 @@ part_links = api.inherit('PartLinks', with_curies, {
 })
 
 part_post = api.model('PartPOST', {
-    'opus_id': fields.Integer(),
-    'measure_start': fields.Nested(measure_model),
-    'measure_end': fields.Nested(measure_model),
-    'length': fields.Integer(min=1),
-    'occurence_in_movement': fields.Nested(taxonomy_item_put),
+    'measure_start': fields.Nested(measure_model, required=True),
+    'measure_end': fields.Nested(measure_model, required=True),
+    'length': fields.Integer(min=1, required=True, example=1),
+    'occurence_in_movement': fields.Nested(taxonomy_item_put, required=True),
 })
 
 part_put = api.inherit('PartPUT', part_post, {
-    'instrumentation_context': fields.Nested(instrumentation_context_put),
-    'dynamic_context': fields.Nested(dynamic_context_put),
-    'tempo_context': fields.Nested(tempo_context_put),
-    'form': fields.Nested(form_put),
+    'instrumentation_context': fields.Nested(instrumentation_context_put, required=True),
+    'dynamic_context': fields.Nested(dynamic_context_put, required=True),
+    'tempo_context': fields.Nested(tempo_context_put, required=True),
+    'form': fields.Nested(form_put, required=True),
 })
 
 subpart_links = api.inherit('SubPartLinks', with_curies, {
@@ -242,20 +307,28 @@ subpart_links = api.inherit('SubPartLinks', with_curies, {
 })
 
 subpart_post = api.model('SubPartPOST', {
-    'part_id': fields.Integer(),
-    'label': fields.String(pattern='^[A-Z]\'{0,4}$', max_length=5),
+    'label': fields.String(pattern='^[A-Z]\'{0,4}$', required=True, max_length=5),
 })
 
 subpart_put = api.inherit('SubPartPUT', subpart_post, {
-    'id': fields.Integer(),
-    'label': fields.String(default='A'),
-    'occurence_in_part': fields.Nested(taxonomy_item_put, description='Anteil'),
-    'instrumentation': fields.List(fields.Nested(taxonomy_item_put, description='Instrument')),
-    'instrumentation_context': fields.Nested(instrumentation_context_put),
+    'id': fields.Integer(readonly=True, example=1),
+    'label': fields.String(required=True, default='A'),
+    'occurence_in_part': fields.Nested(taxonomy_item_put, required=True, description='Anteil'),
+    'instrumentation': fields.List(fields.Nested(taxonomy_item_put, required=True, description='Instrument')),
+    'instrumentation_context': fields.Nested(instrumentation_context_put, required=True),
+    'composition': fields.Nested(composition_put, required=True, description='Composition'),
+    'rythm': fields.Nested(rhythm_put, required=True, description='Rythm'),
+    'dramaturgic_context': fields.Nested(dramaturgic_context_put, required=True, description='DramaturgicContext'),
+    'satz': fields.Nested(satz_put, required=True, description='Satz'),
+    'dynamic_context': fields.Nested(dynamic_context_put, required=True, description='DynamicContext'),
+    'harmonics': fields.Nested(harmonics_put, required=True, description='Harmonics'),
+    'form': fields.Nested(form_put, required=True, description='Form'),
+    'dynamic': fields.Nested(dynamic_put, required=True, description='Dynamic'),
 })
 
 subpart_get = api.inherit('SubPartGET', subpart_put, {
-    'id': fields.Integer(required=False, readonly=True),
+    'id': fields.Integer(readonly=True, example=1),
+    'part_id': fields.Integer(readonly=True, example=1),
     '_links': NestedFields(subpart_links),
     'occurence_in_part': fields.Nested(taxonomy_item_get, description='Anteil'),
     'instrumentation': fields.List(fields.Nested(taxonomy_item_get, description='Instrument')),
@@ -271,7 +344,8 @@ subpart_get = api.inherit('SubPartGET', subpart_put, {
 })
 
 part_get = api.inherit('PartGET', part_put, {
-    'id': fields.Integer(required=False, readonly=True),
+    'id': fields.Integer(required=False, readonly=True, example=1),
+    'opus_id': fields.Integer(readonly=True, example=1),
     '_links': NestedFields(part_links),
     'occurence_in_movement': fields.Nested(taxonomy_item_get),
     'instrumentation_context': fields.Nested(instrumentation_context_get),
@@ -288,37 +362,34 @@ opus_links = api.inherit('OpusLinks', with_curies, {
                            templated=True, path_variables=['id']), required=False),
     'person': HaLUrl(UrlData('api.person_person_resource', absolute=True,
                              url_data={'id': 'composer.id'}), required=False),
-    'instrumentation': HaLUrl(UrlData('api.instrumentation_instrumentation_resource',
-                                      absolute=True, url_data={'id': 'instrumentation.id'}),
-                              required=False),
 })
 
 
 opus_post = api.model('OpusPOST', {
     'name': fields.String(required=True, example='duett in g moll'),
-    'composer': fields.Nested(person_post),
+    'composer': fields.Nested(person_post, required=True),
 })
 
 opus_put = api.inherit('OpusPUT', opus_post, {
-    'original_name': fields.String(),
-    'opus_name': fields.String(),
-    'score_link': fields.String(description='A url linking to the sheet music.'),
-    'composition_year': fields.Integer(),
-    'composition_place': fields.String(example='TODO'),
-    'instrumentation': fields.List(fields.Nested(taxonomy_item_get), required=True),
-    'occasion': fields.String(),
-    'dedication': fields.String(),
-    'notes': fields.String(),
-    'printed': fields.Boolean(default=False),
-    'first_printed_at': fields.String(example='TODO'),
-    'first_printed_in': fields.Integer(),
-    'publisher': fields.String(),
-    'movements': fields.Integer(default=1),
-    'genre': fields.String(),
+    'original_name': fields.String(required=True),
+    'opus_name': fields.String(required=True),
+    'score_link': fields.String(required=True, description='A url linking to the sheet music.'),
+    'composition_year': fields.Integer(required=True),
+    'composition_place': fields.String(required=True, example='TODO'),
+    'instrumentation': fields.List(fields.Nested(taxonomy_item_get), required=True, default=[]),
+    'occasion': fields.String(required=True),
+    'dedication': fields.String(required=True),
+    'notes': fields.String(required=True),
+    'printed': fields.Boolean(required=True, default=False),
+    'first_printed_at': fields.String(required=True, example='TODO'),
+    'first_printed_in': fields.Integer(required=True),
+    'publisher': fields.String(required=True),
+    'movements': fields.Integer(required=True, default=1),
+    'genre': fields.String(required=True),
 })
 
 opus_get = api.inherit('OpusGET', opus_put, {
-    'id': fields.Integer(readonly=True),
+    'id': fields.Integer(readonly=True, example=1),
     '_links': NestedFields(opus_links),
     'composer': fields.Nested(person_get),
     'instrumentation': fields.List(fields.Nested(taxonomy_item_get), required=True),

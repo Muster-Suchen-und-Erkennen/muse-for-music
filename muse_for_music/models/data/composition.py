@@ -57,7 +57,7 @@ class CompositionTechniqueToComposition(db.Model):
     composition = db.relationship(Composition, backref=db.backref('_techniques', lazy='joined'))
     verarbeitungstechnik = db.relationship('Verarbeitungstechnik')
 
-    def __init__(self, composition, verarbeitungstechnik):
+    def __init__(self, composition, verarbeitungstechnik, **kwargs):
         self.composition = composition
         self.verarbeitungstechnik = verarbeitungstechnik
 
@@ -75,12 +75,12 @@ class MusicialSequence(db.Model, GetByID):
     flow = db.relationship(BewegungImTonraum, lazy='joined')
     composition = db.relationship(Composition, backref=db.backref('_sequences', lazy='joined'))
 
-    def __init__(self, composition, starting_interval, flow, beats: int, tonal_corrected: bool=False):
+    def __init__(self, composition, starting_interval, flow, beats: int, tonal_corrected: bool=False, **kwargs):
         if isinstance(composition, Composition):
             self.composition = composition
         else:
             self.composition = Composition.get_by_id(composition)
-        self.update(starting_interval, flow_id, beats, tonal_corrected)
+        self.update(starting_interval, flow, beats, tonal_corrected)
 
     def update(self, starting_interval, flow, beats: int, tonal_corrected: bool, **kwargs):
         self.starting_interval = Intervall.get_by_id_or_dict(starting_interval)

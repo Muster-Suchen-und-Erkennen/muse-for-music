@@ -10,6 +10,6 @@ class Measure(db.Model, GetByID, UpdateableModelMixin):
     from_page = db.Column(db.Integer, nullable=True)
     measure = db.Column(db.Integer, nullable=False)
 
-    def __init__(self, measure: int, from_page: int = None):
+    def __init__(self, measure: int = 1, from_page: int = None, **kwargs):
         self.measure = measure
         self.from_page = None

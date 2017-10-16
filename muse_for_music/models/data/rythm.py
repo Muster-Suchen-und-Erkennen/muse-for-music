@@ -51,7 +51,7 @@ class TaktartToRythm(db.Model):
     rythm = db.relationship(Rythm, backref=db.backref('_measure_times', lazy='joined'))
     taktart = db.relationship('Taktart')
 
-    def __init__(self, rythm, taktart):
+    def __init__(self, rythm, taktart, **kwargs):
         self.rythm = rythm
         self.taktart = taktart
 
@@ -63,7 +63,7 @@ class RhythmustypToRythm(db.Model):
     rythm = db.relationship(Rythm, backref=db.backref('_rythm_types', lazy='joined'))
     rhythmustyp = db.relationship('Rhythmustyp')
 
-    def __init__(self, rythm, rhythmustyp):
+    def __init__(self, rythm, rhythmustyp, **kwargs):
         self.rythm = rythm
         self.rhythmustyp = rhythmustyp
 
@@ -75,6 +75,6 @@ class RhythmischesPhaenomenToRythm(db.Model):
     rythm = db.relationship(Rythm, backref=db.backref('_rythmic_phenomenons', lazy='joined'))
     rhythmisches_phaenomen = db.relationship('RhythmischesPhaenomen')
 
-    def __init__(self, rythm, rhythmisches_phaenomen):
+    def __init__(self, rythm, rhythmisches_phaenomen, **kwargs):
         self.rythm = rythm
         self.rhythmisches_phaenomen = rhythmisches_phaenomen

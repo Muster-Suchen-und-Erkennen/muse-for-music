@@ -10,7 +10,10 @@ with_curies = api.model('WithCuries', {
 root_links = api.inherit('RootLinks', with_curies, {
     'self': HaLUrl(UrlData('api.default_root_resource', absolute=True)),
     'taxonomy': HaLUrl(UrlData('api.taxonomies_taxonomy_list_resource', absolute=True)),
-    'data': HaLUrl(UrlData('api.data_data_resource', absolute=True)),
+    'person': HaLUrl(UrlData('api.person_person_list_resource', absolute=True)),
+    'opus': HaLUrl(UrlData('api.opus_opus_list_resource', absolute=True)),
+    'part': HaLUrl(UrlData('api.part_parts_list_resource', absolute=True)),
+    'subpart': HaLUrl(UrlData('api.subpart_sub_part_list_resource', absolute=True)),
 })
 
 root_model = api.model('RootModel', {

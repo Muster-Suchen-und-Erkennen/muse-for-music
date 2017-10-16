@@ -63,7 +63,7 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin):
     _subquery_load = ['satz', 'form', 'dramaturgic_context', 'composition', 'rythm',
                       'dynamic', 'harmonics']
 
-    def __init__(self, part_id: Union[int, Part], label: str = 'A'):
+    def __init__(self, part_id: Union[int, Part], label: str = 'A', **kwargs):
         if isinstance(part_id, Part):
             self.part = part_id
         else:

@@ -3,6 +3,7 @@ from logging import Logger
 from .. import db, app
 from sqlalchemy.orm import joinedload, subqueryload, Query
 from datetime import datetime, date
+from flask_restplus.errors import ValidationError
 
 X = TypeVar('X', bound=db.Model)
 
@@ -30,6 +31,7 @@ class GetByID():
         if isinstance(id, cls):  # for lazy direct object passing
             return id
         if isinstance(id, dict):  # for lazy dict passing
+            print(cls.__name__)
             id = id['id']
         return cls.get_by_id(id)
 
@@ -94,6 +96,9 @@ class UpdateableModelMixin():
 
     def _update_normal_attributes(self, new_values: Dict):
         for name, cls in self._normal_attributes:
+            if name not in new_values:
+                print('HI_'*1000)
+                raise ValidationError("'{}' is a required property".format(name))
             value = new_values[name]
             if issubclass(cls, UpdateableModelMixin):
                 attr_to_update = getattr(self, name)  # type: UpdateableModelMixin
@@ -123,7 +128,7 @@ class UpdateableModelMixin():
                 resolved_value = cls.get_by_id_or_dict(value)
                 setattr(self, name, resolved_value)
             elif cls in (int, float, str, bool):
-                setattr(self, name, resolved_value)
+                setattr(self, name, value)
             elif cls is date:
                 if value is None:
                     setattr(self, name, None)
@@ -134,6 +139,8 @@ class UpdateableModelMixin():
 
     def _update_list_attributes(self, new_values: Dict):
         for name in self._list_attributes:
+            if name not in new_values:
+                raise ValidationError("'{}' is a required property".format(name))
             value = new_values[name]
             setattr(self, name, value)
 
