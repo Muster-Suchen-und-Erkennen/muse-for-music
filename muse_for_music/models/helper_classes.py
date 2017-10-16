@@ -14,8 +14,10 @@ class GetByID():
     _subquery_load = []  # type: List[str]
 
     @classmethod
-    def prepare_query(cls: Type[X]) -> Query:
+    def prepare_query(cls: Type[X], lazy: bool=False) -> Query:
         query = cls.query
+        if lazy:
+            return query
         options = []
         for attr in cls._joined_load:
             options.append(joinedload(attr))
@@ -27,27 +29,35 @@ class GetByID():
         return query
 
     @classmethod
-    def get_by_id_or_dict(cls: Type[X], id: Union[int, dict, X]) -> X:
+    def get_by_id_or_dict(cls: Type[X], id: Union[int, dict, X], lazy: bool=False) -> X:
         if isinstance(id, cls):  # for lazy direct object passing
             return id
         if isinstance(id, dict):  # for lazy dict passing
             print(cls.__name__)
             id = id['id']
-        return cls.get_by_id(id)
+        return cls.get_by_id(id, lazy)
 
     @classmethod
-    def get_by_id(cls: Type[X], id: int) -> X:
-        query = cls.prepare_query()
+    def get_by_id(cls: Type[X], id: int, lazy: bool=False) -> X:
+        query = cls.prepare_query(lazy)
         return query.filter_by(id=id).first()
 
     @classmethod
-    def get_list_by_id(cls: Type[X], ids: Sequence[int]) -> List[X]:
-        query = cls.prepare_query()
+    def get_list_by_id(cls: Type[X], ids: Sequence[int], lazy: bool=True) -> List[X]:
+        if not ids:
+            return []
+        if len(ids) == 1:
+            return [self.get_by_id(ids[0], lazy)]
+        query = cls.prepare_query(lazy)
         return query.filter(cls.id.in_(ids)).all()
 
     @classmethod
-    def get_multiple_by_id(cls: Type[X], ids: Sequence[int]) -> Dict[int, X]:
-        query = cls.prepare_query()
+    def get_multiple_by_id(cls: Type[X], ids: Sequence[int], lazy: bool=True) -> Dict[int, X]:
+        if not ids:
+            return {}
+        if len(ids) == 1:
+            return {ids[0]: self.get_by_id(ids[0], lazy)}
+        query = cls.prepare_query(lazy)
         result = query.filter(cls.id.in_(ids)).all()
         return {obj.id: obj for obj in result}
 
@@ -58,37 +68,38 @@ class UpdateableModelMixin():
     _reference_only_attributes = tuple()  # type: Tuple[str]
     _list_attributes = tuple()  # type: Tuple[str]
 
+
     def _update_normal_attributes(self, new_values: Dict):
+        expire_self = False
         for name, cls in self._normal_attributes:
             if name not in new_values:
                 raise ValidationError("'{}' is a required property".format(name))
             value = new_values[name]
-            if issubclass(cls, UpdateableModelMixin):
+            if issubclass(cls, UpdateableModelMixin) and (name not in self._reference_only_attributes):
                 attr_to_update = getattr(self, name)  # type: UpdateableModelMixin
                 if value is None:
                     setattr(self, name, None)
                     if attr_to_update is not None:
                         db.session.delete(attr_to_update)
+                        expire_self = True
                 elif attr_to_update is None:
                     try:
                         attr_to_update = cls()
                         setattr(self, name, attr_to_update)
                         db.session.add(attr_to_update)
-                        if name not in self._reference_only_attributes:
-                            attr_to_update.update(value)
+                        attr_to_update.update(value)
                     except Exception as e:
                         logger = app.logger  # type: Logger
                         logger.exception("Failed to auto instantiate class %s on update of %s",
                                          cls.__name__, self.__class__.__name__)
                 else:
-                    if name not in self._reference_only_attributes:
-                        attr_to_update.update(value)
+                    attr_to_update.update(value)
             elif issubclass(cls, GetByID):
                 if value is None:
                     setattr(self, name, None)
                     continue
                 cls = cast(GetByID, cls)
-                resolved_value = cls.get_by_id_or_dict(value)
+                resolved_value = cls.get_by_id_or_dict(value, True)
                 setattr(self, name, resolved_value)
             elif cls in (int, float, str, bool):
                 setattr(self, name, value)
@@ -99,6 +110,8 @@ class UpdateableModelMixin():
                 parsed_value = datetime.strptime(value, '%Y-%m-%d')
                 parsed_date = parsed_value.date()
                 setattr(self, name, parsed_date)
+        if expire_self:
+            db.session.expire(self)
 
     def _update_list_attributes(self, new_values: Dict):
         for name in self._list_attributes:
@@ -154,21 +167,17 @@ class UpdateListMixin():
     def _update_updateable_model_list(self, item_list: Sequence[dict],
                                       old_items: Dict[int, W],
                                       item_cls: Type[W]):
-        to_add = []  # type: List[W]
-
         for item_dict in item_list:
             item_id = item_dict.get('id')
             if item_id in old_items:
                 old_items[item_id].update(item_dict)
+                db.session.add(old_items[item_id])
                 del old_items[item_id]
             else:
                 new_item = item_cls(self)  # type: W
                 new_item.update(item_dict)
                 db.session.add(new_item)
-                to_add.append(new_item)
 
-        for item in to_add:
-            db.session.add(item)
         to_delete = list(old_items.values())  # type: List[W]
         for item in to_delete:
             db.session.delete(item)
