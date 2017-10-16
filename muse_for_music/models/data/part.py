@@ -7,7 +7,7 @@ from .instrumentation import InstrumentationContext
 from .dynamic import DynamicContext
 from .tempo import TempoContext
 from .form import Form
-from ..taxonomies import AuftretenSatz, Anteil
+from ..taxonomies import AuftretenSatz
 
 
 class Part(db.Model, GetByID, UpdateableModelMixin):
@@ -16,7 +16,7 @@ class Part(db.Model, GetByID, UpdateableModelMixin):
                           ('measure_end', Measure),
                           ('length', int),
                           ('movement', int),
-                          ('occurence_in_movement', Anteil),
+                          ('occurence_in_movement', AuftretenSatz),
                           ('form', Form),
                           ('tempo_context', TempoContext),
                           ('dynamic_context', DynamicContext),
@@ -28,7 +28,7 @@ class Part(db.Model, GetByID, UpdateableModelMixin):
     measure_start_id = db.Column(db.Integer, db.ForeignKey('measure.id'), nullable=False)
     measure_end_id = db.Column(db.Integer, db.ForeignKey('measure.id'), nullable=False)
     length = db.Column(db.Integer, nullable=False)
-    occurence_in_movement_id = db.Column(db.Integer, db.ForeignKey('anteil.id'), nullable=True)
+    occurence_in_movement_id = db.Column(db.Integer, db.ForeignKey('auftreten_satz.id'), nullable=True)
     instrumentation_context_id = db.Column(db.Integer, db.ForeignKey('instrumentation_context.id'), nullable=True)
     dynamic_context_id = db.Column(db.Integer, db.ForeignKey('dynamic_context.id'), nullable=True)
     tempo_context_id = db.Column(db.Integer, db.ForeignKey('tempo_context.id'), nullable=True)
@@ -37,7 +37,7 @@ class Part(db.Model, GetByID, UpdateableModelMixin):
     opus = db.relationship(Opus, lazy='select', backref=db.backref('parts', cascade="all, delete-orphan"))
     measure_start = db.relationship(Measure, foreign_keys=[measure_start_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
     measure_end = db.relationship(Measure, foreign_keys=[measure_end_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
-    occurence_in_movement = db.relationship(Anteil, lazy='joined')
+    occurence_in_movement = db.relationship(AuftretenSatz, lazy='joined')
     instrumentation_context = db.relationship(InstrumentationContext, lazy='joined', single_parent=True, cascade="all, delete-orphan")
     dynamic_context = db.relationship(DynamicContext, lazy='joined', single_parent=True, cascade="all, delete-orphan")
     tempo_context = db.relationship(TempoContext, lazy='joined', single_parent=True, cascade="all, delete-orphan")

@@ -61,7 +61,6 @@ class UpdateableModelMixin():
     def _update_normal_attributes(self, new_values: Dict):
         for name, cls in self._normal_attributes:
             if name not in new_values:
-                print('HI_'*1000)
                 raise ValidationError("'{}' is a required property".format(name))
             value = new_values[name]
             if issubclass(cls, UpdateableModelMixin):
@@ -149,6 +148,8 @@ class UpdateListMixin():
                 db.session.add(mapping)
         for mapping in to_delete:
             db.session.delete(mapping)
+        if to_delete:
+            db.session.expire(self)
 
     def _update_updateable_model_list(self, item_list: Sequence[dict],
                                       old_items: Dict[int, W],
@@ -161,7 +162,8 @@ class UpdateListMixin():
                 old_items[item_id].update(item_dict)
                 del old_items[item_id]
             else:
-                new_item = item_cls(self, item_dict)  # type: W
+                new_item = item_cls(self)  # type: W
+                new_item.update(item_dict)
                 db.session.add(new_item)
                 to_add.append(new_item)
 
@@ -170,12 +172,14 @@ class UpdateListMixin():
         to_delete = list(old_items.values())  # type: List[W]
         for item in to_delete:
             db.session.delete(item)
+        if to_delete:
+            db.session.expire(self)
 
     def update_list(self, item_list: Union[Sequence[int], Sequence[dict]],
                     old_items: Dict[int, Union[K, W]], mapping_cls: Union[Type[K], Type[W]],
                     item_cls: Type[V] = None, mapping_cls_attribute: str = None):
 
-        if mapping_cls, UpdateableModelMixin:
+        if issubclass(mapping_cls, UpdateableModelMixin):
             self._update_updateable_model_list(item_list, old_items, mapping_cls)
         elif issubclass(item_cls, GetByID) and item_cls is not None and mapping_cls_attribute:
             self._update_reference_only_list(item_list, old_items, mapping_cls,

@@ -12,6 +12,7 @@ from .dramaturgic_context import DramaturgicContext
 from .dynamic import Dynamic, DynamicContext
 from .composition import Composition
 from .rythm import Rythm
+from .citations import Citations
 from .instrumentation import InstrumentationContext, Instrumentation
 from ..taxonomies import Anteil
 
@@ -28,7 +29,8 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin):
                           ('rythm', Rythm),
                           ('dynamic_context', DynamicContext),
                           ('form', Form),
-                          ('dramaturgic_context', DramaturgicContext))
+                          ('dramaturgic_context', DramaturgicContext),
+                          ('citations', Citations))
 
     _list_attributes = ('instrumentation',)
 
@@ -46,6 +48,7 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin):
     dynamic_id = db.Column(db.Integer, db.ForeignKey('dynamic.id'), nullable=True)
     dynamic_context_id = db.Column(db.Integer, db.ForeignKey('dynamic_context.id'), nullable=True)
     harmonics_id = db.Column(db.Integer, db.ForeignKey('harmonics.id'), nullable=True)
+    citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), nullable=True)
 
     part = db.relationship(Part, lazy='select', backref=db.backref('subparts', single_parent=True, cascade="all, delete-orphan"))
     occurence_in_part = db.relationship(Anteil, lazy='joined', single_parent=True, cascade="all, delete-orphan")
@@ -59,6 +62,7 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin):
     dynamic = db.relationship(Dynamic, single_parent=True, cascade="all, delete-orphan")
     dynamic_context = db.relationship(DynamicContext, single_parent=True, lazy='subquery', cascade="all, delete-orphan")
     harmonics = db.relationship(Harmonics, single_parent=True, cascade="all, delete-orphan")
+    citations = db.relationship(Citations, single_parent=True, cascade="all, delete-orphan")
 
     _subquery_load = ['satz', 'form', 'dramaturgic_context', 'composition', 'rythm',
                       'dynamic', 'harmonics']
