@@ -29,6 +29,7 @@ from .rythm import *
 from .satz import *
 from .tempo import *
 from .composition import *
+from .citation import *
 
 
 T = TypeVar('T', bound=Taxonomy)

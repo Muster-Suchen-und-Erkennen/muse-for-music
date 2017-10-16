@@ -52,42 +52,6 @@ class GetByID():
         return {obj.id: obj for obj in result}
 
 
-K = TypeVar('K', bound=GetByID)
-V = TypeVar('V', bound=GetByID)
-
-
-class UpdateListMixin():
-
-    def update_list(self, item_list: Union[Sequence[int], Sequence[dict]],
-                    old_items: Dict[int, K], mapping_cls: Type[K], item_cls: Type[V],
-                    mapping_cls_attribute: str):
-
-        to_add = []  # type: List[int]
-
-        for item in item_list:
-            if isinstance(item, dict):
-                item = item.get('id')
-                if item is None:
-                    continue
-            item = cast(int, item)
-            if item in old_items:
-                del old_items[item]
-            else:
-                to_add.append(item)
-
-        items_to_add = item_cls.get_list_by_id(to_add)  # type: List[V]
-        to_delete = list(old_items.values())  # type: List[K]
-        for item_to_add in items_to_add:  # type: V
-            if to_delete:
-                mapping = to_delete.pop()
-                setattr(mapping, mapping_cls_attribute, item_to_add)
-            else:
-                mapping = mapping_cls(self, item_to_add)
-                db.session.add(mapping)
-        for mapping in to_delete:
-            db.session.delete(mapping)
-
-
 class UpdateableModelMixin():
 
     _normal_attributes = tuple()  # type: Tuple[Tuple(str,Type)]
@@ -148,3 +112,73 @@ class UpdateableModelMixin():
         self._update_normal_attributes(new_values)
         self._update_list_attributes(new_values)
         db.session.add(self)
+
+
+K = TypeVar('K', bound=GetByID)
+V = TypeVar('V', bound=GetByID)
+W = TypeVar('W', bound=UpdateableModelMixin)
+
+
+class UpdateListMixin():
+
+    def _update_reference_only_list(self, item_list: Union[Sequence[int],
+                                    Sequence[dict]], old_items: Dict[int, K],
+                                    mapping_cls: Type[K], item_cls: Type[V],
+                                    mapping_cls_attribute: str):
+        to_add = []  # type: List[int]
+
+        for item in item_list:
+            if isinstance(item, dict):
+                item = item.get('id')
+                if item is None:
+                    continue
+            item = cast(int, item)
+            if item in old_items:
+                del old_items[item]
+            else:
+                to_add.append(item)
+
+        items_to_add = item_cls.get_list_by_id(to_add)  # type: List[V]
+        to_delete = list(old_items.values())  # type: List[K]
+        for item_to_add in items_to_add:  # type: V
+            if to_delete:
+                mapping = to_delete.pop()
+                setattr(mapping, mapping_cls_attribute, item_to_add)
+            else:
+                mapping = mapping_cls(self, item_to_add)
+                db.session.add(mapping)
+        for mapping in to_delete:
+            db.session.delete(mapping)
+
+    def _update_updateable_model_list(self, item_list: Sequence[dict],
+                                      old_items: Dict[int, W],
+                                      item_cls: Type[W]):
+        to_add = []  # type: List[W]
+
+        for item_dict in item_list:
+            item_id = item_dict.get('id')
+            if item_id in old_items:
+                old_items[item_id].update(item_dict)
+                del old_items[item_id]
+            else:
+                new_item = item_cls(self, item_dict)  # type: W
+                db.session.add(new_item)
+                to_add.append(new_item)
+
+        for item in to_add:
+            db.session.add(item)
+        to_delete = list(old_items.values())  # type: List[W]
+        for item in to_delete:
+            db.session.delete(item)
+
+    def update_list(self, item_list: Union[Sequence[int], Sequence[dict]],
+                    old_items: Dict[int, Union[K, W]], mapping_cls: Union[Type[K], Type[W]],
+                    item_cls: Type[V] = None, mapping_cls_attribute: str = None):
+
+        if mapping_cls, UpdateableModelMixin:
+            self._update_updateable_model_list(item_list, old_items, mapping_cls)
+        elif issubclass(item_cls, GetByID) and item_cls is not None and mapping_cls_attribute:
+            self._update_reference_only_list(item_list, old_items, mapping_cls,
+                                             item_cls, mapping_cls_attribute)
+        else:
+            raise TypeError('Either mapping_cls was not an UpdateableModelMixin or too few Arguments were provided!')
