@@ -31,6 +31,7 @@ from .tempo import *
 from .composition import *
 from .citation import *
 from .voices import *
+from .rendition import *
 
 
 T = TypeVar('T', bound=Taxonomy)
@@ -48,6 +49,7 @@ def init_taxonomies(reload, folder_path: str):
     click.echo('Scanning folder "{}"'.format(folder_path))
     files = glob(path.join(folder_path, '*.csv'))
     taxonomies = get_taxonomies()  # type: Dict[str, Type[T]]
+    unmatched_csv_files = []
     for file in files:
         name = path.splitext(path.basename(file))[0].upper()
         if name in taxonomies:
@@ -63,8 +65,10 @@ def init_taxonomies(reload, folder_path: str):
                 tax.load(reader, DB_COMMAND_LOGGER)
             click.echo('Finished processing taxonomy "{}"'.format(name))
         else:
-            click.echo('No taxonomy table found for name "{}"'.format(name))
+            unmatched_csv_files.append(name)
     click.echo('Finished processing all taxonomies.')
+    for name in unmatched_csv_files:
+        click.echo('No taxonomy table found for name "{}"'.format(name))
 
 
 def get_taxonomies() -> Dict[str, Type[T]]:

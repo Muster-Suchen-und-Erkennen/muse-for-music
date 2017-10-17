@@ -41,8 +41,8 @@ class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
     degree_of_dissonance = db.relationship('Dissonanzgrad', lazy='joined')
     harmonic_density = db.relationship('HarmonischeDichte', lazy='joined')
     harmonic_complexity = db.relationship('HarmonischeKomplexitaet', lazy='joined')
-    melody_tones_in_melody_one = db.relationship('AnzahlMelodietoene', lazy='joined')
-    melody_tones_in_melody_two = db.relationship('AnzahlMelodietoene', lazy='joined')
+    melody_tones_in_melody_one = db.relationship('AnzahlMelodietoene', lazy='joined', foreign_keys=[melody_tones_in_melody_one_id])
+    melody_tones_in_melody_two = db.relationship('AnzahlMelodietoene', lazy='joined', foreign_keys=[melody_tones_in_melody_two_id])
 
     @property
     def harmonic_centers(self):

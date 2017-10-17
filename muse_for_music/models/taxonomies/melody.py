@@ -1,5 +1,5 @@
 from ... import db
-from .helper_classes import ListTaxonomy
+from .helper_classes import ListTaxonomy, TreeTaxonomy
 
 __all__ = ['Melodiebewegung', 'Melodieform']
 

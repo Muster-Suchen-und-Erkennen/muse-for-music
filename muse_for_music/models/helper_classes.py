@@ -1,4 +1,4 @@
-from typing import TypeVar, Sequence, Dict, Type, List, Union, cast
+from typing import TypeVar, Sequence, Dict, Type, List, Union, cast, Any
 from logging import Logger
 from .. import db, app
 from sqlalchemy.orm import joinedload, subqueryload, Query
@@ -185,7 +185,7 @@ class UpdateListMixin():
             db.session.expire(self)
 
     def update_list(self, item_list: Union[Sequence[int], Sequence[dict]],
-                    old_items: Dict[int, Union[K, W]], mapping_cls: Union[Type[K], Type[W]],
+                    old_items: Union[Dict[int, K], Dict[int, W]], mapping_cls: Any,
                     item_cls: Type[V] = None, mapping_cls_attribute: str = None):
 
         if issubclass(mapping_cls, UpdateableModelMixin):

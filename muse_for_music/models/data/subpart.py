@@ -1,5 +1,5 @@
 from ... import db
-from ..helper_classes import GetByID, UpdateableModelMixin
+from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 
 from typing import Union
 
@@ -12,12 +12,16 @@ from .dramaturgic_context import DramaturgicContext
 from .dynamic import Dynamic, DynamicContext
 from .composition import Composition
 from .rythm import Rythm
+from .tempo import TempoGroup
+from .rendition import Rendition
 from .citations import Citations
 from .instrumentation import InstrumentationContext, Instrumentation
-from ..taxonomies import Anteil, AuftretenWerkausschnitt
+from ..taxonomies import Anteil, AuftretenWerkausschnitt, MusikalischeWendung
+
+from typing import Union, Sequence, Dict
 
 
-class SubPart(db.Model, GetByID, UpdateableModelMixin):
+class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
     _normal_attributes = (('label', str),
                           ('occurence_in_part', AuftretenWerkausschnitt),
@@ -31,9 +35,11 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin):
                           ('dynamic_context', DynamicContext),
                           ('form', Form),
                           ('dramaturgic_context', DramaturgicContext),
+                          ('tempo', TempoGroup),
+                          ('rendition', Rendition),
                           ('citations', Citations))
 
-    _list_attributes = ('instrumentation',)
+    _list_attributes = ('instrumentation', 'musicial_figures')
 
     id = db.Column(db.Integer, primary_key=True)
     part_id = db.Column(db.Integer, db.ForeignKey('part.id'), nullable=False)
@@ -50,6 +56,8 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin):
     dynamic_id = db.Column(db.Integer, db.ForeignKey('dynamic.id'), nullable=True)
     dynamic_context_id = db.Column(db.Integer, db.ForeignKey('dynamic_context.id'), nullable=True)
     harmonics_id = db.Column(db.Integer, db.ForeignKey('harmonics.id'), nullable=True)
+    tempo_id = db.Column(db.Integer, db.ForeignKey('tempo_group.id'), nullable=True)
+    rendition_id = db.Column(db.Integer, db.ForeignKey('rendition.id'), nullable=True)
     citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), nullable=True)
 
     part = db.relationship(Part, lazy='select', backref=db.backref('subparts', single_parent=True, cascade="all, delete-orphan"))
@@ -65,6 +73,8 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin):
     dynamic = db.relationship(Dynamic, single_parent=True, cascade="all, delete-orphan")
     dynamic_context = db.relationship(DynamicContext, single_parent=True, lazy='subquery', cascade="all, delete-orphan")
     harmonics = db.relationship(Harmonics, single_parent=True, cascade="all, delete-orphan")
+    tempo = db.relationship(TempoGroup, single_parent=True, cascade="all, delete-orphan")
+    rendition = db.relationship(Rendition, single_parent=True, cascade="all, delete-orphan")
     citations = db.relationship(Citations, single_parent=True, cascade="all, delete-orphan")
 
     _subquery_load = ['satz', 'form', 'dramaturgic_context', 'composition', 'rythm',
@@ -93,3 +103,25 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin):
     @instrumentation.setter
     def instrumentation(self, data: list):
         self._instrumentation.instruments = data
+
+    @property
+    def musicial_figures(self):
+        return [mapping.musikalische_wendung for mapping in self._musicial_figures]
+
+    @musicial_figures.setter
+    def musicial_figures(self, musicial_figures_list: Union[Sequence[int], Sequence[dict]]):
+        old_items = {mapping.musikalische_wendung.id: mapping for mapping in self._musicial_figures}
+        self.update_list(musicial_figures_list, old_items, MusikalischeWendungToSubPart,
+                         MusikalischeWendung, 'musikalische_wendung')
+
+
+class MusikalischeWendungToSubPart(db.Model):
+    sub_part_id = db.Column(db.Integer, db.ForeignKey('sub_part.id'), primary_key=True)
+    musikalische_wendung_id = db.Column(db.Integer, db.ForeignKey('musikalische_wendung.id'), primary_key=True)
+
+    sub_part = db.relationship(SubPart, backref=db.backref('_musicial_figures', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
+    musikalische_wendung = db.relationship('MusikalischeWendung')
+
+    def __init__(self, sub_part, musikalische_wendung, **kwargs):
+        self.sub_part = sub_part
+        self.musikalische_wendung = musikalische_wendung

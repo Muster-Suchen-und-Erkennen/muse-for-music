@@ -1,9 +1,14 @@
 name,parent
 root,
-keine Artikulationsanweisungen notiert,root
 andere Artikulation,root
 sostenuto,root
 Tremolo,root
+Einzelnoten,Tremolo
+rhythmisch gebunden,Einzelnoten
+frei,Einzelnoten
+Wechselnoten,Tremolo
+rhythmisch gebunden,Wechselnoten
+frei,Wechselnoten
 rinforzato,root
 sotto voce,root
 marcato,root

@@ -1,20 +1,27 @@
-
 from ... import db
-from .helper_classes import TreeTaxonomy, ListTaxonomy
+from .helper_classes import ListTaxonomy, TreeTaxonomy
+
+__all__ = ['Ausdruck', 'Artikulation', 'Spielanweisung']
 
 
-__all__ = ['Verarbeitungstechnik', 'MusikalischeWendung']
-
-
-class Verarbeitungstechnik(db.Model, TreeTaxonomy):
-    """DB Model for verarbeitungstechniken."""
-    __tablename__ = 'verarbeitungstechnik'
+class Ausdruck(db.Model, ListTaxonomy):
+    """DB Model for choices."""
+    __tablename__ = 'ausdruck'
 
     id = db.Column(db.Integer, primary_key=True)
-    parent_id = db.Column(db.Integer, db.ForeignKey('verarbeitungstechnik.id', ondelete='CASCADE'))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship('Verarbeitungstechnik',
+
+
+class Artikulation(db.Model, TreeTaxonomy):
+    """DB Model for doc."""
+    __tablename__ = 'artikulation'
+
+    id = db.Column(db.Integer, primary_key=True)
+    parent_id = db.Column(db.Integer, db.ForeignKey('artikulation.id', ondelete='CASCADE'))
+    name = db.Column(db.String(120))
+    description = db.Column(db.Text(), nullable=True)
+    children = db.relationship('Artikulation',
                                backref=db.backref('parent',
                                                   remote_side=[id],
                                                   lazy='joined',
@@ -23,15 +30,15 @@ class Verarbeitungstechnik(db.Model, TreeTaxonomy):
                               )
 
 
-class MusikalischeWendung(db.Model, TreeTaxonomy):
+class Spielanweisung(db.Model, TreeTaxonomy):
     """DB Model for doc."""
-    __tablename__ = 'musikalische_wendung'
+    __tablename__ = 'spielanweisung'
 
     id = db.Column(db.Integer, primary_key=True)
-    parent_id = db.Column(db.Integer, db.ForeignKey('musikalische_wendung.id', ondelete='CASCADE'))
+    parent_id = db.Column(db.Integer, db.ForeignKey('spielanweisung.id', ondelete='CASCADE'))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship('MusikalischeWendung',
+    children = db.relationship('Spielanweisung',
                                backref=db.backref('parent',
                                                   remote_side=[id],
                                                   lazy='joined',

@@ -1,7 +1,7 @@
 from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin
 
-from typing import Union
+from typing import Union, Sequence, Dict
 
 from .measure import Measure
 from .subpart import SubPart
@@ -21,9 +21,23 @@ from ..taxonomies import Anteil, MusikalischeFunktion, Melodieform, Verzierung, 
 
 class Voice(db.Model, GetByID, UpdateableModelMixin):
 
-    #_normal_attributes =
+    _normal_attributes = (('lowest_pitch', Grundton),
+                          ('occurence_in_part', AuftretenWerkausschnitt),
+                          ('cites_own_melody_later', bool),
+                          ('intervallik', Intervallik),
+                          ('has_melody', bool),
+                          ('highest_octave', Oktave),
+                          ('contains_repetition_from_outside', bool),
+                          ('name', str),
+                          ('highest_pitch', Grundton),
+                          ('satz', Satz),
+                          ('lowest_octave', Oktave),
+                          ('melody_form', Melodieform),
+                          ('is_repetitive', bool),
+                          ('is_symmetric', bool),
+                          ('share', Anteil))
 
-    #_list_attributes =
+    _list_attributes = ('dominant_note_values', 'instrumentation', 'ornaments')
 
     id = db.Column(db.Integer, primary_key=True)
     subpart_id = db.Column(db.Integer, db.ForeignKey('sub_part.id'), nullable=False)
@@ -45,8 +59,7 @@ class Voice(db.Model, GetByID, UpdateableModelMixin):
     lowest_octave_id = db.Column(db.Integer, db.ForeignKey('oktave.id'), nullable=True)
     # Einsatz der Stimme
     share_id = db.Column(db.Integer, db.ForeignKey('anteil.id'), nullable=True)
-    occurence_in_part_id = db.Column(db.Integer, db.ForeignKey('auftreten_werkaisschnitt.id'), nullable=True)
-
+    occurence_in_part_id = db.Column(db.Integer, db.ForeignKey('auftreten_werkausschnitt.id'), nullable=True)
 
     subpart = db.relationship(SubPart, lazy='select', backref=db.backref('voices', single_parent=True, cascade="all, delete-orphan"))
     _instrumentation = db.relationship('Instrumentation', lazy='subquery', single_parent=True, cascade="all, delete-orphan")  # type: Instrumentation
@@ -109,7 +122,7 @@ class MusikalischeFunktionToVoice(db.Model):
     voice = db.relationship(Voice, backref=db.backref('_musicial_funktions', lazy='joined'))
     musikalische_funktion = db.relationship('MusikalischeFunktion')
 
-    def __init__(self, voice, musikalische_funktion):
+    def __init__(self, voice, musikalische_funktion, **kwargs):
         self.voice = voice
         self.musikalische_funktion = musikalische_funktion
 
@@ -121,7 +134,7 @@ class VerzierungToVoice(db.Model):
     voice = db.relationship(Voice, backref=db.backref('_ornaments', lazy='joined'))
     verzierung = db.relationship('Verzierung')
 
-    def __init__(self, voice, verzierung):
+    def __init__(self, voice, verzierung, **kwargs):
         self.voice = voice
         self.verzierung = verzierung
 
@@ -133,12 +146,16 @@ class NotenwertToVoice(db.Model):
     voice = db.relationship(Voice, backref=db.backref('_dominant_note_values', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
     notenwert = db.relationship('Notenwert')
 
-    def __init__(self, voice, notenwert):
+    def __init__(self, voice, notenwert, **kwargs):
         self.voice = voice
         self.notenwert = notenwert
 
 
 class RelatedVoices(db.Model, GetByID, UpdateableModelMixin):
+
+    _normal_attributes = (('type_of_relationship', VoiceToVoiceRelation), ('related_voice', Voice))
+    _reference_only_attributes = ('related_voice', )
+
 
     id = db.Column(db.Integer, primary_key=True)
     voice_id = db.Column(db.Integer, db.ForeignKey('voice.id'))
