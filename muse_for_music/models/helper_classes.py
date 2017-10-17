@@ -28,12 +28,23 @@ class GetByID():
             query = query.options(*options)
         return query
 
+    @staticmethod
+    def get_id_from_object(id: Union[int, dict, X]) -> int:
+        if isinstance(id, GetByID):  # for lazy direct object passing
+            return id.id
+        if isinstance(id, dict):  # for lazy dict passing
+            return id['id']
+        if isinstance(id, int):
+            return id
+        if id is None:
+            return None
+        raise TypeError('"id" is of wrong type. Expected: int, dict or {}, Got {}'.format(GetByID, type(id)))
+
     @classmethod
     def get_by_id_or_dict(cls: Type[X], id: Union[int, dict, X], lazy: bool=False) -> X:
         if isinstance(id, cls):  # for lazy direct object passing
             return id
         if isinstance(id, dict):  # for lazy dict passing
-            print(cls.__name__)
             id = id['id']
         return cls.get_by_id(id, lazy)
 
@@ -89,6 +100,7 @@ class UpdateableModelMixin():
                         db.session.add(attr_to_update)
                         attr_to_update.update(value)
                     except Exception as e:
+                        print(type(e))
                         logger = app.logger  # type: Logger
                         logger.exception("Failed to auto instantiate class %s on update of %s",
                                          cls.__name__, self.__class__.__name__)
@@ -99,17 +111,22 @@ class UpdateableModelMixin():
                     setattr(self, name, None)
                     continue
                 cls = cast(GetByID, cls)
+                if cls.get_id_from_object(getattr(self, name)) == cls.get_id_from_object(value):
+                    # object already set!
+                    continue
                 resolved_value = cls.get_by_id_or_dict(value, True)
                 setattr(self, name, resolved_value)
             elif cls in (int, float, str, bool):
-                setattr(self, name, value)
+                if getattr(self, name) != value:
+                    setattr(self, name, value)
             elif cls is date:
                 if value is None:
                     setattr(self, name, None)
                     continue
                 parsed_value = datetime.strptime(value, '%Y-%m-%d')
                 parsed_date = parsed_value.date()
-                setattr(self, name, parsed_date)
+                if getattr(self, name) != parsed_date:
+                    setattr(self, name, parsed_date)
         if expire_self:
             db.session.expire(self)
 
