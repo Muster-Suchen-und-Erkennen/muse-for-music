@@ -22,7 +22,7 @@ class Taktart(db.Model, TreeTaxonomy):
 
 
 class Rhythmustyp(db.Model, TreeTaxonomy):
-    """DB Model for rythm type."""
+    """DB Model for rhythm type."""
     __tablename__ = 'rhythmustyp'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -39,7 +39,7 @@ class Rhythmustyp(db.Model, TreeTaxonomy):
 
 
 class RhythmischesPhaenomen(db.Model, TreeTaxonomy):
-    """DB Model for rythmic phenomenon."""
+    """DB Model for rhythmic phenomenon."""
     __tablename__ = 'rhythmisches_phaenomen'
 
     id = db.Column(db.Integer, primary_key=True)
