@@ -97,9 +97,9 @@ def _analyze_db_model(cls):
                     classname = mapper.class_.__name__
                     if 'To' in classname:
                         classname = classname.split('To')[0]
-                        model_fields.append("'{}': fields.List(fields.Nested(taxonomy_item_get, description='{}')),".format(name, classname))
+                        model_fields.append("'{}': fields.List(fields.Nested(taxonomy_item_get, description='{}'), default=[]),".format(name, classname))
                     else:
-                        model_fields.append("'{}': fields.List(fields.Raw(description='{}')),".format(name, classname))
+                        model_fields.append("'{}': fields.List(fields.Raw(description='{}'), default=[]),".format(name, classname))
                 else:
                     model_fields.append("'{}': fields.Raw(description='{}'),".format(name, mapper.class_.__name__))
                     normal_attributes.append((name, mapper.class_))

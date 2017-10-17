@@ -24,7 +24,7 @@ class InstumentationToInstrument(db.Model):
     instrumentation_id = db.Column(db.Integer, db.ForeignKey('instrumentation.id'), primary_key=True)
     instrument_id = db.Column(db.Integer, db.ForeignKey('instrument.id'), primary_key=True)
 
-    instrumentation = db.relationship(Instrumentation, backref=db.backref('_instruments', lazy='joined'))
+    instrumentation = db.relationship(Instrumentation, backref=db.backref('_instruments', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     instrument = db.relationship('Instrument')
 
     def __init__(self, instrumentation, instrument, **kwargs):

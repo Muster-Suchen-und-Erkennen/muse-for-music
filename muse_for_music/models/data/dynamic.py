@@ -67,7 +67,7 @@ class DynamicMarking(db.Model, GetByID, UpdateableModelMixin):
     lautstaerke_id = db.Column(db.Integer, db.ForeignKey('lautstaerke.id'))
     lautstaerke_zusatz_id = db.Column(db.Integer, db.ForeignKey('lautstaerke_zusatz.id'), nullable=True)
 
-    dynamic = db.relationship(Dynamic, backref=db.backref('_dynamic_markings', lazy='joined'))
+    dynamic = db.relationship(Dynamic, backref=db.backref('_dynamic_markings', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     lautstaerke = db.relationship('Lautstaerke')
     lautstaerke_zusatz = db.relationship('LautstaerkeZusatz')
 
@@ -81,7 +81,7 @@ class LautstaerkeEntwicklungToDynamic(db.Model):
     dynamic_id = db.Column(db.Integer, db.ForeignKey('dynamic.id'), primary_key=True)
     lautstaerke_entwicklung_id = db.Column(db.Integer, db.ForeignKey('lautstaerke_entwicklung.id'), primary_key=True)
 
-    dynamic = db.relationship(Dynamic, backref=db.backref('_dynamic_changes', lazy='joined'))
+    dynamic = db.relationship(Dynamic, backref=db.backref('_dynamic_changes', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     lautstaerke_entwicklung = db.relationship('LautstaerkeEntwicklung')
 
     def __init__(self, dynamic, lautstaerke_entwicklung, **kwargs):

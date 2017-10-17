@@ -14,13 +14,14 @@ from .composition import Composition
 from .rythm import Rythm
 from .citations import Citations
 from .instrumentation import InstrumentationContext, Instrumentation
-from ..taxonomies import Anteil
+from ..taxonomies import Anteil, AuftretenWerkausschnitt
 
 
 class SubPart(db.Model, GetByID, UpdateableModelMixin):
 
     _normal_attributes = (('label', str),
-                          ('occurence_in_part', Anteil),
+                          ('occurence_in_part', AuftretenWerkausschnitt),
+                          ('share_of_part', Anteil),
                           ('dynamic', Dynamic),
                           ('composition', Composition),
                           ('instrumentation_context', InstrumentationContext),
@@ -35,9 +36,10 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin):
     _list_attributes = ('instrumentation',)
 
     id = db.Column(db.Integer, primary_key=True)
-    part_id = db.Column(db.Integer, db.ForeignKey('part.id', ondelete='CASCADE'), nullable=False)
+    part_id = db.Column(db.Integer, db.ForeignKey('part.id'), nullable=False)
     label = db.Column(db.String(5), nullable=False, default='A')
-    occurence_in_part_id = db.Column(db.Integer, db.ForeignKey('anteil.id'), nullable=True)
+    occurence_in_part_id = db.Column(db.Integer, db.ForeignKey('auftreten_werkausschnitt.id'), nullable=True)
+    share_of_part_id = db.Column(db.Integer, db.ForeignKey('anteil.id'), nullable=True)
     instrumentation_id = db.Column(db.Integer, db.ForeignKey('instrumentation.id'))
     instrumentation_context_id = db.Column(db.Integer, db.ForeignKey('instrumentation_context.id'), nullable=True)
     satz_id = db.Column(db.Integer, db.ForeignKey('satz.id'), nullable=True)
@@ -51,7 +53,8 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin):
     citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), nullable=True)
 
     part = db.relationship(Part, lazy='select', backref=db.backref('subparts', single_parent=True, cascade="all, delete-orphan"))
-    occurence_in_part = db.relationship(Anteil, lazy='joined', single_parent=True, cascade="all, delete-orphan")
+    occurence_in_part = db.relationship(AuftretenWerkausschnitt, lazy='joined', single_parent=True)
+    share_of_part = db.relationship(Anteil, lazy='joined', single_parent=True)
     _instrumentation = db.relationship('Instrumentation', lazy='subquery', single_parent=True, cascade="all, delete-orphan")  # type: Instrumentation
     instrumentation_context = db.relationship(InstrumentationContext, lazy='subquery', single_parent=True, cascade="all, delete-orphan")
     satz = db.relationship(Satz, single_parent=True, cascade="all, delete-orphan")
@@ -65,7 +68,7 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin):
     citations = db.relationship(Citations, single_parent=True, cascade="all, delete-orphan")
 
     _subquery_load = ['satz', 'form', 'dramaturgic_context', 'composition', 'rythm',
-                      'dynamic', 'harmonics']
+                      'dynamic', 'harmonics', 'voices']
 
     def __init__(self, part_id: Union[int, Part], label: str = 'A', **kwargs):
         if isinstance(part_id, Part):

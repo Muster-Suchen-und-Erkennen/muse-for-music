@@ -30,6 +30,7 @@ from .satz import *
 from .tempo import *
 from .composition import *
 from .citation import *
+from .voices import *
 
 
 T = TypeVar('T', bound=Taxonomy)

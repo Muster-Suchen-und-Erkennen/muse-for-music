@@ -108,7 +108,7 @@ class HarmonicCenter(db.Model, UpdateableModelMixin):
     harmonische_funktion_id = db.Column(db.Integer, db.ForeignKey('harmonische_funktion.id'))
     harmonische_stufe_id = db.Column(db.Integer, db.ForeignKey('harmonische_stufe.id'))
 
-    harmonics = db.relationship(Harmonics, backref=db.backref('_harmonic_centers', lazy='joined'))
+    harmonics = db.relationship(Harmonics, backref=db.backref('_harmonic_centers', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     grundton = db.relationship('Grundton', lazy='joined')
     tonalitaet = db.relationship('Tonalitaet', lazy='joined')
     harmonische_funktion = db.relationship('HarmonischeFunktion', lazy='joined')
@@ -124,7 +124,7 @@ class HarmonischePhaenomeneToHarmonics(db.Model):
     harmonics_id = db.Column(db.Integer, db.ForeignKey('harmonics.id'), primary_key=True)
     harmonische_phaenomene_id = db.Column(db.Integer, db.ForeignKey('harmonische_phaenomene.id'), primary_key=True)
 
-    harmonics = db.relationship(Harmonics, backref=db.backref('_harmonic_phenomenons', lazy='joined'))
+    harmonics = db.relationship(Harmonics, backref=db.backref('_harmonic_phenomenons', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     harmonische_phaenomene = db.relationship('HarmonischePhaenomene')
 
     def __init__(self, harmonics, harmonische_phaenomene, **kwargs):
@@ -136,7 +136,7 @@ class HarmonischeEntwicklungToHarmonics(db.Model):
     harmonics_id = db.Column(db.Integer, db.ForeignKey('harmonics.id'), primary_key=True)
     harmonische_entwicklung_id = db.Column(db.Integer, db.ForeignKey('harmonische_entwicklung.id'), primary_key=True)
 
-    harmonics = db.relationship(Harmonics, backref=db.backref('_harmonic_changes', lazy='joined'))
+    harmonics = db.relationship(Harmonics, backref=db.backref('_harmonic_changes', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     harmonische_entwicklung = db.relationship('HarmonischeEntwicklung')
 
     def __init__(self, harmonics, harmonische_entwicklung, **kwargs):
@@ -148,7 +148,7 @@ class AkkordToHarmonics(db.Model):
     harmonics_id = db.Column(db.Integer, db.ForeignKey('harmonics.id'), primary_key=True)
     akkord_id = db.Column(db.Integer, db.ForeignKey('akkord.id'), primary_key=True)
 
-    harmonics = db.relationship(Harmonics, backref=db.backref('_special_cords', lazy='joined'))
+    harmonics = db.relationship(Harmonics, backref=db.backref('_special_cords', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     akkord = db.relationship('Akkord')
 
     def __init__(self, harmonics, akkord, **kwargs):
@@ -160,7 +160,7 @@ class DissonanzenToHarmonics(db.Model):
     harmonics_id = db.Column(db.Integer, db.ForeignKey('harmonics.id'), primary_key=True)
     dissonanzen_id = db.Column(db.Integer, db.ForeignKey('dissonanzen.id'), primary_key=True)
 
-    harmonics = db.relationship(Harmonics, backref=db.backref('_dissonances', lazy='joined'))
+    harmonics = db.relationship(Harmonics, backref=db.backref('_dissonances', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     dissonanzen = db.relationship('Dissonanzen')
 
     def __init__(self, harmonics, dissonanzen, **kwargs):

@@ -73,7 +73,7 @@ class MusicialSequence(db.Model, GetByID):
 
     starting_interval = db.relationship(Intervall, lazy='joined')
     flow = db.relationship(BewegungImTonraum, lazy='joined')
-    composition = db.relationship(Composition, backref=db.backref('_sequences', lazy='joined'))
+    composition = db.relationship(Composition, backref=db.backref('_sequences', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
 
     def __init__(self, composition, starting_interval, flow, beats: int, tonal_corrected: bool=False, **kwargs):
         if isinstance(composition, Composition):

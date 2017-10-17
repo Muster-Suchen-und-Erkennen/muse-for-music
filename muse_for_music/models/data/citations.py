@@ -108,7 +108,7 @@ class OpusCitation(db.Model, GetByID, UpdateableModelMixin):
     opus_id = db.Column(db.Integer, db.ForeignKey('opus.id'), nullable=True)
     citation_type_id = db.Column(db.Integer, db.ForeignKey('zitat.id'))
 
-    citations = db.relationship(Citations, backref=db.backref('_opus_citations', lazy='joined'))
+    citations = db.relationship(Citations, backref=db.backref('_opus_citations', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     opus = db.relationship('Opus')
     citation_type = db.relationship(Zitat)
 
@@ -123,7 +123,7 @@ class EpocheToCitations(db.Model):
     citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), primary_key=True)
     epoche_id = db.Column(db.Integer, db.ForeignKey('epoche.id'), primary_key=True)
 
-    citations = db.relationship(Citations, backref=db.backref('_epoch_citations', lazy='joined'))
+    citations = db.relationship(Citations, backref=db.backref('_epoch_citations', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     epoche = db.relationship('Epoche')
 
     def __init__(self, citations, epoche):
@@ -135,7 +135,7 @@ class GattungToCitations(db.Model):
     citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), primary_key=True)
     gattung_id = db.Column(db.Integer, db.ForeignKey('gattung.id'), primary_key=True)
 
-    citations = db.relationship(Citations, backref=db.backref('_gattung_citations', lazy='joined'))
+    citations = db.relationship(Citations, backref=db.backref('_gattung_citations', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     gattung = db.relationship('Gattung')
 
     def __init__(self, citations, gattung):
@@ -147,7 +147,7 @@ class PersonToCitations(db.Model):
     citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), primary_key=True)
     person_id = db.Column(db.Integer, db.ForeignKey('person.id'), primary_key=True)
 
-    citations = db.relationship(Citations, backref=db.backref('_composer_citations', lazy='joined'))
+    citations = db.relationship(Citations, backref=db.backref('_composer_citations', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     person = db.relationship('Person')
 
     def __init__(self, citations, person):
@@ -159,7 +159,7 @@ class InstrumentToCitations(db.Model):
     citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), primary_key=True)
     instrument_id = db.Column(db.Integer, db.ForeignKey('instrument.id'), primary_key=True)
 
-    citations = db.relationship(Citations, backref=db.backref('_instrument_citations', lazy='joined'))
+    citations = db.relationship(Citations, backref=db.backref('_instrument_citations', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     instrument = db.relationship('Instrument')
 
     def __init__(self, citations, instrument):
@@ -171,7 +171,7 @@ class ProgrammgegenstandToCitations(db.Model):
     citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), primary_key=True)
     programmgegenstand_id = db.Column(db.Integer, db.ForeignKey('programmgegenstand.id'), primary_key=True)
 
-    citations = db.relationship(Citations, backref=db.backref('_program_citations', lazy='joined'))
+    citations = db.relationship(Citations, backref=db.backref('_program_citations', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     programmgegenstand = db.relationship('Programmgegenstand')
 
     def __init__(self, citations, programmgegenstand):
@@ -183,7 +183,7 @@ class TonmalereiToCitations(db.Model):
     citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), primary_key=True)
     tonmalerei_id = db.Column(db.Integer, db.ForeignKey('tonmalerei.id'), primary_key=True)
 
-    citations = db.relationship(Citations, backref=db.backref('_tonmalerei_citations', lazy='joined'))
+    citations = db.relationship(Citations, backref=db.backref('_tonmalerei_citations', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     tonmalerei = db.relationship('Tonmalerei')
 
     def __init__(self, citations, tonmalerei):
@@ -199,7 +199,7 @@ class OtherToCitations(db.Model, UpdateableModelMixin):
     citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'))
     citation = db.Column(db.Text)
 
-    citations = db.relationship(Citations, backref=db.backref('_other_citations', lazy='joined'))
+    citations = db.relationship(Citations, backref=db.backref('_other_citations', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
 
     def __init__(self, citations, **kwargs):
         self.citations = citations

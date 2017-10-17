@@ -60,7 +60,7 @@ class RhythmustypToRythm(db.Model):
     rythm_id = db.Column(db.Integer, db.ForeignKey('rythm.id'), primary_key=True)
     rhythmustyp_id = db.Column(db.Integer, db.ForeignKey('rhythmustyp.id'), primary_key=True)
 
-    rythm = db.relationship(Rythm, backref=db.backref('_rythm_types', lazy='joined'))
+    rythm = db.relationship(Rythm, backref=db.backref('_rythm_types', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     rhythmustyp = db.relationship('Rhythmustyp')
 
     def __init__(self, rythm, rhythmustyp, **kwargs):
@@ -72,7 +72,7 @@ class RhythmischesPhaenomenToRythm(db.Model):
     rythm_id = db.Column(db.Integer, db.ForeignKey('rythm.id'), primary_key=True)
     rhythmisches_phaenomen_id = db.Column(db.Integer, db.ForeignKey('rhythmisches_phaenomen.id'), primary_key=True)
 
-    rythm = db.relationship(Rythm, backref=db.backref('_rythmic_phenomenons', lazy='joined'))
+    rythm = db.relationship(Rythm, backref=db.backref('_rythmic_phenomenons', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     rhythmisches_phaenomen = db.relationship('RhythmischesPhaenomen')
 
     def __init__(self, rythm, rhythmisches_phaenomen, **kwargs):
