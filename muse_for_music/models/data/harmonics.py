@@ -2,7 +2,8 @@ from ... import db
 from ..taxonomies import Frequenz, Grundton, Tonalitaet, HarmonischeFunktion, \
                          HarmonischeEntwicklung, HarmonischeKomplexitaet, \
                          HarmonischeStufe, HarmonischeFunktionVerwandschaft, \
-                         HarmonischePhaenomene, Akkord, Dissonanzen, Dissonanzgrad
+                         HarmonischePhaenomene, Akkord, Dissonanzen, Dissonanzgrad, \
+                         HarmonischeDichte, AnzahlMelodietoene
 from ..helper_classes import GetByID, UpdateListMixin, UpdateableModelMixin
 
 from typing import Union, Sequence, List
@@ -12,7 +13,12 @@ class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
 
     _normal_attributes = (('degree_of_dissonance', Dissonanzgrad),
                           ('nr_of_different_chords_per_measure', float),
-                          ('frequence_of_harmony_change', Frequenz),
+                          ('harmonic_density', HarmonischeDichte),
+                          ('nr_of_melody_tones_per_harmony', float),
+                          ('melody_tones_in_melody_one_id', AnzahlMelodietoene),
+                          ('melody_tones_in_melody_two_id', AnzahlMelodietoene),
+                          ('harmonic_rythm_is_static', bool),
+                          ('harmonic_rythm_follows_rule', bool),
                           ('harmonic_complexity', HarmonischeKomplexitaet),
                           ('harmonische_funktion', HarmonischeFunktionVerwandschaft))
 
@@ -23,13 +29,20 @@ class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
     harmonic_function_modulation_id = db.Column(db.Integer, db.ForeignKey('harmonische_funktion_verwandschaft.id'))
     degree_of_dissonance_id = db.Column(db.Integer, db.ForeignKey('dissonanzgrad.id'))
     nr_of_different_chords_per_measure = db.Column(db.Float)
-    frequence_of_harmony_change_id = db.Column(db.Integer, db.ForeignKey('frequenz.id'))
+    harmonic_density_id = db.Column(db.Integer, db.ForeignKey('harmonische_dichte.id'))
     harmonic_complexity_id = db.Column(db.Integer, db.ForeignKey('harmonische_komplexitaet.id'))
+    nr_of_melody_tones_per_harmony = db.Column(db.Float)
+    melody_tones_in_melody_one_id = db.Column(db.Integer, db.ForeignKey('anzahl_melodietoene.id'))
+    melody_tones_in_melody_two_id = db.Column(db.Integer, db.ForeignKey('anzahl_melodietoene.id'))
+    harmonic_rythm_is_static = db.Column(db.Boolean, default=False)
+    harmonic_rythm_follows_rule = db.Column(db.Boolean, default=False)
 
     harmonische_funktion = db.relationship('HarmonischeFunktionVerwandschaft', lazy='joined')
     degree_of_dissonance = db.relationship('Dissonanzgrad', lazy='joined')
-    frequence_of_harmony_change = db.relationship('Frequenz', lazy='joined')
+    harmonic_density = db.relationship('HarmonischeDichte', lazy='joined')
     harmonic_complexity = db.relationship('HarmonischeKomplexitaet', lazy='joined')
+    melody_tones_in_melody_one = db.relationship('AnzahlMelodietoene', lazy='joined')
+    melody_tones_in_melody_two = db.relationship('AnzahlMelodietoene', lazy='joined')
 
     @property
     def harmonic_centers(self):

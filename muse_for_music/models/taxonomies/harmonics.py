@@ -4,7 +4,8 @@ from .helper_classes import ListTaxonomy, TreeTaxonomy
 
 __all__ = ['HarmonischeEntwicklung', 'Tonalitaet', 'HarmonischeFunktion',
            'HarmonischeStufe', 'HarmonischeFunktionVerwandschaft',
-           'HarmonischePhaenomene', 'HarmonischeKomplexitaet']
+           'HarmonischePhaenomene', 'HarmonischeKomplexitaet',
+           'HarmonischeDichte', 'AnzahlMelodietoene']
 
 
 class HarmonischeEntwicklung(db.Model, TreeTaxonomy):
@@ -103,6 +104,24 @@ class HarmonischePhaenomene(db.Model, TreeTaxonomy):
 class HarmonischeKomplexitaet(db.Model, ListTaxonomy):
     """DB Model for choices."""
     __tablename__ = 'harmonische_komplexitaet'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120))
+    description = db.Column(db.Text(), nullable=True)
+
+
+class HarmonischeDichte(db.Model, ListTaxonomy):
+    """DB Model for choices."""
+    __tablename__ = 'harmonische_dichte'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120))
+    description = db.Column(db.Text(), nullable=True)
+
+
+class AnzahlMelodietoene(db.Model, ListTaxonomy):
+    """DB Model for choices."""
+    __tablename__ = 'anzahl_melodietoene'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
