@@ -25,7 +25,7 @@ from .gattung import *
 from .harmonics import *
 from .notes import *
 from .melody import *
-from .rythm import *
+from .rhythm import *
 from .satz import *
 from .tempo import *
 from .composition import *

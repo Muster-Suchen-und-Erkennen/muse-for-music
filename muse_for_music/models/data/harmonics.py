@@ -17,8 +17,8 @@ class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
                           ('nr_of_melody_tones_per_harmony', float),
                           ('melody_tones_in_melody_one_id', AnzahlMelodietoene),
                           ('melody_tones_in_melody_two_id', AnzahlMelodietoene),
-                          ('harmonic_rythm_is_static', bool),
-                          ('harmonic_rythm_follows_rule', bool),
+                          ('harmonic_rhythm_is_static', bool),
+                          ('harmonic_rhythm_follows_rule', bool),
                           ('harmonic_complexity', HarmonischeKomplexitaet),
                           ('harmonische_funktion', HarmonischeFunktionVerwandschaft))
 
@@ -34,8 +34,8 @@ class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
     nr_of_melody_tones_per_harmony = db.Column(db.Float)
     melody_tones_in_melody_one_id = db.Column(db.Integer, db.ForeignKey('anzahl_melodietoene.id'))
     melody_tones_in_melody_two_id = db.Column(db.Integer, db.ForeignKey('anzahl_melodietoene.id'))
-    harmonic_rythm_is_static = db.Column(db.Boolean, default=False)
-    harmonic_rythm_follows_rule = db.Column(db.Boolean, default=False)
+    harmonic_rhythm_is_static = db.Column(db.Boolean, default=False)
+    harmonic_rhythm_follows_rule = db.Column(db.Boolean, default=False)
 
     harmonische_funktion = db.relationship('HarmonischeFunktionVerwandschaft', lazy='joined')
     degree_of_dissonance = db.relationship('Dissonanzgrad', lazy='joined')

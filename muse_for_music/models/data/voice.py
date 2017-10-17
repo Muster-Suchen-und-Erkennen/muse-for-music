@@ -11,7 +11,7 @@ from .satz import Satz
 from .dramaturgic_context import DramaturgicContext
 from .dynamic import Dynamic, DynamicContext
 from .composition import Composition
-from .rythm import Rythm
+from .rhythm import Rhythm
 from .citations import Citations
 from .instrumentation import InstrumentationContext, Instrumentation
 from ..taxonomies import Anteil, MusikalischeFunktion, Melodieform, Verzierung, \
@@ -75,6 +75,15 @@ class Voice(db.Model, GetByID, UpdateableModelMixin):
     # Einsatz der Stimme
     share = db.relationship(Anteil)
     occurence_in_part = db.relationship(AuftretenWerkausschnitt)
+
+    def __init__(self, subpart: Union[int, SubPart], name: str, **kwargs):
+        if isinstance(subpart, SubPart):
+            self.subpart = subpart
+        else:
+            self.subpart = SubPart.get_by_id(subpart)
+        self.name = name
+
+        self._instrumentation = Instrumentation()
 
     @property
     def instrumentation(self):
