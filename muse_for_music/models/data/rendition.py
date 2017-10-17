@@ -1,12 +1,12 @@
 
 from ... import db
-from ..helper_classes import GetByID, UpdateableModelMixin
+from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 from ..taxonomies import Ausdruck, Artikulation, Spielanweisung
 
 from typing import Union, Sequence, Dict
 
 
-class Rendition(db.Model, GetByID, UpdateableModelMixin):
+class Rendition(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
     _list_attributes = ('mood_markings', 'articulation_markings', 'technic_markings')
 

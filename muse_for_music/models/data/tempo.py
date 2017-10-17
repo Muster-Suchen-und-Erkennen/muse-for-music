@@ -1,6 +1,6 @@
 
 from ... import db
-from ..helper_classes import GetByID, UpdateableModelMixin
+from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 from ..taxonomies import TempoEinbettung, TempoEntwicklung, Tempo
 
 from typing import Union, Sequence, Dict
@@ -31,9 +31,9 @@ class TempoContext(db.Model, GetByID, UpdateableModelMixin):
     tempo_trend_after = db.relationship(TempoEntwicklung, foreign_keys=[tempo_trend_after_id])
 
 
-class TempoGroup(db.Model, GetByID, UpdateableModelMixin):
+class TempoGroup(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
-    _normal_attributes = (('tempo_context', TempoContext))
+    _normal_attributes = (('tempo_context', TempoContext),)
     _list_attributes = ('tempo_markings', 'tempo_changes')
 
     __tablename__ = 'tempo_group'
