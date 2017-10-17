@@ -64,9 +64,29 @@ person_get = api.inherit('PersonGET', person_put, {
     '_links': NestedFields(person_links),
 })
 
-instrumentation_links = api.model('InstrumentationLinks', {
-    'self': HaLUrl(UrlData('api.instrumentation_instrumentation_resource', absolute=True,
-                           url_data={'id': 'id'}), required=False),
+
+
+opus_links = api.inherit('OpusLinks', with_curies, {
+    'self': HaLUrl(UrlData('api.opus_opus_resource', absolute=True, url_data={'id': 'id'}),
+                   required=False),
+    'find': HaLUrl(UrlData('api.opus_opus_list_resource', absolute=True,
+                           templated=True, path_variables=['id']), required=False),
+    'person': HaLUrl(UrlData('api.person_person_resource', absolute=True,
+                             url_data={'id': 'composer.id'}), required=False),
+})
+
+opus_post = api.model('OpusPOST', {
+    'name': fields.String(required=True, example='duett in g moll'),
+    'composer': fields.Nested(person_post, required=True),
+})
+
+opus_get_citation = api.inherit('OpusGETCitation', opus_post, {
+    'id': fields.Integer(readonly=True, example=1),
+    '_links': NestedFields(opus_links),
+    'original_name': fields.String(required=True),
+    'opus_name': fields.String(required=True),
+    'score_link': fields.String(required=True, description='A url linking to the sheet music.'),
+    'composition_year': fields.Integer(required=True),
 })
 
 instrumentation_context_put = api.model('InstrumentationContextPUT', {
@@ -281,6 +301,49 @@ composition_get = api.model('CompositionGET', {
     'nr_exact_repetitions': fields.Integer(),
 })
 
+opus_citation_put = api.model('OpusCitationPUT', {
+    'id': fields.Integer(readonly=True, example=1),
+    'opus': fields.Nested(opus_get_citation, description='Opus'),
+    'citation_type': fields.Nested(taxonomy_item_put, description='Zitat'),
+})
+
+opus_citation_get = api.model('OpusCitationGET', {
+    'id': fields.Integer(readonly=True, example=1),
+    'opus': fields.Nested(opus_get_citation, description='Opus'),
+    'citation_type': fields.Nested(taxonomy_item_get, description='Zitat'),
+})
+
+other_citation = api.model('OtherCitation', {
+    'id': fields.Integer(readonly=True, example=1),
+    'citation': fields.String(),
+})
+
+citations_put = api.model('CitationsGET', {
+    'id': fields.Integer(readonly=True, example=1),
+    'is_foreign': fields.Boolean(default=False),
+    'opus_citations': fields.List(fields.Nested(opus_citation_put, description='OpusCitation')),
+    'other_citations': fields.List(fields.Nested(other_citation)),
+    'gattung_citations': fields.List(fields.Nested(taxonomy_item_put, description='Gattung')),
+    'instrument_citations': fields.List(fields.Nested(taxonomy_item_put, description='Instrument')),
+    'program_citations': fields.List(fields.Nested(taxonomy_item_put, description='Programmgegenstand')),
+    'tonmalerei_citations': fields.List(fields.Nested(taxonomy_item_put, description='Tonmalerei')),
+    'composer_citations': fields.List(fields.Nested(taxonomy_item_put, description='Person')),
+    'epoch_citations': fields.List(fields.Nested(taxonomy_item_put, description='Epoche')),
+})
+
+citations_get = api.model('CitationsGET', {
+    'id': fields.Integer(readonly=True, example=1),
+    'is_foreign': fields.Boolean(default=False),
+    'opus_citations': fields.List(fields.Nested(opus_citation_get, description='OpusCitation')),
+    'other_citations': fields.List(fields.Nested(other_citation)),
+    'gattung_citations': fields.List(fields.Nested(taxonomy_item_get, description='Gattung')),
+    'instrument_citations': fields.List(fields.Nested(taxonomy_item_get, description='Instrument')),
+    'program_citations': fields.List(fields.Nested(taxonomy_item_get, description='Programmgegenstand')),
+    'tonmalerei_citations': fields.List(fields.Nested(taxonomy_item_get, description='Tonmalerei')),
+    'composer_citations': fields.List(fields.Nested(taxonomy_item_get, description='Person')),
+    'epoch_citations': fields.List(fields.Nested(taxonomy_item_get, description='Epoche')),
+})
+
 
 
 measure_model = api.model('Measure', {
@@ -330,6 +393,7 @@ subpart_put = api.inherit('SubPartPUT', subpart_post, {
     'harmonics': fields.Nested(harmonics_put, required=True, description='Harmonics'),
     'form': fields.Nested(form_put, required=True, description='Form'),
     'dynamic': fields.Nested(dynamic_put, required=True, description='Dynamic'),
+    'citations': fields.Nested(citations_put, description='Citations'),
 })
 
 subpart_get = api.inherit('SubPartGET', subpart_put, {
@@ -347,6 +411,7 @@ subpart_get = api.inherit('SubPartGET', subpart_put, {
     'harmonics': fields.Nested(harmonics_get, description='Harmonics'),
     'form': fields.Nested(form_get, description='Form'),
     'dynamic': fields.Nested(dynamic_get, description='Dynamic'),
+    'citations': fields.Nested(citations_get, description='Citations'),
 })
 
 part_get = api.inherit('PartGET', part_put, {
@@ -359,21 +424,6 @@ part_get = api.inherit('PartGET', part_put, {
     'tempo_context': fields.Nested(tempo_context_get),
     'form': fields.Nested(form_get),
     'subparts': fields.List(fields.Nested(subpart_get), default=[]),
-})
-
-opus_links = api.inherit('OpusLinks', with_curies, {
-    'self': HaLUrl(UrlData('api.opus_opus_resource', absolute=True, url_data={'id': 'id'}),
-                   required=False),
-    'find': HaLUrl(UrlData('api.opus_opus_list_resource', absolute=True,
-                           templated=True, path_variables=['id']), required=False),
-    'person': HaLUrl(UrlData('api.person_person_resource', absolute=True,
-                             url_data={'id': 'composer.id'}), required=False),
-})
-
-
-opus_post = api.model('OpusPOST', {
-    'name': fields.String(required=True, example='duett in g moll'),
-    'composer': fields.Nested(person_post, required=True),
 })
 
 opus_put = api.inherit('OpusPUT', opus_post, {

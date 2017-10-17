@@ -1,14 +1,19 @@
 from ... import db
 from ..taxonomies import Zitat, Epoche, Gattung, Instrument, Programmgegenstand, Tonmalerei
 from .people import Person
+from .opus import Opus
 from ..helper_classes import GetByID, UpdateListMixin, UpdateableModelMixin
 
 from typing import Union, Sequence, List
 
+
 class Citations(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
 
-    #_normal_attributes = (('nr_varied_repetitions', int), ('nr_exact_repetitions', int))
-    #_list_attributes = ('sequences',)
+    _normal_attributes = (('is_foreign', bool), )
+    _list_attributes = ('opus_citations', 'instrument_citations',
+                        'other_citations', 'epoch_citations',
+                        'gattung_citations', 'tonmalerei_citations',
+                        'program_citations', 'composer_citations')
 
     __tablename__ = 'citations'
     id = db.Column(db.Integer, primary_key=True)
@@ -94,13 +99,18 @@ class Citations(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
 
 
 class OpusCitation(db.Model, GetByID, UpdateableModelMixin):
+
+    _normal_attributes = (('citation_type', Zitat), ('opus', Opus))
+    _reference_only_attributes = ('opus')
+
     id = db.Column(db.Integer, primary_key=True)
-    citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), primary_key=True)
+    citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'))
     opus_id = db.Column(db.Integer, db.ForeignKey('opus.id'), nullable=True)
-    citation_type = db.Column(db.Integer, db.ForeignKey('zitat.id'))
+    citation_type_id = db.Column(db.Integer, db.ForeignKey('zitat.id'))
 
     citations = db.relationship(Citations, backref=db.backref('_opus_citations', lazy='joined'))
     opus = db.relationship('Opus')
+    citation_type = db.relationship(Zitat)
 
     def __init__(self, citations, **kwargs):
         self.citations = citations
@@ -182,6 +192,9 @@ class TonmalereiToCitations(db.Model):
 
 
 class OtherToCitations(db.Model, UpdateableModelMixin):
+
+    _normal_attributes = (('citation', str), )
+
     id = db.Column(db.Integer, primary_key=True)
     citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'))
     citation = db.Column(db.Text)

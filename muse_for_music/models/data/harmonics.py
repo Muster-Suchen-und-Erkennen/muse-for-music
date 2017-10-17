@@ -51,21 +51,7 @@ class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
     @harmonic_centers.setter
     def harmonic_centers(self, harmonic_centers_list: Sequence[dict]):
         old_items = {center.id: center for center in self._harmonic_centers}
-        to_add = []  # type: List[HarmonicCenter]
-
-        for harmonic_center in harmonic_centers_list:
-            harmonic_center_id = harmonic_center.get('id')
-            if harmonic_center_id in old_items:
-                old_items[harmonic_center_id].update(**harmonic_center)
-                del old_items[harmonic_center_id]
-            else:
-                to_add.append(HarmonicCenter(self, **harmonic_center))
-
-        for center in to_add:
-            db.session.add(center)
-        to_delete = list(old_items.values())  # type: List[HarmonicCenter]
-        for center in to_delete:
-            db.session.delete(center)
+        self.update_list(harmonic_centers_list, old_items, HarmonicCenter)
 
     @property
     def harmonic_phenomenons(self):
@@ -108,7 +94,13 @@ class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
                          Dissonanzen, 'dissonanzen')
 
 
-class HarmonicCenter(db.Model):
+class HarmonicCenter(db.Model, UpdateableModelMixin):
+
+    _normal_attributes = (('grundton', Grundton),
+                          ('harmonische_stufe', HarmonischeStufe),
+                          ('tonalitaet', Tonalitaet),
+                          ('harmonische_funktion', HarmonischeFunktion))
+
     id = db.Column(db.Integer, primary_key=True)
     harmonics_id = db.Column(db.Integer, db.ForeignKey('harmonics.id'))
     grundton_id = db.Column(db.Integer, db.ForeignKey('grundton.id'))
@@ -122,15 +114,10 @@ class HarmonicCenter(db.Model):
     harmonische_funktion = db.relationship('HarmonischeFunktion', lazy='joined')
     harmonische_stufe = db.relationship('HarmonischeStufe', lazy='joined')
 
-    def __init__(self, harmonics, grundton, tonalitaet, harmonische_funktion, harmonische_stufe, **kwargs):
+    def __init__(self, harmonics, **kwargs):
         self.harmonics = harmonics
-        self.update(grundton, tonalitaet, harmonische_funktion, harmonische_stufe)
-
-    def update(self, grundton, tonalitaet, harmonische_funktion, harmonische_stufe):
-        self.grundton = Grundton.get_by_id_or_dict(grundton)
-        self.tonalitaet = Tonalitaet.get_by_id_or_dict(tonalitaet)
-        self.harmonische_funktion = HarmonischeFunktion.get_by_id_or_dict(harmonische_funktion)
-        self.harmonische_stufe = HarmonischeStufe.get_by_id_or_dict(harmonische_stufe)
+        if kwargs:
+            self.update(kwargs)
 
 
 class HarmonischePhaenomeneToHarmonics(db.Model):
