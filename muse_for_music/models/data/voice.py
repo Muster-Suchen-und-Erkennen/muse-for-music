@@ -1,5 +1,5 @@
 from ... import db
-from ..helper_classes import GetByID, UpdateableModelMixin
+from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 
 from typing import Union, Sequence, Dict
 
@@ -19,7 +19,7 @@ from ..taxonomies import Anteil, MusikalischeFunktion, Melodieform, Verzierung, 
                          AuftretenWerkausschnitt, VoiceToVoiceRelation
 
 
-class Voice(db.Model, GetByID, UpdateableModelMixin):
+class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
     _normal_attributes = (('lowest_pitch', Grundton),
                           ('occurence_in_part', AuftretenWerkausschnitt),
