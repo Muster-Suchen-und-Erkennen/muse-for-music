@@ -34,16 +34,16 @@ taxonomy_item_links = ns.model('TaxonomyItemLinks', {
 
 
 taxonomy_item_post = ns.model('TaxonomyItemPOST', {
-    'name': fields.String(required=True),
-    'description': fields.String(required=False),
+    'name': fields.String(default='', required=True),
+    'description': fields.String(default='', required=False),
 })
 
 taxonomy_item_put = ns.inherit('TaxonomyItemPUT', taxonomy_item_post, {
-    'id': fields.Integer(required=True, example=1),
+    'id': fields.Integer(default=1, required=True, example=1),
 })
 
 taxonomy_item_get = ns.inherit('TaxonomyItemGET', taxonomy_item_put, {
-    'id': fields.Integer(readonly=True, example=1),
+    'id': fields.Integer(default=1, readonly=True, example=1),
     '_links': NestedFields(taxonomy_item_links),
 })
 
@@ -113,9 +113,9 @@ taxonomy_links = ns.model('TaxonomyLinks', {
 })
 
 taxonomy_model = ns.model('TaxonomyModel', {
-    'name': fields.String(required=True, attribute='__name__'),
+    'name': fields.String(default='', required=True, attribute='__name__'),
     '_links': NestedFields(taxonomy_links),
-    'taxonomy_type': fields.String(enum=['list', 'tree'], discriminator=True, readonly=True),
+    'taxonomy_type': fields.String(default='list', enum=['list', 'tree'], discriminator=True, readonly=True),
     'select_only_leafs': fields.Boolean(default=False, readonly=True, required=False),
     'select_multiple': fields.Boolean(default=False, readonly=True, required=False),
     'items': TaxonomyItems(required=False),
