@@ -110,7 +110,7 @@ dynamic_context_put = api.model('DynamicContextPUT', {
     'loudness_before': fields.Nested(taxonomy_item_put),
     'loudness_after': fields.Nested(taxonomy_item_put),
     'dynamic_trend_before': fields.Nested(taxonomy_item_put),
-    'dynamic_trend_after': nullable(fields.Nested(taxonomy_item_put)),
+    'dynamic_trend_after': fields.Nested(taxonomy_item_put),
 })
 
 dynamic_context_get = api.model('DynamicContextGET', {
