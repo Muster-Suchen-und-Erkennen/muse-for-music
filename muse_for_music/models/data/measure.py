@@ -12,4 +12,4 @@ class Measure(db.Model, GetByID, UpdateableModelMixin):
 
     def __init__(self, measure: int = 1, from_page: int = None, **kwargs):
         self.measure = measure
-        self.from_page = None
+        self.from_page = from_page

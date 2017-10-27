@@ -77,7 +77,7 @@ opus_links = api.inherit('OpusLinks', with_curies, {
 
 opus_post = api.model('OpusPOST', {
     'name': fields.String(default='', required=True, example='duett in g moll'),
-    'composer': fields.Nested(person_post, required=True),
+    'composer': fields.Nested(person_get, required=True),
 })
 
 opus_get_citation = api.inherit('OpusGETCitation', opus_post, {
@@ -390,10 +390,11 @@ part_post = api.model('PartPOST', {
     'measure_start': fields.Nested(measure_model, required=True),
     'measure_end': fields.Nested(measure_model, required=True),
     'length': fields.Integer(default=1, min=1, required=True, example=1),
-    'occurence_in_movement': fields.Nested(taxonomy_item_put, required=True),
 })
 
 part_put = api.inherit('PartPUT', part_post, {
+    'movement': fields.Integer(required=True, default=1),
+    'occurence_in_movement': fields.Nested(taxonomy_item_put, required=True),
     'instrumentation_context': fields.Nested(instrumentation_context_put, required=True),
     'dynamic_context': fields.Nested(dynamic_context_put, required=True),
     'tempo_context': fields.Nested(tempo_context_put, required=True),
