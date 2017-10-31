@@ -8,7 +8,6 @@ from .part import Part
 from .form import Form
 from .harmonics import Harmonics
 from .satz import Satz
-from .dramaturgic_context import DramaturgicContext
 from .dynamic import Dynamic, DynamicContext
 from .composition import Composition
 from .rhythm import Rhythm
@@ -34,7 +33,6 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
                           ('rhythm', Rhythm),
                           ('dynamic_context', DynamicContext),
                           ('form', Form),
-                          ('dramaturgic_context', DramaturgicContext),
                           ('tempo', TempoGroup),
                           ('rendition', Rendition),
                           ('citations', Citations))
@@ -50,7 +48,6 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     instrumentation_context_id = db.Column(db.Integer, db.ForeignKey('instrumentation_context.id'), nullable=True)
     satz_id = db.Column(db.Integer, db.ForeignKey('satz.id'), nullable=True)
     form_id = db.Column(db.Integer, db.ForeignKey('form.id'), nullable=True)
-    dramaturgic_context_id = db.Column(db.Integer, db.ForeignKey('dramaturgic_context.id'), nullable=True)
     composition_id = db.Column(db.Integer, db.ForeignKey('composition.id'), nullable=True)
     rhythm_id = db.Column(db.Integer, db.ForeignKey('rhythm.id'), nullable=True)
     dynamic_id = db.Column(db.Integer, db.ForeignKey('dynamic.id'), nullable=True)
@@ -67,7 +64,6 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     instrumentation_context = db.relationship(InstrumentationContext, lazy='subquery', single_parent=True, cascade="all, delete-orphan")
     satz = db.relationship(Satz, single_parent=True, cascade="all, delete-orphan")
     form = db.relationship(Form, single_parent=True, cascade="all, delete-orphan")
-    dramaturgic_context = db.relationship(DramaturgicContext, single_parent=True, cascade="all, delete-orphan")
     composition = db.relationship(Composition, single_parent=True, cascade="all, delete-orphan")
     rhythm = db.relationship(Rhythm, single_parent=True, cascade="all, delete-orphan")
     dynamic = db.relationship(Dynamic, single_parent=True, cascade="all, delete-orphan")
@@ -77,8 +73,8 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     rendition = db.relationship(Rendition, single_parent=True, cascade="all, delete-orphan")
     citations = db.relationship(Citations, single_parent=True, cascade="all, delete-orphan")
 
-    _subquery_load = ['satz', 'form', 'dramaturgic_context', 'composition', 'rhythm',
-                      'dynamic', 'harmonics', 'voices']
+    _subquery_load = ['satz', 'form', 'composition', 'rhythm', 'dynamic',
+                      'harmonics', 'voices']
 
     def __init__(self, part_id: Union[int, Part], label: str = 'A', **kwargs):
         if isinstance(part_id, Part):

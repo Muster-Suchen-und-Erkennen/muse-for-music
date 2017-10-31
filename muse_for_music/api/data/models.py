@@ -378,7 +378,7 @@ rendition_get = api.model('RenditionGET', {
 
 measure_model = api.model('Measure', {
     'measure': fields.Integer(default=1, min=0, required=True),
-    'from_page': fields.Integer(default=1, min=0, required=False),
+    'from_page': fields.Integer(default=-1, min=-1, required=False),
 })
 
 part_links = api.inherit('PartLinks', with_curies, {
@@ -398,6 +398,7 @@ part_put = api.inherit('PartPUT', part_post, {
     'instrumentation_context': fields.Nested(instrumentation_context_put, required=True),
     'dynamic_context': fields.Nested(dynamic_context_put, required=True),
     'tempo_context': fields.Nested(tempo_context_put, required=True),
+    'dramaturgic_context': fields.Nested(dramaturgic_context_put, required=True, description='DramaturgicContext'),
     'form': fields.Nested(form_put, required=True),
 })
 
@@ -419,7 +420,6 @@ subpart_put = api.inherit('SubPartPUT', subpart_post, {
     'instrumentation_context': fields.Nested(instrumentation_context_put, required=True),
     'composition': fields.Nested(composition_put, required=True, description='Composition'),
     'rhythm': fields.Nested(rhythm_put, required=True, description='Rhythm'),
-    'dramaturgic_context': fields.Nested(dramaturgic_context_put, required=True, description='DramaturgicContext'),
     'satz': fields.Nested(satz_put, required=True, description='Satz'),
     'dynamic_context': fields.Nested(dynamic_context_put, required=True, description='DynamicContext'),
     'harmonics': fields.Nested(harmonics_put, required=True, description='Harmonics'),
@@ -497,7 +497,6 @@ subpart_get = api.inherit('SubPartGET', subpart_put, {
     'instrumentation_context': fields.Nested(instrumentation_context_get),
     'composition': fields.Nested(composition_get, description='Composition'),
     'rhythm': fields.Nested(rhythm_get, description='Rhythm'),
-    'dramaturgic_context': fields.Nested(dramaturgic_context_get, description='DramaturgicContext'),
     'satz': fields.Nested(satz_get, description='Satz'),
     'dynamic_context': fields.Nested(dynamic_context_get, description='DynamicContext'),
     'harmonics': fields.Nested(harmonics_get, description='Harmonics'),
@@ -517,6 +516,7 @@ part_get = api.inherit('PartGET', part_put, {
     'instrumentation_context': fields.Nested(instrumentation_context_get),
     'dynamic_context': fields.Nested(dynamic_context_get),
     'tempo_context': fields.Nested(tempo_context_get),
+    'dramaturgic_context': fields.Nested(dramaturgic_context_get, description='DramaturgicContext'),
     'form': fields.Nested(form_get),
     'subparts': fields.List(fields.Nested(subpart_get), default=[]),
 })
@@ -527,7 +527,7 @@ opus_put = api.inherit('OpusPUT', opus_post, {
     'score_link': fields.String(default='', required=True, description='A url linking to the sheet music.'),
     'composition_year': fields.Integer(default=1, required=True),
     'composition_place': fields.String(default='', required=True, example='TODO'),
-    'instrumentation': fields.List(fields.Nested(taxonomy_item_get), required=True, default=[]),
+    'instrumentation': fields.List(fields.Nested(taxonomy_item_put), required=True, default=[]),
     'occasion': fields.String(default='', required=True),
     'dedication': fields.String(default='', required=True),
     'notes': fields.String(default='', required=True),
@@ -536,7 +536,7 @@ opus_put = api.inherit('OpusPUT', opus_post, {
     'first_printed_in': fields.Integer(default=1, required=True),
     'publisher': fields.String(default='', required=True),
     'movements': fields.Integer(default=1, required=True),
-    'genre': fields.String(default='', required=True),
+    'genre': fields.Nested(taxonomy_item_put),
 })
 
 opus_get = api.inherit('OpusGET', opus_put, {
@@ -545,4 +545,5 @@ opus_get = api.inherit('OpusGET', opus_put, {
     'composer': fields.Nested(person_get),
     'instrumentation': fields.List(fields.Nested(taxonomy_item_get), required=True, default=[]),
     'parts': fields.List(fields.Nested(part_get), default=[]),
+    'genre': fields.Nested(taxonomy_item_get),
 })

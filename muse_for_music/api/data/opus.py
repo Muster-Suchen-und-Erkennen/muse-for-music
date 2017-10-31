@@ -57,23 +57,7 @@ class OpusResource(Resource):
             abort(404, 'Requested opus not found!')
         new_values = request.get_json()
 
-        attrs = ('name', 'publisher', 'dedication', 'printed',
-                 'occasion', 'original_name', 'movements', 'opus_name',
-                 'notes', 'instrumentation')
-        # "composition_place": "TODO",
-        # "genre": "string",
-        # "composer": 0,
-        # "first_printed_at": "TODO",
-        for attribute in attrs:
-            if attribute in new_values:
-                setattr(opus, attribute, new_values[attribute])
-
-        for attribute in ('composition_year', 'first_printed_in'):
-            if attribute in new_values:
-                value = parse_date(new_values[attribute])
-                setattr(opus, attribute, value)
-
-        db.session.add(opus)
+        opus.update(new_values)
         db.session.commit()
         return marshal(opus, opus_get)
 
