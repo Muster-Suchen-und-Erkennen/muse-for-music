@@ -30,8 +30,9 @@ class Person(db.Model, GetByID, UpdateableModelMixin):
     nationality = db.Column(db.String(40), nullable=True)
 
     def __init__(self, name: str, gender: Union[str, GenderEnum],
-                 birth_date: Union[int, str, date]=None,
-                 death_date: Union[int, str, date]=None, canonical_name: str=None,
+                 birth_date: Union[int, str, date]=date.date(),
+                 death_date: Union[int, str, date]=date.date(),
+                 canonical_name: str=None,
                  nationality: str=None, **kwargs) -> None:
         self.name = name
         if isinstance(gender, int):
