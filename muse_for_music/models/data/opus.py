@@ -66,7 +66,7 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
             else:
                 composer_id = composer.get('id')
             if composer_id is not None:
-                comp = Person.query.filter_by(id=id).first()  # type: Person
+                comp = Person.get_by_id(composer_id)  # type: Person
                 self.composer = comp
             else:
                 self.composer = Person(**composer)

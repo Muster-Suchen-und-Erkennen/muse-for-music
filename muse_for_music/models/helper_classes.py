@@ -35,9 +35,11 @@ class GetByID():
         if isinstance(id, dict):  # for lazy dict passing
             return id['id']
         if isinstance(id, int):
+            if id < 0: # no negative ids in system (all negative ids mapped to -1)
+                return -1
             return id
-        if id is None:
-            return None
+        if id is None: # None object is associated with negative id
+            return -1
         raise TypeError('"id" is of wrong type. Expected: int, dict or {}, Got {}'.format(GetByID, type(id)))
 
     @classmethod
@@ -50,6 +52,8 @@ class GetByID():
 
     @classmethod
     def get_by_id(cls: Type[X], id: int, lazy: bool=False) -> X:
+        if id < 0:
+            return None
         query = cls.prepare_query(lazy)
         return query.filter_by(id=id).first()
 
@@ -77,35 +81,16 @@ class UpdateableModelMixin():
 
     _normal_attributes = tuple()  # type: Tuple[Tuple(str,Type)]
     _reference_only_attributes = tuple()  # type: Tuple[str]
+    _optional_attributes = tuple()  # type: Tuple[str]
     _list_attributes = tuple()  # type: Tuple[str]
 
-
-    def _update_normal_attributes(self, new_values: Dict):
+    def _update_normal_attributes(self, new_values: Dict, partial: bool=False):
         expire_self = False
         for name, cls in self._normal_attributes:
-            if name not in new_values:
-                raise ValidationError("'{}' is a required property".format(name))
-            value = new_values[name]
+            self.check_for_required_attr(name, new_values, partial)
+            value = new_values.get(name)
             if issubclass(cls, UpdateableModelMixin) and (name not in self._reference_only_attributes):
-                attr_to_update = getattr(self, name)  # type: UpdateableModelMixin
-                if value is None:
-                    setattr(self, name, None)
-                    if attr_to_update is not None:
-                        db.session.delete(attr_to_update)
-                        expire_self = True
-                elif attr_to_update is None:
-                    try:
-                        attr_to_update = cls()
-                        setattr(self, name, attr_to_update)
-                        db.session.add(attr_to_update)
-                        attr_to_update.update(value)
-                    except Exception as e:
-                        print(type(e))
-                        logger = app.logger  # type: Logger
-                        logger.exception("Failed to auto instantiate class %s on update of %s",
-                                         cls.__name__, self.__class__.__name__)
-                else:
-                    attr_to_update.update(value)
+                expire_self = self.update_complex_object(name, value, cls, expire_self)
             elif issubclass(cls, GetByID):
                 if value is None:
                     setattr(self, name, None)
@@ -129,6 +114,32 @@ class UpdateableModelMixin():
                     setattr(self, name, parsed_date)
         if expire_self:
             db.session.expire(self)
+
+    def check_for_required_attr(self, name, new_values, partial: bool=False):
+        if not partial and name not in new_values and name not in self._optional_attributes:
+            raise ValidationError("'{}' is a required property".format(name))
+
+    def update_complex_object(self, name, value, cls, expire_self):
+        attr_to_update = getattr(self, name)  # type: UpdateableModelMixin
+        if value is None:
+            setattr(self, name, None)
+            if attr_to_update is not None:
+                db.session.delete(attr_to_update)
+                expire_self = True
+        elif attr_to_update is None:
+            try:
+                attr_to_update = cls()
+                setattr(self, name, attr_to_update)
+                db.session.add(attr_to_update)
+                attr_to_update.update(value)
+            except Exception as e:
+                print(type(e))
+                logger = app.logger  # type: Logger
+                logger.exception("Failed to auto instantiate class %s on update of %s",
+                                 cls.__name__, self.__class__.__name__)
+        else:
+            attr_to_update.update(value)
+        return expire_self
 
     def _update_list_attributes(self, new_values: Dict):
         for name in self._list_attributes:

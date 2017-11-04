@@ -7,6 +7,7 @@ from .instrumentation import InstrumentationContext
 from .dynamic import DynamicContext
 from .tempo import TempoContext
 from .form import Form
+from .dramaturgic_context import DramaturgicContext
 from ..taxonomies import AuftretenSatz
 
 
@@ -18,6 +19,7 @@ class Part(db.Model, GetByID, UpdateableModelMixin):
                           ('movement', int),
                           ('occurence_in_movement', AuftretenSatz),
                           ('form', Form),
+                          ('dramaturgic_context', DramaturgicContext),
                           ('tempo_context', TempoContext),
                           ('dynamic_context', DynamicContext),
                           ('instrumentation_context', InstrumentationContext))
@@ -33,20 +35,23 @@ class Part(db.Model, GetByID, UpdateableModelMixin):
     dynamic_context_id = db.Column(db.Integer, db.ForeignKey('dynamic_context.id'), nullable=True)
     tempo_context_id = db.Column(db.Integer, db.ForeignKey('tempo_context.id'), nullable=True)
     form_id = db.Column(db.Integer, db.ForeignKey('form.id'), nullable=True)
+    dramaturgic_context_id = db.Column(db.Integer, db.ForeignKey('dramaturgic_context.id'), nullable=True)
 
     opus = db.relationship(Opus, lazy='select', backref=db.backref('parts', cascade="all, delete-orphan"))
     measure_start = db.relationship(Measure, foreign_keys=[measure_start_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
     measure_end = db.relationship(Measure, foreign_keys=[measure_end_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
     occurence_in_movement = db.relationship(AuftretenSatz, lazy='joined')
-    instrumentation_context = db.relationship(InstrumentationContext, lazy='joined', single_parent=True, cascade="all, delete-orphan")
-    dynamic_context = db.relationship(DynamicContext, lazy='joined', single_parent=True, cascade="all, delete-orphan")
-    tempo_context = db.relationship(TempoContext, lazy='joined', single_parent=True, cascade="all, delete-orphan")
+    instrumentation_context = db.relationship(InstrumentationContext, single_parent=True, cascade="all, delete-orphan")
+    dynamic_context = db.relationship(DynamicContext, single_parent=True, cascade="all, delete-orphan")
+    tempo_context = db.relationship(TempoContext, single_parent=True, cascade="all, delete-orphan")
     form = db.relationship(Form, lazy='joined', single_parent=True, cascade="all, delete-orphan")
+    dramaturgic_context = db.relationship(DramaturgicContext, single_parent=True, cascade="all, delete-orphan")
 
-    _subquery_load = ['subparts']
+    _subquery_load = ['dramaturgic_context', 'tempo_context', 'dynamic_context',
+                      'instrumentation_context', 'subparts']
 
     def __init__(self, opus_id: int, measure_start: dict, measure_end: dict,
-                 occurence_in_movement, length: int=1, movement: int=1, **kwargs):
+                 length: int=1, movement: int=1, **kwargs):
         self.opus = Opus.get_by_id(opus_id)
         self.movement = movement
         self.measure_start = Measure(**measure_start)
@@ -54,16 +59,15 @@ class Part(db.Model, GetByID, UpdateableModelMixin):
         db.session.add(self.measure_start)
         db.session.add(self.measure_end)
         self.length = length
-        if isinstance(occurence_in_movement, dict):
-            occurence_in_movement = occurence_in_movement['id']
-        self.occurence_in_movement = AuftretenSatz.get_by_id(occurence_in_movement)
 
         self.instrumentation_context = InstrumentationContext()
         self.dynamic_context = DynamicContext()
         self.tempo_context = TempoContext()
+        self.dramaturgic_context = DramaturgicContext()
         db.session.add(self.instrumentation_context)
         db.session.add(self.dynamic_context)
         db.session.add(self.tempo_context)
+        db.session.add(self.dramaturgic_context)
 
         self.form = Form()
         db.session.add(self.form)
