@@ -30,8 +30,8 @@ class Person(db.Model, GetByID, UpdateableModelMixin):
     nationality = db.Column(db.String(40), nullable=True)
 
     def __init__(self, name: str, gender: Union[str, GenderEnum],
-                 birth_date: Union[int, str, date]=date.date(),
-                 death_date: Union[int, str, date]=date.date(),
+                 birth_date: Union[int, str, date]=date(1,1,1),
+                 death_date: Union[int, str, date]=date(1,1,1),
                  canonical_name: str=None,
                  nationality: str=None, **kwargs) -> None:
         self.name = name
@@ -44,13 +44,13 @@ class Person(db.Model, GetByID, UpdateableModelMixin):
             birth_date = date(year=birth_date, month=1, day=1)
         elif isinstance(birth_date, str):
             date = datetime.strptime(birth_date, '%Y-%m-%d')
-            birth_date = date.date()
+            birth_date = date(1,1,1)
         if death_date:
             if isinstance(death_date, int):
                 death_date = date(year=death_date, month=1, day=1)
             elif isinstance(death_date, str):
                 date = datetime.strptime(death_date, '%Y-%m-%d')
-                death_date = date.date()
+                death_date = date(1,1,1)
 
         self.birth_date = birth_date
         if death_date:
