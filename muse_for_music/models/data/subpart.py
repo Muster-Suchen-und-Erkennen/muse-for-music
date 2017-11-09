@@ -8,13 +8,13 @@ from .part import Part
 from .form import Form
 from .harmonics import Harmonics
 from .satz import Satz
-from .dynamic import Dynamic, DynamicContext
+from .dynamic import Dynamic
 from .composition import Composition
 from .rhythm import Rhythm
 from .tempo import TempoGroup
 from .rendition import Rendition
 from .citations import Citations
-from .instrumentation import InstrumentationContext, Instrumentation
+from .instrumentation import Instrumentation
 from ..taxonomies import Anteil, AuftretenWerkausschnitt, MusikalischeWendung
 
 from typing import Union, Sequence, Dict
@@ -27,11 +27,9 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
                           ('share_of_part', Anteil),
                           ('dynamic', Dynamic),
                           ('composition', Composition),
-                          ('instrumentation_context', InstrumentationContext),
                           ('satz', Satz),
                           ('harmonics', Harmonics),
                           ('rhythm', Rhythm),
-                          ('dynamic_context', DynamicContext),
                           ('form', Form),
                           ('tempo', TempoGroup),
                           ('rendition', Rendition),
@@ -45,13 +43,11 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     occurence_in_part_id = db.Column(db.Integer, db.ForeignKey('auftreten_werkausschnitt.id'), nullable=True)
     share_of_part_id = db.Column(db.Integer, db.ForeignKey('anteil.id'), nullable=True)
     instrumentation_id = db.Column(db.Integer, db.ForeignKey('instrumentation.id'))
-    instrumentation_context_id = db.Column(db.Integer, db.ForeignKey('instrumentation_context.id'), nullable=True)
     satz_id = db.Column(db.Integer, db.ForeignKey('satz.id'), nullable=True)
     form_id = db.Column(db.Integer, db.ForeignKey('form.id'), nullable=True)
     composition_id = db.Column(db.Integer, db.ForeignKey('composition.id'), nullable=True)
     rhythm_id = db.Column(db.Integer, db.ForeignKey('rhythm.id'), nullable=True)
     dynamic_id = db.Column(db.Integer, db.ForeignKey('dynamic.id'), nullable=True)
-    dynamic_context_id = db.Column(db.Integer, db.ForeignKey('dynamic_context.id'), nullable=True)
     harmonics_id = db.Column(db.Integer, db.ForeignKey('harmonics.id'), nullable=True)
     tempo_id = db.Column(db.Integer, db.ForeignKey('tempo_group.id'), nullable=True)
     rendition_id = db.Column(db.Integer, db.ForeignKey('rendition.id'), nullable=True)
@@ -61,13 +57,11 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     occurence_in_part = db.relationship(AuftretenWerkausschnitt, lazy='joined', single_parent=True)
     share_of_part = db.relationship(Anteil, lazy='joined', single_parent=True)
     _instrumentation = db.relationship('Instrumentation', lazy='subquery', single_parent=True, cascade="all, delete-orphan")  # type: Instrumentation
-    instrumentation_context = db.relationship(InstrumentationContext, lazy='subquery', single_parent=True, cascade="all, delete-orphan")
     satz = db.relationship(Satz, single_parent=True, cascade="all, delete-orphan")
     form = db.relationship(Form, single_parent=True, cascade="all, delete-orphan")
     composition = db.relationship(Composition, single_parent=True, cascade="all, delete-orphan")
     rhythm = db.relationship(Rhythm, single_parent=True, cascade="all, delete-orphan")
     dynamic = db.relationship(Dynamic, single_parent=True, cascade="all, delete-orphan")
-    dynamic_context = db.relationship(DynamicContext, single_parent=True, lazy='subquery', cascade="all, delete-orphan")
     harmonics = db.relationship(Harmonics, single_parent=True, cascade="all, delete-orphan")
     tempo = db.relationship(TempoGroup, single_parent=True, cascade="all, delete-orphan")
     rendition = db.relationship(Rendition, single_parent=True, cascade="all, delete-orphan")
