@@ -1,3 +1,5 @@
+"""Module for the subparts resource."""
+
 from flask import jsonify, url_for, request
 from flask_restplus import Resource, marshal, abort
 from sqlalchemy.exc import IntegrityError
@@ -14,7 +16,7 @@ from ...models.taxonomies import Anteil, InstrumentierungEinbettungQualitaet, \
                                  InstrumentierungEinbettungQuantitaet
 
 
-ns = api.namespace('subpart', description='TODO.')
+ns = api.namespace('subpart', description='Resource for Subparts.')
 
 
 @ns.route('/')

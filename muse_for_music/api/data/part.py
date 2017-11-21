@@ -1,3 +1,5 @@
+"""Module for part resource"""
+
 from flask import jsonify, url_for, request
 from flask_restplus import Resource, marshal, abort
 from sqlalchemy.exc import IntegrityError
@@ -17,7 +19,7 @@ from ...models.taxonomies import InstrumentierungEinbettungQuantitaet, \
                                  TempoEinbettung, TempoEntwicklung
 
 
-ns = api.namespace('part', description='TODO.')
+ns = api.namespace('part', description='Resource for Parts.')
 
 
 @ns.route('/')

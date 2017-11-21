@@ -1,3 +1,4 @@
+"""Module containing models for whole API to use."""
 
 from . import api
 from ..hal_field import HaLUrl, UrlData, NestedFields

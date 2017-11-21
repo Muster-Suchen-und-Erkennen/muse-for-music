@@ -1,3 +1,5 @@
+"""Root Module for the API."""
+
 from flask import Blueprint
 from flask_restplus import Api, abort
 from flask_restplus.errors import ValidationError

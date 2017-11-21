@@ -1,3 +1,6 @@
+"""Module for the opus resource."""
+
+
 from flask import jsonify, url_for, request
 from flask_restplus import Resource, marshal, abort
 from sqlalchemy.exc import IntegrityError
@@ -13,7 +16,7 @@ from ...models.data.opus import Opus
 from ...models.data.part import Part
 
 
-ns = api.namespace('opus', description='TODO.')
+ns = api.namespace('opus', description='Resource for opuses.')
 
 
 @ns.route('/')

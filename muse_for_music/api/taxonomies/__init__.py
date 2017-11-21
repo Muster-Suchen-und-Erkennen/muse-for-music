@@ -1,3 +1,5 @@
+"""Module containing API Endpoints for Taxonomy Resources."""
+
 from flask import request
 from flask_restplus import Resource, marshal, abort
 
@@ -84,12 +86,27 @@ def get_taxonomy_item(tax: Type[T], item_id) -> T:
 
 
 def create_taxonomy_item(tax: Type[T], new_values) -> T:
+    """Create an entry for a Taxonomy.
+
+    Arguments:
+        tax: Type[T] -- The Taxonomy Class to create the item for.
+        new_values: dict -- the new Taxonomy Item JSON Object.
+
+    Returns:
+        T -- The created Taxonomy Item.
+    """
     item = tax(**new_values)
     db.session.add(item)
     return item
 
 
 def edit_taxonomy_item(item: T, new_values: Dict):
+    """Update a existing taxonomy Item.
+
+    Arguments:
+        item: T -- The Item to update.
+        new_values: Dict -- The new Values in the JSON Object
+    """
     if 'name' in new_values:
         item.name = new_values['name']
     if 'description' in new_values:
@@ -98,6 +115,12 @@ def edit_taxonomy_item(item: T, new_values: Dict):
 
 
 def delete_taxonomy_item(taxonomy: Type[T], item_id: int):
+    """Remove an item from a Taxonomy.
+
+    Arguments:
+        taxonomy: Type[T] -- The Taxonomy Class to remove the item from.
+        item_id: int -- The id of the Taxonomy Item to remove.
+    """
     item = get_taxonomy_item(taxonomy, item_id)
     db.session.delete(item)
     db.session.commit()

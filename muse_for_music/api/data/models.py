@@ -1,6 +1,4 @@
-"""
-Models for data objects.
-"""
+"""Models for data objects."""
 
 
 from flask_restplus import fields
@@ -14,11 +12,22 @@ from datetime import datetime, date
 
 
 def parse_date(date_str: str) -> date:
+    """Parse a date string into a date object.
+
+    Arguments:
+        date_str: str -- the date string to parse
+
+    Returns:
+        date -- the parsed date
+    """
+
     parsed_date = datetime.strptime(date_str, '%Y-%m-%d')
     return parsed_date.date()
 
 
 class GenderField(fields.Raw, fields.StringMixin):
+    """Custom Class for Gender Enum in a field."""
+
     __schema_type__ = 'string'
 
     def __init__(self, *args, **kwargs):

@@ -1,3 +1,5 @@
+"""Module containing the root resource of the API."""
+
 from flask_restplus import Resource
 from . import api
 from .models import root_model

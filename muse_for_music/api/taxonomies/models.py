@@ -81,6 +81,7 @@ taxonomy_tree_item_get_json = ns.schema_model('TaxonomyTreeItemGETJSON', {
 
 
 class TaxonomyItems(fields.Raw):
+    """Raw field for formatting taxonomy Items."""
 
     def format(self, items):
         if callable(items):

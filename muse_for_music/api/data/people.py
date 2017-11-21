@@ -1,3 +1,6 @@
+"""Module for the persons resource."""
+
+
 from flask import jsonify, url_for, request
 from flask_restplus import Resource, marshal, reqparse, abort
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
@@ -11,7 +14,7 @@ from .models import person_post, person_put, person_get, parse_date
 from ... import db
 from ...models.data.people import Person, GenderEnum
 
-ns = api.namespace('person', description='TODO.')
+ns = api.namespace('person', description='Resource for persons.')
 
 
 @ns.route('/')
