@@ -1,3 +1,5 @@
+"""Module containing debug views for taxonomies."""
+
 from flask import render_template, url_for, abort
 from . import debug_blueprint
 from ..models.taxonomies import get_taxonomies

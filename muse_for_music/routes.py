@@ -8,7 +8,6 @@ from . import api
 
 if app.config['DEBUG']:
     from . import debug_routes
-    pass
 
 
 @app.route('/')

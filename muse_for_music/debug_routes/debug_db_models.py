@@ -1,3 +1,5 @@
+"""Module to list debug information for Database Models."""
+
 from inspect import getmembers, isclass, ismodule
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.orm.mapper import Mapper
@@ -22,6 +24,13 @@ _data_classes = {}
 
 
 def _inspect_module(module):
+    """Search a Module for Database Models.
+
+    Saves all found modules in _data_classes.
+
+    Arguments:
+        module list -- A list of Modules contained inside the Module.
+    """
     module_list = getmembers(module, predicate=ismodule)
     classes = getmembers(module, predicate=isclass)
     for (name, cls) in classes:
@@ -32,6 +41,7 @@ def _inspect_module(module):
 
 
 def _fill_class_dicts():
+    """Recursively searche all Modules in data and fill in Taxonomy Classes."""
     global _taxonomy_classes
     global _data_classes
     if not _taxonomy_classes:
@@ -48,6 +58,17 @@ def _fill_class_dicts():
 
 
 def _get_class_attributes(attributes, cls, properties, mapper_attrs, table_attributes):
+    """Return a filtered list of class attributes.
+
+    Filters Methods, attributes beginning with '_' and foreign key colums (based on '_id' ending).
+
+    Arguments:
+        attributes tuple -- Attributes from dir()
+        cls -- The class
+        properties: List[str] -- list to fill in
+        mapper_attrs  -- attributes from sqalchemy inspect
+        table_attributes: Dict[str, Union[ColumnProperty, RelationshipProperty]] -- dict to fill in
+    """
     for attr in attributes:
         if attr.startswith('_'):
             continue
@@ -72,6 +93,10 @@ def _get_class_attributes(attributes, cls, properties, mapper_attrs, table_attri
 
 
 def _analyze_db_model(cls):
+    """Analyze a db model.
+
+    Analyzes a db Model and returns a summary of the columns etc.
+    """
     attributes = dir(cls)
 
     table_attributes = {}  # type: Dict[str, Union[ColumnProperty, RelationshipProperty]]
