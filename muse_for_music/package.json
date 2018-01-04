@@ -25,10 +25,11 @@
     "angular-tree-component": "^3.7.3",
     "bootstrap": "^4.0.0-alpha.6",
     "core-js": "^2.4.1",
+    "font-awesome": "^4.7.0",
     "ng2-file-upload": "^1.2.1",
-    "ng2-tree": "^2.0.0-alpha.6",
     "ngx-bootstrap": "^1.7.1",
     "rxjs": "^5.1.0",
+    "tachyons": "^4.9.0",
     "zone.js": "^0.8.4"
   },
   "devDependencies": {

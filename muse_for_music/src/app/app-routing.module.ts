@@ -1,16 +1,19 @@
-import { DummyComponent } from './werkausschnitt/dummy/dummy.component';
-import { DropdownTreeButtonComponent } from './dropdown-tree-button/dropdown-tree-button.component';
+import { DummyComponent } from './legacy/werkausschnitt/dummy/dummy.component';
+import { DropdownTreeButtonComponent } from './legacy/dropdown-tree-button/dropdown-tree-button.component';
 
-import { AppComponent } from './app.component';
 import { Routes, RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
+import { HomeComponent } from './home/home.component';
+import { PeopleOverviewComponent } from './people/people-overview.component';
 
 const routes: Routes = [
   { path: 'werkausschnitt', loadChildren: 'app/werkausschnitt/werkausschnitt.module#WerkausschnittModule' },
   { path: 'treeselect', component: DropdownTreeButtonComponent },
-  { path: '', pathMatch: 'full', redirectTo: 'treeselect'},
-  { path: '**', redirectTo: '' }
+
+  { path: 'people', component: PeopleOverviewComponent },
+  { path: '', pathMatch: 'full', component: HomeComponent},
+  { path: '**', redirectTo: 'dashboard' }
 ]
 
 @NgModule({
