@@ -1,0 +1,17 @@
+<m4m-box>
+    <h1 title>Edit: {{personForm.value.name}}</h1>
+    <div class="h2 pv1 ph2 br2 bg-light-silver link bg-animate hover-bg-light-green" title-right>
+            <i class="fa fa-plus mr2"></i>New
+    </div>
+    <div class="w-100 ph3 pv2" body>
+        <form [formGroup]="personForm" novalidate>
+            <label>Name:
+                <input formControlName="name">
+            </label>
+            <label>Birthday:
+                <input type="date" formControlName="birth_date">
+            </label>
+        </form>
+        {{ personForm.value | json }}
+    </div>
+</m4m-box>
