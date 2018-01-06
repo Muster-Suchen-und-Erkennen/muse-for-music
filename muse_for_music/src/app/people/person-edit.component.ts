@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormControl, FormGroup }            from '@angular/forms';
 import { ApiService } from '../rest/api.service';
 import { ApiObject } from '../rest/api-base.service';
 
@@ -16,18 +15,23 @@ export class PersonEditComponent implements OnInit {
         name: 'UNBEKANNT'
     };
 
-    personForm = new FormGroup ({
-        name: new FormControl(),
-        birht_date: new FormControl(),
-    });
+    valid: boolean = false;
+    data: any = {};
 
     constructor(private api: ApiService) { }
 
     ngOnInit(): void {
         this.api.getPerson(this.personID).subscribe(data => {
             this.person = data;
-            this.personForm.patchValue(data);
         });
+    }
+
+    onValidChange(valid: boolean) {
+        this.valid = valid;
+    }
+
+    onDataChange(data: any) {
+        this.data = data;
     }
 
 }
