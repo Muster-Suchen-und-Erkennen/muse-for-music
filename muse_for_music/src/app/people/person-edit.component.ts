@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ApiService } from '../rest/api.service';
-import { ApiObject } from '../rest/api-base.service';
+import { ApiService } from '../shared/rest/api.service';
+import { ApiObject } from '../shared/rest/api-base.service';
 
 @Component({
   selector: 'm4m-person-edit',

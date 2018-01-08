@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
-import { ApiService } from 'app/rest/api.service';
+import { ApiService } from './api.service';
 
 export interface LinkObject {
     readonly href: string;

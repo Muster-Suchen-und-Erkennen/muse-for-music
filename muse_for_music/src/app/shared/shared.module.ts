@@ -7,6 +7,8 @@ import { DynamicFormQuestionComponent } from './forms/dynamic-form/dynamic-form-
 
 import { QuestionControlService } from './forms/question-control.service';
 import { QuestionService } from './forms/question.service';
+import { BaseApiService } from './rest/api-base.service';
+import { ApiService } from './rest/api.service';
 
 
 import { myBoxComponent } from './box/box.component';
@@ -17,6 +19,8 @@ import { myBoxComponent } from './box/box.component';
     providers: [
         QuestionService,
         QuestionControlService,
+        ApiService,
+        BaseApiService,
     ],
     exports: [
         myBoxComponent,

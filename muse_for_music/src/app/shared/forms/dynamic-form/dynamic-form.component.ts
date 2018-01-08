@@ -5,7 +5,7 @@ import { QuestionBase } from '../question-base';
 import { QuestionService } from '../question.service';
 import { QuestionControlService } from '../question-control.service';
 
-import { ApiObject } from '../../../rest/api-base.service';
+import { ApiObject } from '../../rest/api-base.service';
 
 @Component({
     selector: 'dynamic-form',
@@ -14,7 +14,7 @@ import { ApiObject } from '../../../rest/api-base.service';
 })
 export class DynamicFormComponent implements OnInit, OnChanges {
 
-    @Input() objectType: string;
+    @Input() objectModel: string;
     @Input() startValues: ApiObject = {_links:{self:{href:''}}};
 
     questions: QuestionBase<any>[] = [];
@@ -25,26 +25,32 @@ export class DynamicFormComponent implements OnInit, OnChanges {
 
     constructor(private qcs: QuestionControlService, private qs: QuestionService) { }
 
-    update() {
-        this.questions = this.qs.getQuestions();
-        this.form = this.qcs.toFormGroup(this.questions);
-        this.form.statusChanges.subscribe(status => {
-            this.valid.emit(this.form.valid);
-            this.data.emit(this.form.value);
+    update(startValues?: any) {
+        this.qs.getQuestions(this.objectModel).subscribe(questions => {
+            console.log('####################################################');
+            console.log(questions);
+            this.questions = questions;
+            this.form = this.qcs.toFormGroup(this.questions);
+            this.form.statusChanges.subscribe(status => {
+                this.valid.emit(this.form.valid);
+                this.data.emit(this.form.value);
+            });
+            this.form.patchValue(startValues);
         });
     }
 
     ngOnInit() {
-        this.update();
+        this.update(this.startValues);
         this.form.patchValue(this.startValues);
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.objectType != undefined) {
-            this.update();
-        }
-        if (changes.startValues != undefined) {
-            this.form.patchValue(this.startValues);
+            this.update(changes.startValues);
+        } else {
+            if (this.form != undefined && changes.startValues != undefined) {
+                this.form.patchValue(this.startValues);
+            }
         }
     }
 }

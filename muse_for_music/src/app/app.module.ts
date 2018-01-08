@@ -15,9 +15,6 @@ import { TreeViewComponent } from './legacy/tree-view/tree-view.component';
 
 import {SharedModule} from './shared/shared.module';
 
-import { BaseApiService } from './rest/api-base.service';
-import { ApiService } from './rest/api.service';
-
 import { BreadcrumbsComponent } from './navigation/breadcrumbs.component';
 import { TitleBarComponent } from './navigation/title-bar.component';
 import { NavigationService } from './navigation/navigation-service';
@@ -52,8 +49,6 @@ import { AppComponent } from './app.component';
   ],
   providers: [TreeService,
     NavigationService,
-    BaseApiService,
-    ApiService,
   ],
   bootstrap: [AppComponent]
 })

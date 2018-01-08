@@ -4,6 +4,8 @@ import { BaseApiService, ApiObject, LinkObject, ApiLinksObject } from './api-bas
 import { AsyncSubject } from 'rxjs/AsyncSubject';
 
 export interface RootLinks extends ApiLinksObject {
+    doc: LinkObject;
+    spec: LinkObject;
     taxonomy: LinkObject;
     person: LinkObject;
     opus: LinkObject;
@@ -20,6 +22,10 @@ export class ApiService implements OnInit {
     private rootSource = new AsyncSubject<RootModel>();
 
     private currentRoot = this.rootSource.asObservable();
+
+    private specSource = new AsyncSubject<any>();
+
+    private currentSpec = this.specSource.asObservable();
 
     constructor(private rest: BaseApiService) {
     }
@@ -40,6 +46,20 @@ export class ApiService implements OnInit {
             });
         }
         return this.currentRoot;
+    }
+
+    getSpec(): Observable<any> {
+        this.getRoot().subscribe(root => {
+            if (!this.specSource.closed) {
+                var re = /\/$/;
+                let url = root._links.spec.href.replace(re, '');
+                this.rest.get(url).subscribe(data => {
+                    this.specSource.next((data as any));
+                    this.specSource.complete();
+                });
+            }
+        });
+        return this.currentSpec;
     }
 
     getTaxonomies(): Observable<Array<ApiObject>> {

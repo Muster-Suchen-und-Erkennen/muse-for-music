@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
-import { ApiService } from '../rest/api.service';
-import { ApiObject } from '../rest/api-base.service';
+import { ApiService } from '../shared/rest/api.service';
+import { ApiObject } from '../shared/rest/api-base.service';
 
 @Component({
   selector: 'm4m-people-overview',
@@ -12,6 +12,8 @@ export class PeopleOverviewComponent implements OnInit {
 
     persons: Array<ApiObject>;
     selected: number = 1;
+
+    swagger: any;
 
     constructor(private data: NavigationService, private api: ApiService) { }
 

@@ -1,3 +1,19 @@
+
+export interface QuestionOptions {
+    value?: any;
+    key?: string,
+    label?: string,
+    required?: boolean,
+    readOnly?: boolean,
+    min?: number | string,
+    max?: number | string,
+    pattern?: string,
+    options?: Array<any>,
+    nullValue?: any,
+    order?: number,
+    controlType?: string;
+}
+
 export class QuestionBase<T>{
     value: T;
     key: string;
@@ -6,15 +22,8 @@ export class QuestionBase<T>{
     order: number;
     controlType: string;
 
-    constructor(options: {
-        value?: T,
-        key?: string,
-        label?: string,
-        required?: boolean,
-        order?: number,
-        controlType?: string
-    } = {}) {
-        this.value = options.value;
+    constructor(options: QuestionOptions = {}) {
+        this.value = (options.value as T);
         this.key = options.key || '';
         this.label = options.label || '';
         this.required = !!options.required;
