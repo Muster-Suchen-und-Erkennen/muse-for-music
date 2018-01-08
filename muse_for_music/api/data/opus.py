@@ -16,7 +16,7 @@ from ...models.data.opus import Opus
 from ...models.data.part import Part
 
 
-ns = api.namespace('opus', description='Resource for opuses.')
+ns = api.namespace('opus', description='Resource for opuses.', path='/opuses')
 
 
 @ns.route('/')

@@ -14,7 +14,7 @@ from .models import person_post, person_put, person_get, parse_date
 from ... import db
 from ...models.data.people import Person, GenderEnum
 
-ns = api.namespace('person', description='Resource for persons.')
+ns = api.namespace('person', description='Resource for persons.', path='/persons')
 
 
 @ns.route('/')

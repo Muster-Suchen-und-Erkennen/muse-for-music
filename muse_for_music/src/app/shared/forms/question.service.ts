@@ -111,6 +111,9 @@ export class QuestionService implements OnInit {
                     if (prop.format != undefined) {
                         options.controlType = prop.format;
                     }
+                    if (prop.title != undefined) {
+                        options.label = prop.title;
+                    }
                     if (!!prop.readOnly) {
                         options.controlType = 'hidden';
                     }

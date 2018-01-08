@@ -16,7 +16,7 @@ from ...models.taxonomies import Anteil, InstrumentierungEinbettungQualitaet, \
                                  InstrumentierungEinbettungQuantitaet
 
 
-ns = api.namespace('subpart', description='Resource for Subparts.')
+ns = api.namespace('subpart', description='Resource for Subparts.', path='/subparts')
 
 
 @ns.route('/')

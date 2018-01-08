@@ -25,28 +25,26 @@ export class DynamicFormComponent implements OnInit, OnChanges {
 
     constructor(private qcs: QuestionControlService, private qs: QuestionService) { }
 
-    update(startValues?: any) {
+    update() {
         this.qs.getQuestions(this.objectModel).subscribe(questions => {
-            console.log('####################################################');
-            console.log(questions);
             this.questions = questions;
             this.form = this.qcs.toFormGroup(this.questions);
             this.form.statusChanges.subscribe(status => {
                 this.valid.emit(this.form.valid);
                 this.data.emit(this.form.value);
             });
-            this.form.patchValue(startValues);
+            this.form.patchValue(this.startValues);
         });
     }
 
     ngOnInit() {
-        this.update(this.startValues);
+        this.update();
         this.form.patchValue(this.startValues);
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.objectType != undefined) {
-            this.update(changes.startValues);
+            this.update();
         } else {
             if (this.form != undefined && changes.startValues != undefined) {
                 this.form.patchValue(this.startValues);

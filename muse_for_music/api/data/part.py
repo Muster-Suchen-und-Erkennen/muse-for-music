@@ -19,7 +19,7 @@ from ...models.taxonomies import InstrumentierungEinbettungQuantitaet, \
                                  TempoEinbettung, TempoEntwicklung
 
 
-ns = api.namespace('part', description='Resource for Parts.')
+ns = api.namespace('part', description='Resource for Parts.', path='/parts')
 
 
 @ns.route('/')

@@ -58,8 +58,8 @@ person_links = api.model('PersonLinks', {
 })
 
 person_post = api.model('PersonPOST', {
-    'name': fields.String(default='', required=True, example='admin'),
-    'gender': GenderField(required=True, example='male', enum=['male', 'female', 'other'])
+    'name': fields.String(title='Name', description='Name der Person', default='', required=True, example='admin'),
+    'gender': GenderField(title='Geschlecht', description='Geschlecht der Person', required=True, example='male', enum=['male', 'female', 'other'])
 })
 
 person_put = api.inherit('PersonPUT', person_post, {
