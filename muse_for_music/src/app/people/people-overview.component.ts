@@ -23,4 +23,17 @@ export class PeopleOverviewComponent implements OnInit {
         this.api.getPeople().subscribe(data => this.persons = data);
     }
 
+    newPerson(event) {
+        this.api.postPerson({
+            "name": "admin",
+            "gender": "male"
+          }).subscribe(person => {
+            this.selected = person.id;
+        });
+    }
+
+    selectPerson(event, person: ApiObject) {
+        this.selected = person.id;
+    }
+
 }

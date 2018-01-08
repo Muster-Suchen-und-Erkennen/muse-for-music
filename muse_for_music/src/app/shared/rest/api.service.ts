@@ -2,6 +2,7 @@ import { Injectable, OnInit } from '@angular/core';
 import { Observable, } from 'rxjs/Rx';
 import { BaseApiService, ApiObject, LinkObject, ApiLinksObject } from './api-base.service';
 import { AsyncSubject } from 'rxjs/AsyncSubject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 export interface RootLinks extends ApiLinksObject {
     doc: LinkObject;
@@ -27,8 +28,9 @@ export class ApiService implements OnInit {
 
     private currentSpec = this.specSource.asObservable();
 
-    constructor(private rest: BaseApiService) {
-    }
+    private streams: {[propName: string]: BehaviorSubject<ApiObject | ApiObject[]>} = {};
+
+    constructor(private rest: BaseApiService) { }
 
     ngOnInit(): void {
         this.getRoot();
@@ -62,39 +64,97 @@ export class ApiService implements OnInit {
         return this.currentSpec;
     }
 
-    getTaxonomies(): Observable<Array<ApiObject>> {
-        return this.getRoot().flatMap(root => {
-            return (this.rest.get(root._links.taxonomy) as Observable<Array<ApiObject>>);
+    private getStreamSource(streamID: string) {
+        if (this.streams[streamID] == undefined) {
+            this.streams[streamID] = new BehaviorSubject<ApiObject | ApiObject[]>(undefined);
+        }
+        return this.streams[streamID]
+    }
+
+    getTaxonomies(): Observable<ApiObject[]> {
+        let stream = this.getStreamSource('taxonomies');
+        this.getRoot().subscribe(root => {
+            this.rest.get(root._links.taxonomy).subscribe(data => {
+                stream.next(data);
+            });
         });
+        return (stream.asObservable() as Observable<ApiObject[]>);
     }
 
     getPeople(): Observable<Array<ApiObject>> {
-        return this.getRoot().flatMap(root => {
-            return (this.rest.get(root._links.person) as Observable<Array<ApiObject>>);
+        let stream = this.getStreamSource('persons');
+        this.getRoot().subscribe(root => {
+            this.rest.get(root._links.person).subscribe(data => {
+                stream.next(data);
+            });
         });
+        return (stream.asObservable() as Observable<ApiObject[]>);
+    }
+
+    private personUpdate(data: ApiObject) {
+        let stream = this.getStreamSource('persons/' + data.id);
+        stream.next(data);
+        // TODO update list
+        this.getPeople();
     }
 
     getPerson(id: number): Observable<ApiObject> {
+        let stream = this.getStreamSource('persons/' + id);
+        this.getRoot().subscribe(root => {
+            this.rest.get(root._links.person.href + id).subscribe(data => {
+                this.personUpdate(data as ApiObject);
+            });
+        });
+        return (stream.asObservable() as Observable<ApiObject>);
+    }
+
+    postPerson(newData): Observable<ApiObject> {
         return this.getRoot().flatMap(root => {
-            return (this.rest.get(root._links.person.href + id) as Observable<ApiObject>);
+            return this.rest.post(root._links.person, newData).flatMap(data => {
+                let stream = this.getStreamSource('persons/' + data.id);
+                this.personUpdate(data as ApiObject);
+                return (stream.asObservable() as Observable<ApiObject>);
+            });
         });
     }
 
-    getOpuses(): Observable<Array<ApiObject>> {
-        return this.getRoot().flatMap(root => {
-            return (this.rest.get(root._links.opus) as Observable<Array<ApiObject>>);
+    putPerson(id: number, newData): Observable<ApiObject> {
+        let stream = this.getStreamSource('persons/' + id);
+        this.getRoot().subscribe(root => {
+            this.rest.put(root._links.person.href + id, newData).subscribe(data => {
+                this.personUpdate(data as ApiObject);
+            });
         });
+        return (stream.asObservable() as Observable<ApiObject>);
     }
 
-    getParts(): Observable<Array<ApiObject>> {
-        return this.getRoot().flatMap(root => {
-            return (this.rest.get(root._links.part) as Observable<Array<ApiObject>>);
+    getOpuses(): Observable<ApiObject[]> {
+        let stream = this.getStreamSource('opuses');
+        this.getRoot().subscribe(root => {
+            this.rest.get(root._links.opus).subscribe(data => {
+                stream.next(data);
+            });
         });
+        return (stream.asObservable() as Observable<ApiObject[]>);
     }
 
-    getSubParts(): Observable<Array<ApiObject>> {
-        return this.getRoot().flatMap(root => {
-            return (this.rest.get(root._links.subpart) as Observable<Array<ApiObject>>);
+    getParts(): Observable<ApiObject[]> {
+        let stream = this.getStreamSource('parts');
+        this.getRoot().subscribe(root => {
+            this.rest.get(root._links.part).subscribe(data => {
+                stream.next(data);
+            });
         });
+        return (stream.asObservable() as Observable<ApiObject[]>);
+    }
+
+    getSubParts(): Observable<ApiObject[]> {
+        let stream = this.getStreamSource('subparts');
+        this.getRoot().subscribe(root => {
+            this.rest.get(root._links.subpart).subscribe(data => {
+                stream.next(data);
+            });
+        });
+        return (stream.asObservable() as Observable<ApiObject[]>);
     }
 }

@@ -5,7 +5,9 @@ import { AsyncSubject } from 'rxjs/AsyncSubject';
 import { ApiService } from '../rest/api.service';
 
 import { QuestionBase, QuestionOptions } from './question-base';
+import { HiddenQuestion } from './question-hidden';
 import { StringQuestion } from './question-string';
+import { TextQuestion } from './question-text';
 import { DateQuestion } from './question-date';
 import { DropdownQuestion } from './question-dropdown';
 import { Options } from 'selenium-webdriver';
@@ -43,32 +45,15 @@ export class QuestionService implements OnInit {
 
             this.parseModel(spec, model);
 
-            // let questions: QuestionBase<any>[] = [
-            //     new StringQuestion({
-            //         key: 'name',
-            //         label: 'name',
-            //         value: 'Unbekannt',
-            //         required: true,
-            //         order: 1
-            //     }),
-            //     new DateQuestion({
-            //         key: 'birth_date',
-            //         label: 'Geburtstag',
-            //         value: '',
-            //         required: false,
-            //         order: 2
-            //     })
-            // ];questions.sort((a, b) => a.order - b.order);
-
             return this.observables[model].asObservable();
         })
 
     }
 
-    private parseModel(spec:any, modelID: string, questions?: {[propName: string]: QuestionOptions}) {
+    private parseModel(spec:any, modelID: string, questionOptions?: {[propName: string]: QuestionOptions}) {
         let recursionStart = false;
-        if (questions == undefined) {
-            questions = {};
+        if (questionOptions == undefined) {
+            questionOptions = {};
             recursionStart = true;
         }
 
@@ -82,7 +67,7 @@ export class QuestionService implements OnInit {
                 let tempModel;
                 for (var parent of model.allOf) {
                     if (parent.$ref != undefined) {
-                        this.parseModel(spec, parent.$ref, questions);
+                        this.parseModel(spec, parent.$ref, questionOptions);
                     }
                     if (parent.properties != undefined) {
                         tempModel = parent;
@@ -92,56 +77,64 @@ export class QuestionService implements OnInit {
             }
             if (model.properties != undefined) {
                 for (var propID in model.properties) {
-                    let options: QuestionOptions = questions[propID];
-                    if (options == undefined) {
-                        options = {
-                            key: propID,
-                            label: propID,
-                        }
-                    }
-                    let prop = model.properties[propID];
-                    if (model.required != undefined) {
-                        for (var name of model.required) {
-                            if (name === propID) {
-                                options.required = true;
-                            }
-                        }
-                    }
-                    options.controlType = prop.type;
-                    if (prop.format != undefined) {
-                        options.controlType = prop.format;
-                    }
-                    if (prop.title != undefined) {
-                        options.label = prop.title;
-                    }
-                    if (!!prop.readOnly) {
-                        options.controlType = 'hidden';
-                    }
-                    if (prop.example != undefined) {
-                        options.value = prop.example;
-                    }
-                    if (prop.enum != undefined) {
-                        options.options = prop.enum;
-                    }
-
-                    questions[propID] = options;
+                    this.updateOptions(questionOptions, propID, model);
                 }
             }
         }
 
         if (recursionStart) {
             let questionsArray: QuestionBase<any>[] = [];
-            for (var question in questions) {
-                questionsArray.push(this.getQuestion(questions[question]));
+            for (var question in questionOptions) {
+                questionsArray.push(this.getQuestion(questionOptions[question]));
             }
             this.observables[modelID].next(questionsArray.sort((a, b) => a.order - b.order));
             this.observables[modelID].complete();
         }
     }
 
+    private updateOptions(questionOptions: { [propName: string]: QuestionOptions; }, propID: string, model: any) {
+        let options: QuestionOptions = questionOptions[propID];
+        if (options == undefined) {
+            options = {
+                key: propID,
+                label: propID,
+            };
+        }
+        let prop = model.properties[propID];
+        if (model.required != undefined) {
+            for (var name of model.required) {
+                if (name === propID) {
+                    options.required = true;
+                }
+            }
+        }
+        options.valueType = prop.type;
+        options.controlType = prop.type;
+        if (prop.format != undefined) {
+            options.controlType = prop.format;
+        }
+        if (prop.title != undefined) {
+            options.label = prop.title;
+        }
+        options.readOnly = !!prop.readOnly;
+        if (prop.example != undefined) {
+            options.value = prop.example;
+        }
+        if (prop.enum != undefined) {
+            options.options = prop.enum;
+        }
+
+        if (prop.minLength != undefined) {
+            options.min = prop.minLength;
+        }
+        if (prop.maxLength != undefined) {
+            options.max = prop.maxLength;
+        }
+
+        questionOptions[propID] = options;
+    }
+
     private getQuestion(options: QuestionOptions): QuestionBase<any> {
-        console.log('####################################################');
-        console.log(options);
         if (options.options != undefined) {
             return new DropdownQuestion(options);
         }
@@ -149,9 +142,16 @@ export class QuestionService implements OnInit {
             return new DateQuestion(options);
         }
         if (options.controlType === 'string') {
-            return new StringQuestion(options);
+            if (options.pattern != undefined || options.max != undefined) {
+                return new StringQuestion(options);
+            } else {
+                return new TextQuestion(options);
+            }
         }
-        return null;
+        if (options.readOnly) {
+            return new HiddenQuestion(options);
+        }
+        return new QuestionBase();
     }
 
 }

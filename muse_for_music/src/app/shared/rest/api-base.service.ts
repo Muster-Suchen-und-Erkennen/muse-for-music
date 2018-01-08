@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { ApiService } from './api.service';
 
@@ -52,9 +52,31 @@ export class BaseApiService {
         return url;
     }
 
-    get(url: string|LinkObject|ApiLinksObject|ApiObject): Observable<ApiObject | Array<ApiObject>> {
+    get(url: string|LinkObject|ApiLinksObject|ApiObject): Observable<ApiObject | ApiObject[]> {
         url = this.extractUrl(url);
         return this.http.get(url)
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+    }
+
+    private headers(): RequestOptions {
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        //headers.append('authentication', `${student.token}`);
+
+        return new RequestOptions({ headers: headers });
+    }
+
+    put(url: string|LinkObject|ApiLinksObject|ApiObject, data): Observable<ApiObject> {
+        url = this.extractUrl(url);
+        return this.http.put(url, JSON.stringify(data), this.headers())
+            .map((res: Response) => res.json())
+            .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+    }
+
+    post(url: string|LinkObject|ApiLinksObject|ApiObject, data): Observable<ApiObject> {
+        url = this.extractUrl(url);
+        return this.http.post(url, JSON.stringify(data), this.headers())
             .map((res: Response) => res.json())
             .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
     }

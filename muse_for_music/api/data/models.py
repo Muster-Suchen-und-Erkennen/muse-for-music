@@ -58,12 +58,12 @@ person_links = api.model('PersonLinks', {
 })
 
 person_post = api.model('PersonPOST', {
-    'name': fields.String(title='Name', description='Name der Person', default='', required=True, example='admin'),
+    'name': fields.String(title='Name', description='Name der Person', max_length=255, default='', required=True, example='admin'),
     'gender': GenderField(title='Geschlecht', description='Geschlecht der Person', required=True, example='male', enum=['male', 'female', 'other'])
 })
 
 person_put = api.inherit('PersonPUT', person_post, {
-    'canonical_name': fields.String(default='', example='admin'),
+    'canonical_name': fields.String(title='Kanonischer Name', max_length=255, default='', example='admin'),
     'birth_date': fields.Date(example='1921-2-4'),
     'death_date': fields.Date(example='1921-3-23'),
 })
