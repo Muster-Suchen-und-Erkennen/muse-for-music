@@ -25,8 +25,8 @@ export class PeopleOverviewComponent implements OnInit {
 
     newPerson(event) {
         this.api.postPerson({
-            "name": "admin",
-            "gender": "male"
+            "name": "NEW",
+            "gender": "other"
           }).subscribe(person => {
             this.selected = person.id;
         });

@@ -61,8 +61,9 @@ export class DynamicFormComponent implements OnInit, OnChanges {
                 patched[key] = null;
             }
         }
-        this.form.patchValue(patched);
-
+        if (this.form != undefined) {
+            this.form.patchValue(patched);
+        }
     }
 
     ngOnInit() {
