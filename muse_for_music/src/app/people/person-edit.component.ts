@@ -22,7 +22,9 @@ export class PersonEditComponent implements OnInit, OnChanges {
 
     update() {
         this.api.getPerson(this.personID).subscribe(data => {
-            this.person = data;
+            if (data != undefined) {
+                this.person = data;
+            }
         });
     }
 

@@ -85,8 +85,8 @@ opus_links = api.inherit('OpusLinks', with_curies, {
 })
 
 opus_post = api.model('OpusPOST', {
-    'name': fields.String(default='', required=True, example='duett in g moll'),
-    'composer': fields.Nested(person_get, required=True),
+    'name': fields.String(max_length=255, default='', required=True, example='duett in g moll'),
+    'composer': fields.Nested(person_get, description='The composer. {"reference": "person"}', required=True),
 })
 
 opus_get_citation = api.inherit('OpusGETCitation', opus_post, {
@@ -529,19 +529,19 @@ part_get = api.inherit('PartGET', part_put, {
 })
 
 opus_put = api.inherit('OpusPUT', opus_post, {
-    'original_name': fields.String(default='', required=True),
-    'opus_name': fields.String(default='', required=True),
+    'original_name': fields.String(max_length=255, default='', required=True),
+    'opus_name': fields.String(max_length=255, default='', required=True),
     'score_link': fields.String(default='', required=True, description='A url linking to the sheet music.'),
     'composition_year': fields.Integer(default=1, required=True),
-    'composition_place': fields.String(default='', required=True, example='TODO'),
+    'composition_place': fields.String(max_length=255, default='', required=True, example='TODO'),
     'instrumentation': fields.List(fields.Nested(taxonomy_item_put), required=True, default=[]),
     'occasion': fields.String(default='', required=True),
     'dedication': fields.String(default='', required=True),
     'notes': fields.String(default='', required=True),
     'printed': fields.Boolean(required=True, default=False),
-    'first_printed_at': fields.String(default='', required=True, example='TODO'),
+    'first_printed_at': fields.String(max_length=255, default='', required=True, example='TODO'),
     'first_printed_in': fields.Integer(default=1, required=True),
-    'publisher': fields.String(default='', required=True),
+    'publisher': fields.String(max_length=255, default='', required=True),
     'movements': fields.Integer(default=1, required=True),
     'genre': fields.Nested(taxonomy_item_put),
 })

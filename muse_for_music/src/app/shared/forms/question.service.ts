@@ -9,6 +9,7 @@ import { HiddenQuestion } from './question-hidden';
 import { StringQuestion } from './question-string';
 import { TextQuestion } from './question-text';
 import { DateQuestion } from './question-date';
+import { IntegerQuestion } from './question-integer';
 import { DropdownQuestion } from './question-dropdown';
 import { Options } from 'selenium-webdriver';
 
@@ -102,7 +103,7 @@ export class QuestionService implements OnInit {
         }
         let prop = model.properties[propID];
         if (model.required != undefined) {
-            for (var name of model.required) {
+            for (let name of model.required) {
                 if (name === propID) {
                     options.required = true;
                 }
@@ -115,6 +116,17 @@ export class QuestionService implements OnInit {
         }
         if (prop.title != undefined) {
             options.label = prop.title;
+        }
+        if (prop.description != undefined) {
+            let re = /\{.*\}/;
+            let matches = prop.description.match(re);
+            if (matches != null && matches.length >= 1) {
+                let temp = JSON.parse(matches[0]);
+                if (temp.reference != undefined) {
+                    options.controlType = 'reference';
+                    options.valueType = temp.reference;
+                }
+            }
         }
         options.readOnly = !!prop.readOnly;
         if (prop.example != undefined) {
@@ -140,6 +152,9 @@ export class QuestionService implements OnInit {
         }
         if (options.controlType === 'date') {
             return new DateQuestion(options);
+        }
+        if (options.controlType === 'integer') {
+            return new IntegerQuestion(options);
         }
         if (options.controlType === 'string') {
             if (options.pattern != undefined || options.max != undefined) {

@@ -138,6 +138,23 @@ export class ApiService implements OnInit {
         return (stream.asObservable() as Observable<ApiObject[]>);
     }
 
+    private opusUpdate(data: ApiObject) {
+        let stream = this.getStreamSource('opuses/' + data.id);
+        stream.next(data);
+        // TODO update list
+        this.getOpuses();
+    }
+
+    getOpus(id: number): Observable<ApiObject> {
+        let stream = this.getStreamSource('opuses/' + id);
+        this.getRoot().subscribe(root => {
+            this.rest.get(root._links.opus.href + id).subscribe(data => {
+                this.opusUpdate(data as ApiObject);
+            });
+        });
+        return (stream.asObservable() as Observable<ApiObject>);
+    }
+
     getParts(): Observable<ApiObject[]> {
         let stream = this.getStreamSource('parts');
         this.getRoot().subscribe(root => {

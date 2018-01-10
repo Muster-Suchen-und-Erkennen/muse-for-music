@@ -6,7 +6,7 @@ export class TextQuestion extends QuestionBase<string> {
 
     constructor(options: QuestionOptions = {}) {
         super(options);
-        this.type = options['type'] || '';
+        this.type = 'textarea';
         this.nullValue = '';
     }
 }

@@ -22,6 +22,8 @@ import { NavigationService } from './navigation/navigation-service';
 import { HomeComponent } from './home/home.component';
 import { PeopleOverviewComponent } from './people/people-overview.component';
 import { PersonEditComponent } from './people/person-edit.component';
+import { OpusesOverviewComponent } from './opuses/opuses-overview.component';
+import { OpusEditComponent } from './opuses/opus-edit.component';
 
 import { AppComponent } from './app.component';
 
@@ -35,6 +37,8 @@ import { AppComponent } from './app.component';
     HomeComponent,
     PeopleOverviewComponent,
     PersonEditComponent,
+    OpusesOverviewComponent,
+    OpusEditComponent,
     BreadcrumbsComponent,
     TitleBarComponent,
   ],
