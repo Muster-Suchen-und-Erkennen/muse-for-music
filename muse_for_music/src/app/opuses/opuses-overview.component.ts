@@ -14,6 +14,10 @@ export class OpusesOverviewComponent implements OnInit {
 
     swagger: any;
 
+    valid: boolean;
+
+    newOpusData: any;
+
     constructor(private data: NavigationService, private api: ApiService) { }
 
     ngOnInit(): void {
@@ -29,6 +33,14 @@ export class OpusesOverviewComponent implements OnInit {
         //  }).subscribe(person => {
         //    this.selected = person.id;
         //});
+    }
+
+    onValidChange(valid: boolean) {
+        this.valid = valid;
+    }
+
+    onDataChange(data: any) {
+        this.newOpusData = data;
     }
 
 }

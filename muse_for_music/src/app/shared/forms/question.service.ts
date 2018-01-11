@@ -6,6 +6,7 @@ import { ApiService } from '../rest/api.service';
 
 import { QuestionBase, QuestionOptions } from './question-base';
 import { HiddenQuestion } from './question-hidden';
+import { ReferenceQuestion } from './question-reference';
 import { StringQuestion } from './question-string';
 import { TextQuestion } from './question-text';
 import { DateQuestion } from './question-date';
@@ -150,6 +151,9 @@ export class QuestionService implements OnInit {
         if (options.options != undefined) {
             return new DropdownQuestion(options);
         }
+        if (options.controlType === 'reference') {
+            return new ReferenceQuestion(options);
+        }
         if (options.controlType === 'date') {
             return new DateQuestion(options);
         }
@@ -166,7 +170,7 @@ export class QuestionService implements OnInit {
         if (options.readOnly) {
             return new HiddenQuestion(options);
         }
-        return new QuestionBase();
+        return new QuestionBase(options);
     }
 
 }

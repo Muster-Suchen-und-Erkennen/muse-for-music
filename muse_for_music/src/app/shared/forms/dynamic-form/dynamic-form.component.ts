@@ -77,7 +77,6 @@ export class DynamicFormComponent implements OnInit, OnChanges {
 
     ngOnInit() {
         this.update();
-        this.form.patchValue(this.startValues);
     }
 
     ngOnChanges(changes: SimpleChanges): void {
