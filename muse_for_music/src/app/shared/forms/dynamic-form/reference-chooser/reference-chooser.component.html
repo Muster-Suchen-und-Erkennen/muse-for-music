@@ -2,8 +2,10 @@ REFERENCE:
 
 <div class="mw5 ba flex justify-between">
     <div>
+        <input type="search" [ngModel]="searchTerm" (ngModelChange)="onSearch($event)" placeholder="test">
         {{value?.name}}
     </div>
     <div class="bl w1">↓</div>
 </div>
-{{choices | json}}
+<span *ngFor="let id of allChoices" [hidden]="!matchingChoices.has(id)">{{choices[id].name}}</span>
+

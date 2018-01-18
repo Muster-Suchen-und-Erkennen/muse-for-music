@@ -20,6 +20,11 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit {
     @Input('value') _value: number = undefined;
     @Input() question: QuestionBase<any>;
 
+    searchTerm: string;
+
+    matchingChoices: Set<number> = new Set<number>();
+    allChoices: number[];
+
     choices: {[propName: number]: ApiObject};
 
     onChange: any = () => {};
@@ -47,6 +52,20 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit {
         this.onTouched();
     }
 
+    onSearch(searchTerm: string) {
+        if (searchTerm == undefined) {
+            searchTerm = '';
+        }
+        this.searchTerm = searchTerm;
+        let matching = new Set<number>();
+        for (let id in this.choices) {
+            if (this.choices[id].name.toUpperCase().includes(searchTerm.toUpperCase())) {
+                matching.add(parseInt(id, 10));
+            }
+        }
+        this.matchingChoices = matching;
+    }
+
     constructor(private api: ApiService) {}
 
     ngOnInit(): void {
@@ -56,9 +75,12 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit {
                     return;
                 }
                 this.choices = {};
+                this.allChoices = [];
                 for (let choice of data) {
                     this.choices[choice.id] = choice;
+                    this.allChoices.push(choice.id);
                 }
+                this.onSearch(this.searchTerm);
             });
         };
     }
