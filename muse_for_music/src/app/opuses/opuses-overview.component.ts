@@ -43,4 +43,9 @@ export class OpusesOverviewComponent implements OnInit {
         this.newOpusData = data;
     }
 
+    save(event) {
+        if (this.valid) {
+            this.api.postOpus(this.newOpusData).subscribe(_ => {return});
+        }
+    }
 }

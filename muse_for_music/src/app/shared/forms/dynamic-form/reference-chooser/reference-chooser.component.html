@@ -2,13 +2,15 @@ REFERENCE:
 
 <div class="mw5 ba flex justify-between">
     <div>
-        <input type="search" [ngModel]="searchTerm" (ngModelChange)="onSearch($event)" placeholder="test" (focus)="dropdown.openDropdown()" (blur)="dropdown.closeDropdown()">
-        {{value?.name}}
+        <input type="search" [(ngModel)]="searchTerm" placeholder="test"
+                (focus)="dropdown.openDropdown()" (blur)="dropdown.closeDropdown()"
+                (keyup)="dropdown.openDropdown()" (keyup.enter)="select.select()"
+                (keyup.arrowdown)="select.highlightNext()" (keyup.arrowup)="select.highlightPrevious()">
     </div>
     <div class="bl w1" (click)="dropdown.toggleDropdown()">↓</div>
 </div>
 <m4m-dropdown #dropdown>
-    <m4m-selection-list [selectables]="choices" [display]="'name'" [search]="searchTerm"></m4m-selection-list>
+    <m4m-selection-list [selectables]="choices" [selected]="value" (selectedChange)="selectedChange($event)" [display]="'name'" [key]="'id'" [search]="searchTerm" #select></m4m-selection-list>
     <span *ngFor="let id of allChoices" [hidden]="!matchingChoices.has(id)">{{choices[id].name}}</span>
 </m4m-dropdown>
 

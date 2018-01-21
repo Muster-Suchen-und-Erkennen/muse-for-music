@@ -37,7 +37,7 @@ export class ApiService implements OnInit {
     }
 
     getRoot(): Observable<RootModel> {
-        if (!this.rootSource.closed) {
+        if (!this.rootSource.isStopped) {
             let url = '/api'
             if ((window as any).apiBasePath != undefined) {
                 url = (window as any).apiBasePath;
@@ -52,7 +52,7 @@ export class ApiService implements OnInit {
 
     getSpec(): Observable<any> {
         this.getRoot().subscribe(root => {
-            if (!this.specSource.closed) {
+            if (!this.specSource.isStopped) {
                 var re = /\/$/;
                 let url = root._links.spec.href.replace(re, '');
                 this.rest.get(url).subscribe(data => {
@@ -153,6 +153,16 @@ export class ApiService implements OnInit {
             });
         });
         return (stream.asObservable() as Observable<ApiObject>);
+    }
+
+    postOpus(newData): Observable<ApiObject> {
+        return this.getRoot().flatMap(root => {
+            return this.rest.post(root._links.opus, newData).flatMap(data => {
+                let stream = this.getStreamSource('opuses/' + data.id);
+                this.opusUpdate(data as ApiObject);
+                return (stream.asObservable() as Observable<ApiObject>);
+            });
+        });
     }
 
     getParts(): Observable<ApiObject[]> {

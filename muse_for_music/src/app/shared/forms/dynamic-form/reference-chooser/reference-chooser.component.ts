@@ -1,10 +1,13 @@
-import { Component, forwardRef, Input, OnInit } from '@angular/core';
+import { Component, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { ApiObject } from '../../../rest/api-base.service';
 import { ApiService } from '../../../rest/api.service';
 
 import { QuestionBase } from '../../question-base';
+import { myDropdownComponent } from '../../../dropdown/dropdown.component';
+
+
 
 @Component({
   selector: 'm4m-reference-chooser',
@@ -17,7 +20,10 @@ import { QuestionBase } from '../../question-base';
   }]
 })
 export class ReferenceChooserComponent implements ControlValueAccessor, OnInit {
-    @Input('value') _value: number = undefined;
+
+    @ViewChild(myDropdownComponent) dropdown: myDropdownComponent
+
+    @Input('value') _value: any = undefined;
     @Input() question: QuestionBase<any>;
 
     searchTerm: string;
@@ -32,28 +38,16 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit {
         if (this.choices == undefined || this._value == undefined) {
             return {_links: {self: {href: ''}}, id: -1}
         }
-        let value = this.choices[this._value];
-        if (value == undefined) {
-            return {_links: {self: {href: ''}}, id: -1}
-        }
-        return value;
+        return this._value;
     }
 
     set value(val: ApiObject) {
-        if (val == undefined || val.id == undefined) {
-            this._value = -1;
-        } else {
-            this._value = val.id;
-        }
+        this._value = val;
         this.onChange(val);
         this.onTouched();
-    }
-
-    onSearch(searchTerm: string) {
-        if (searchTerm == undefined) {
-            searchTerm = '';
+        if (val.id != -1) {
+            this.searchTerm = val.name;
         }
-        this.searchTerm = searchTerm;
     }
 
     constructor(private api: ApiService) {}
@@ -67,6 +61,12 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit {
                 this.choices = data;
             });
         };
+    }
+
+    selectedChange(selected: ApiObject) {
+        this.value = selected;
+        this.dropdown.closeDropdown();
+        this.onTouched();
     }
 
     registerOnChange(fn) {

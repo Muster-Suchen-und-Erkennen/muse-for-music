@@ -1,6 +1,7 @@
-<div *ngFor="let obj of selectables; index as i;" [hidden]="!matching.has(i)" [ngClass]="{'bg-light-blue': i == highlighted}">
-    <span>NAME: {{obj[display]}}</span>
+<div *ngFor="let selectable of selectables" [hidden]="!matching.has(selectable.id)"
+        [ngClass]="{'bg-light-blue': selectable.id === highlighted, 'b': selected != undefined && selectable.id === selected.id}">
+    <a (click)="select(selectable.id)">{{selectable.label}}</a>
 </div>
 <div [hidden]="matching.size > 0">
-        <span>No Matches</span>
+    <span>No Matches</span>
 </div>

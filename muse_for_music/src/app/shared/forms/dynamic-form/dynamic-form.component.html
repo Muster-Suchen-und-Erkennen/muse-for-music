@@ -1,5 +1,5 @@
 <div>
-    <form [formGroup]="form">
+    <form *ngIf="form" [formGroup]="form">
 
         <div *ngFor="let question of questions" class="form-row">
             <df-question [question]="question" [form]="form"></df-question>
