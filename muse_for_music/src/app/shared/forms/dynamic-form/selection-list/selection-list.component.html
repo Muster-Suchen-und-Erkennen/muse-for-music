@@ -1,0 +1,6 @@
+<div *ngFor="let obj of selectables; index as i;" [hidden]="!matching.has(i)" [ngClass]="{'bg-light-blue': i == highlighted}">
+    <span>NAME: {{obj[display]}}</span>
+</div>
+<div [hidden]="matching.size > 0">
+        <span>No Matches</span>
+</div>

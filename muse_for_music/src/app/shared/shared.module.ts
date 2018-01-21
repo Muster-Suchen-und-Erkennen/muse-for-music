@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DynamicFormComponent } from './forms/dynamic-form/dynamic-form.component';
 import { DynamicFormQuestionComponent } from './forms/dynamic-form/dynamic-form-question.component';
 import { ReferenceChooserComponent } from './forms/dynamic-form/reference-chooser/reference-chooser.component';
+import { SelectionListComponent } from './forms/dynamic-form/selection-list/slection-list.component';
 
 import { QuestionControlService } from './forms/question-control.service';
 import { QuestionService } from './forms/question.service';
@@ -13,10 +14,18 @@ import { ApiService } from './rest/api.service';
 
 
 import { myBoxComponent } from './box/box.component';
+import { myDropdownComponent } from './dropdown/dropdown.component';
 
 @NgModule({
     imports:      [ CommonModule, FormsModule, ReactiveFormsModule ],
-    declarations: [ myBoxComponent, DynamicFormComponent, DynamicFormQuestionComponent, ReferenceChooserComponent, ],
+    declarations: [
+        myBoxComponent,
+        myDropdownComponent,
+        DynamicFormComponent,
+        DynamicFormQuestionComponent,
+        ReferenceChooserComponent,
+        SelectionListComponent,
+    ],
     providers: [
         QuestionService,
         QuestionControlService,
@@ -25,9 +34,11 @@ import { myBoxComponent } from './box/box.component';
     ],
     exports: [
         myBoxComponent,
+        myDropdownComponent,
         DynamicFormComponent,
         DynamicFormQuestionComponent,
         ReferenceChooserComponent,
+        SelectionListComponent,
 
         CommonModule,
         FormsModule,
