@@ -1,3 +1,5 @@
-<div class="absolute ba bg-near-white overflow-y-auto overflow-x-none" [ngClass]="{'dn': !open}">
-    <ng-content></ng-content>
+<div class="dropdown relative">
+    <div class="dropdown-content z-1 absolute ba bg-near-white overflow-y-auto overflow-x-none" [ngClass]="{'dn': !open}">
+        <ng-content></ng-content>
+    </div>
 </div>
