@@ -40,7 +40,7 @@ def get_taxonomy(taxonomy_type: str, taxonomy_name: str) -> Type[T]:
         return cast(Type[T], taxonomy)
 
 
-@ns.route('/<string:taxonomy_type>/<string:taxonomy>', doc=False)
+@ns.route('/<string:taxonomy_type>/<string:taxonomy>/', doc=False)
 class TaxonomyResource(Resource):
 
     @ns.marshal_with(taxonomy_model)
@@ -50,7 +50,7 @@ class TaxonomyResource(Resource):
         return get_taxonomy(taxonomy_type, taxonomy)
 
 
-@ns.route('/list/<string:taxonomy>')
+@ns.route('/list/<string:taxonomy>/')
 class ListTaxonomyResource(Resource):
 
     @ns.marshal_with(list_taxonomy_model)
@@ -68,7 +68,7 @@ class ListTaxonomyResource(Resource):
         return marshal(item, taxonomy_item_get)
 
 
-@ns.route('/tree/<string:taxonomy>')
+@ns.route('/tree/<string:taxonomy>/')
 class TreeTaxonomyResource(Resource):
 
     @ns.response('200', 'success', tree_taxonomy_model_json)
@@ -127,7 +127,7 @@ def delete_taxonomy_item(taxonomy: Type[T], item_id: int):
     app.logger.info('Taxonomy item %s deleted.', item)
 
 
-@ns.route('/<string:taxonomy_type>/<string:taxonomy>/<int:item_id>', doc=False)
+@ns.route('/<string:taxonomy_type>/<string:taxonomy>/<int:item_id>/', doc=False)
 class TaxonomyItemResource(Resource):
 
     @ns.marshal_with(taxonomy_item_get)
@@ -153,7 +153,7 @@ class TaxonomyItemResource(Resource):
         delete_taxonomy_item(tax, item_id)
 
 
-@ns.route('/list/<string:taxonomy>/<int:item_id>')
+@ns.route('/list/<string:taxonomy>/<int:item_id>/')
 class ListTaxonomyItemResource(Resource):
 
     @ns.marshal_with(taxonomy_item_get)
@@ -179,7 +179,7 @@ class ListTaxonomyItemResource(Resource):
         delete_taxonomy_item(tax, item_id)
 
 
-@ns.route('/tree/<string:taxonomy>/<int:item_id>')
+@ns.route('/tree/<string:taxonomy>/<int:item_id>/')
 class TreeTaxonomyItemResource(Resource):
 
     @ns.response(200, 'success', model=taxonomy_tree_item_get_json)

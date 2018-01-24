@@ -1,0 +1,11 @@
+TAXONOMY:
+
+<m4m-dropdown #dropdown>
+    <input type="search" [(ngModel)]="searchTerm"
+            (focus)="dropdown.openDropdown()" (keyup)="dropdown.openDropdown()"
+            (keyup.enter)="select.select()" (keyup.arrowdown)="select.highlightNext()"
+            (keyup.arrowup)="select.highlightPrevious()" content>
+    <m4m-taxonomy-selection-list [taxonomy]="question.valueType" [allowedSelections]="1"
+            (selectedChange)="selectedChange($event)" [search]="searchTerm" #select dropdown-content></m4m-taxonomy-selection-list>
+</m4m-dropdown>
+

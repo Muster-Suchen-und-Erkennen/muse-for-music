@@ -17,6 +17,8 @@
 
         <m4m-reference-chooser *ngSwitchCase="'reference'" [formControlName]="question.key" [question]="question"></m4m-reference-chooser>
 
+        <m4m-taxonomy-select *ngSwitchCase="'taxonomy'" [formControlName]="question.key" [question]="question"></m4m-taxonomy-select>
+
     </div>
 
     <div class="errorMessage" *ngIf="!isValid">{{question.label}} is required</div>

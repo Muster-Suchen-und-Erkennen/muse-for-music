@@ -11,6 +11,7 @@ export interface QuestionOptions {
     pattern?: string,
     options?: Array<any>,
     nullValue?: any,
+    isArray?: boolean,
     order?: number,
     controlType?: string;
 }
@@ -27,6 +28,7 @@ export class QuestionBase<T>{
     pattern: string | undefined;
     options: Array<T> | undefined;
     nullValue: T | undefined;
+    isArray: boolean;
     order: number;
     controlType: string;
 
@@ -40,6 +42,7 @@ export class QuestionBase<T>{
         this.min = options.min;
         this.max = options.max;
         this.nullValue = options.nullValue;
+        this.isArray = options.isArray == undefined ? false : true;
         this.order = options.order === undefined ? 1 : options.order;
         this.controlType = options.controlType || '';
     }

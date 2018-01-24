@@ -15,6 +15,7 @@ export interface RootLinks extends ApiLinksObject {
 };
 export interface RootModel extends ApiObject {
     _links: RootLinks;
+    [propName: string]: any;
 };
 
 @Injectable()
@@ -71,14 +72,31 @@ export class ApiService implements OnInit {
         return this.streams[streamID]
     }
 
-    getTaxonomies(): Observable<ApiObject[]> {
+    getTaxonomies(): Observable<ApiObject> {
         let stream = this.getStreamSource('taxonomies');
         this.getRoot().subscribe(root => {
             this.rest.get(root._links.taxonomy).subscribe(data => {
                 stream.next(data);
             });
         });
-        return (stream.asObservable() as Observable<ApiObject[]>);
+        return (stream.asObservable() as Observable<ApiObject>);
+    }
+
+    getTaxonomy(taxonomy: string): Observable<ApiObject> {
+        let stream = this.getStreamSource('taxonomies/' + taxonomy.toUpperCase());
+        this.getTaxonomies().subscribe(taxonomies => {
+            if (taxonomies == undefined) {
+                return;
+            }
+            for (let tax of taxonomies.taxonomies) {
+                if (tax.name.toUpperCase() === taxonomy.toUpperCase()) {
+                    this.rest.get(tax._links.self).subscribe(data => {
+                        stream.next(data);
+                    });
+                }
+            }
+        });
+        return (stream.asObservable() as Observable<ApiObject>);
     }
 
     getPeople(): Observable<Array<ApiObject>> {

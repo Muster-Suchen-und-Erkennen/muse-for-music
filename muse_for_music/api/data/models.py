@@ -534,7 +534,7 @@ opus_put = api.inherit('OpusPUT', opus_post, {
     'score_link': fields.String(default='', required=True, description='A url linking to the sheet music.'),
     'composition_year': fields.Integer(default=1, required=True),
     'composition_place': fields.String(max_length=255, default='', required=True, example='TODO'),
-    'instrumentation': fields.List(fields.Nested(taxonomy_item_put), required=True, default=[]),
+    'instrumentation': fields.List(fields.Nested(taxonomy_item_put), description='{"taxonomy": "Instrument", "isArray": true}', required=True, default=[]),
     'occasion': fields.String(default='', required=True),
     'dedication': fields.String(default='', required=True),
     'notes': fields.String(default='', required=True),
@@ -543,7 +543,7 @@ opus_put = api.inherit('OpusPUT', opus_post, {
     'first_printed_in': fields.Integer(default=1, required=True),
     'publisher': fields.String(max_length=255, default='', required=True),
     'movements': fields.Integer(default=1, required=True),
-    'genre': fields.Nested(taxonomy_item_put),
+    'genre': fields.Nested(taxonomy_item_put, description='{"taxonomy": "GattungNineteenthCentury"}'),
 })
 
 opus_get = api.inherit('OpusGET', opus_put, {

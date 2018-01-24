@@ -7,6 +7,7 @@ import { ApiService } from '../rest/api.service';
 import { QuestionBase, QuestionOptions } from './question-base';
 import { HiddenQuestion } from './question-hidden';
 import { ReferenceQuestion } from './question-reference';
+import { TaxonomyQuestion } from './question-taxonomy';
 import { StringQuestion } from './question-string';
 import { TextQuestion } from './question-text';
 import { DateQuestion } from './question-date';
@@ -127,6 +128,13 @@ export class QuestionService implements OnInit {
                     options.controlType = 'reference';
                     options.valueType = temp.reference;
                 }
+                if (temp.taxonomy != undefined) {
+                    options.controlType = 'taxonomy';
+                    options.valueType = temp.taxonomy;
+                }
+                if (temp.isArray != undefined) {
+                    options.isArray = temp.isArray;
+                }
             }
         }
         options.readOnly = !!prop.readOnly;
@@ -153,6 +161,9 @@ export class QuestionService implements OnInit {
         }
         if (options.controlType === 'reference') {
             return new ReferenceQuestion(options);
+        }
+        if (options.controlType === 'taxonomy') {
+            return new TaxonomyQuestion(options);
         }
         if (options.controlType === 'date') {
             return new DateQuestion(options);
