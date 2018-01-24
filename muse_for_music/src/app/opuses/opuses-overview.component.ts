@@ -27,12 +27,9 @@ export class OpusesOverviewComponent implements OnInit {
     }
 
     newOpus(event) {
-        //this.api.postPerson({
-        //    "name": "NEW",
-        //    "gender": "other"
-        //  }).subscribe(person => {
-        //    this.selected = person.id;
-        //});
+        if (this.valid) {
+            this.api.postOpus(this.newOpusData).subscribe(_ => {return});
+        }
     }
 
     onValidChange(valid: boolean) {
@@ -41,11 +38,5 @@ export class OpusesOverviewComponent implements OnInit {
 
     onDataChange(data: any) {
         this.newOpusData = data;
-    }
-
-    save(event) {
-        if (this.valid) {
-            this.api.postOpus(this.newOpusData).subscribe(_ => {return});
-        }
     }
 }

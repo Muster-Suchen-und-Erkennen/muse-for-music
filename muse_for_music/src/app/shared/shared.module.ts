@@ -16,6 +16,8 @@ import { ApiService } from './rest/api.service';
 import { myBoxComponent } from './box/box.component';
 import { myDropdownComponent } from './dropdown/dropdown.component';
 
+import { ClickOutsideDirective } from './click-outside.directive';
+
 @NgModule({
     imports:      [ CommonModule, FormsModule, ReactiveFormsModule ],
     declarations: [
@@ -25,6 +27,7 @@ import { myDropdownComponent } from './dropdown/dropdown.component';
         DynamicFormQuestionComponent,
         ReferenceChooserComponent,
         SelectionListComponent,
+        ClickOutsideDirective,
     ],
     providers: [
         QuestionService,
@@ -39,6 +42,7 @@ import { myDropdownComponent } from './dropdown/dropdown.component';
         DynamicFormQuestionComponent,
         ReferenceChooserComponent,
         SelectionListComponent,
+        ClickOutsideDirective,
 
         CommonModule,
         FormsModule,
