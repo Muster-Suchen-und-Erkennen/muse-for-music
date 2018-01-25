@@ -1,8 +1,17 @@
-<div *ngFor="let selectable of selectables" [hidden]="!matching.has(selectable.id)"
-        (click)="select(selectable.id)"
-        [ngClass]="{'bg-light-blue': selectable.id === highlighted, 'b': selectedSet.has(selectable.id)}">
-    <a>{{selectable.name === 'root' ? taxonomy : selectable.name}}</a>
-</div>
+<ng-container *ngIf="showTree">
+    <div class="flex" *ngFor="let selectable of selectables inline" [ngStyle]="{'display': visible(selectable) ? 'flex' : 'none'}">
+        <div [ngStyle]="{'width': selectable.depth + 'rem'}"></div>
+        <div class="h1 w1 ph1 pointer" (click)="toggleClosed(selectable)">{{selectable.children.length > 0 ? (closed.has(selectable.id) ? '+' : '-') : '|'}}</div>
+        <div class="self-stretch pointer" (click)="select(selectable.id)" [ngClass]="{'bg-light-blue': selectable.id === highlighted, 'b': selectedSet.has(selectable.id)}">{{selectable.name === 'root' ? taxonomy : selectable.name}}</div>
+    </div>
+</ng-container>
+<ng-container *ngIf="!showTree">
+    <div *ngFor="let selectable of selectables" [hidden]="!visible(selectable)"
+            (click)="select(selectable.id)"
+            [ngClass]="{'bg-light-blue': selectable.id === highlighted, 'b': selectedSet.has(selectable.id)}">
+        <a>{{selectable.name === 'root' ? taxonomy : selectable.name}}</a>
+    </div>
+</ng-container>
 <div [hidden]="matching.size > 0">
     <span>No Matches</span>
 </div>

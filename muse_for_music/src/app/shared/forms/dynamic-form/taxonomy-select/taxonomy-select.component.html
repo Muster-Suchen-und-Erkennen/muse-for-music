@@ -2,7 +2,7 @@ TAXONOMY:
 
 <m4m-dropdown #dropdown>
     <div class="flex flex-wrap" content>
-        <p class="bg-near-white ph2 pv1 mh1 mt0 mb1 br-pill" *ngFor="let item of selectedList()">{{item.name}}<i class="ml2 fa fa-close mr2" (click)="select.deselect(item.id)"></i></p>
+        <p class="bg-near-white ph2 pv1 mh1 mt0 mb1 br-pill" *ngFor="let item of selectedList()">{{item.name}}<i class="ml2 fa fa-close mr2 pointer" (click)="select.deselect(item.id)"></i></p>
         <input class="self-stretch" type="search" [(ngModel)]="searchTerm"
                 (focus)="dropdown.openDropdown()" (keyup)="dropdown.openDropdown()"
                 (keyup.enter)="select.select()" (keyup.arrowdown)="select.highlightNext()"
