@@ -435,7 +435,7 @@ module.exports = {
     "setImmediate": false
   },
   "devServer": {
-    "headers": { "Access-Control-Allow-Origin": "http://127.0.0.1:5000" },
+    "headers": { "Access-Control-Allow-Origin": "*" },
     "historyApiFallback": true
   }
 };
