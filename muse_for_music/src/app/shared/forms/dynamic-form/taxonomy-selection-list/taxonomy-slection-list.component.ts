@@ -140,6 +140,14 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
         this.matching = matches;
     }
 
+    deselect(key?: any) {
+        if (key == undefined) {
+            return;
+        }
+        this.selectedSet.delete(key);
+        this.selectedChange.emit(this.selected);
+    }
+
     select(key?: any) {
         if (key == undefined) {
             key = this.highlighted;
@@ -147,11 +155,17 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
         if (key == undefined) {
             return;
         }
-        for (let selectable of this.selectables) {
-            if (selectable.id === key) {
-                this.selectedChange.emit(selectable.data);
+        if (this.selectedSet.has(key)) {
+            this.selectedSet.delete(key);
+        } else {
+            if (this.allowedSelections === 1) {
+                this.selectedSet.clear();
+            }
+            if (this.allowedSelections === -1 || this.selectedSet.size < this.allowedSelections) {
+                this.selectedSet.add(key);
             }
         }
+        this.selectedChange.emit(this.selected);
     }
 
     highlightNext() {

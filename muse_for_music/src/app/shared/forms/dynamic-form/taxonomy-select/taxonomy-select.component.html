@@ -1,11 +1,14 @@
 TAXONOMY:
 
 <m4m-dropdown #dropdown>
-    <input type="search" [(ngModel)]="searchTerm"
-            (focus)="dropdown.openDropdown()" (keyup)="dropdown.openDropdown()"
-            (keyup.enter)="select.select()" (keyup.arrowdown)="select.highlightNext()"
-            (keyup.arrowup)="select.highlightPrevious()" content>
-    <m4m-taxonomy-selection-list [taxonomy]="question.valueType" [allowedSelections]="1"
+    <div class="flex flex-wrap" content>
+        <p class="bg-near-white ph2 pv1 mh1 mt0 mb1 br-pill" *ngFor="let item of selectedList()">{{item.name}}<i class="ml2 fa fa-close mr2" (click)="select.deselect(item.id)"></i></p>
+        <input class="self-stretch" type="search" [(ngModel)]="searchTerm"
+                (focus)="dropdown.openDropdown()" (keyup)="dropdown.openDropdown()"
+                (keyup.enter)="select.select()" (keyup.arrowdown)="select.highlightNext()"
+                (keyup.arrowup)="select.highlightPrevious()">
+    </div>
+    <m4m-taxonomy-selection-list [taxonomy]="question.valueType" [allowedSelections]="question.isArray ? -1 : 1"
             (selectedChange)="selectedChange($event)" [search]="searchTerm" #select dropdown-content></m4m-taxonomy-selection-list>
 </m4m-dropdown>
 

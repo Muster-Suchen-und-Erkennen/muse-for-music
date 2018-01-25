@@ -22,7 +22,7 @@ export class TaxonomySelectComponent implements ControlValueAccessor {
 
     @ViewChild(myDropdownComponent) dropdown: myDropdownComponent
 
-    @Input('value') _value: any = undefined;
+    @Input('value') _value: any[] = [];
     @Input() question: QuestionBase<any>;
 
     searchTerm: string;
@@ -31,25 +31,47 @@ export class TaxonomySelectComponent implements ControlValueAccessor {
 
     onTouched: any = () => {};
 
-    get value(): ApiObject {
+    get value(): ApiObject|ApiObject[] {
+        if (!this.question.isArray) {
+            if (this._value == undefined || this._value.length === 0) {
+                return {_links: {self: {href: ''}}, id: -1}
+            }
+            return this._value[0];
+        }
         if (this._value == undefined) {
-            return {_links: {self: {href: ''}}, id: -1}
+            this._value = [];
         }
         return this._value;
     }
 
-    set value(val: ApiObject) {
-        this._value = val;
+    set value(val: ApiObject|ApiObject[]) {
+        if (val == undefined) {
+            this._value = []
+        } else {
+            if (!this.question.isArray) {
+                if ((val as ApiObject).id === -1) {
+                    this._value = [];
+                } else {
+                    this._value = [val];
+                }
+            } else {
+                this._value = (val as ApiObject[]);
+            }
+        }
         this.onChange(val);
         this.onTouched();
-        if (val.id != -1) {
-            this.searchTerm = val.name;
-        }
     }
 
-    selectedChange(selected: ApiObject) {
-        this.value = selected;
-        this.dropdown.closeDropdown();
+    selectedList() {
+        return this._value;
+    }
+
+    selectedChange(selected: ApiObject[]) {
+        this._value = selected;
+        if (!this.question.isArray) {
+            this.dropdown.closeDropdown();
+        }
+        this.onChange(this.value);
         this.onTouched();
     }
 
