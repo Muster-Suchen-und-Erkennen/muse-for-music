@@ -53,10 +53,10 @@ export class QuestionService implements OnInit {
 
     }
 
-    private parseModel(spec:any, modelID: string, questionOptions?: {[propName: string]: QuestionOptions}) {
+    private parseModel(spec:any, modelID: string, questionOptions?: Map<string, QuestionOptions>) {
         let recursionStart = false;
         if (questionOptions == undefined) {
-            questionOptions = {};
+            questionOptions = new Map<string, QuestionOptions>();
             recursionStart = true;
         }
 
@@ -87,20 +87,19 @@ export class QuestionService implements OnInit {
 
         if (recursionStart) {
             let questionsArray: QuestionBase<any>[] = [];
-            for (var question in questionOptions) {
-                questionsArray.push(this.getQuestion(questionOptions[question]));
-            }
+            questionOptions.forEach(options => questionsArray.push(this.getQuestion(options)));
             this.observables[modelID].next(questionsArray.sort((a, b) => a.order - b.order));
             this.observables[modelID].complete();
         }
     }
 
-    private updateOptions(questionOptions: { [propName: string]: QuestionOptions; }, propID: string, model: any) {
-        let options: QuestionOptions = questionOptions[propID];
+    private updateOptions(questionOptions: Map<string, QuestionOptions>, propID: string, model: any) {
+        let options: QuestionOptions = questionOptions.get(propID);
         if (options == undefined) {
             options = {
                 key: propID,
                 label: propID,
+                order: questionOptions.size,
             };
         }
         let prop = model.properties[propID];
@@ -152,7 +151,7 @@ export class QuestionService implements OnInit {
             options.max = prop.maxLength;
         }
 
-        questionOptions[propID] = options;
+        questionOptions.set(propID, options);
     }
 
     private getQuestion(options: QuestionOptions): QuestionBase<any> {
