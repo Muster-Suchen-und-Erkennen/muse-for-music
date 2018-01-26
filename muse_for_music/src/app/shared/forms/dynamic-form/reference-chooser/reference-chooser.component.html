@@ -1,12 +1,12 @@
 <m4m-dropdown #dropdown>
-    <div class="mw5 ba flex justify-between" content>
-        <div>
-            <input type="search" [(ngModel)]="searchTerm" placeholder="test"
+    <div class="w5 bb b--gray flex justify-between gray hover-black" content>
+        <div class="w5">
+            <input class="input-reset w5 bn pa1 black" type="search" [(ngModel)]="searchTerm" placeholder="test"
                     (focus)="dropdown.openDropdown()" (keyup)="dropdown.openDropdown()"
                     (keyup.enter)="select.select()" (keyup.arrowdown)="select.highlightNext()"
                     (keyup.arrowup)="select.highlightPrevious()">
         </div>
-        <div class="bl w1" (click)="dropdown.toggleDropdown()">↓</div>
+        <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem" (click)="dropdown.toggleDropdown()"><i class="f4 fa fa-angle-down"></i></div>
     </div>
     <m4m-selection-list [selectables]="choices" [selected]="value"
             (selectedChange)="selectedChange($event)"

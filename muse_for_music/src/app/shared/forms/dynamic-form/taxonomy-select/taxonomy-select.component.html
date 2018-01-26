@@ -1,9 +1,7 @@
-TAXONOMY:
-
 <m4m-dropdown #dropdown>
-    <div class="flex flex-wrap" content>
-        <p class="bg-near-white ph2 pv1 mh1 mt0 mb1 br-pill" *ngFor="let item of selectedList()">{{item.name}}<i class="ml2 fa fa-close mr2 pointer" (click)="select.deselect(item.id)"></i></p>
-        <input class="self-stretch" type="search" [(ngModel)]="searchTerm"
+    <div class="flex flex-wrap w5 bb b--gray" content>
+        <p class="bg-near-white pl3 pr2 pv1 mh1 mt0 mb1 br-pill" *ngFor="let item of selectedList()">{{item.name}}<i class="ml2 fa fa-close mr2 hover-red pointer" (click)="select.deselect(item.id)"></i></p>
+        <input class="input-reset w5 bn pa1 self-stretch" type="search" [(ngModel)]="searchTerm"
                 (focus)="dropdown.openDropdown()" (keyup)="dropdown.openDropdown()"
                 (keyup.enter)="select.select()" (keyup.arrowdown)="select.highlightNext()"
                 (keyup.arrowup)="select.highlightPrevious()">

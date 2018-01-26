@@ -1,25 +1,40 @@
-<div [formGroup]="form">
-    <label [attr.for]="question.key">{{question.label}}</label>
+<div class="pv2 flex" [formGroup]="form">
+    <label class="w5 f4 ws-normal" style="word-wrap: break-word" [attr.for]="question.key">
+        <i [hidden]="!isValid" class="w2 tc f5 fa fa-check"></i>
+        <i [hidden]="isValid" class="w2 tc f5 red fa fa-exclamation"></i>
+        {{question.label}}
+    </label>
 
-    <div [ngSwitch]="question.controlType">
+    <div class="pl1" >
+        <div [ngSwitch]="question.controlType">
 
-        <input *ngSwitchCase="'string'" [formControlName]="question.key" [id]="question.key" [type]="question.type">
+            <div *ngSwitchCase="'string'" class="w5 flex bb b--gray">
+                <input class="input-reset w5 bn pa1" [formControlName]="question.key" [id]="question.key" [type]="question.type">
+            </div>
 
-        <textarea *ngSwitchCase="'text'" [formControlName]="question.key" [id]="question.key"></textarea>
+            <textarea *ngSwitchCase="'text'" class="w5" [formControlName]="question.key" [id]="question.key"></textarea>
 
-        <input *ngSwitchCase="'date'" [formControlName]="question.key" [id]="question.key" [type]="question.type">
+            <div *ngSwitchCase="'date'" class="w5 flex bb b--gray">
+                <input class="input-reset w5 bn pa1" [formControlName]="question.key" [id]="question.key" [type]="question.type">
+            </div>
 
-        <input *ngSwitchCase="'number'" [formControlName]="question.key" [id]="question.key" [type]="question.type">
+            <div *ngSwitchCase="'number'" class="w5 flex bb b--gray">
+                <input class="input-reset w5 bn pa1" [formControlName]="question.key" [id]="question.key" [type]="question.type">
+            </div>
 
-        <select [id]="question.key" *ngSwitchCase="'dropdown'" [formControlName]="question.key">
-            <option *ngFor="let opt of question.options" [value]="opt">{{opt}}</option>
-        </select>
+            <div *ngSwitchCase="'dropdown'" class="w5 flex bb b--gray gray hover-black">
+                <select [id]="question.key" class="input-reset w5 bn pa1 bg-white black" [formControlName]="question.key" #inputSelect>
+                    <option *ngFor="let opt of question.options" [value]="opt">{{opt}}</option>
+                </select>
+                <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem; pointer-events: none" (click)="inputSelect.click($event)"><i class="f4 fa fa-angle-down"></i></div>
+            </div>
 
-        <m4m-reference-chooser *ngSwitchCase="'reference'" [formControlName]="question.key" [question]="question"></m4m-reference-chooser>
+            <m4m-reference-chooser *ngSwitchCase="'reference'" [formControlName]="question.key" [question]="question"></m4m-reference-chooser>
 
-        <m4m-taxonomy-select *ngSwitchCase="'taxonomy'" [formControlName]="question.key" [question]="question"></m4m-taxonomy-select>
+            <m4m-taxonomy-select *ngSwitchCase="'taxonomy'" [formControlName]="question.key" [question]="question"></m4m-taxonomy-select>
 
+        </div>
+
+        <!--div class="f6">{{question.label}} is required</div-->
     </div>
-
-    <div class="errorMessage" *ngIf="!isValid">{{question.label}} is required</div>
 </div>
