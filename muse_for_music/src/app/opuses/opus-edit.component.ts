@@ -28,7 +28,7 @@ export class OpusEditComponent implements OnInit {
         this.api.getOpus(opusID).subscribe(data => {
             if (data == undefined) {
                 return;
-            }
+            }opusID
             this.navigation.changeTitle('MUSE4Music – Opus: ' + data.name);
             this.navigation.changeBreadcrumbs([new Breadcrumb('Opuses', '/opuses'), new Breadcrumb(data.name, '/opuses/' + opusID)]);
             this.opus = data;

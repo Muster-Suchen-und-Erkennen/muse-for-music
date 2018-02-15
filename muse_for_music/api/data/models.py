@@ -82,6 +82,8 @@ opus_links = api.inherit('OpusLinks', with_curies, {
                            templated=True, path_variables=['id']), required=False),
     'person': HaLUrl(UrlData('api.person_person_resource', absolute=True,
                              url_data={'id': 'composer.id'}), required=False),
+    'part': HaLUrl(UrlData('api.opus_opus_parts_resource', absolute=True,
+                            url_data={'id': 'id'}), required=False),
 })
 
 opus_post = api.model('OpusPOST', {
