@@ -140,7 +140,6 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
             recursionStart = true;
         }
         let children = item.children;
-        item.children = [];
 
         let node = new TaxonomyItem(item, parents.size);
         flatList.push(node);
