@@ -13,6 +13,8 @@ import { TextQuestion } from './question-text';
 import { DateQuestion } from './question-date';
 import { IntegerQuestion } from './question-integer';
 import { DropdownQuestion } from './question-dropdown';
+import { BooleanQuestion } from './question-boolean';
+
 import { Options } from 'selenium-webdriver';
 
 @Injectable()
@@ -166,6 +168,9 @@ export class QuestionService implements OnInit {
         }
         if (options.controlType === 'date') {
             return new DateQuestion(options);
+        }
+        if (options.controlType === 'boolean') {
+            return new BooleanQuestion(options);
         }
         if (options.controlType === 'integer') {
             return new IntegerQuestion(options);

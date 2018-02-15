@@ -52,7 +52,7 @@ export class OpusEditComponent implements OnInit {
 
     save(event) {
         if (this.valid) {
-            this.api.putPerson(this.opus.id, this.data);
+            this.api.putOpus(this.opus.id, this.data);
         }
     }
 
