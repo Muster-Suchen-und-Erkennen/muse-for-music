@@ -33,6 +33,8 @@ function isLinkObject(toTest: any): toTest is LinkObject {
 @Injectable()
 export class BaseApiService {
 
+    private runningRequests: Map<string, Observable<ApiObject | ApiObject[]>> = new Map<string, Observable<ApiObject | ApiObject[]>>();
+
     constructor(private http: Http) {
     }
 
@@ -54,9 +56,21 @@ export class BaseApiService {
 
     get(url: string|LinkObject|ApiLinksObject|ApiObject): Observable<ApiObject | ApiObject[]> {
         url = this.extractUrl(url);
-        return this.http.get(url)
-            .map((res: Response) => res.json())
-            .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
+        if (this.runningRequests.has(url)) {
+            return this.runningRequests.get(url);
+        }
+        console.log(url);
+        const request = this.http.get(url)
+            .map((res: Response) => {
+                this.runningRequests.delete(url as string);
+                return res.json();
+            }).catch((error: any) => {
+                this.runningRequests.delete(url as string);
+                return Observable.throw(error.json().error || 'Server error');
+            }).publishReplay(1);
+        this.runningRequests.set(url, request);
+        request.connect();
+        return request;
     }
 
     private headers(): RequestOptions {
