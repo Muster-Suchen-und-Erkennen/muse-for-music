@@ -24,6 +24,8 @@ import { PeopleOverviewComponent } from './people/people-overview.component';
 import { PersonEditComponent } from './people/person-edit.component';
 import { OpusesOverviewComponent } from './opuses/opuses-overview.component';
 import { OpusEditComponent } from './opuses/opus-edit.component';
+import { OpusDetailComponent } from './opuses/opus-detail.component';
+import { OpusPartsComponent } from './opuses/opus-parts.component';
 
 import { AppComponent } from './app.component';
 
@@ -31,14 +33,14 @@ import { AppComponent } from './app.component';
 @NgModule({
   declarations: [
     AppComponent,
-    DropdownTreeButtonComponent,
-    TreeViewComponent,
 
     HomeComponent,
     PeopleOverviewComponent,
     PersonEditComponent,
     OpusesOverviewComponent,
     OpusEditComponent,
+    OpusDetailComponent,
+    OpusPartsComponent,
     BreadcrumbsComponent,
     TitleBarComponent,
   ],

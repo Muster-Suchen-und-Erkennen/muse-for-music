@@ -41,7 +41,7 @@ class OpusListResource(Resource):
             abort(500, str(err))
 
 
-@ns.route('/<int:id>')
+@ns.route('/<int:id>/')
 class OpusResource(Resource):
 
     @ns.marshal_with(opus_get)
@@ -75,14 +75,12 @@ class OpusResource(Resource):
 
 
 
-@ns.route('/<int:id>/parts')
+@ns.route('/<int:id>/parts/')
 class OpusPartsResource(Resource):
 
     @ns.marshal_list_with(part_get)
     def get(self, id):
         parts = Part.query.filter_by(opus_id=id).all()
-        print('M'*100)
-        print(parts[0].measure_end.from_page, type(parts[0].measure_end.from_page))
         return parts
 
     @ns.doc(model=part_get, body=part_post)

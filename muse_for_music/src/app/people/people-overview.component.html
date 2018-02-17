@@ -1,22 +1,14 @@
-<m4m-person-edit [personID]="selected"></m4m-person-edit>
+<div class="flex flex-wrap-reverse">
 
-<m4m-box>
-    <h1 title>People</h1>
-    <div class="button h2 pv1 ph2 br2 bg-light-silver link bg-animate hover-bg-light-green pointer" (click)="newPerson($event)" title-right>
-        <i class="fa fa-plus mr2"></i>New
-    </div>
-    <table class="w-100 table collapse ph3 pv2" body>
-        <tbody>
-            <tr>
-                <th class="ph3 pv2 tl ttu mw3">Name</th>
-                <th class="ph3 pv2 tl ttu">Gender</th>
-                <th class="pr3 pv2 tl ttu">Dates</th>
-            </tr>
-            <tr class="bt b--black-10 pointer" [ngClass]="{'bg-yellow': person.id === selected}"  *ngFor="let person of persons" (click)="selectPerson($event, person)">
-                <th class="ph3 pv2 mw3 tl">{{person.name}}</th>
-                <th class="ph3 pv2 tl">{{person.gender}}</th>
-                <th class="pr3 pv2 tl">{{person.birth_date}} – {{person.death_date}}</th>
-            </tr>
-        </tbody>
-    </table>
-</m4m-box>
+    <m4m-box>
+        <h1 title>People</h1>
+        <div class="button h2 pv1 ph2 br2 bg-light-silver link bg-animate hover-bg-light-green pointer" (click)="newPerson($event)" title-right>
+            <i class="fa fa-plus mr2"></i>New
+        </div>
+        <div class="w6" body>
+            <m4m-table [headings]="['Name', 'Gender', 'Dates']" [rows]="tableData" [(selected)]="selected"></m4m-table>
+        </div>
+    </m4m-box>
+
+    <m4m-person-edit [personID]="selected"></m4m-person-edit>
+</div>

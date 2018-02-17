@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
+import { TableRow } from '../shared/table/table.component';
 
 @Component({
   selector: 'm4m-opuses-overview',
@@ -11,6 +13,7 @@ import { ApiObject } from '../shared/rest/api-base.service';
 export class OpusesOverviewComponent implements OnInit {
 
     opuses: Array<ApiObject>;
+    tableData: TableRow[];
 
     swagger: any;
 
@@ -18,17 +21,30 @@ export class OpusesOverviewComponent implements OnInit {
 
     newOpusData: any;
 
-    constructor(private data: NavigationService, private api: ApiService) { }
+    constructor(private data: NavigationService, private api: ApiService, private router: Router, private route: ActivatedRoute) { }
 
     ngOnInit(): void {
         this.data.changeTitle('MUSE4Music – Opuses');
         this.data.changeBreadcrumbs([new Breadcrumb('Opuses', '/opuses')]);
-        this.api.getOpuses().subscribe(data => this.opuses = data);
+        this.api.getOpuses().subscribe(data => {
+            if (data == undefined) {
+                return;
+            }
+            this.opuses = data;
+            const tableData = [];
+            this.opuses.forEach(opus => {
+                const row = new TableRow(opus.id, [opus.name, opus.genre.name, opus.composer.name], [opus.id], true);
+                tableData.push(row);
+            });
+            this.tableData = tableData;
+        });
     }
 
     newOpus(event) {
         if (this.valid) {
-            this.api.postOpus(this.newOpusData).subscribe(_ => {return});
+            this.api.postOpus(this.newOpusData).subscribe(data => {
+                this.router.navigate([data.id], {relativeTo: this.route});
+            });
         }
     }
 

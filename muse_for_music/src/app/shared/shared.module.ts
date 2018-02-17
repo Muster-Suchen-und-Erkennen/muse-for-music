@@ -17,6 +17,7 @@ import { ApiService } from './rest/api.service';
 
 import { myBoxComponent } from './box/box.component';
 import { myDropdownComponent } from './dropdown/dropdown.component';
+import { myTableComponent } from './table/table.component';
 
 import { ClickOutsideDirective } from './click-outside.directive';
 
@@ -25,6 +26,7 @@ import { ClickOutsideDirective } from './click-outside.directive';
     declarations: [
         myBoxComponent,
         myDropdownComponent,
+        myTableComponent,
         DynamicFormComponent,
         DynamicFormQuestionComponent,
         ReferenceChooserComponent,
@@ -42,6 +44,7 @@ import { ClickOutsideDirective } from './click-outside.directive';
     exports: [
         myBoxComponent,
         myDropdownComponent,
+        myTableComponent,
         DynamicFormComponent,
         DynamicFormQuestionComponent,
         ReferenceChooserComponent,

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
+import { TableRow } from '../shared/table/table.component';
 
 @Component({
   selector: 'm4m-people-overview',
@@ -11,6 +12,7 @@ import { ApiObject } from '../shared/rest/api-base.service';
 export class PeopleOverviewComponent implements OnInit {
 
     persons: Array<ApiObject>;
+    tableData: TableRow[];
     selected: number = 1;
 
     swagger: any;
@@ -20,7 +22,18 @@ export class PeopleOverviewComponent implements OnInit {
     ngOnInit(): void {
         this.data.changeTitle('MUSE4Music – People');
         this.data.changeBreadcrumbs([new Breadcrumb('People', '/people')]);
-        this.api.getPeople().subscribe(data => this.persons = data);
+        this.api.getPeople().subscribe(data => {
+            if (data == undefined) {
+                return;
+            }
+            this.persons = data;
+            const tableData = [];
+            this.persons.forEach(person => {
+                const row = new TableRow(person.id, [person.name, person.gender, person.birth_date + ' – ' + person.death_date]);
+                tableData.push(row);
+            });
+            this.tableData = tableData;
+        });
     }
 
     newPerson(event) {

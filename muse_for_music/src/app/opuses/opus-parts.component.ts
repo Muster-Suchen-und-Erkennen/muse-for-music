@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Testability } from '@angular/core';
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
+import { TableRow } from '../shared/table/table.component';
 
 @Component({
   selector: 'm4m-opus-parts',
@@ -9,10 +10,11 @@ import { ApiObject } from '../shared/rest/api-base.service';
 })
 export class OpusPartsComponent implements OnInit {
 
-    @Input opusID: number;
+    @Input() opusID: number;
 
     opus: ApiObject;
     parts: Array<ApiObject>;
+    tableData: TableRow[];
 
     swagger: any;
 
@@ -24,9 +26,23 @@ export class OpusPartsComponent implements OnInit {
 
     ngOnInit(): void {
         this.api.getOpus(this.opusID).subscribe(data => {
+            if (data == undefined) {
+                return;
+            }
             this.opus = data;
             this.parts = this.opus.parts;
-            this.api.getParts(data).subscribe(data => this.parts = data);
+            this.api.getParts(data).subscribe(data => {
+                if (data == undefined) {
+                    return;
+                }
+                this.parts = data;
+                const tableData = [];
+                this.parts.forEach(part => {
+                    const row = new TableRow(part.id, [part.measure_start.measure, part.measure_end.measure, part.length], ['parts', part.id]);
+                    tableData.push(row);
+                });
+                this.tableData = tableData;
+            });
         });
     }
 
