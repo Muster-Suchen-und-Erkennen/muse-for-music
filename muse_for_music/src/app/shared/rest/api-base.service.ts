@@ -59,7 +59,6 @@ export class BaseApiService {
         if (this.runningRequests.has(url)) {
             return this.runningRequests.get(url);
         }
-        console.log(url);
         const request = this.http.get(url)
             .map((res: Response) => {
                 this.runningRequests.delete(url as string);

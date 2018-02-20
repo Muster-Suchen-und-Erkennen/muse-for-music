@@ -1,16 +1,30 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Observable } from 'rxjs/Rx';
 
 import { QuestionBase } from './question-base';
+import { QuestionService } from './question.service';
 
 @Injectable()
 export class QuestionControlService {
-    constructor() { }
+    constructor(private qstn: QuestionService) { }
 
-    toFormGroup(questions: QuestionBase<any>[]) {
+    toFormGroup(questions: QuestionBase<any>[]): Observable<FormGroup> {
         let group: any = {};
 
-        questions.forEach(question => {
+        return Observable.from(questions).concatMap(question => {
+            const formControl = {
+                key: question.key,
+                control: null,
+            }
+
+            if (question.controlType === 'object') {
+                return this.qstn.getQuestions(question.valueType).flatMap(questions => this.toFormGroup(questions)).map(control => {
+                    formControl.control = control;
+                    return formControl;
+                });
+            }
+
             let validators = [];
             if (question.required) {
                 if (question.controlType === 'boolean') {
@@ -44,13 +58,16 @@ export class QuestionControlService {
 
             if (validators.length > 1) {
                 const validator = Validators.compose(validators);
-                group[question.key] = new FormControl(question.value || '', validator)
+                formControl.control = new FormControl(question.value || '', validator)
             } else if (validators.length === 1) {
-                group[question.key] = new FormControl(question.value || '', validators[0])
+                formControl.control = new FormControl(question.value || '', validators[0])
             } else {
-                group[question.key] = new FormControl(question.value || '');
+                formControl.control = new FormControl(question.value || '');
             }
-        });
-        return new FormGroup(group);
+            return Observable.of(formControl);
+        }).reduce((group: {[propName: string]: any}, formControl: {key: string, control: any}) => {
+            group[formControl.key] = formControl.control;
+            return group;
+        }, {}).map(group => new FormGroup(group));
     }
 }

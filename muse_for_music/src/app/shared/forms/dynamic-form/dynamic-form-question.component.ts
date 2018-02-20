@@ -11,6 +11,7 @@ export class DynamicFormQuestionComponent {
 
     @Input() question: QuestionBase<any>;
     @Input() form: FormGroup;
+    @Input() nested: boolean = false;
 
     get isValid() { return this.form.controls[this.question.key].valid; }
 }

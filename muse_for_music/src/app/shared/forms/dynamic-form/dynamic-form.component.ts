@@ -40,24 +40,26 @@ export class DynamicFormComponent implements OnInit, OnChanges {
                     this.conversions[question.key] = question.valueType;
                 }
             }
-            this.form = this.qcs.toFormGroup(this.questions);
-            this.form.statusChanges.subscribe(status => {
-                this.valid.emit(this.form.valid);
-                let patched = {};
-                for (let key in this.form.value) {
-                    if (this.form.value[key] != null && this.form.value[key] != '') {
-                        if (this.conversions[key] === 'integer') {
-                            patched[key] = parseInt(this.form.value[key], 10);
+            this.qcs.toFormGroup(this.questions).subscribe(form => {
+                this.form = form;
+                this.form.statusChanges.subscribe(status => {
+                    this.valid.emit(this.form.valid);
+                    let patched = {};
+                    for (let key in this.form.value) {
+                        if (this.form.value[key] != null && this.form.value[key] != '') {
+                            if (this.conversions[key] === 'integer') {
+                                patched[key] = parseInt(this.form.value[key], 10);
+                            } else {
+                                patched[key] = this.form.value[key];
+                            }
                         } else {
-                            patched[key] = this.form.value[key];
+                            patched[key] = this.customNull[key];
                         }
-                    } else {
-                        patched[key] = this.customNull[key];
                     }
-                }
-                this.data.emit(patched);
+                    this.data.emit(patched);
+                });
+                this.patchFormValues();
             });
-            this.patchFormValues();
         });
     }
 

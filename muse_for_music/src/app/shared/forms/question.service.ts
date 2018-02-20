@@ -7,6 +7,7 @@ import { ApiService } from '../rest/api.service';
 import { QuestionBase, QuestionOptions } from './question-base';
 import { HiddenQuestion } from './question-hidden';
 import { ReferenceQuestion } from './question-reference';
+import { ObjectQuestion } from './question-nested';
 import { TaxonomyQuestion } from './question-taxonomy';
 import { StringQuestion } from './question-string';
 import { TextQuestion } from './question-text';
@@ -38,6 +39,9 @@ export class QuestionService implements OnInit {
         if (this.swagger == undefined) {
             this.swagger = this.api.getSpec();
         }
+
+        let re = /^.*\//;
+        model = model.replace(re, '');
 
         return this.swagger.flatMap(spec => {
             if (spec == undefined) {
@@ -136,6 +140,10 @@ export class QuestionService implements OnInit {
                 if (temp.isArray != undefined) {
                     options.isArray = temp.isArray;
                 }
+                if (temp.isNested != undefined) {
+                    options.controlType = 'object';
+                    options.valueType = prop.$ref;
+                }
             }
         }
         options.readOnly = !!prop.readOnly;
@@ -162,6 +170,11 @@ export class QuestionService implements OnInit {
         }
         if (options.controlType === 'reference') {
             return new ReferenceQuestion(options);
+        }
+        if (options.controlType === 'object') {
+            const qstn = new ObjectQuestion(options);
+            this.getQuestions(options.valueType).subscribe(questions => qstn.nestedQuestions = questions);
+            return qstn;
         }
         if (options.controlType === 'taxonomy') {
             return new TaxonomyQuestion(options);

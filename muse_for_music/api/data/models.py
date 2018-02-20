@@ -398,8 +398,8 @@ part_links = api.inherit('PartLinks', with_curies, {
 })
 
 part_post = api.model('PartPOST', {
-    'measure_start': fields.Nested(measure_model, required=True),
-    'measure_end': fields.Nested(measure_model, required=True),
+    'measure_start': fields.Nested(measure_model, required=True, description='{"isNested": true}'),
+    'measure_end': fields.Nested(measure_model, required=True, description='{"isNested": true}'),
     'length': fields.Integer(default=1, min=1, required=True, example=1),
 })
 

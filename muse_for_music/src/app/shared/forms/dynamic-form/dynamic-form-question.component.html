@@ -1,5 +1,5 @@
-<div class="pv2 flex" [formGroup]="form">
-    <label class="w5 f4 ws-normal" style="word-wrap: break-word" [attr.for]="question.key">
+<div class="pv2 flex flex-wrap" [formGroup]="form" *ngIf="!nested" >
+    <label class="f4 ws-normal flex-grow" style="word-wrap: break-word" [attr.for]="question.key">
         <i [hidden]="!isValid" class="w2 tc f5 fa fa-check"></i>
         <i [hidden]="isValid" class="w2 tc f5 red fa fa-exclamation"></i>
         {{question.label}}
@@ -40,5 +40,16 @@
         </div>
 
         <!--div class="f6">{{question.label}} is required</div-->
+    </div>
+
+</div>
+
+<div class="flex" *ngIf="question.controlType === 'object'" [formGroup]="form">
+    <div class="bl bw2 mr2 ml2 b--gray"></div>
+    <div class="flex-grow" formGroupName="{{question.key}}">
+        <div *ngFor="let qstn of question?.nestedQuestions" class="form-row">
+            <df-question [question]="qstn" [form]="form.controls[question.key]" [nested]="false"></df-question>
+        </div>
+
     </div>
 </div>
