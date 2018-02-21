@@ -32,30 +32,59 @@ export class DynamicFormComponent implements OnInit, OnChanges {
             this.questions = questions;
             this.customNull = {};
             this.conversions = {};
-            for (let question of this.questions) {
-                if (question.nullValue != undefined) {
-                    this.customNull[question.key] = question.nullValue;
-                }
-                if (question.valueType === 'integer') {
-                    this.conversions[question.key] = question.valueType;
+
+            function recursiveParse(questions, customNull, conversions, qs) {
+                for (let question of questions) {
+                    if (question.nullValue != undefined) {
+                        customNull[question.key] = question.nullValue;
+                    }
+                    if (question.valueType === 'integer') {
+                        conversions[question.key] = question.valueType;
+                    }
+                    if (question.controlType === 'object') {
+                        const temp1 = {$continuation:true};
+                        const temp2 = {$continuation:true};
+                        customNull[question.key] = temp1;
+                        conversions[question.key] = temp2;
+                        qs.getQuestions(question.valueType).subscribe(questions => recursiveParse(questions, temp1, temp2, qs))
+                    }
                 }
             }
+            recursiveParse(questions, this.customNull, this.conversions, this.qs);
+
             this.qcs.toFormGroup(this.questions).subscribe(form => {
                 this.form = form;
                 this.form.statusChanges.subscribe(status => {
                     this.valid.emit(this.form.valid);
                     let patched = {};
-                    for (let key in this.form.value) {
-                        if (this.form.value[key] != null && this.form.value[key] != '') {
-                            if (this.conversions[key] === 'integer') {
-                                patched[key] = parseInt(this.form.value[key], 10);
+
+                    function recursivePatchNulls(value, patched, customNull) {
+                        for (let key in value) {
+                            if (customNull[key] != null && customNull[key]['$continuation']) {
+                                patched[key] = {};
+                                recursivePatchNulls(value[key], patched[key], customNull[key]);
+                            } else if (value[key] != null && value[key] != '') {
+                                patched[key] = value[key];
                             } else {
-                                patched[key] = this.form.value[key];
+                                patched[key] = customNull[key];
                             }
-                        } else {
-                            patched[key] = this.customNull[key];
                         }
                     }
+
+                    recursivePatchNulls(this.form.value, patched, this.customNull);
+
+                    function recursivePatchConversions(patched, conversions) {
+                        for (let key in patched) {
+                            if (conversions[key] != null && conversions[key]['$continuation']) {
+                                recursivePatchConversions(patched[key], conversions[key]);
+                            } else if (conversions[key] === 'integer') {
+                                patched[key] = parseInt(patched[key], 10);
+                            }
+                        }
+                    }
+
+                    recursivePatchConversions(patched, this.conversions);
+
                     this.data.emit(patched);
                 });
                 this.patchFormValues();
@@ -65,13 +94,22 @@ export class DynamicFormComponent implements OnInit, OnChanges {
 
     patchFormValues() {
         let patched = {};
-        for (let key in this.startValues) {
-            if (this.customNull[key] !== this.startValues[key]) {
-                patched[key] = this.startValues[key];
-            } else {
-                patched[key] = null;
+
+        function recursivePatch(values, patched, customNull) {
+            for (let key in values) {
+                if (customNull[key] != null && customNull[key]['$continuation']) {
+                    patched[key] = {};
+                    recursivePatch(values[key], patched[key], customNull[key]);
+                } else if (customNull[key] !== values[key]) {
+                    patched[key] = values[key];
+                } else {
+                    patched[key] = null;
+                }
             }
         }
+
+        recursivePatch(this.startValues, patched, this.customNull);
+
         if (this.form != undefined) {
             this.form.patchValue(patched);
         }

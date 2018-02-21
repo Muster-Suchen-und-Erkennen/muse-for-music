@@ -1,5 +1,6 @@
 import { Component, forwardRef, Input, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ChangeDetectorRef } from '@angular/core';
 
 import { ApiObject } from '../../../rest/api-base.service';
 
@@ -34,7 +35,7 @@ export class TaxonomySelectComponent implements ControlValueAccessor {
     get value(): ApiObject|ApiObject[] {
         if (!this.question.isArray) {
             if (this._value == undefined || this._value.length === 0) {
-                return {_links: {self: {href: ''}}, id: -1}
+                return null;
             }
             return this._value[0];
         }
@@ -51,6 +52,7 @@ export class TaxonomySelectComponent implements ControlValueAccessor {
             if (!this.question.isArray) {
                 if ((val as ApiObject).id === -1) {
                     this._value = [];
+                    val = null;
                 } else {
                     this._value = [val];
                 }
@@ -61,6 +63,8 @@ export class TaxonomySelectComponent implements ControlValueAccessor {
         this.onChange(val);
         this.onTouched();
     }
+
+    constructor(private cdRef:ChangeDetectorRef) {}
 
     selectedList() {
         return this._value;
