@@ -44,7 +44,6 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
     @Input() allowedSelections: number = 0;
 
     @Input() search: string;
-    @Input() _selected: any[];
     @Output() selectedChange = new EventEmitter();
 
     highlightable: number[] = [];
@@ -55,6 +54,7 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
     matching: Set<number> = new Set<number>();
     openNodes: Set<number> = new Set<number>();
 
+    @Input()
     get selected(): any[] {
         let selected = [];
         for (let item of this.selectables) {
@@ -70,6 +70,7 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
         for (let item of selection) {
             selected.add(item.id);
         }
+
         this.selectedSet = selected;
     }
 
