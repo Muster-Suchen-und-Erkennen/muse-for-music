@@ -388,7 +388,7 @@ rendition_get = api.model('RenditionGET', {
 
 
 measure_model = api.model('Measure', {
-    'measure': fields.Integer(default=1, min=0, required=True),
+    'measure': fields.Integer(default=1, min=1, required=True),
     'from_page': fields.Integer(default=-1, min=-1, required=False),
 })
 
@@ -545,7 +545,7 @@ opus_put = api.inherit('OpusPUT', opus_post, {
     'first_printed_in': fields.Integer(default=1, required=True),
     'publisher': fields.String(max_length=255, default='', required=True),
     'movements': fields.Integer(default=1, required=True),
-    'genre': fields.Nested(taxonomy_item_put, description='{"taxonomy": "GattungNineteenthCentury"}'),
+    'genre': fields.Nested(taxonomy_item_put, description='{"taxonomy": "GattungNineteenthCentury"}', required=True),
 })
 
 opus_get = api.inherit('OpusGET', opus_put, {

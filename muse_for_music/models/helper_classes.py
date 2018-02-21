@@ -62,7 +62,7 @@ class GetByID():
         if not ids:
             return []
         if len(ids) == 1:
-            return [self.get_by_id(ids[0], lazy)]
+            return [cls.get_by_id(ids[0], lazy)]
         query = cls.prepare_query(lazy)
         return query.filter(cls.id.in_(ids)).all()
 
@@ -71,7 +71,7 @@ class GetByID():
         if not ids:
             return {}
         if len(ids) == 1:
-            return {ids[0]: self.get_by_id(ids[0], lazy)}
+            return {ids[0]: cls.get_by_id(ids[0], lazy)}
         query = cls.prepare_query(lazy)
         result = query.filter(cls.id.in_(ids)).all()
         return {obj.id: obj for obj in result}
