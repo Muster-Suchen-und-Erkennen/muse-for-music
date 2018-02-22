@@ -10,8 +10,6 @@ export class QuestionControlService {
     constructor(private qstn: QuestionService) { }
 
     toFormGroup(questions: QuestionBase<any>[]): Observable<FormGroup> {
-        let group: any = {};
-
         return Observable.from(questions).concatMap(question => {
             const formControl = {
                 key: question.key,
@@ -25,7 +23,7 @@ export class QuestionControlService {
                 });
             }
 
-            let validators = [];
+            const validators = [];
             if (question.required) {
                 if (question.controlType === 'boolean') {
                     // nothing

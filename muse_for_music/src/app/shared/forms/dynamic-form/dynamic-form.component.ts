@@ -63,7 +63,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
                             if (customNull[key] != null && customNull[key]['$continuation']) {
                                 patched[key] = {};
                                 recursivePatchNulls(value[key], patched[key], customNull[key]);
-                            } else if (value[key] != null && value[key] != '') {
+                            } else if (value[key] != null && value[key] !== '') {
                                 patched[key] = value[key];
                             } else {
                                 patched[key] = customNull[key];
@@ -100,10 +100,12 @@ export class DynamicFormComponent implements OnInit, OnChanges {
                 if (customNull[key] != null && customNull[key]['$continuation']) {
                     patched[key] = {};
                     recursivePatch(values[key], patched[key], customNull[key]);
-                } else if (customNull[key] !== values[key]) {
-                    patched[key] = values[key];
-                } else {
+                } else if (customNull[key] === values[key]) {
                     patched[key] = null;
+                } else if (customNull[key] != null && typeof customNull[key] === 'object' && customNull[key].id === values[key].id) {
+                    patched[key] = null;
+                } else {
+                    patched[key] = values[key];
                 }
             }
         }
