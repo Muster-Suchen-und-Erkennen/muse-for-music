@@ -39,7 +39,7 @@ class PersonListResource(Resource):
             abort(500, str(err))
 
 
-@ns.route('/<int:id>')
+@ns.route('/<int:id>/')
 class PersonResource(Resource):
 
     @ns.marshal_with(person_get)

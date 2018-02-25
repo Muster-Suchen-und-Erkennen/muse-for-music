@@ -1,17 +1,15 @@
 <div class="flex flex-wrap-reverse">
     <m4m-box>
-        <h1 title>Opuses</h1>
+        <h1 class="mv0" title>Opuses</h1>
         <div class="w6" body>
             <m4m-table [headings]="['Name', 'Genre', 'Composer']" [rows]="tableData"></m4m-table>
         </div>
     </m4m-box>
 
     <m4m-box>
-        <h1 title>New:</h1>
+        <h1 class="mv0" title>New Opus:</h1>
         <div class="w-100 ph3 pv2" body>
             <dynamic-form [objectModel]="'OpusPOST'" [startValues]="{name:'New Opus'}" (valid)="onValidChange($event)" (data)="onDataChange($event)"></dynamic-form>
-            <p>{{newOpusData | json}}</p>
-
             <div class="button h2 pv1 ph2 br2 bg-light-silver link bg-animate" [ngClass]="{'hover-bg-light-blue': valid, 'pointer': valid, 'bg-light-red': !valid}" (click)="newOpus($event)" >Save<i class="fa fa-check mr2"></i></div>
         </div>
     </m4m-box>

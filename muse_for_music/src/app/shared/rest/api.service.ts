@@ -54,8 +54,8 @@ export class ApiService implements OnInit {
     getSpec(): Observable<any> {
         this.getRoot().subscribe(root => {
             if (!this.specSource.isStopped) {
-                var re = /\/$/;
-                let url = root._links.spec.href.replace(re, '');
+                const re = /\/$/;
+                const url = root._links.spec.href.replace(re, '');
                 this.rest.get(url).subscribe(data => {
                     this.specSource.next((data as any));
                     this.specSource.complete();
@@ -73,7 +73,7 @@ export class ApiService implements OnInit {
     }
 
     getTaxonomies(): Observable<ApiObject> {
-        let stream = this.getStreamSource('taxonomies');
+        const stream = this.getStreamSource('taxonomies');
         this.getRoot().subscribe(root => {
             this.rest.get(root._links.taxonomy).subscribe(data => {
                 stream.next(data);
@@ -83,12 +83,12 @@ export class ApiService implements OnInit {
     }
 
     getTaxonomy(taxonomy: string): Observable<ApiObject> {
-        let stream = this.getStreamSource('taxonomies/' + taxonomy.toUpperCase());
+        const stream = this.getStreamSource('taxonomies/' + taxonomy.toUpperCase());
         this.getTaxonomies().subscribe(taxonomies => {
-            if (taxonomies == undefined) {
+            if (taxonomies === undefined) {
                 return;
             }
-            for (let tax of taxonomies.taxonomies) {
+            for (const tax of taxonomies.taxonomies) {
                 if (tax.name.toUpperCase() === taxonomy.toUpperCase()) {
                     this.rest.get(tax._links.self).subscribe(data => {
                         stream.next(data);
@@ -100,7 +100,7 @@ export class ApiService implements OnInit {
     }
 
     getPeople(): Observable<Array<ApiObject>> {
-        let stream = this.getStreamSource('persons');
+        const stream = this.getStreamSource('persons');
         this.getRoot().subscribe(root => {
             this.rest.get(root._links.person).subscribe(data => {
                 stream.next(data);
@@ -110,14 +110,14 @@ export class ApiService implements OnInit {
     }
 
     private personUpdate(data: ApiObject) {
-        let stream = this.getStreamSource('persons/' + data.id);
+        const stream = this.getStreamSource('persons/' + data.id);
         stream.next(data);
         // TODO update list
         this.getPeople();
     }
 
     getPerson(id: number): Observable<ApiObject> {
-        let stream = this.getStreamSource('persons/' + id);
+        const stream = this.getStreamSource('persons/' + id);
         this.getRoot().subscribe(root => {
             this.rest.get(root._links.person.href + id + '/').subscribe(data => {
                 this.personUpdate(data as ApiObject);
@@ -129,7 +129,7 @@ export class ApiService implements OnInit {
     postPerson(newData): Observable<ApiObject> {
         return this.getRoot().flatMap(root => {
             return this.rest.post(root._links.person, newData).flatMap(data => {
-                let stream = this.getStreamSource('persons/' + data.id);
+                const stream = this.getStreamSource('persons/' + data.id);
                 this.personUpdate(data as ApiObject);
                 return (stream.asObservable() as Observable<ApiObject>);
             });
@@ -137,7 +137,7 @@ export class ApiService implements OnInit {
     }
 
     putPerson(id: number, newData): Observable<ApiObject> {
-        let stream = this.getStreamSource('persons/' + id);
+        const stream = this.getStreamSource('persons/' + id);
         this.getRoot().subscribe(root => {
             this.rest.put(root._links.person.href + id + '/', newData).subscribe(data => {
                 this.personUpdate(data as ApiObject);
@@ -147,7 +147,7 @@ export class ApiService implements OnInit {
     }
 
     getOpuses(): Observable<ApiObject[]> {
-        let stream = this.getStreamSource('opuses');
+        const stream = this.getStreamSource('opuses');
         this.getRoot().subscribe(root => {
             this.rest.get(root._links.opus).subscribe(data => {
                 stream.next(data);
@@ -157,14 +157,14 @@ export class ApiService implements OnInit {
     }
 
     private opusUpdate(data: ApiObject) {
-        let stream = this.getStreamSource('opuses/' + data.id);
+        const stream = this.getStreamSource('opuses/' + data.id);
         stream.next(data);
         // TODO update list
         this.getOpuses();
     }
 
     getOpus(id: number): Observable<ApiObject> {
-        let stream = this.getStreamSource('opuses/' + id);
+        const stream = this.getStreamSource('opuses/' + id);
         this.getRoot().subscribe(root => {
             this.rest.get(root._links.opus.href + id + '/').subscribe(data => {
                 this.opusUpdate(data as ApiObject);
@@ -176,7 +176,7 @@ export class ApiService implements OnInit {
     postOpus(newData): Observable<ApiObject> {
         return this.getRoot().flatMap(root => {
             return this.rest.post(root._links.opus, newData).flatMap(data => {
-                let stream = this.getStreamSource('opuses/' + data.id);
+                const stream = this.getStreamSource('opuses/' + data.id);
                 this.opusUpdate(data as ApiObject);
                 return (stream.asObservable() as Observable<ApiObject>);
             });
@@ -184,7 +184,7 @@ export class ApiService implements OnInit {
     }
 
     putOpus(id: number, newData): Observable<ApiObject> {
-        let stream = this.getStreamSource('opuses/' + id);
+        const stream = this.getStreamSource('opuses/' + id);
         this.getRoot().subscribe(root => {
             this.rest.put(root._links.opus.href + id + '/', newData).subscribe(data => {
                 this.opusUpdate(data as ApiObject);
@@ -194,8 +194,8 @@ export class ApiService implements OnInit {
     }
 
     getParts(opus?: ApiObject): Observable<ApiObject[]> {
-        let stream = this.getStreamSource('parts');
-        if (opus == undefined) {
+        const stream = this.getStreamSource('parts');
+        if (opus === undefined) {
             this.getRoot().subscribe(root => {
                 this.rest.get(root._links.part).subscribe(data => {
                     stream.next(data);
@@ -209,8 +209,23 @@ export class ApiService implements OnInit {
         return (stream.asObservable() as Observable<ApiObject[]>);
     }
 
+    private partUpdate(data: ApiObject) {
+        const stream = this.getStreamSource('parts/' + data.id);
+        stream.next(data);
+        // TODO update list for opus
+        this.getOpus(data.opus_id).first(d => d != null).subscribe(opus => this.getParts(opus));
+    }
+
+    postPart(opus: ApiObject, data: any): Observable<ApiObject> {
+        return this.rest.post(opus._links.part, data).flatMap(data => {
+            const stream = this.getStreamSource('parts/' + data.id);
+            this.partUpdate(data as ApiObject);
+            return (stream.asObservable() as Observable<ApiObject>);
+        });
+    }
+
     getSubParts(): Observable<ApiObject[]> {
-        let stream = this.getStreamSource('subparts');
+        const stream = this.getStreamSource('subparts');
         this.getRoot().subscribe(root => {
             this.rest.get(root._links.subpart).subscribe(data => {
                 stream.next(data);

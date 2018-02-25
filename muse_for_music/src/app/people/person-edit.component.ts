@@ -1,17 +1,20 @@
-import { Component, OnInit, OnChanges, SimpleChanges, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, OnDestroy } from '@angular/core';
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
+import { Subscription } from 'rxjs/Rx';
 
 @Component({
   selector: 'm4m-person-edit',
   templateUrl: './person-edit.component.html',
   styleUrls: ['./person-edit.component.scss']
 })
-export class PersonEditComponent implements OnInit, OnChanges {
+export class PersonEditComponent implements OnInit, OnChanges, OnDestroy {
+
+    private subscription: Subscription;
 
     @Input() personID: number;
     person: ApiObject = {
-        _links: {'self':{'href':''}},
+        _links: {'self': {'href': ''}},
         name: 'UNBEKANNT'
     };
 
@@ -21,11 +24,18 @@ export class PersonEditComponent implements OnInit, OnChanges {
     constructor(private api: ApiService) { }
 
     update() {
-        this.api.getPerson(this.personID).subscribe(data => {
+        this.unsubscribe();
+        this.subscription = this.api.getPerson(this.personID).subscribe(data => {
             if (data != undefined) {
                 this.person = data;
             }
         });
+    }
+
+    unsubscribe() {
+        if (this.subscription != null) {
+            this.subscription.unsubscribe();
+        }
     }
 
     ngOnInit(): void {
@@ -34,6 +44,10 @@ export class PersonEditComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         this.update();
+    }
+
+    ngOnDestroy(): void {
+        this.unsubscribe();
     }
 
     onValidChange(valid: boolean) {

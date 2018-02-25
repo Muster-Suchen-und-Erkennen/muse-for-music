@@ -38,7 +38,8 @@ export class OpusPartsComponent implements OnInit {
                 this.parts = data;
                 const tableData = [];
                 this.parts.forEach(part => {
-                    const row = new TableRow(part.id, [part.measure_start.measure, part.measure_end.measure, part.length], ['parts', part.id]);
+                    const row = new TableRow(part.id, [part.measure_start.measure, part.measure_end.measure, part.length],
+                                             ['parts', part.id]);
                     tableData.push(row);
                 });
                 this.tableData = tableData;
@@ -48,7 +49,7 @@ export class OpusPartsComponent implements OnInit {
 
     newPart(event) {
         if (this.valid) {
-            //this.api.postPart(this.newPartData).subscribe(_ => {return});
+            this.api.postPart(this.opus, this.newPartData).subscribe(_ => {return});
         }
     }
 

@@ -64,8 +64,8 @@ person_post = api.model('PersonPOST', {
 
 person_put = api.inherit('PersonPUT', person_post, {
     'canonical_name': fields.String(title='Kanonischer Name', max_length=255, default='', example='admin'),
-    'birth_date': fields.Date(example='1921-2-4'),
-    'death_date': fields.Date(example='1921-3-23'),
+    'birth_date': fields.Date(title='Geburtstag', example='1921-2-4'),
+    'death_date': fields.Date(title='Todestag', example='1921-3-23'),
 })
 
 person_get = api.inherit('PersonGET', person_put, {

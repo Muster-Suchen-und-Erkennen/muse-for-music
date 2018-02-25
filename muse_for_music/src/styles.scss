@@ -13,6 +13,28 @@ body {
     width: 32rem;
 }
 
+.min-h1 {
+    min-height: 1rem;
+}
+
+.min-h2 {
+    min-height: 2rem;
+}
+
+.min-h3 {
+    min-height: 4rem;
+}
+
+.min-h4 {
+    min-height: 8rem;
+}
+
+.min-h5 {
+    min-height: 16rem;
+}
+
 .flex-grow {
     flex-grow: 1;
 }
+
+
