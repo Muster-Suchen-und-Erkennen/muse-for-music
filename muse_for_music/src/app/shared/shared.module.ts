@@ -16,6 +16,10 @@ import { BaseApiService } from './rest/api-base.service';
 import { ApiService } from './rest/api.service';
 
 
+import { InfoComponent } from './info/info.component';
+import { InfoService } from './info/info.service';
+
+
 import { myBoxComponent } from './box/box.component';
 import { myDropdownComponent } from './dropdown/dropdown.component';
 import { myTableComponent } from './table/table.component';
@@ -25,6 +29,7 @@ import { ClickOutsideDirective } from './click-outside.directive';
 @NgModule({
     imports:      [ CommonModule, FormsModule, ReactiveFormsModule ],
     declarations: [
+        InfoComponent,
         myBoxComponent,
         myDropdownComponent,
         myTableComponent,
@@ -38,12 +43,14 @@ import { ClickOutsideDirective } from './click-outside.directive';
         ClickOutsideDirective,
     ],
     providers: [
+        InfoService,
         QuestionService,
         QuestionControlService,
         ApiService,
         BaseApiService,
     ],
     exports: [
+        InfoComponent,
         myBoxComponent,
         myDropdownComponent,
         myTableComponent,
