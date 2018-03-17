@@ -19,7 +19,6 @@ export class DynamicFormComponent implements OnInit, OnChanges {
 
     questions: QuestionBase<any>[] = [];
     customNull: {[propName: string]: any} = {};
-    conversions: {[propName: string]: string} = {};
     form: FormGroup;
 
     @Output() valid: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -31,26 +30,21 @@ export class DynamicFormComponent implements OnInit, OnChanges {
         this.qs.getQuestions(this.objectModel).subscribe(questions => {
             this.questions = questions;
             this.customNull = {};
-            this.conversions = {};
 
-            function recursiveParse(questions, customNull, conversions, qs) {
-                for (let question of questions) {
+            function recursiveParse(questions, customNull, qs) {
+                for (const question of questions) {
                     if (question.nullValue != undefined) {
                         customNull[question.key] = question.nullValue;
-                    }
-                    if (question.valueType === 'integer') {
-                        conversions[question.key] = question.valueType;
                     }
                     if (question.controlType === 'object') {
                         const temp1 = {$continuation:true};
                         const temp2 = {$continuation:true};
                         customNull[question.key] = temp1;
-                        conversions[question.key] = temp2;
-                        qs.getQuestions(question.valueType).subscribe(questions => recursiveParse(questions, temp1, temp2, qs))
+                        qs.getQuestions(question.valueType).subscribe(questions => recursiveParse(questions, temp1, qs))
                     }
                 }
             }
-            recursiveParse(questions, this.customNull, this.conversions, this.qs);
+            recursiveParse(questions, this.customNull, this.qs);
 
             this.qcs.toFormGroup(this.questions).subscribe(form => {
                 this.form = form;
@@ -72,18 +66,6 @@ export class DynamicFormComponent implements OnInit, OnChanges {
                     }
 
                     recursivePatchNulls(this.form.value, patched, this.customNull);
-
-                    function recursivePatchConversions(patched, conversions) {
-                        for (let key in patched) {
-                            if (conversions[key] != null && conversions[key]['$continuation']) {
-                                recursivePatchConversions(patched[key], conversions[key]);
-                            } else if (conversions[key] === 'integer') {
-                                patched[key] = parseInt(patched[key], 10);
-                            }
-                        }
-                    }
-
-                    recursivePatchConversions(patched, this.conversions);
 
                     this.data.emit(patched);
                 });

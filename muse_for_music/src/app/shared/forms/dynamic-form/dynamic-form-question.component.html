@@ -18,9 +18,7 @@
                 <input class="input-reset w5 bn pa1" [formControlName]="question.key" [id]="question.key" [type]="question.type">
             </div>
 
-            <div *ngSwitchCase="'number'" class="w5 flex bb b--gray">
-                <input class="input-reset w5 bn pa1" [formControlName]="question.key" [id]="question.key" [type]="question.type">
-            </div>
+            <m4m-number-input *ngSwitchCase="'number'" [formControlName]="question.key" [question]="question"></m4m-number-input>
 
             <div *ngSwitchCase="'boolean'" class="w5 flex">
                 <input [formControlName]="question.key" [id]="question.key" [type]="question.type">

@@ -161,6 +161,13 @@ export class QuestionService implements OnInit {
             options.max = prop.maxLength;
         }
 
+        if (prop.minimum != undefined) {
+            options.min = prop.minimum;
+        }
+        if (prop.maximum != undefined) {
+            options.max = prop.maximum;
+        }
+
         questionOptions.set(propID, options);
     }
 
