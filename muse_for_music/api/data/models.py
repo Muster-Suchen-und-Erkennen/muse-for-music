@@ -398,13 +398,13 @@ part_links = api.inherit('PartLinks', with_curies, {
 })
 
 part_post = api.model('PartPOST', {
+    'movement': fields.Integer(required=True, min=1, default=1, example=1),
     'measure_start': fields.Nested(measure_model, required=True, description='{"isNested": true}'),
     'measure_end': fields.Nested(measure_model, required=True, description='{"isNested": true}'),
     'length': fields.Integer(default=1, min=1, required=True, example=1),
 })
 
 part_put = api.inherit('PartPUT', part_post, {
-    'movement': fields.Integer(required=True, default=1),
     'occurence_in_movement': fields.Nested(taxonomy_item_put, required=True),
     'instrumentation_context': fields.Nested(instrumentation_context_put, required=True),
     'dynamic_context': fields.Nested(dynamic_context_put, required=True),

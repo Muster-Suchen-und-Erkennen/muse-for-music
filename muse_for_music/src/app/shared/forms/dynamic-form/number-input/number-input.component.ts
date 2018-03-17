@@ -48,7 +48,7 @@ export class NumberInputComponent implements ControlValueAccessor {
 
     updateValue(event) {
         this._value = event;
-        console.log(this.question);
+        console.log(this.value);
         this.onChange(this.value);
         this.onTouched();
     }
