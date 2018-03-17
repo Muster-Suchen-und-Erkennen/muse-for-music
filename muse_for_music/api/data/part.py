@@ -30,7 +30,7 @@ class PartsListResource(Resource):
         return Part.query.all()
 
 
-@ns.route('/<int:id>')
+@ns.route('/<int:id>/')
 class PartResource(Resource):
 
     @ns.marshal_with(part_get)
@@ -63,7 +63,7 @@ class PartResource(Resource):
         db.session.commit()
 
 
-@ns.route('/<int:id>/subparts')
+@ns.route('/<int:id>/subparts/')
 class PartSubpartsResource(Resource):
 
     @ns.marshal_list_with(subpart_get)

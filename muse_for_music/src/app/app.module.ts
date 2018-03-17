@@ -23,9 +23,11 @@ import { HomeComponent } from './home/home.component';
 import { PeopleOverviewComponent } from './people/people-overview.component';
 import { PersonEditComponent } from './people/person-edit.component';
 import { OpusesOverviewComponent } from './opuses/opuses-overview.component';
-import { OpusEditComponent } from './opuses/opus-edit.component';
 import { OpusDetailComponent } from './opuses/opus-detail.component';
+import { OpusEditComponent } from './opuses/opus-edit.component';
 import { OpusPartsComponent } from './opuses/opus-parts.component';
+import { PartDetailComponent } from './parts/part-detail.component';
+import { PartEditComponent } from './parts/part-edit.component';
 
 import { AppComponent } from './app.component';
 
@@ -38,9 +40,12 @@ import { AppComponent } from './app.component';
     PeopleOverviewComponent,
     PersonEditComponent,
     OpusesOverviewComponent,
-    OpusEditComponent,
     OpusDetailComponent,
+    OpusEditComponent,
     OpusPartsComponent,
+    PartDetailComponent,
+    PartEditComponent,
+
     BreadcrumbsComponent,
     TitleBarComponent,
   ],

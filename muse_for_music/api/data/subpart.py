@@ -27,7 +27,7 @@ class SubPartListResource(Resource):
         return SubPart.query.all()
 
 
-@ns.route('/<int:subpart_id>')
+@ns.route('/<int:subpart_id>/')
 class SubPartResource(Resource):
 
     @ns.marshal_with(subpart_get)
@@ -61,7 +61,7 @@ class SubPartResource(Resource):
         db.session.commit()
 
 
-@ns.route('/<int:subpart_id>/voices')
+@ns.route('/<int:subpart_id>/voices/')
 class SubPartVoiceListResource(Resource):
 
     @ns.marshal_list_with(voice_get)
@@ -87,7 +87,7 @@ class SubPartVoiceListResource(Resource):
         return marshal(new_voice, voice_get)
 
 
-@ns.route('/<int:subpart_id>/voices/<int:voice_id>')
+@ns.route('/<int:subpart_id>/voices/<int:voice_id>/')
 class SubPartVoiceResource(Resource):
 
     @ns.marshal_with(voice_get)
