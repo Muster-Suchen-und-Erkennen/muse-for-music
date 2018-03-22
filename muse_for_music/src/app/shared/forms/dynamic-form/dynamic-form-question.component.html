@@ -1,4 +1,4 @@
-<div class="pv2 flex flex-wrap" [formGroup]="form" *ngIf="!nested" >
+<div class="pv2 flex flex-wrap" [formGroup]="form" *ngIf="!nested && !question.readOnly" >
     <label class="f4 ws-normal flex-grow" style="word-wrap: break-word" [attr.for]="question.key">
         <i [hidden]="!isValid" class="w2 tc f5 fa fa-check"></i>
         <i [hidden]="isValid" class="w2 tc f5 red fa fa-exclamation"></i>
