@@ -395,6 +395,8 @@ measure_model = api.model('Measure', {
 part_links = api.inherit('PartLinks', with_curies, {
     'self': HaLUrl(UrlData('api.part_part_resource', absolute=True,
                            url_data={'id': 'id'}), rquired=False),
+    'subpart': HaLUrl(UrlData('api.part_part_subparts_resource', absolute=True,
+                              url_data={'id': 'id'}), rquired=False),
 })
 
 part_post = api.model('PartPOST', {

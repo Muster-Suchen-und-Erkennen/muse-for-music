@@ -40,13 +40,13 @@ export class OpusesOverviewComponent implements OnInit {
         });
     }
 
-    newOpus(event) {
+    save = (() => {
         if (this.valid) {
             this.api.postOpus(this.newOpusData).subscribe(data => {
                 this.router.navigate([data.id], {relativeTo: this.route});
             });
         }
-    }
+    }).bind(this);
 
     onValidChange(valid: boolean) {
         this.valid = valid;

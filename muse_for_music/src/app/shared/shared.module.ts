@@ -21,6 +21,7 @@ import { InfoService } from './info/info.service';
 
 
 import { myBoxComponent } from './box/box.component';
+import { myDialogComponent } from './dialog/dialog.component'
 import { myDropdownComponent } from './dropdown/dropdown.component';
 import { myTableComponent } from './table/table.component';
 
@@ -31,6 +32,7 @@ import { ClickOutsideDirective } from './click-outside.directive';
     declarations: [
         InfoComponent,
         myBoxComponent,
+        myDialogComponent,
         myDropdownComponent,
         myTableComponent,
         DynamicFormComponent,
@@ -52,6 +54,7 @@ import { ClickOutsideDirective } from './click-outside.directive';
     exports: [
         InfoComponent,
         myBoxComponent,
+        myDialogComponent,
         myDropdownComponent,
         myTableComponent,
         DynamicFormComponent,

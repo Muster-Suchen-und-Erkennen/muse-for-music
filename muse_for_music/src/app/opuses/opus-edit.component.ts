@@ -1,5 +1,5 @@
 import { Component, OnChanges, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
@@ -22,7 +22,7 @@ export class OpusEditComponent implements OnChanges {
     valid: boolean = false;
     data: any = {};
 
-    constructor(private api: ApiService) { }
+    constructor(private api: ApiService, private router: Router) { }
 
     ngOnChanges(): void {
         this.api.getOpus(this.opusID).subscribe(data => {
@@ -46,5 +46,9 @@ export class OpusEditComponent implements OnChanges {
             this.api.putOpus(this.opus.id, this.data);
         }
     }
+
+    delete = (() => {
+        this.api.deleteOpus(this.opusID).take(1).subscribe(() => this.router.navigate(['opuses']));
+    }).bind(this);
 
 }

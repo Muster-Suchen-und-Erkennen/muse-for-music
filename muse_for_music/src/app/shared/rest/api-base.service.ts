@@ -57,27 +57,31 @@ export class BaseApiService {
     private headers(token?: string): RequestOptions {
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
-        if (token != undefined) {
+        if (token != null) {
             headers.append('Authorization', 'Bearer ' + token);
         }
 
         return new RequestOptions({ headers: headers });
     }
 
-    get(url: string|LinkObject|ApiLinksObject|ApiObject, token?: string): Observable<ApiObject | ApiObject[]> {
+    get(url: string|LinkObject|ApiLinksObject|ApiObject, token?: string, params?): Observable<ApiObject | ApiObject[]> {
         url = this.extractUrl(url);
-        if (this.runningRequests.has(url)) {
+        if (this.runningRequests.has(url) && params == null) {
             return this.runningRequests.get(url);
         }
-        console.log(url);
-        const request = this.http.get(url, this.headers(token))
+        const options = this.headers(token);
+        if (params != null) {
+            options.params = params;
+        }
+        const request = this.http.get(url, options)
             .map((res: Response) => {
                 this.runningRequests.delete(url as string);
                 return res.json();
             }).catch((error: any) => {
                 this.runningRequests.delete(url as string);
                 if (error.status != null) {
-                    return Observable.throw({status: error.status, message: JSON.parse(error._body).message});
+                    return Observable.throw({status: error.status,
+                        message: error._body.startsWith('{') ? JSON.parse(error._body).message : error.status + ' Server error'});
                 }
                 return Observable.throw(error.json().error || 'Server error');
             }).publishReplay(1);
@@ -92,7 +96,8 @@ export class BaseApiService {
             .map((res: Response) => res.json())
             .catch((error: any) => {
                 if (error.status != null) {
-                    return Observable.throw({status: error.status, message: JSON.parse(error._body).message});
+                    return Observable.throw({status: error.status,
+                        message: error._body.startsWith('{') ? JSON.parse(error._body).message : error.status + ' Server error'});
                 }
                 return Observable.throw(error.json().error || 'Server error')
             });
@@ -104,7 +109,25 @@ export class BaseApiService {
             .map((res: Response) => res.json())
             .catch((error: any) => {
                 if (error.status != null) {
-                    return Observable.throw({status: error.status, message: JSON.parse(error._body).message});
+                    return Observable.throw({status: error.status,
+                        message: error._body.startsWith('{') ? JSON.parse(error._body).message : error.status + ' Server error'});
+                }
+                return Observable.throw(error.json().error || 'Server error')
+            });
+    }
+
+    delete(url: string|LinkObject|ApiLinksObject|ApiObject, token?: string, data?): Observable<ApiObject> {
+        url = this.extractUrl(url);
+        const options = this.headers(token);
+        if (data != null) {
+            options.body = data;
+        }
+        return this.http.delete(url, options)
+            .map((res: Response) => res.json())
+            .catch((error: any) => {
+                if (error.status != null) {
+                    return Observable.throw({status: error.status,
+                        message: error._body.startsWith('{') ? JSON.parse(error._body).message : error.status + ' Server error'});
                 }
                 return Observable.throw(error.json().error || 'Server error')
             });

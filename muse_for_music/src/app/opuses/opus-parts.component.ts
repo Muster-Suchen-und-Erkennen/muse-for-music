@@ -47,11 +47,11 @@ export class OpusPartsComponent implements OnInit {
         });
     }
 
-    newPart(event) {
+    save = (() => {
         if (this.valid) {
             this.api.postPart(this.opus, this.newPartData).subscribe(_ => {return});
         }
-    }
+    }).bind(this);
 
     onValidChange(valid: boolean) {
         this.valid = valid;

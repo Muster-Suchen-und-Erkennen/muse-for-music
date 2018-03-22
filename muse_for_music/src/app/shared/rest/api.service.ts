@@ -56,6 +56,9 @@ export class ApiService implements OnInit {
             case 'PUT':
                 title = 'Error while updating existing resource "' + resource + '".';
                 break;
+                case 'DELETE':
+                    title = 'Error while deleting existing resource "' + resource + '".';
+                    break;
 
             default:
                 title = 'Error while retrieving resource "' + resource + '".'
@@ -77,7 +80,7 @@ export class ApiService implements OnInit {
     getRoot(): Observable<RootModel> {
         if (!this.rootSource.isStopped) {
             let url = '/api'
-            if ((window as any).apiBasePath != undefined) {
+            if ((window as any).apiBasePath != null) {
                 url = (window as any).apiBasePath;
             }
             this.rest.get(url).subscribe(data => {
@@ -106,12 +109,16 @@ export class ApiService implements OnInit {
         if (this.streams[streamID] == null && create) {
             this.streams[streamID] = new BehaviorSubject<ApiObject | ApiObject[]>(undefined);
         }
-        return this.streams[streamID]
+        return this.streams[streamID];
     }
 
     private updateResource(streamID: string, data: ApiObject) {
         const stream = this.getStreamSource(streamID + '/' +  data.id);
         stream.next(data);
+        this.updateListResource(streamID, data);
+    }
+
+    private updateListResource(streamID: string, data: ApiObject) {
         const list_stream = this.getStreamSource(streamID, false);
         if (list_stream != null) {
             const list: ApiObject[] = (list_stream.getValue() as ApiObject[]);
@@ -127,6 +134,28 @@ export class ApiService implements OnInit {
         }
     }
 
+    private removeResource(streamID: string, id: number) {
+        const stream = this.getStreamSource(streamID + '/' + id);
+        stream.next(null);
+        this.removeListResource(streamID, id);
+    }
+
+    private removeListResource(streamID: string, id: number) {
+        const list_stream = this.getStreamSource(streamID, false);
+        if (list_stream != null) {
+            const list: ApiObject[] = (list_stream.getValue() as ApiObject[]);
+            if (list != null) {
+                const index = list.findIndex(value => value.id === id);
+                if (index >= 0) {
+                    list.splice(index, 1);
+                    list_stream.next(list);
+                }
+            }
+        }
+    }
+
+
+    /// Taxonomies /////////////////////////////////////////////////////////////
     getTaxonomies(): Observable<ApiObject> {
         const resource = 'taxonomies';
         const stream = this.getStreamSource(resource);
@@ -135,7 +164,7 @@ export class ApiService implements OnInit {
                 stream.next(data);
             }, error => this.errorHandler(error, resource, 'GET'));
         }, error => this.errorHandler(error, resource, 'GET'));
-        return (stream.asObservable() as Observable<ApiObject>).filter(data => data != null);
+        return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
     }
 
     getTaxonomy(taxonomy: string): Observable<ApiObject> {
@@ -154,9 +183,11 @@ export class ApiService implements OnInit {
                 }
             }
         }, error => this.errorHandler(error, resource, 'GET'));
-        return (stream.asObservable() as Observable<ApiObject>).filter(data => data != null);
+        return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
     }
 
+
+    /// People /////////////////////////////////////////////////////////////////
     getPeople(): Observable<Array<ApiObject>> {
         const resource = 'persons';
         const stream = this.getStreamSource(resource);
@@ -165,7 +196,7 @@ export class ApiService implements OnInit {
                 stream.next(data);
             }, error => this.errorHandler(error, resource, 'GET'));
         }, error => this.errorHandler(error, resource, 'GET'));
-        return (stream.asObservable() as Observable<ApiObject[]>).filter(data => data != null);
+        return (stream.asObservable() as Observable<ApiObject[]>).filter(data => data !== undefined);
     }
 
     getPerson(id: number): Observable<ApiObject> {
@@ -177,7 +208,7 @@ export class ApiService implements OnInit {
                 this.updateResource(baseResource, data as ApiObject);
             }, error => this.errorHandler(error, resource, 'GET'));
         }, error => this.errorHandler(error, resource, 'GET'));
-        return (stream.asObservable() as Observable<ApiObject>).filter(data => data != null);
+        return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
     }
 
     postPerson(newData): Observable<ApiObject> {
@@ -186,7 +217,7 @@ export class ApiService implements OnInit {
             return this.rest.post(root._links.person, newData).flatMap(data => {
                 const stream = this.getStreamSource(resource + '/' + data.id);
                 this.updateResource(resource, data as ApiObject);
-                return (stream.asObservable() as Observable<ApiObject>).filter(data => data != null);
+                return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
             });
         }).catch(error => {
             this.errorHandler(error, resource, 'POST');
@@ -203,9 +234,11 @@ export class ApiService implements OnInit {
                 this.updateResource(baseResource, data as ApiObject);
             }, error => this.errorHandler(error, resource, 'PUT'));
         });
-        return (stream.asObservable() as Observable<ApiObject>).filter(data => data != null);
+        return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
     }
 
+
+    /// Opuses /////////////////////////////////////////////////////////////////
     getOpuses(): Observable<ApiObject[]> {
         const resource = 'opuses';
         const stream = this.getStreamSource(resource);
@@ -214,7 +247,7 @@ export class ApiService implements OnInit {
                 stream.next(data);
             }, error => this.errorHandler(error, resource, 'GET'));
         }, error => this.errorHandler(error, resource, 'GET'));
-        return (stream.asObservable() as Observable<ApiObject[]>).filter(data => data != null);
+        return (stream.asObservable() as Observable<ApiObject[]>).filter(data => data !== undefined);
     }
 
     getOpus(id: number): Observable<ApiObject> {
@@ -226,7 +259,7 @@ export class ApiService implements OnInit {
                 this.updateResource(baseResource, data as ApiObject);
             }, error => this.errorHandler(error, resource, 'GET'));
         }, error => this.errorHandler(error, resource, 'GET'));
-        return (stream.asObservable() as Observable<ApiObject>).filter(data => data != null);
+        return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
     }
 
     postOpus(newData): Observable<ApiObject> {
@@ -235,7 +268,7 @@ export class ApiService implements OnInit {
             return this.rest.post(root._links.opus, newData).flatMap(data => {
                 const stream = this.getStreamSource(resource + '/' + data.id);
                 this.updateResource(resource, data as ApiObject);
-                return (stream.asObservable() as Observable<ApiObject>).filter(data => data != null);
+                return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
             });
         }).catch(error => {
             this.errorHandler(error, resource, 'POST');
@@ -252,9 +285,25 @@ export class ApiService implements OnInit {
                 this.updateResource(baseResource, data as ApiObject);
             }, error => this.errorHandler(error, resource, 'PUT'));
         });
-        return (stream.asObservable() as Observable<ApiObject>).filter(data => data != null);
+        return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
     }
 
+    deleteOpus(id: number): Observable<ApiObject> {
+        const baseResource = 'opuses';
+        const resource = baseResource + '/' + id;
+        const stream = this.getStreamSource(resource);
+
+        this.getRoot().subscribe((root) => {
+            this.rest.delete(root._links.opus.href + id + '/').subscribe(() => {
+                this.removeResource(baseResource, id);
+            }, error => this.errorHandler(error, resource, 'DELETE'));
+        }, error => this.errorHandler(error, resource, 'DELETE'));
+
+        return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
+    }
+
+
+    /// Parts //////////////////////////////////////////////////////////////////
     getParts(opus?: ApiObject): Observable<ApiObject[]> {
         let resource = 'parts';
         let stream = this.getStreamSource(resource);
@@ -271,7 +320,7 @@ export class ApiService implements OnInit {
                 stream.next(data);
             }, error => this.errorHandler(error, resource, 'GET'));
         }
-        return (stream.asObservable() as Observable<ApiObject[]>).filter(data => data != null);
+        return (stream.asObservable() as Observable<ApiObject[]>).filter(data => data !== undefined);
     }
 
     getPart(id: number): Observable<ApiObject> {
@@ -281,9 +330,10 @@ export class ApiService implements OnInit {
         this.getRoot().subscribe(root => {
             this.rest.get(root._links.part.href + id + '/').subscribe(data => {
                 this.updateResource(baseResource, data as ApiObject);
+                this.updateListResource('opuses' + '/' + (data as ApiObject).opus_id + '/parts', data as ApiObject);
             }, error => this.errorHandler(error, resource, 'GET'));
         }, error => this.errorHandler(error, resource, 'GET'));
-        return (stream.asObservable() as Observable<ApiObject>).filter(data => data != null);
+        return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
     }
 
     postPart(opus: ApiObject, data: any): Observable<ApiObject> {
@@ -291,7 +341,8 @@ export class ApiService implements OnInit {
         return this.rest.post(opus._links.part, data).flatMap(data => {
             const stream = this.getStreamSource(resource + '/' + data.id);
             this.updateResource(resource, data as ApiObject);
-            return (stream.asObservable() as Observable<ApiObject>).filter(data => data != null);
+            this.updateListResource('opuses' + '/' + data.opus_id + '/parts', data as ApiObject);
+            return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
         }).catch(error => {
             this.errorHandler(error, resource, 'POST');
             return Observable.throw(error);
@@ -305,18 +356,84 @@ export class ApiService implements OnInit {
         this.getRoot().subscribe(root => {
             this.rest.put(root._links.part.href + id + '/', newData).subscribe(data => {
                 this.updateResource(baseResource, data as ApiObject);
+                this.updateListResource('opuses' + '/' + data.opus_id + '/parts', data as ApiObject);
             }, error => this.errorHandler(error, resource, 'PUT'));
         });
-        return (stream.asObservable() as Observable<ApiObject>).filter(data => data != null);
+        return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
     }
 
-    getSubParts(): Observable<ApiObject[]> {
-        const stream = this.getStreamSource('subparts');
-        this.getRoot().subscribe(root => {
-            this.rest.get(root._links.subpart).subscribe(data => {
+    deletePart(part: ApiObject): Observable<ApiObject> {
+        const baseResource = 'parts';
+        const resource = baseResource + '/' + part.id;
+        const stream = this.getStreamSource(resource);
+
+        this.getRoot().subscribe((root) => {
+            this.rest.delete(root._links.part.href + part.id + '/').subscribe(() => {
+                this.removeResource(baseResource, part.id);
+                this.removeListResource('opuses' + '/' + part.opus_id + '/parts', part.id);
+            }, error => this.errorHandler(error, resource, 'DELETE'));
+        }, error => this.errorHandler(error, resource, 'DELETE'));
+
+        return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
+    }
+
+
+    /// SubpParts //////////////////////////////////////////////////////////////
+    getSubParts(part?: ApiObject): Observable<ApiObject[]> {
+        let resource = 'subparts';
+        let stream = this.getStreamSource(resource);
+        if (part === undefined) {
+            this.getRoot().subscribe(root => {
+                this.rest.get(root._links.subpart).subscribe(data => {
+                    stream.next(data);
+                }, error => this.errorHandler(error, resource, 'GET'));
+            }, error => this.errorHandler(error, resource, 'GET'));
+        } else {
+            resource = 'parts/' + part.id + '/subparts';
+            stream = this.getStreamSource(resource)
+            this.rest.get(part._links.subpart).subscribe(data => {
                 stream.next(data);
-            });
+            }, error => this.errorHandler(error, resource, 'GET'));
+        }
+        return (stream.asObservable() as Observable<ApiObject[]>).filter(data => data !== undefined);
+    }
+
+    getSubPart(id: number): Observable<ApiObject> {
+        const baseResource = 'subparts';
+        const resource = baseResource + '/' + id;
+        const stream = this.getStreamSource(resource);
+        this.getRoot().subscribe(root => {
+            this.rest.get(root._links.subpart.href + id + '/').subscribe(data => {
+                this.updateResource(baseResource, data as ApiObject);
+                this.updateListResource('parts' + '/' + (data as ApiObject).part_id + '/subparts', data as ApiObject);
+            }, error => this.errorHandler(error, resource, 'GET'));
+        }, error => this.errorHandler(error, resource, 'GET'));
+        return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
+    }
+
+    postSubPart(part: ApiObject, data: any): Observable<ApiObject> {
+        const resource = 'subparts';
+        return this.rest.post(part._links.subpart, data).flatMap(data => {
+            const stream = this.getStreamSource(resource + '/' + data.id);
+            this.updateResource(resource, data as ApiObject);
+            this.updateListResource('parts' + '/' + data.part_id + '/subparts', data as ApiObject);
+            return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
+        }).catch(error => {
+            this.errorHandler(error, resource, 'POST');
+            return Observable.throw(error);
         });
-        return (stream.asObservable() as Observable<ApiObject[]>).filter(data => data != null);
+    }
+
+    putSubPart(id: number, newData): Observable<ApiObject> {
+        const baseResource = 'subparts';
+        const resource = baseResource + '/' + id;
+        const stream = this.getStreamSource(resource);
+        this.getRoot().subscribe(root => {
+            this.rest.put(root._links.subpart.href + id + '/', newData).subscribe(data => {
+                this.updateResource(baseResource, data as ApiObject);
+                this.updateListResource('parts' + '/' + data.part_id + '/subparts', data as ApiObject);
+            }, error => this.errorHandler(error, resource, 'PUT'));
+        });
+        return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
     }
 }
