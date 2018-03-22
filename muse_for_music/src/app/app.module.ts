@@ -29,6 +29,8 @@ import { OpusPartsComponent } from './opuses/opus-parts.component';
 import { PartDetailComponent } from './parts/part-detail.component';
 import { PartEditComponent } from './parts/part-edit.component';
 import { PartSubpartsComponent } from './parts/part-subparts.component';
+import { SubPartDetailComponent } from './subparts/subpart-detail.component';
+import { SubPartEditComponent } from './subparts/subpart-edit.component';
 
 import { AppComponent } from './app.component';
 
@@ -47,6 +49,8 @@ import { AppComponent } from './app.component';
     PartDetailComponent,
     PartEditComponent,
     PartSubpartsComponent,
+    SubPartDetailComponent,
+    SubPartEditComponent,
 
     BreadcrumbsComponent,
     TitleBarComponent,

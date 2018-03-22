@@ -6,12 +6,14 @@ import { PeopleOverviewComponent } from './people/people-overview.component';
 import { OpusesOverviewComponent } from './opuses/opuses-overview.component';
 import { OpusDetailComponent } from './opuses/opus-detail.component';
 import { PartDetailComponent } from './parts/part-detail.component';
+import { SubPartDetailComponent } from './subparts/subpart-detail.component';
 
 const routes: Routes = [
   { path: 'people', component: PeopleOverviewComponent },
   { path: 'opuses', component: OpusesOverviewComponent},
   { path: 'opuses/:id', component: OpusDetailComponent},
   { path: 'parts/:id', component: PartDetailComponent},
+  { path: 'subparts/:id', component: SubPartDetailComponent},
   { path: '', pathMatch: 'full', component: HomeComponent},
   { path: '**', redirectTo: 'dashboard' }
 ]
