@@ -42,12 +42,13 @@
 
 </div>
 
+<m4m-array-input [question]="question" [array]="form.controls[question.key]" *ngIf="question.controlType === 'array'"></m4m-array-input>
 <div class="flex" *ngIf="question.controlType === 'object'" [formGroup]="form">
-    <div class="bl bw2 mr2 ml2 b--gray"></div>
-    <div class="flex-grow" formGroupName="{{question.key}}">
-        <div *ngFor="let qstn of question?.nestedQuestions" class="form-row">
-            <df-question [question]="qstn" [form]="form.controls[question.key]" [nested]="false"></df-question>
+    <div class="bl bw2 mr2 ml2 b--gray">
+        <div class="flex-grow" formGroupName="{{question.key}}">
+            <div *ngFor="let qstn of question?.nestedQuestions" class="form-row">
+                <df-question [question]="qstn" [form]="form.controls[question.key]" [nested]="false"></df-question>
+            </div>
         </div>
-
     </div>
 </div>

@@ -2,7 +2,6 @@ import { QuestionBase, QuestionOptions } from './question-base';
 import { ApiObject } from '../rest/api-base.service';
 
 export class ObjectQuestion extends QuestionBase<ApiObject> {
-    controlType = 'object';
     type: 'nested';
     nestedQuestions?: QuestionBase<any>[];
 

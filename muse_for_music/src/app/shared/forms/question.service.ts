@@ -117,6 +117,11 @@ export class QuestionService implements OnInit {
             }
         }
         options.valueType = prop.type;
+        if (prop.type === 'array') {
+            if (prop.items != null && prop.items.$ref != null) {
+                options.valueType = prop.items.$ref;
+            }
+        }
         options.controlType = prop.type;
         if (prop.format != undefined) {
             options.controlType = prop.format;
@@ -178,7 +183,7 @@ export class QuestionService implements OnInit {
         if (options.controlType === 'reference') {
             return new ReferenceQuestion(options);
         }
-        if (options.controlType === 'object') {
+        if (options.controlType === 'object' || options.controlType === 'array') {
             const qstn = new ObjectQuestion(options);
             this.getQuestions(options.valueType).subscribe(questions => qstn.nestedQuestions = questions);
             return qstn;

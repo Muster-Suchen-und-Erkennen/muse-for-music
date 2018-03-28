@@ -302,7 +302,7 @@ musicial_sequence_get = api.model('MusicialSequenceGET', {
 
 composition_put = api.model('CompositionPUT', {
     'id': fields.Integer(default=1, readonly=True, example=1),
-    'sequences': fields.List(fields.Nested(musicial_sequence_put, description='MusicialSequence'), default=[]),
+    'sequences': fields.List(fields.Nested(musicial_sequence_put, description='MusicialSequence{"isNested": true, "isArray": true}'), default=[]),
     'nr_varied_repetitions': fields.Integer(default=1),
     'nr_exact_repetitions': fields.Integer(default=1),
 })
@@ -334,7 +334,7 @@ other_citation = api.model('OtherCitation', {
 citations_put = api.model('CitationsGET', {
     'id': fields.Integer(default=1, readonly=True, example=1),
     'is_foreign': fields.Boolean(default=False),
-    'opus_citations': fields.List(fields.Nested(opus_citation_put, description='OpusCitation'), default=[]),
+    'opus_citations': fields.List(fields.Nested(opus_citation_put, description='{"isNested": true, "isArray": true}'), default=[]),
     'other_citations': fields.List(fields.Nested(other_citation), default=[]),
     'gattung_citations': fields.List(fields.Nested(taxonomy_item_put), description='{"taxonomy": "Gattung", "isArray": true}', default=[]),
     'instrument_citations': fields.List(fields.Nested(taxonomy_item_put), description='{"taxonomy": "Instrument", "isArray": true}', default=[]),

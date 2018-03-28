@@ -102,6 +102,7 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
 
     ngOnChanges(changes: SimpleChanges): void {
         this.updateMatching();
+        // https://stackoverflow.com/questions/42819549/angular2-scroll-to-element-that-has-ngif
     }
 
     ngOnInit(): void {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 
 import { QuestionBase } from './question-base';
@@ -13,9 +13,14 @@ export class QuestionControlService {
         return Observable.from(questions).concatMap(question => {
             const formControl = {
                 key: question.key,
+                question: question,
                 control: null,
             }
 
+            if (question.controlType === 'array') {
+                formControl.control = new FormArray([]);
+                return Observable.of(formControl);
+            }
             if (question.controlType === 'object') {
                 return this.qstn.getQuestions(question.valueType).flatMap(questions => this.toFormGroup(questions)).map(control => {
                     formControl.control = control;

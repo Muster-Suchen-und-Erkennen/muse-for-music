@@ -1,0 +1,24 @@
+<!--div formArrayName="question?.key" class="">
+    <!--div *ngFor="let entry of array.controls; let i=index" [formGroupName]="question.key + '_' + i" >
+        i
+      </div>
+      </div-->
+<div class="flex">
+    <div class="bl bw2 mr2 ml2 b--gray">
+    </div>
+    <div class="flex-grow">
+        <div>
+            <div class="relative mb2 hide-child" *ngFor="let entry of array?.controls; let i=index">
+                <div class="child absolute h-100 w2 bg-red grow pointer flex items-center justify-around" (click)="deleteItem(i)">
+                    <i class="fa fa-minus white"></i>
+                </div>
+                <div class="">
+                    <df-question *ngFor="let question of question?.nestedQuestions;" [question]="question" [form]="entry"></df-question>
+                </div>
+            </div>
+        </div>
+        <div class="w100 h2 br2 bg-light-gray bg-animate hover-bg-light-green pointer flex items-center justify-around" (click)="newItem()">
+            <i class="fa fa-plus"></i>
+        </div>
+    </div>
+</div>
