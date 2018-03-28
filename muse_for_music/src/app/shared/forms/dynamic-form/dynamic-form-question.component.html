@@ -1,7 +1,9 @@
-<div class="pv2 flex flex-wrap" [formGroup]="form" *ngIf="!nested && !question.readOnly" >
+<div class="pv2 flex items-center" [formGroup]="form" *ngIf="!nested && !question.readOnly" >
+    <i [hidden]="!isValid" class="w2 tc mr1 f5 fa fa-check"></i>
+    <i [hidden]="isValid" class="w2 tc mr1 f5 red fa fa-exclamation"></i>
+
+    <div class="flex-grow flex flex-wrap">
     <label class="f4 ws-normal flex-grow" style="word-wrap: break-word" [attr.for]="question.key">
-        <i [hidden]="!isValid" class="w2 tc f5 fa fa-check"></i>
-        <i [hidden]="isValid" class="w2 tc f5 red fa fa-exclamation"></i>
         {{question.label}}
     </label>
 
@@ -39,7 +41,7 @@
 
         <!--div class="f6">{{question.label}} is required</div-->
     </div>
-
+</div>
 </div>
 
 <m4m-array-input [question]="question" [array]="form.controls[question.key]" *ngIf="question.controlType === 'array'"></m4m-array-input>

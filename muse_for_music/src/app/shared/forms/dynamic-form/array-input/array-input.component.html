@@ -9,7 +9,7 @@
     <div class="flex-grow">
         <div>
             <div class="relative mb2 hide-child" *ngFor="let entry of array?.controls; let i=index">
-                <div class="child absolute h-100 w2 bg-red grow pointer flex items-center justify-around" (click)="deleteItem(i)">
+                <div class="child absolute z-1 h-100 w2 bg-red grow pointer flex items-center justify-around" (click)="deleteItem(i)">
                     <i class="fa fa-minus white"></i>
                 </div>
                 <div class="">
