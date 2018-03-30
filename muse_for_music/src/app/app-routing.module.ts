@@ -7,6 +7,7 @@ import { OpusesOverviewComponent } from './opuses/opuses-overview.component';
 import { OpusDetailComponent } from './opuses/opus-detail.component';
 import { PartDetailComponent } from './parts/part-detail.component';
 import { SubPartDetailComponent } from './subparts/subpart-detail.component';
+import { VoiceDetailComponent } from './voices/voice-detail.component';
 
 const routes: Routes = [
   { path: 'people', component: PeopleOverviewComponent },
@@ -14,6 +15,7 @@ const routes: Routes = [
   { path: 'opuses/:id', component: OpusDetailComponent},
   { path: 'parts/:id', component: PartDetailComponent},
   { path: 'subparts/:id', component: SubPartDetailComponent},
+  { path: 'subparts/:subpartID/voices/:voiceID', component: VoiceDetailComponent},
   { path: '', pathMatch: 'full', component: HomeComponent},
   { path: '**', redirectTo: 'dashboard' }
 ]

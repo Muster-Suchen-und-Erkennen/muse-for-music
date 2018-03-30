@@ -73,7 +73,7 @@ export class SubPartDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.navigation.changeTitle('MUSE4Music – Part');
+        this.navigation.changeTitle('MUSE4Music – SubPart');
         this.paramSubscription = this.route.params.subscribe(params => {
             this.update(parseInt(params['id'], 10));
         });

@@ -436,4 +436,50 @@ export class ApiService implements OnInit {
         });
         return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
     }
+
+
+    /// Voices /////////////////////////////////////////////////////////////////
+    getVoices(subpart: ApiObject): Observable<ApiObject[]> {
+        const resource = 'subparts/' + subpart.id + '/voices';
+        const stream = this.getStreamSource(resource);
+        this.rest.get(subpart._links.voice).subscribe(data => {
+            stream.next(data);
+        }, error => this.errorHandler(error, resource, 'GET'));
+        return (stream.asObservable() as Observable<ApiObject[]>).filter(data => data !== undefined);
+    }
+
+    getVoice(subpart: ApiObject, id: number): Observable<ApiObject> {
+        const baseResource = 'subparts/' + subpart.id + '/voices';
+        const resource = baseResource + '/' + id;
+        const stream = this.getStreamSource(resource);
+        this.rest.get(subpart._links.voice.href + id + '/').subscribe(data => {
+            this.updateResource(baseResource, data as ApiObject);
+            this.updateListResource('subparts' + '/' + subpart.id + '/voices', data as ApiObject);
+        }, error => this.errorHandler(error, resource, 'GET'));
+        return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
+    }
+
+    postVoice(subpart: ApiObject, data: any): Observable<ApiObject> {
+        const resource = 'subparts/' + subpart.id + '/voices';
+        return this.rest.post(subpart._links.voice, data).flatMap(data => {
+            const stream = this.getStreamSource(resource + '/' + data.id);
+            this.updateResource(resource, data as ApiObject);
+            this.updateListResource('subparts' + '/' + subpart.id + '/voices', data as ApiObject);
+            return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
+        }).catch(error => {
+            this.errorHandler(error, resource, 'POST');
+            return Observable.throw(error);
+        });
+    }
+
+    putVoice(subpart: ApiObject, id: number, newData): Observable<ApiObject> {
+        const baseResource = 'subparts/' + subpart.id + '/voices';
+        const resource = baseResource + '/' + id;
+        const stream = this.getStreamSource(resource);
+        this.rest.put(subpart._links.voice.href + id + '/', newData).subscribe(data => {
+            this.updateResource(baseResource, data as ApiObject);
+            this.updateListResource('parts' + '/' + data.part_id + '/subparts', data as ApiObject);
+        }, error => this.errorHandler(error, resource, 'PUT'));
+        return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
+    }
 }

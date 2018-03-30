@@ -31,6 +31,9 @@ import { PartEditComponent } from './parts/part-edit.component';
 import { PartSubpartsComponent } from './parts/part-subparts.component';
 import { SubPartDetailComponent } from './subparts/subpart-detail.component';
 import { SubPartEditComponent } from './subparts/subpart-edit.component';
+import { SubPartVoicesComponent } from './subparts/subpart-voices.component';
+import { VoiceDetailComponent } from './voices/voice-detail.component';
+import { VoiceEditComponent } from './voices/voice-edit.component';
 
 import { AppComponent } from './app.component';
 
@@ -51,6 +54,9 @@ import { AppComponent } from './app.component';
     PartSubpartsComponent,
     SubPartDetailComponent,
     SubPartEditComponent,
+    SubPartVoicesComponent,
+    VoiceDetailComponent,
+    VoiceEditComponent,
 
     BreadcrumbsComponent,
     TitleBarComponent,

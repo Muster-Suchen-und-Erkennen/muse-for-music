@@ -1,0 +1,16 @@
+<m4m-box>
+    <h1 class="mv0" title>Voices</h1>
+    <div class="button h2 pv1 ph2 br2 bg-light-silver link bg-animate hover-bg-light-green pointer" (click)="newVoice.open()" title-right>
+        <i class="fa fa-plus mr2"></i>New
+    </div>
+    <div class="w6" body>
+        <m4m-table [headings]="['Label']" [rows]="tableData"></m4m-table>
+    </div>
+</m4m-box>
+
+<m4m-dialog [dialogType]="'save-cancel'" [valid]="valid" [icon]="'save'" [okCallback]="save" #newVoice >
+    <h1 class="mv0" title>New Voice:</h1>
+    <div class="w-100 ph3 pv2" body>
+        <dynamic-form [objectModel]="'VoicePOST'" [startValues]="{}" (valid)="onValidChange($event)" (data)="onDataChange($event)"></dynamic-form>
+    </div>
+</m4m-dialog>
