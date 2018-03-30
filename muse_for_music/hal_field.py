@@ -13,7 +13,6 @@ class NestedFields(Nested):
         super().__init__(model=model, **kwargs)
 
     def output(self, key, obj):
-
         return marshal(obj, self.nested)
 
 
@@ -95,6 +94,8 @@ class UrlData():
                 app.logger.debug('Could not build url because some provided values were none.\n' +
                                  'UrlParam: "%s", ObjectKey: "%s"',
                                  key, self.url_data[key])
+                from flask import request
+                print(request)
                 print(obj)
                 return None
             url_data[key] = value

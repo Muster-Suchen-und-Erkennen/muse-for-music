@@ -57,11 +57,16 @@ class ListTaxonomyResource(Resource):
     @ns.response(400, 'Mismatching taxonomy type.')
     @ns.response(404, 'Taxonomy not found.')
     def get(self, taxonomy: str):
-        return get_taxonomy('list', taxonomy)
+        tax = get_taxonomy('list', taxonomy)
+        if tax is None:
+            abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
+        return tax
 
     @ns.doc(model=taxonomy_item_get, body=taxonomy_item_post, vaidate=True)
     def post(self, taxonomy: str):
         tax = get_taxonomy('list', taxonomy)
+        if tax is None:
+            abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
         item = create_taxonomy_item(tax, request.get_json())
         db.session.add(item)
         db.session.commit()
@@ -75,7 +80,10 @@ class TreeTaxonomyResource(Resource):
     @ns.response(400, 'Mismatching taxonomy type.')
     @ns.response(404, 'Taxonomy not found.')
     def get(self, taxonomy: str):
-        return marshal(get_taxonomy('tree', taxonomy), tree_taxonomy_model)
+        tax = get_taxonomy('tree', taxonomy)
+        if tax is None:
+            abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
+        return marshal(tax, tree_taxonomy_model)
 
 
 def get_taxonomy_item(tax: Type[T], item_id) -> T:
@@ -135,6 +143,8 @@ class TaxonomyItemResource(Resource):
     @ns.response(404, 'Taxonomy or Item not found.')
     def get(self, taxonomy_type: str, taxonomy: str, item_id: int):
         tax = get_taxonomy(taxonomy_type, taxonomy)
+        if tax is None:
+            abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
         return get_taxonomy_item(tax, item_id)
 
     @ns.response(400, 'Mismatching taxonomy type.')
@@ -142,6 +152,8 @@ class TaxonomyItemResource(Resource):
     @ns.doc(model=taxonomy_item_get, body=taxonomy_item_post, vaidate=True)
     def put(self, taxonomy_type: str, taxonomy: str, item_id: int):
         tax = get_taxonomy(taxonomy_type, taxonomy)
+        if tax is None:
+            abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
         item = get_taxonomy_item(tax, item_id)
         edit_taxonomy_item(item, request.get_json())
         return marshal(item, taxonomy_item_get)
@@ -150,6 +162,8 @@ class TaxonomyItemResource(Resource):
     @ns.response(404, 'Taxonomy or Item not found.')
     def delete(self, taxonomy_type: str, taxonomy: str, item_id: int):
         tax = get_taxonomy(taxonomy_type, taxonomy)
+        if tax is None:
+            abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
         delete_taxonomy_item(tax, item_id)
 
 
@@ -161,6 +175,8 @@ class ListTaxonomyItemResource(Resource):
     @ns.response(404, 'Taxonomy or Item not found.')
     def get(self, taxonomy: str, item_id: int):
         tax = get_taxonomy('list', taxonomy)
+        if tax is None:
+            abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
         return get_taxonomy_item(tax, item_id)
 
     @ns.response(400, 'Mismatching taxonomy type.')
@@ -168,6 +184,8 @@ class ListTaxonomyItemResource(Resource):
     @ns.doc(model=taxonomy_item_get, body=taxonomy_item_post, vaidate=True)
     def put(self, taxonomy: str, item_id: int):
         tax = get_taxonomy('list', taxonomy)
+        if tax is None:
+            abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
         item = get_taxonomy_item(tax, item_id)
         edit_taxonomy_item(item, request.get_json())
         return marshal(item, taxonomy_item_get)
@@ -176,6 +194,8 @@ class ListTaxonomyItemResource(Resource):
     @ns.response(404, 'Taxonomy or Item not found.')
     def delete(self, taxonomy: str, item_id: int):
         tax = get_taxonomy('list', taxonomy)
+        if tax is None:
+            abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
         delete_taxonomy_item(tax, item_id)
 
 
@@ -187,11 +207,15 @@ class TreeTaxonomyItemResource(Resource):
     @ns.response(404, 'Taxonomy or Item not found.')
     def get(self, taxonomy: str, item_id: int):
         tax = get_taxonomy('tree', taxonomy)
+        if tax is None:
+            abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
         return marshal(get_taxonomy_item(tax, item_id), taxonomy_tree_item_get)
 
     @ns.doc(model=taxonomy_tree_item_get_json, body=taxonomy_item_post, vaidate=True)
     def post(self, taxonomy: str, item_id: int):
         tax = get_taxonomy('tree', taxonomy)
+        if tax is None:
+            abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
         new_item = request.get_json()
         new_item['parent'] = get_taxonomy_item(tax, item_id)
         item = create_taxonomy_item(tax, new_item)
@@ -204,6 +228,8 @@ class TreeTaxonomyItemResource(Resource):
     @ns.doc(model=taxonomy_tree_item_get_json, body=taxonomy_item_post, vaidate=True)
     def put(self, taxonomy: str, item_id: int):
         tax = get_taxonomy('tree', taxonomy)
+        if tax is None:
+            abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
         item = get_taxonomy_item(tax, item_id)
         edit_taxonomy_item(item, request.get_json())
         return marshal(item, taxonomy_tree_item_get)
@@ -212,4 +238,6 @@ class TreeTaxonomyItemResource(Resource):
     @ns.response(404, 'Taxonomy or Item not found.')
     def delete(self, taxonomy: str, item_id: int):
         tax = get_taxonomy('tree', taxonomy)
+        if tax is None:
+            abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
         delete_taxonomy_item(tax, item_id)

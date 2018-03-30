@@ -418,6 +418,8 @@ part_put = api.inherit('PartPUT', part_post, {
 subpart_links = api.inherit('SubPartLinks', with_curies, {
     'self': HaLUrl(UrlData('api.subpart_sub_part_resource', absolute=True,
                            url_data={'part_id': 'part_id', 'subpart_id':'id'}), rquired=False),
+    'voice': HaLUrl(UrlData('api.subpart_sub_part_voice_list_resource', absolute=True,
+                            url_data={'subpart_id':'id'}), rquired=False),
 })
 
 subpart_post = api.model('SubPartPOST', {
