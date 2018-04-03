@@ -87,8 +87,8 @@ opus_links = api.inherit('OpusLinks', with_curies, {
 })
 
 opus_post = api.model('OpusPOST', {
-    'name': fields.String(max_length=255, default='', required=True, example='duett in g moll'),
-    'composer': fields.Nested(person_get, description='The composer. {"reference": "person"}', required=True),
+    'name': fields.String(max_length=255, default='', required=True, example='duett in g moll', title='Name'),
+    'composer': fields.Nested(person_get, description='The composer. {"reference": "person"}', title='Komponist', required=True),
 })
 
 opus_get_citation = api.inherit('OpusGETCitation', opus_post, {
@@ -400,19 +400,20 @@ part_links = api.inherit('PartLinks', with_curies, {
 })
 
 part_post = api.model('PartPOST', {
-    'movement': fields.Integer(required=True, min=1, default=1, example=1),
-    'measure_start': fields.Nested(measure_model, required=True, description='{"isNested": true}'),
-    'measure_end': fields.Nested(measure_model, required=True, description='{"isNested": true}'),
-    'length': fields.Integer(default=1, min=1, required=True, example=1),
+    'name': fields.String(required=True, max_length=255, title='Name'),
+    'movement': fields.Integer(required=True, min=1, default=1, example=1, title='In Satz'),
+    'measure_start': fields.Nested(measure_model, required=True, description='{"isNested": true}', title='Starttakt'),
+    'measure_end': fields.Nested(measure_model, required=True, description='{"isNested": true}', title='Endtakt'),
+    'length': fields.Integer(default=1, min=1, required=True, example=1, title='Länge'),
 })
 
 part_put = api.inherit('PartPUT', part_post, {
-    'occurence_in_movement': fields.Nested(taxonomy_item_put, required=True, description='{"isNested": true}'),
-    'instrumentation_context': fields.Nested(instrumentation_context_put, required=True, description='{"isNested": true}'),
-    'dynamic_context': fields.Nested(dynamic_context_put, required=True, description='{"isNested": true}'),
-    'tempo_context': fields.Nested(tempo_context_put, required=True, description='{"isNested": true}'),
-    'dramaturgic_context': fields.Nested(dramaturgic_context_put, required=True, description='{"isNested": true}'),
-    'form': fields.Nested(form_put, required=True, description='{"isNested": true}'),
+    'occurence_in_movement': fields.Nested(taxonomy_item_put, required=True, description='{"taxonomy": "AuftretenSatz"}', title='Vorkommen im Werk'),
+    'instrumentation_context': fields.Nested(instrumentation_context_put, required=True, description='{"isNested": true}', title='Kontext der Instrumentierung'),
+    'dynamic_context': fields.Nested(dynamic_context_put, required=True, description='{"isNested": true}', title='Kontext der Dynamik'),
+    'tempo_context': fields.Nested(tempo_context_put, required=True, description='{"isNested": true}', title='Kontext des Tempos'),
+    'dramaturgic_context': fields.Nested(dramaturgic_context_put, required=True, description='{"isNested": true}', title='Kontext der Dramaturgie'),
+    'form': fields.Nested(form_put, required=True, description='{"isNested": true}', title='Form'),
 })
 
 subpart_links = api.inherit('SubPartLinks', with_curies, {
@@ -423,24 +424,24 @@ subpart_links = api.inherit('SubPartLinks', with_curies, {
 })
 
 subpart_post = api.model('SubPartPOST', {
-    'label': fields.String(pattern='^[A-Z]\'{0,4}$', required=True, max_length=5, example='A', default='A'),
+    'label': fields.String(pattern='^[A-Z]\'{0,4}$', required=True, max_length=5, example='A', default='A', title="Label"),
 })
 
 subpart_put = api.inherit('SubPartPUT', subpart_post, {
-    'label': fields.String(required=True, default='A'),
-    'occurence_in_part': fields.Nested(taxonomy_item_put, required=True, description='{"taxonomy": "AuftretenWerkausschnitt"}'),
-    'share_of_part': fields.Nested(taxonomy_item_put, required=True, description='{"taxonomy": "Anteil"}'),
-    'instrumentation': fields.List(fields.Nested(taxonomy_item_put, required=True), description='{"taxonomy": "Instrument", "isArray": true}', default=[]),
-    'composition': fields.Nested(composition_put, required=True, description='Composition{"isNested": true}'),
-    'rhythm': fields.Nested(rhythm_put, required=True, description='Rhythm{"isNested": true}'),
-    'satz': fields.Nested(satz_put, required=True, description='Satz{"isNested": true}'),
-    'harmonics': fields.Nested(harmonics_put, required=True, description='Harmonics{"isNested": true}'),
-    'form': fields.Nested(form_put, required=True, description='Form{"isNested": true}'),
-    'dynamic': fields.Nested(dynamic_put, required=True, description='Dynamic{"isNested": true}'),
-    'tempo': fields.Nested(tempo_put, description='TempoGroup{"isNested": true}'),
-    'rendition': fields.Nested(rendition_put, description='Rendition{"isNested": true}'),
-    'citations': fields.Nested(citations_put, description='Citations{"isNested": true}'),
-    'musicial_figures': fields.List(fields.Nested(taxonomy_item_put), description='{"taxonomy": "MusikalischeWendung", "isArray": true}', default=[]),
+    'label': fields.String(required=True, default='A', title='Label'),
+    'occurence_in_part': fields.Nested(taxonomy_item_put, required=True, description='{"taxonomy": "AuftretenWerkausschnitt"}', title='Vorkommen im Werkausschnitt'),
+    'share_of_part': fields.Nested(taxonomy_item_put, required=True, description='{"taxonomy": "Anteil"}', title='Anteil am Werkausschnitt'),
+    'instrumentation': fields.List(fields.Nested(taxonomy_item_put, required=True), description='{"taxonomy": "Instrument", "isArray": true}', default=[], title='Instrumentierung'),
+    'composition': fields.Nested(composition_put, required=True, description='Composition{"isNested": true}', title='Verarbeitung'),
+    'rhythm': fields.Nested(rhythm_put, required=True, description='Rhythm{"isNested": true}', title='Rhythmik'),
+    'satz': fields.Nested(satz_put, required=True, description='Satz{"isNested": true}', title='Satz'),
+    'harmonics': fields.Nested(harmonics_put, required=True, description='Harmonics{"isNested": true}', title='Harmonik'),
+    'form': fields.Nested(form_put, required=True, description='Form{"isNested": true}', title='Form'),
+    'dynamic': fields.Nested(dynamic_put, required=True, description='Dynamic{"isNested": true}', title='Dynamik'),
+    'tempo': fields.Nested(tempo_put, description='TempoGroup{"isNested": true}', title='Tempo'),
+    'rendition': fields.Nested(rendition_put, description='Rendition{"isNested": true}', title='Vortrag'),
+    'citations': fields.Nested(citations_put, description='Citations{"isNested": true}', title='Beziehungen/Zitate'),
+    'musicial_figures': fields.List(fields.Nested(taxonomy_item_put), description='{"taxonomy": "MusikalischeWendung", "isArray": true}', default=[], title='Musikalische Wendungen'),
 })
 
 voice_links = api.inherit('VoiceLinks', with_curies, {
@@ -534,28 +535,27 @@ part_get = api.inherit('PartGET', part_put, {
 })
 
 opus_put = api.inherit('OpusPUT', opus_post, {
-    'original_name': fields.String(max_length=255, default='', required=True),
-    'opus_name': fields.String(max_length=255, default='', required=True),
-    'score_link': fields.String(default='', required=True, description='A url linking to the sheet music.'),
-    'composition_year': fields.Integer(default=1, required=True),
-    'composition_place': fields.String(max_length=255, default='', required=True, example='TODO'),
-    'instrumentation': fields.List(fields.Nested(taxonomy_item_put), description='{"taxonomy": "Instrument", "isArray": true}', required=True, default=[]),
-    'occasion': fields.String(default='', required=True),
-    'dedication': fields.String(default='', required=True),
-    'notes': fields.String(default='', required=True),
-    'printed': fields.Boolean(required=True, default=False),
-    'first_printed_at': fields.String(max_length=255, default='', required=True, example='TODO'),
-    'first_printed_in': fields.Integer(default=1, required=True),
-    'publisher': fields.String(max_length=255, default='', required=True),
-    'movements': fields.Integer(default=1, required=True),
-    'genre': fields.Nested(taxonomy_item_put, description='{"taxonomy": "GattungNineteenthCentury"}', required=True),
+    'original_name': fields.String(max_length=255, default='', required=True, title='Name (orig)'),
+    'composition_year': fields.Integer(default=-1, required=True, title='Kompositionsjahr'),
+    'composition_place': fields.String(max_length=255, default='', required=True, title='Kompositionsort'),
+    'notes': fields.String(default='', required=True, title='Notizen'),
+    'score_link': fields.String(default='', required=True, description='A url linking to the sheet music.', title='Partitur'),
+    'first_printed_at': fields.String(max_length=255, default='', required=True, title='Ort der Partitur'),
+    'first_printed_in': fields.Integer(default=-1, required=True, title='Jahr der Partitur'),
+    'first_played_at': fields.String(max_length=255, default='', required=True, title='Ort der Uraufführung'),
+    'first_played_in': fields.Integer(default=-1, required=True, title='Jahr der Uraufführung'),
+    'movements': fields.Integer(default=1, required=True, title='Anzahl Sätze'),
+    'genre': fields.Nested(taxonomy_item_put, description='{"taxonomy": "GattungNineteenthCentury"}', required=True, title='Genre'),
+    'grundton': fields.Nested(taxonomy_item_put, description='{"taxonomy": "Grundton"}', required=True, title='Grundton'),
+    'tonalitaet': fields.Nested(taxonomy_item_put, description='{"taxonomy": "Tonalitaet"}', required=True, title='Tonalität'),
 })
 
 opus_get = api.inherit('OpusGET', opus_put, {
     'id': fields.Integer(default=1, readonly=True, example=1),
     '_links': NestedFields(opus_links),
     'composer': fields.Nested(person_get),
-    'instrumentation': fields.List(fields.Nested(taxonomy_item_get), required=True, default=[]),
     'parts': fields.List(fields.Nested(part_get), default=[]),
     'genre': fields.Nested(taxonomy_item_get),
+    'grundton': fields.Nested(taxonomy_item_get),
+    'tonalitaet': fields.Nested(taxonomy_item_get),
 })

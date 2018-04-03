@@ -13,7 +13,8 @@ from ..taxonomies import AuftretenSatz
 
 class Part(db.Model, GetByID, UpdateableModelMixin):
 
-    _normal_attributes = (('measure_start', Measure),
+    _normal_attributes = (('name', str),
+                          ('measure_start', Measure),
                           ('measure_end', Measure),
                           ('length', int),
                           ('movement', int),
@@ -26,6 +27,7 @@ class Part(db.Model, GetByID, UpdateableModelMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     opus_id = db.Column(db.Integer, db.ForeignKey('opus.id'), nullable=False)
+    name = db.Column(db.String(255), nullable=True)
     movement = db.Column(db.Integer, nullable=False)
     measure_start_id = db.Column(db.Integer, db.ForeignKey('measure.id'), nullable=False)
     measure_end_id = db.Column(db.Integer, db.ForeignKey('measure.id'), nullable=False)
@@ -51,8 +53,9 @@ class Part(db.Model, GetByID, UpdateableModelMixin):
                       'instrumentation_context', 'subparts']
 
     def __init__(self, opus_id: int, measure_start: dict, measure_end: dict,
-                 length: int=1, movement: int=1, **kwargs):
+                 length: int=1, movement: int=1, name: str='', **kwargs):
         self.opus = Opus.get_by_id(opus_id)
+        self.name = name
         self.movement = movement
         self.measure_start = Measure(**measure_start)
         self.measure_end = Measure(**measure_end)

@@ -1,49 +1,42 @@
 from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin
 
-from ..taxonomies.gattung import GattungNineteenthCentury
-from .instrumentation import Instrumentation
+from ..taxonomies import Grundton, Tonalitaet, GattungNineteenthCentury
 from .people import Person
 
 
 class Opus(db.Model, GetByID, UpdateableModelMixin):
 
-    _normal_attributes = (('opus_name', str), ('composition_year', int),
-                          ('notes', str), ('score_link', str), ('publisher', str),
-                          ('printed', bool), ('composer', Person), ('name', str),
-                          ('occasion', str), ('original_name', str),
+    _normal_attributes = (('composition_year', int), ('notes', str), ('score_link', str),
+                          ('composer', Person), ('name', str), ('original_name', str),
+                          ('first_printed_in', int), ('first_printed_at', int),
+                          ('first_played_in', int), ('first_played_at', int),
                           ('movements', int), ('genre', GattungNineteenthCentury),
-                          ('first_printed_in', int), ('dedication', str))
+                          ('grundton', Grundton), ('tonalitaet', Tonalitaet))
 
     _reference_only_attributes = ('composer', )
-
-    _list_attributes = ('instrumentation', )
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True, index=True)
     original_name = db.Column(db.String(255), unique=True, index=True, nullable=True)
-    opus_name = db.Column(db.String(255), index=True, nullable=True)
     composer_id = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=True)
-    # TODO add mitarbeiter
     score_link = db.Column(db.Text, nullable=True)
-    composition_year = db.Column(db.Integer, nullable=True)
-    composition_place_id = db.Column(db.Integer, nullable=True)  # TODO Foreign key
-    occasion = db.Column(db.Text, nullable=True)
-    dedication = db.Column(db.Text, nullable=True)
-    notes = db.Column(db.Text, nullable=True)
-    printed = db.Column(db.Boolean)
-    first_printed_at_id = db.Column(db.Integer, nullable=True)  # TODO Foreign key
+    first_printed_at = db.Column(db.String(255), nullable=True)  # TODO Foreign key
     first_printed_in = db.Column(db.Integer, nullable=True)
-    publisher = db.Column(db.String(255), index=True, nullable=True)
-    instrumentation_id = db.Column(db.Integer, db.ForeignKey('instrumentation.id'))
+    composition_year = db.Column(db.Integer, nullable=True)
+    composition_place = db.Column(db.String(255), nullable=True)  # TODO Foreign key
+    first_played_at = db.Column(db.String(255), nullable=True)  # TODO Foreign key
+    first_played_in = db.Column(db.Integer, nullable=True)
+    notes = db.Column(db.Text, nullable=True)
     movements = db.Column(db.Integer)
-    #form = db.Column(db.Integer, db.ForeignKey('.id'))  # TODO Foreign key
     genre_id = db.Column(db.Integer, db.ForeignKey('gattung_nineteenth_century.id'))
+    grundton_id = db.Column(db.Integer, db.ForeignKey('grundton.id'))
+    tonalitaet_id = db.Column(db.Integer, db.ForeignKey('tonalitaet.id'))
 
     composer = db.relationship('Person', lazy='select')
-    _instrumentation = db.relationship('Instrumentation', lazy='subquery', single_parent=True, cascade="all, delete-orphan")  # type: Instrumentation
-    # TODO form
     genre = db.relationship(GattungNineteenthCentury, lazy='joined')
+    grundton = db.relationship('Grundton', lazy='joined')
+    tonalitaet = db.relationship('Tonalitaet', lazy='joined')
     # TODO metadata
 
     _subquery_load = ['composer', 'parts']
@@ -51,12 +44,9 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
     def __init__(self, name: str, composer: any=None, movements:int =1,
                  printed: bool=False, **kwargs) -> None:
         self.name = name
-        self.printed = printed
         self.movements = movements
         for key in kwargs:
-            if key in ('original_name', 'opus_name', 'composition_date',
-                       'occasion', 'dedication', 'notes', 'first_printed_in',
-                       'publisher'):
+            if key in ('original_name', 'composition_date', 'notes', 'first_printed_in',):
                 setattr(self, key, kwargs[key])
 
         if composer:
@@ -72,14 +62,6 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
                 self.composer = Person(**composer)
                 db.session.add(self.composer)
 
-        self._instrumentation = Instrumentation()
-
-        if 'instrumentation' in kwargs:
-            pass  # TODO load instrumentation
-
-        if 'form' in kwargs:
-            pass  # TODO load form
-
         if 'genre' in kwargs:
             genre = GattungNineteenthCentury.query.filter_by(name=kwargs['genre']).first()
             if genre:
@@ -87,11 +69,3 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
 
     def __repr__(self):
         return '<Werk %r>' % self.name
-
-    @property
-    def instrumentation(self):
-        return self._instrumentation.instruments
-
-    @instrumentation.setter
-    def instrumentation(self, data: list):
-        self._instrumentation.instruments = data
