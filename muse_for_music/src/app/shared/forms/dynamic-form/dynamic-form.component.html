@@ -1,8 +1,9 @@
 <div>
     <form *ngIf="form" [formGroup]="form">
 
-        <div *ngFor="let question of questions" class="form-row">
+        <div *ngFor="let question of questions" class="form-row pr2">
             <df-question [question]="question" [form]="form"></df-question>
         </div>
     </form>
+    {{form.value | json}}
 </div>

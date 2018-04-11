@@ -13,6 +13,30 @@ body {
     width: 32rem;
 }
 
+.form-row:focus-within {
+    background-color: #f4f4f4;
+}
+
+.min-w1 {
+    min-width: 1rem;
+}
+
+.min-w2 {
+    min-width: 2rem;
+}
+
+.min-w3 {
+    min-width: 4rem;
+}
+
+.min-w4 {
+    min-width: 8rem;
+}
+
+.min-w5 {
+    min-width: 16rem;
+}
+
 .min-h1 {
     min-height: 1rem;
 }

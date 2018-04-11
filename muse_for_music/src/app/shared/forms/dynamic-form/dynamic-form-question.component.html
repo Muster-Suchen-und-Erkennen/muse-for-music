@@ -3,31 +3,35 @@
     <i [hidden]="isValid" class="w2 tc mr1 f5 red fa fa-exclamation"></i>
 
     <div class="flex-grow flex flex-wrap">
-    <label class="f4 ws-normal flex-grow" style="word-wrap: break-word" [attr.for]="question.key">
+    <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word" [attr.for]="question.key">
         {{question.label}}
     </label>
 
-    <div class="pl1" >
-        <div [ngSwitch]="question.controlType">
+    <div class="pl1" class="min-w5 flex-grow flex items-center">
+        <div [ngSwitch]="question.controlType" class="flex-grow">
 
-            <div *ngSwitchCase="'string'" class="w5 flex bb b--gray">
-                <input class="input-reset w5 bn pa1" [formControlName]="question.key" [id]="question.key" [type]="question.type">
+            <div *ngSwitchCase="'string'" class="flex bb b--gray">
+                <input class="input-reset bn pa1 flex-grow" [formControlName]="question.key" [id]="question.key" [type]="question.type">
             </div>
 
-            <textarea *ngSwitchCase="'text'" class="w5" [formControlName]="question.key" [id]="question.key"></textarea>
-
-            <div *ngSwitchCase="'date'" class="w5 flex bb b--gray">
-                <input class="input-reset w5 bn pa1" [formControlName]="question.key" [id]="question.key" [type]="question.type">
+            <div *ngSwitchCase="'text'" class="flex">
+                <textarea class="min-w5 flex-grow" [formControlName]="question.key" [id]="question.key"></textarea>
             </div>
 
-            <m4m-number-input *ngSwitchCase="'number'" [formControlName]="question.key" [question]="question"></m4m-number-input>
-
-            <div *ngSwitchCase="'boolean'" class="w5 flex">
-                <input [formControlName]="question.key" [id]="question.key" [type]="question.type">
+            <div *ngSwitchCase="'date'" class="min-w5 flex-grow flex bb b--gray">
+                <input class="input-reset bn pa1 flex-grow" [formControlName]="question.key" [id]="question.key" [type]="question.type">
             </div>
 
-            <div *ngSwitchCase="'dropdown'" class="w5 flex bb b--gray gray hover-black">
-                <select [id]="question.key" class="input-reset w5 bn pa1 bg-white black" [formControlName]="question.key" #inputSelect>
+            <div *ngSwitchCase="'number'" class="min-w5 flex-grow flex bb b--gray">
+                <m4m-number-input class="flex flex-grow" [formControlName]="question.key" [question]="question"></m4m-number-input>
+            </div>
+
+            <div *ngSwitchCase="'boolean'" class="min-w5 flex-grow flex items-center">
+                <m4m-boolean-input [formControlName]="question.key" [question]="question"></m4m-boolean-input>
+            </div>
+
+            <div *ngSwitchCase="'dropdown'" class="min-w5 flex-grow flex bb b--gray gray hover-black">
+                <select [id]="question.key" class="input-reset bn pa1 bg-white black flex-grow" [formControlName]="question.key" #inputSelect>
                     <option *ngFor="let opt of question.options" [value]="opt">{{opt}}</option>
                 </select>
                 <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem; pointer-events: none" (click)="inputSelect.click($event)"><i class="f4 fa fa-angle-down"></i></div>
@@ -46,9 +50,9 @@
 
 <m4m-array-input [question]="question" [array]="form.controls[question.key]" *ngIf="question.controlType === 'array'"></m4m-array-input>
 <div class="flex" *ngIf="question.controlType === 'object'" [formGroup]="form">
-    <div class="bl bw2 mr2 ml2 b--gray">
+    <div class="bl bw2 ml2 b--gray flex-grow">
         <div class="flex-grow" formGroupName="{{question.key}}">
-            <div *ngFor="let qstn of question?.nestedQuestions" class="form-row">
+            <div *ngFor="let qstn of question?.nestedQuestions" class="flex-grow">
                 <df-question [question]="qstn" [form]="form.controls[question.key]" [nested]="false"></df-question>
             </div>
         </div>

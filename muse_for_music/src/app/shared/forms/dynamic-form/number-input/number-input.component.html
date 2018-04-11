@@ -1,3 +1,1 @@
-<div class="w5 flex bb b--gray">
-    <input class="input-reset w5 bn pa1" [ngModel]="_value" (ngModelChange)="updateValue($event)" [id]="question.key" [type]="question.type" [attr.max]="question.max" [attr.min]="question.min">
-</div>
+<input class="flex-grow input-reset bn pa1 min-w5" [ngModel]="_value" (ngModelChange)="updateValue($event)" [id]="question.key" [type]="question.type" [attr.max]="question.max" [attr.min]="question.min">

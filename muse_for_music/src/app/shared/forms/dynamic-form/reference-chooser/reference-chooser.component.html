@@ -1,7 +1,7 @@
-<m4m-dropdown #dropdown>
-    <div class="w5 bb b--gray flex justify-between gray hover-black" content>
-        <div class="w5">
-            <input class="input-reset w5 bn pa1 black" type="search" [(ngModel)]="searchTerm" placeholder="test"
+<m4m-dropdown class="min-w5 flex flex-grow" #dropdown>
+    <div class="min-w5 flex-grow bb b--gray flex justify-between gray hover-black" content>
+        <div class="flex-grow flex">
+            <input class="flex-grow input-reset bn pa1 black" type="search" [(ngModel)]="searchTerm" placeholder="test"
                     (focus)="dropdown.openDropdown()" (keyup)="dropdown.openDropdown()"
                     (keyup.enter)="select.select()" (keyup.arrowdown)="select.highlightNext()"
                     (keyup.arrowup)="select.highlightPrevious()">
