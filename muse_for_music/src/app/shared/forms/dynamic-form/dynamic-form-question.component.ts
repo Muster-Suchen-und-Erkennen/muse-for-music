@@ -13,6 +13,8 @@ export class DynamicFormQuestionComponent {
     @Input() form: FormGroup;
     @Input() nested: boolean = false;
 
+    open: boolean = false;
+
     get isValid() { return this.form.controls[this.question.key].valid; }
 
     get error() {

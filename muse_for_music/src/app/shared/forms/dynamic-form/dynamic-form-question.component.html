@@ -1,9 +1,14 @@
-<div class="pv2 flex items-center" [formGroup]="form" *ngIf="!nested && !question.readOnly" >
-    <i [hidden]="!isValid" class="w2 tc mr1 f5 fa fa-check"></i>
-    <span class="tooltip tooltip-right" [attr.data-tooltip]="error" [hidden]="isValid" ><i class="w2 tc mr1 f5 red fa fa-exclamation"></i></span>
+<div class="pv2 flex items-center" [ngClass]="{'pointer': question.controlType === 'object' && question?.nestedQuestions?.length > 2}" [formGroup]="form" *ngIf="!nested && !question.readOnly" (click)="open = !open">
+    <div class="mr2 flex items-center justify-center" *ngIf="question.controlType === 'object' && question?.nestedQuestions?.length > 2">
+        <i class="f5 fa fa-fw fa-chevron-right" [hidden]="open"></i>
+        <i class="f5 fa fa-fw fa-chevron-down" [hidden]="!open"></i>
+    </div>
+
+    <i [hidden]="!isValid" class="w2 tc mr1 f5 fa fa-check" [ngStyle]="{'order': (question.controlType === 'object' && question?.nestedQuestions?.length > 2) ? '1': '0'}"></i>
+    <span class="tooltip tooltip-right" [attr.data-tooltip]="error" [hidden]="isValid"  [ngStyle]="{'order': (question.controlType === 'object' && question?.nestedQuestions?.length > 2) ? '1': '0'}"><i class="w2 tc mr1 f5 red fa fa-exclamation"></i></span>
 
     <div class="flex-grow flex flex-wrap">
-    <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word" [attr.for]="question.key">
+    <label class="f4 min-w4 mr2 ws-normal flex-grow" [ngClass]="{'pointer': question.controlType === 'object' && question?.nestedQuestions?.length > 2}"  style="word-wrap: break-word" [attr.for]="question.key">
         {{question.label}}
     </label>
 
@@ -49,8 +54,9 @@
 </div>
 
 <m4m-array-input [question]="question" [array]="form.controls[question.key]" *ngIf="question.controlType === 'array'"></m4m-array-input>
+
 <div class="flex" *ngIf="question.controlType === 'object'" [formGroup]="form">
-    <div class="bl bw2 ml2 b--gray flex-grow">
+    <div class="bl bw2 ml2 b--gray flex-grow" [hidden]="!open">
         <div class="flex-grow" formGroupName="{{question.key}}">
             <div *ngFor="let qstn of question?.nestedQuestions" class="flex-grow">
                 <df-question [question]="qstn" [form]="form.controls[question.key]" [nested]="false"></df-question>
