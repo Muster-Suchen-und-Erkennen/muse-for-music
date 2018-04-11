@@ -14,4 +14,21 @@ export class DynamicFormQuestionComponent {
     @Input() nested: boolean = false;
 
     get isValid() { return this.form.controls[this.question.key].valid; }
+
+    get error() {
+        const errors = this.form.controls[this.question.key].errors;
+        if (errors) {
+            if (errors.maxlength) {
+                return 'Nur '  + errors.maxlength.requiredLength + ' Zeichen erlaubt.';
+            }
+            if (errors.pattern) {
+                return 'Der Eingegebene Text hat nicht das erwartete Format.'
+            }
+            if (errors.required) {
+                return 'Dieses Feld muss noch ausgefüllt werden.';
+            }
+            console.log(errors);
+        }
+        return 'Überprüfen sie bitte die Eingabe.';
+    }
 }

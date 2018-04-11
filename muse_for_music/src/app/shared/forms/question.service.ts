@@ -36,7 +36,7 @@ export class QuestionService implements OnInit {
     // Todo: get from a remote source of question metadata
     // Todo: make asynchronous
     getQuestions(model: string): Observable<QuestionBase<any>[]> {
-        if (this.swagger == undefined) {
+        if (this.swagger == null) {
             this.swagger = this.api.getSpec();
         }
 
@@ -44,11 +44,11 @@ export class QuestionService implements OnInit {
         model = model.replace(re, '');
 
         return this.swagger.flatMap(spec => {
-            if (spec == undefined) {
+            if (spec == null) {
                 return Observable.of([]);
             }
 
-            if (this.observables[model] == undefined) {
+            if (this.observables[model] == null) {
                 this.observables[model] = new AsyncSubject<QuestionBase<any>[]>();
             }
 
@@ -71,20 +71,20 @@ export class QuestionService implements OnInit {
 
         let model = spec.definitions[modelID];
 
-        if (model != undefined) {
-            if (model.allOf != undefined) {
+        if (model != null) {
+            if (model.allOf != null) {
                 let tempModel;
                 for (var parent of model.allOf) {
-                    if (parent.$ref != undefined) {
+                    if (parent.$ref != null) {
                         this.parseModel(spec, parent.$ref, questionOptions);
                     }
-                    if (parent.properties != undefined) {
+                    if (parent.properties != null) {
                         tempModel = parent;
                     }
                 }
                 model = tempModel;
             }
-            if (model.properties != undefined) {
+            if (model.properties != null) {
                 for (var propID in model.properties) {
                     this.updateOptions(questionOptions, propID, model);
                 }
@@ -109,7 +109,7 @@ export class QuestionService implements OnInit {
             };
         }
         let prop = model.properties[propID];
-        if (model.required != undefined) {
+        if (model.required != null) {
             for (let name of model.required) {
                 if (name === propID) {
                     options.required = true;
@@ -123,53 +123,57 @@ export class QuestionService implements OnInit {
             }
         }
         options.controlType = prop.type;
-        if (prop.format != undefined) {
+        if (prop.format != null) {
             options.controlType = prop.format;
         }
-        if (prop.title != undefined) {
+        if (prop.title != null) {
             options.label = prop.title;
         }
-        if (prop.description != undefined) {
+        if (prop.description != null) {
             let re = /\{.*\}/;
             let matches = prop.description.match(re);
             if (matches != null && matches.length >= 1) {
                 let temp = JSON.parse(matches[0]);
-                if (temp.reference != undefined) {
+                if (temp.reference != null) {
                     options.controlType = 'reference';
                     options.valueType = temp.reference;
                 }
-                if (temp.taxonomy != undefined) {
+                if (temp.taxonomy != null) {
                     options.controlType = 'taxonomy';
                     options.valueType = temp.taxonomy;
                 }
-                if (temp.isArray != undefined) {
+                if (temp.isArray != null) {
                     options.isArray = temp.isArray;
                 }
-                if (temp.isNested != undefined) {
+                if (temp.isNested != null) {
                     options.controlType = 'object';
                     options.valueType = prop.$ref;
                 }
             }
         }
         options.readOnly = !!prop.readOnly;
-        if (prop.example != undefined) {
+        if (prop.example != null) {
             options.value = prop.example;
         }
-        if (prop.enum != undefined) {
+        if (prop.enum != null) {
             options.options = prop.enum;
         }
 
-        if (prop.minLength != undefined) {
+        if (prop.minLength != null) {
             options.min = prop.minLength;
         }
-        if (prop.maxLength != undefined) {
+        if (prop.maxLength != null) {
             options.max = prop.maxLength;
         }
 
-        if (prop.minimum != undefined) {
+        if (prop.pattern != null) {
+            options.pattern = prop.pattern;
+        }
+
+        if (prop.minimum != null) {
             options.min = prop.minimum;
         }
-        if (prop.maximum != undefined) {
+        if (prop.maximum != null) {
             options.max = prop.maximum;
         }
 
@@ -177,7 +181,7 @@ export class QuestionService implements OnInit {
     }
 
     private getQuestion(options: QuestionOptions): QuestionBase<any> {
-        if (options.options != undefined) {
+        if (options.options != null) {
             return new DropdownQuestion(options);
         }
         if (options.controlType === 'reference') {
@@ -201,7 +205,7 @@ export class QuestionService implements OnInit {
             return new IntegerQuestion(options);
         }
         if (options.controlType === 'string') {
-            if (options.pattern != undefined || options.max != undefined) {
+            if (options.pattern != null || options.max != null) {
                 return new StringQuestion(options);
             } else {
                 return new TextQuestion(options);

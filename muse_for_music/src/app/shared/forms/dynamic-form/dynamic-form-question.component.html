@@ -1,6 +1,6 @@
 <div class="pv2 flex items-center" [formGroup]="form" *ngIf="!nested && !question.readOnly" >
     <i [hidden]="!isValid" class="w2 tc mr1 f5 fa fa-check"></i>
-    <i [hidden]="isValid" class="w2 tc mr1 f5 red fa fa-exclamation"></i>
+    <span class="tooltip tooltip-right" [attr.data-tooltip]="error" [hidden]="isValid" ><i class="w2 tc mr1 f5 red fa fa-exclamation"></i></span>
 
     <div class="flex-grow flex flex-wrap">
     <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word" [attr.for]="question.key">

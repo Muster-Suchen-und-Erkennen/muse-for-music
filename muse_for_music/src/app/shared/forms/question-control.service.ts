@@ -33,8 +33,11 @@ export class QuestionControlService {
                 if (question.controlType === 'boolean') {
                     // nothing
                 } else if (question.controlType === 'string' || question.controlType === 'text') {
-                    if (question.min != undefined && question.min === 1) {
+                    if (question.min != null && question.min === 1) {
                         validators.push(Validators.required);
+                    }
+                    if (question.pattern != null) {
+                        validators.push(Validators.pattern(question.pattern));
                     }
                 } else {
                     validators.push(Validators.required);
