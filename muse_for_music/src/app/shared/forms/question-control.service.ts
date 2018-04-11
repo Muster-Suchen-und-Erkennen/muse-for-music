@@ -1,9 +1,18 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormArray, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 
 import { QuestionBase } from './question-base';
 import { QuestionService } from './question.service';
+
+function customNullValidator(customNull: any): ValidatorFn {
+    return (control: AbstractControl): {[key: string]: any} => {
+        if (control.value === customNull || (customNull.id != null && control.value.id === customNull.id)) {
+            return {'null': {value: null}}
+        }
+        return null;
+    };
+}
 
 @Injectable()
 export class QuestionControlService {
@@ -41,6 +50,7 @@ export class QuestionControlService {
                     }
                 } else {
                     validators.push(Validators.required);
+                    validators.push(customNullValidator(question.nullValue));
                 }
             }
             if (question.min != undefined) {

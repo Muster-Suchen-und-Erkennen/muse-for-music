@@ -29,6 +29,9 @@ export class DynamicFormQuestionComponent {
             if (errors.required) {
                 return 'Dieses Feld muss noch ausgefüllt werden.';
             }
+            if (errors.null) {
+                return 'Dieses Feld muss noch ausgefüllt werden.';
+            }
             console.log(errors);
         }
         return 'Überprüfen sie bitte die Eingabe.';

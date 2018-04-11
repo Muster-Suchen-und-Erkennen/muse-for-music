@@ -35,7 +35,7 @@ export class TaxonomySelectComponent implements ControlValueAccessor {
     get value(): ApiObject|ApiObject[] {
         if (!this.question.isArray) {
             if (this._value == undefined || this._value.length === 0) {
-                return null;
+                return this.question.nullValue;
             }
             return this._value[0];
         }

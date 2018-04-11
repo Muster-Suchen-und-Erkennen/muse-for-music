@@ -38,7 +38,7 @@ export class OpusPartsComponent implements OnInit {
                 this.parts = data;
                 const tableData = [];
                 this.parts.forEach(part => {
-                    const row = new TableRow(part.id, [part.measure_start.measure, part.measure_end.measure, part.length],
+                    const row = new TableRow(part.id, [part.measure_start.measure, part.measure_end.measure, part.length, [part.name]],
                                              ['parts', part.id]);
                     tableData.push(row);
                 });
