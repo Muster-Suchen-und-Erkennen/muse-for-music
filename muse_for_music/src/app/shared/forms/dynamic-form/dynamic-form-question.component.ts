@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { QuestionBase } from '../question-base';
@@ -13,7 +13,26 @@ export class DynamicFormQuestionComponent {
     @Input() form: FormGroup;
     @Input() nested: boolean = false;
 
+    @Output() opened = new EventEmitter();
+
     open: boolean = false;
+
+    toggleOpen() {
+        if (this.question != null && this.question.controlType === 'object' &&
+            this.question.nestedQuestions != null && this.question.nestedQuestions.length > 2) {
+            if (! this.open) {
+                this.opened.emit(this.question.key);
+            }
+            this.open = !this.open;
+        }
+    }
+
+    close(sourceKey: string) {
+        if (this.question != null && this.question.key == sourceKey) {
+            return;
+        }
+        this.open = false;
+    }
 
     get isValid() { return this.form.controls[this.question.key].valid; }
 

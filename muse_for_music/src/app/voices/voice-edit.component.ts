@@ -53,8 +53,8 @@ export class VoiceEditComponent implements OnChanges {
         }
     }
 
-    delete = (() => {
-        //this.api.deleteSubPart(this.subpart).take(1).subscribe(() => this.router.navigate(['parts', this.subpart.part_id]));
-    }).bind(this);
+    delete = () => {
+        this.api.deleteVoice(this.subpart, this.voice).take(1).subscribe(() => this.router.navigate(['subparts', this.subpart.id]));
+    };
 
 }

@@ -30,12 +30,17 @@ export class PeopleOverviewComponent implements OnInit {
             }
             this.persons = data;
             const tableData = [];
+            let selected;
             this.persons.forEach(person => {
+                if (this.selected !== selected) {
+                    selected = person.id;
+                }
                 const row = new TableRow(person.id, [person.name, person.gender,
                     this.datePipe.transform(person.birth_date, 'mediumDate') + ' – ' +
                     this.datePipe.transform(person.death_date, 'mediumDate')]);
                 tableData.push(row);
             });
+            this.selected = selected;
             this.tableData = tableData;
         });
     }
@@ -44,7 +49,7 @@ export class PeopleOverviewComponent implements OnInit {
         this.api.postPerson({
             "name": "NEW",
             "gender": "other"
-          }).subscribe(person => {
+          }).take(1).subscribe(person => {
             this.selected = person.id;
         });
     }

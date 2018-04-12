@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnInit, OnChanges, SimpleChanges, EventEmitter } from '@angular/core';
+import { Component, Input, Output, OnInit, OnChanges, SimpleChanges, EventEmitter, ViewChildren } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { QuestionBase } from '../question-base';
@@ -24,7 +24,13 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     @Output() valid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() data: EventEmitter<any> = new EventEmitter<any>();
 
+    @ViewChildren('questions') questionDivs;
+
     constructor(private qcs: QuestionControlService, private qs: QuestionService) { }
+
+    closeUnrelated(sourceKey) {
+        this.questionDivs.forEach(question => question.close(sourceKey));
+    }
 
     update() {
         this.qs.getQuestions(this.objectModel).subscribe(questions => {
@@ -46,7 +52,6 @@ export class DynamicFormComponent implements OnInit, OnChanges {
             const patched = {};
             const patch = (values, questions, patched) => {
                 questions.forEach(question => {
-                    console.log(question);
                     if (question.controlType === 'object') {
                         const next = {};
                         patched[question.key] = next;

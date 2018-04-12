@@ -64,4 +64,8 @@ export class PersonEditComponent implements OnInit, OnChanges, OnDestroy {
         }
     }
 
+    delete = (() => {
+        this.api.deletePerson(this.person);
+    }).bind(this);
+
 }

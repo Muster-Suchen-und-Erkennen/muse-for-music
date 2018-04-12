@@ -47,8 +47,8 @@ export class SubPartEditComponent implements OnChanges {
         }
     }
 
-    delete = (() => {
-        //this.api.deleteSubPart(this.subpart).take(1).subscribe(() => this.router.navigate(['parts', this.subpart.part_id]));
-    }).bind(this);
+    delete = () => {
+        this.api.deleteSubPart(this.subpart).take(1).subscribe(() => this.router.navigate(['parts', this.subpart.part_id]));
+    };
 
 }

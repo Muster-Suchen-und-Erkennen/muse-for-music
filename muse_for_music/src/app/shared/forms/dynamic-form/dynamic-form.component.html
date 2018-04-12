@@ -2,7 +2,7 @@
     <form *ngIf="form" [formGroup]="form">
 
         <div *ngFor="let question of questions" class="form-row pr2">
-            <df-question [question]="question" [form]="form"></df-question>
+            <df-question [question]="question" [form]="form" (opened)="closeUnrelated($event)" #questions></df-question>
         </div>
     </form>
 </div>

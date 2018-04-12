@@ -360,14 +360,14 @@ tempo_put = api.model('TempoPUT', {
     'id': fields.Integer(default=1, readonly=True, example=1),
     'tempo_markings': fields.List(fields.Nested(taxonomy_item_put), description='{"taxonomy": "Tempo", "isArray": true}', default=[]),
     'tempo_changes': fields.List(fields.Nested(taxonomy_item_put), description='{"taxonomy": "TempoEntwicklung", "isArray": true}', default=[]),
-    'tempo_context': fields.Nested(tempo_context_put, description='TempoContext'),
+    'tempo_context': fields.Nested(tempo_context_put, description='TempoContext{"isNested": true}'),
 })
 
 tempo_get = api.model('TempoGET', {
     'id': fields.Integer(default=1, readonly=True, example=1),
     'tempo_markings': fields.List(fields.Nested(taxonomy_item_get), description='{"taxonomy": "Tempo", "isArray": true}', default=[]),
     'tempo_changes': fields.List(fields.Nested(taxonomy_item_get), description='{"taxonomy": "TempoEntwicklung", "isArray": true}', default=[]),
-    'tempo_context': fields.Nested(tempo_context_get, description='TempoContext'),
+    'tempo_context': fields.Nested(tempo_context_get, description='TempoContext{"isNested": true}'),
 })
 
 rendition_put = api.model('RenditionGET', {

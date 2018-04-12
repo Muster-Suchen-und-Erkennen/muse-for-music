@@ -101,7 +101,7 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
     constructor(private api: ApiService) {}
 
     ngOnChanges(changes: SimpleChanges): void {
-        this.updateMatching();
+        this.updateMatching(this.search);
         // https://stackoverflow.com/questions/42819549/angular2-scroll-to-element-that-has-ngif
     }
 
@@ -120,7 +120,7 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
                 this.prepareListTaxonomy(taxonomy.items);
             }
             this.closed.clear();
-            this.updateMatching();
+            this.updateMatching(this.search);
         });
     }
 
@@ -162,14 +162,14 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
         }
     }
 
-    updateMatching() {
-        if (this.selectables == undefined) {
+    updateMatching(searchString: string) {
+        if (this.selectables == null) {
             return;
         }
-        if (this.search == undefined) {
-            this.search = '';
+        if (searchString == null) {
+            searchString = '';
         }
-        let searchString = this.search.toUpperCase();
+        searchString = searchString.toUpperCase();
         let matches = new Set<number>();
 
         for (let item of this.selectables) {

@@ -1,4 +1,4 @@
-<div class="pv2 flex items-center" [ngClass]="{'pointer': question.controlType === 'object' && question?.nestedQuestions?.length > 2}" [formGroup]="form" *ngIf="!nested && !question.readOnly" (click)="open = !open">
+<div class="pv2 flex items-center" [ngClass]="{'pointer': question.controlType === 'object' && question?.nestedQuestions?.length > 2}" [formGroup]="form" *ngIf="!nested && !question.readOnly" (click)="toggleOpen()">
     <div class="mr2 flex items-center justify-center" *ngIf="question.controlType === 'object' && question?.nestedQuestions?.length > 2">
         <i class="f5 fa fa-fw fa-chevron-right" [hidden]="open"></i>
         <i class="f5 fa fa-fw fa-chevron-down" [hidden]="!open"></i>
@@ -56,7 +56,7 @@
 <m4m-array-input [question]="question" [array]="form.controls[question.key]" *ngIf="question.controlType === 'array'"></m4m-array-input>
 
 <div class="flex" *ngIf="question.controlType === 'object'" [formGroup]="form">
-    <div class="bl bw2 ml2 b--gray flex-grow" [hidden]="!open && (question.controlType === 'object' && question?.nestedQuestions?.length > 2)">
+    <div class="bl bw2 ml2 b--gray flex-grow" *ngIf="open || !(question.controlType === 'object' && question?.nestedQuestions?.length > 2)">
         <div class="flex-grow" formGroupName="{{question.key}}">
             <div *ngFor="let qstn of question?.nestedQuestions" class="flex-grow">
                 <df-question [question]="qstn" [form]="form.controls[question.key]" [nested]="false"></df-question>

@@ -31,6 +31,7 @@ export class QuestionBase<T>{
     isArray: boolean;
     order: number;
     controlType: string;
+    nestedQuestions?: QuestionBase<any>[];
 
     constructor(options: QuestionOptions = {}) {
         this.value = (options.value as T);
