@@ -1,8 +1,9 @@
 <m4m-dropdown class="min-w5 flex flex-grow" #dropdown>
     <div class="flex-grow flex flex-wrap min-w5 bb b--gray" content>
         <p class="bg-near-white pl3 pr2 pv1 mh1 mt0 mb1 br-pill" *ngFor="let item of selectedList()">{{item.name}}<i class="ml2 fa fa-close mr2 hover-red pointer" (click)="select.deselect(item.id)"></i></p>
-        <input class="flex-grow input-reset min-w5 bn pa1 self-stretch" type="search" [(ngModel)]="searchTerm"
-                (focus)="dropdown.openDropdown()" (keyup)="dropdown.openDropdown()"
+        <input class="flex-grow input-reset min-w5 bn pa1 self-stretch" type="search" placeholder="suche"
+                [(ngModel)]="searchTerm"
+                (focus)="dropdown.openDropdown(); select.updateMatching('')" (keyup)="dropdown.openDropdown()"
                 (keyup.enter)="select.select()" (keyup.arrowdown)="select.highlightNext()"
                 (keyup.arrowup)="select.highlightPrevious()">
     </div>

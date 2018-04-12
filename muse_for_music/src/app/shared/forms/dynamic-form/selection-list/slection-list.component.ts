@@ -77,7 +77,9 @@ export class SelectionListComponent implements OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         this.updateSelectables();
-        this.updateMatching();
+        if (changes.search != null) {
+            this.updateMatching(this.search);
+        }
     }
 
     updateSelectables() {
@@ -88,16 +90,17 @@ export class SelectionListComponent implements OnChanges {
             }
         }
         this._selectables = list.sort((a, b) => ((a.label < b.label) ? -1 : ((a.label > b.label) ? 1 : 0)));
+        this.updateMatching(this.search);
     }
 
-    updateMatching() {
+    updateMatching(searchString: string) {
         if (this.selectables == undefined || this.display == undefined) {
             return;
         }
-        if (this.search == undefined) {
-            this.search = '';
+        if (searchString == null) {
+            searchString = '';
         }
-        let searchString = this.search.toUpperCase();
+        searchString = searchString.toUpperCase();
         let matches = new Set<string|number>();
         for (let selectable of (this.selectables as Selectable[])) {
             if (selectable.label.toString().toUpperCase().includes(searchString)){
@@ -123,6 +126,13 @@ export class SelectionListComponent implements OnChanges {
             if (selectable.id === key) {
                 this.selectedChange.emit(selectable.data);
             }
+        }
+        this.updateMatching('')
+    }
+
+    highlightSelectable(selectable) {
+        if (this.highlighted != selectable.id) {
+            this.highlighted = selectable.id;
         }
     }
 

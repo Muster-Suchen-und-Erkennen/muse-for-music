@@ -7,7 +7,9 @@ import { QuestionService } from './question.service';
 
 function customNullValidator(customNull: any): ValidatorFn {
     return (control: AbstractControl): {[key: string]: any} => {
-        if (control.value === customNull || (customNull.id != null && control.value.id === customNull.id)) {
+        if (control.value === customNull ||
+            (customNull != null && customNull.id != null &&
+             control.value != null && control.value.id === customNull.id)) {
             return {'null': {value: null}}
         }
         return null;

@@ -6,6 +6,7 @@ import { QuestionService } from '../question.service';
 import { QuestionControlService } from '../question-control.service';
 
 import { ApiObject } from '../../rest/api-base.service';
+import { patch } from 'webdriver-js-extender';
 
 @Component({
     selector: 'dynamic-form',
@@ -42,7 +43,25 @@ export class DynamicFormComponent implements OnInit, OnChanges {
 
     patchFormValues() {
         if (this.form != null) {
-            this.form.patchValue(this.startValues);
+            const patched = {};
+            const patch = (values, questions, patched) => {
+                questions.forEach(question => {
+                    console.log(question);
+                    if (question.controlType === 'object') {
+                        const next = {};
+                        patched[question.key] = next;
+                        patch(values[question.key], question.nestedQuestions, next);
+                        return;
+                    }
+                    if (values != null && values[question.key] != null) {
+                        patched[question.key] = values[question.key];
+                    } else {
+                        patched[question.key] = question.nullValue;
+                    }
+                });
+            }
+            patch(this.startValues, this.questions, patched);
+            this.form.patchValue(patched);
         }
     }
 

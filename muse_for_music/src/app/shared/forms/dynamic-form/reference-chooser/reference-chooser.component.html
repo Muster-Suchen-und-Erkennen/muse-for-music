@@ -1,12 +1,12 @@
 <m4m-dropdown class="min-w5 flex flex-grow" #dropdown>
     <div class="min-w5 flex-grow bb b--gray flex justify-between gray hover-black" content>
         <div class="flex-grow flex">
-            <input class="flex-grow input-reset bn pa1 black" type="search" [(ngModel)]="searchTerm" placeholder="test"
-                    (focus)="dropdown.openDropdown()" (keyup)="dropdown.openDropdown()"
+            <input class="flex-grow input-reset bn pa1 black" type="search" [(ngModel)]="searchTerm" placeholder="suche {{question.valueType}}"
+                    (focus)="dropdown.openDropdown(); select.updateMatching('')" (keyup)="dropdown.openDropdown()"
                     (keyup.enter)="select.select()" (keyup.arrowdown)="select.highlightNext()"
                     (keyup.arrowup)="select.highlightPrevious()">
         </div>
-        <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem" (click)="dropdown.toggleDropdown()"><i class="f4 fa fa-angle-down"></i></div>
+        <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem" (click)="dropdown.toggleDropdown(); select.updateMatching('')"><i class="f4 fa fa-angle-down"></i></div>
     </div>
     <m4m-selection-list [selectables]="choices" [selected]="value"
             (selectedChange)="selectedChange($event)"
