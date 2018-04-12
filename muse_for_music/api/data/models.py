@@ -315,13 +315,13 @@ composition_get = api.model('CompositionGET', {
 
 opus_citation_put = api.model('OpusCitationPUT', {
     'id': fields.Integer(default=1, readonly=True, example=1),
-    'opus': fields.Nested(opus_get_citation, description='Opus'),
+    'opus': fields.Nested(opus_get_citation, description='Opus{"reference": "opus"}'),
     'citation_type': fields.Nested(taxonomy_item_put, description='{"taxonomy": "Zitat"}'),
 })
 
 opus_citation_get = api.model('OpusCitationGET', {
     'id': fields.Integer(default=1, readonly=True, example=1),
-    'opus': fields.Nested(opus_get_citation, description='Opus'),
+    'opus': fields.Nested(opus_get_citation, description='Opus{"reference": "opus"}'),
     'citation_type': fields.Nested(taxonomy_item_get, description='{"taxonomy": "Zitat"}'),
 })
 
@@ -339,7 +339,7 @@ citations_put = api.model('CitationsGET', {
     'instrument_citations': fields.List(fields.Nested(taxonomy_item_put), description='{"taxonomy": "Instrument", "isArray": true}', default=[]),
     'program_citations': fields.List(fields.Nested(taxonomy_item_put), description='{"taxonomy": "Programmgegenstand", "isArray": true}', default=[]),
     'tonmalerei_citations': fields.List(fields.Nested(taxonomy_item_put), description='{"taxonomy": "Tonmalerei", "isArray": true}', default=[]),
-    'composer_citations': fields.List(fields.Nested(taxonomy_item_put), description='{"taxonomy": "Person", "isArray": true}', default=[]),
+    'composer_citations': fields.List(fields.Nested(person_get), description='{"reference": "person", "isArray": true}', default=[]),
     'epoch_citations': fields.List(fields.Nested(taxonomy_item_put), description='{"taxonomy": "Epoche", "isArray": true}', default=[]),
 })
 
@@ -352,7 +352,7 @@ citations_get = api.model('CitationsGET', {
     'instrument_citations': fields.List(fields.Nested(taxonomy_item_get), description='{"taxonomy": "Instrument", "isArray": true}', default=[]),
     'program_citations': fields.List(fields.Nested(taxonomy_item_get), description='{"taxonomy": "Programmgegenstand", "isArray": true}', default=[]),
     'tonmalerei_citations': fields.List(fields.Nested(taxonomy_item_get), description='{"taxonomy": "Tonmalerei", "isArray": true}', default=[]),
-    'composer_citations': fields.List(fields.Nested(taxonomy_item_get), description='{"taxonomy": "Person", "isArray": true}', default=[]),
+    'composer_citations': fields.List(fields.Nested(taxonomy_item_get), description='{"reference": "person", "isArray": true}', default=[]),
     'epoch_citations': fields.List(fields.Nested(taxonomy_item_get), description='{"taxonomy": "Epoche", "isArray": true}', default=[]),
 })
 

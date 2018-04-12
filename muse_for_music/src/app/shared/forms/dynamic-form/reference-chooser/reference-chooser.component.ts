@@ -1,5 +1,7 @@
-import { Component, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, forwardRef, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+
+import { Subscription } from 'rxjs/Rx';
 
 import { ApiObject } from '../../../rest/api-base.service';
 import { ApiService } from '../../../rest/api.service';
@@ -19,7 +21,7 @@ import { myDropdownComponent } from '../../../dropdown/dropdown.component';
     multi: true
   }]
 })
-export class ReferenceChooserComponent implements ControlValueAccessor, OnInit {
+export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
     @ViewChild(myDropdownComponent) dropdown: myDropdownComponent
 
@@ -29,6 +31,8 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit {
     searchTerm: string;
 
     choices: ApiObject[];
+
+    private subscription: Subscription;
 
     onChange: any = () => {};
 
@@ -54,13 +58,27 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit {
 
     ngOnInit(): void {
         if (this.question.valueType === 'person') {
-            this.api.getPeople().subscribe(data => {
+            this.subscription = this.api.getPeople().subscribe(data => {
                 if (data == undefined) {
                     return;
                 }
                 this.choices = data;
             });
         };
+        if (this.question.valueType === 'opus') {
+            this.subscription = this.api.getOpuses().subscribe(data => {
+                if (data == undefined) {
+                    return;
+                }
+                this.choices = data;
+            });
+        };
+    }
+
+    ngOnDestroy(): void {
+        if (this.subscription != null) {
+            this.subscription.unsubscribe();
+        }
     }
 
     selectedChange(selected: ApiObject) {
