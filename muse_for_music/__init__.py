@@ -27,6 +27,8 @@ elif app.config['MODE'] == 'TEST':
 app.config.from_pyfile('muse_for_music.conf', silent=True)
 
 # TODO use nevironment variables
+for env_var in ('SQLALCHEMY_DATABASE_URI', 'JWT_SECRET_KEY', 'LOG_PATH'):
+    app.config[env_var] = environ.get(env_var, app.config[env_var])
 
 
 formatter = Formatter(fmt=app.config['LOG_FORMAT'])

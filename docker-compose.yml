@@ -1,5 +1,28 @@
-version: '2.1'
+version: '2.0'
 
 services:
   web:
     build: ./
+    image: muse-for-music:latest
+    ports:
+      - "8080:80"
+    environment:
+      - FLASK_APP=muse_for_music
+      - MODE=debug
+      - SQLALCHEMY_DATABASE_URI=mysql://muse-for-music:muse4music@db/MusicRepo
+      - JWT_SECRET_KEY=test
+      - LOG_PATH=/var/log
+    networks:
+      - muse-for-music
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_USER: muse-for-music
+      MYSQL_PASSWORD: muse4music
+      MYSQL_DATABASE: MusicRepo
+    networks:
+      - muse-for-music
+networks:
+  muse-for-music:
+    driver: bridge
