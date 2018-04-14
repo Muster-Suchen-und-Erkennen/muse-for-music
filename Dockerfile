@@ -5,6 +5,7 @@ COPY . /
 # build ui
 RUN cd muse_for_music \
     && npm install \
+    && sed -i 's/const deployUrl = ".*";/const deployUrl = ".\/assets\/";/' webpack.config.js \\
     && npm run build
 
 # cleanup ui source
