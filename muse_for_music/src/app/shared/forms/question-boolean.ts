@@ -7,6 +7,6 @@ export class BooleanQuestion extends QuestionBase<boolean> {
     constructor(options: QuestionOptions = {}) {
         super(options);
         this.type = options['type'] || 'checkbox';
-        this.nullValue = options.nullValue || false;
+        this.nullValue = options.nullValue || undefined;
     }
 }

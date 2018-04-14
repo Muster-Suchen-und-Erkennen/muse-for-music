@@ -47,25 +47,30 @@ export class DynamicFormComponent implements OnInit, OnChanges {
         });
     }
 
-    patchFormValues() {
+    patchFormValues = () => {
         if (this.form != null) {
             const patched = {};
-            const patch = (values, questions, patched) => {
-                questions.forEach(question => {
+            const patchValues = (values, questions, patched) => {
+                questions.forEach((question: QuestionBase<any>) => {
                     if (question.controlType === 'object') {
                         const next = {};
                         patched[question.key] = next;
-                        patch(values[question.key], question.nestedQuestions, next);
+                        patchValues(values != null ? values[question.key] : undefined,
+                                    question.nestedQuestions, next);
                         return;
                     }
                     if (values != null && values[question.key] != null) {
                         patched[question.key] = values[question.key];
                     } else {
-                        patched[question.key] = question.nullValue;
+                        if (question.isArray) {
+                            patched[question.key] = [];
+                        } else {
+                            patched[question.key] = question.nullValue;
+                        }
                     }
                 });
             }
-            patch(this.startValues, this.questions, patched);
+            patchValues(this.startValues, this.questions, patched);
             this.form.patchValue(patched);
         }
     }

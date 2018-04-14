@@ -301,7 +301,7 @@ musicial_sequence_get = api.model('MusicialSequenceGET', {
 
 composition_put = api.model('CompositionPUT', {
     'id': fields.Integer(default=1, readonly=True, example=1),
-    'sequences': fields.List(fields.Nested(musicial_sequence_put), isNested=True, isArray=True, default=[]),
+    'sequences': fields.List(fields.Nested(musicial_sequence_put), default=[]),
     'nr_varied_repetitions': fields.Integer(default=1),
     'nr_exact_repetitions': fields.Integer(default=1),
 })
