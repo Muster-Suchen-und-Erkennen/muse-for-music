@@ -53,9 +53,9 @@ export class QuestionControlService {
                 } else {
                     validators.push(Validators.required);
                 }
-                if (!question.nullable) {
-                    validators.push(customNullValidator(question.nullValue));
-                }
+            }
+            if (!question.nullable) {
+                validators.push(customNullValidator(question.nullValue));
             }
             if (question.min != undefined) {
                 if (question.controlType === 'number') {

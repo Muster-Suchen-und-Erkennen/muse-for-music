@@ -37,6 +37,9 @@ export class DynamicFormQuestionComponent {
     get isValid() { return this.form.controls[this.question.key].valid; }
 
     get error() {
+        if (this.form.controls[this.question.key].valid) {
+            return '';
+        }
         const errors = this.form.controls[this.question.key].errors;
         if (errors) {
             if (errors.maxlength) {
