@@ -35,9 +35,16 @@ export class PeopleOverviewComponent implements OnInit {
                 if (this.selected !== selected) {
                     selected = person.id;
                 }
+                let birth = this.datePipe.transform(person.birth_date, 'mediumDate') + ' *';
+                let death = this.datePipe.transform(person.death_date, 'mediumDate') + ' ✝';
+                if (person.birth_date === '0001-01-01') {
+                    birth = 'na';
+                }
+                if (person.death_date === '0001-01-01') {
+                    death = 'na';
+                }
                 const row = new TableRow(person.id, [person.name, person.gender,
-                    this.datePipe.transform(person.birth_date, 'mediumDate') + ' – ' +
-                    this.datePipe.transform(person.death_date, 'mediumDate')]);
+                    birth + ' – ' + death]);
                 tableData.push(row);
             });
             this.selected = selected;

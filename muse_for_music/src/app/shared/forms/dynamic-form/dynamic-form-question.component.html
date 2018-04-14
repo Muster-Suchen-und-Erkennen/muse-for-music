@@ -24,7 +24,7 @@
             </div>
 
             <div *ngSwitchCase="'date'" class="min-w5 flex-grow flex bb b--gray">
-                <input class="input-reset bn pa1 flex-grow" [formControlName]="question.key" [id]="question.key" [type]="question.type">
+                <m4m-date-input class="flex flex-grow" [formControlName]="question.key" [question]="question"></m4m-date-input>
             </div>
 
             <div *ngSwitchCase="'number'" class="min-w5 flex-grow flex bb b--gray">
