@@ -49,8 +49,8 @@ def login_user():
     return user
 
 
-@ns.route('/')
-class Authenticate(Resource):
+@ns.route('/login/')
+class Login(Resource):
     """Login resource."""
 
     @api.doc(security=None)
@@ -68,8 +68,8 @@ class Authenticate(Resource):
         return ret
 
 
-@ns.route('/fresh-login')
-class FrechLogin(Resource):
+@ns.route('/fresh-login/')
+class FreshLogin(Resource):
     """Resource for a fresh login token without refresh token."""
 
     @api.doc(security=None)
@@ -86,7 +86,7 @@ class FrechLogin(Resource):
         return ret
 
 
-@ns.route('/check')
+@ns.route('/check/')
 class Check(Resource):
     """Resource to check access tokens."""
 
@@ -102,7 +102,7 @@ class Check(Resource):
         return ret
 
 
-@ns.route('/refresh')
+@ns.route('/refresh/')
 class Refresh(Resource):
     """Resource to refresh access tokens."""
 
