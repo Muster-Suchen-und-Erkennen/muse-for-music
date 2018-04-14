@@ -37,7 +37,7 @@ export class PartDetailComponent implements OnInit, OnDestroy {
             this.navigation.changeBreadcrumbs([new Breadcrumb('Opuses', '/opuses'),
             new Breadcrumb('"' + part.opus_id.toString() + '"', '/opuses/' + part.opus_id),
             new Breadcrumb('Parts', '/parts'),
-            new Breadcrumb('"' + partID.toString() + '"', '/parts/' + partID)]);
+            new Breadcrumb('"' + part.name + '"', '/parts/' + partID)]);
 
             if (this.opusSubscription != null) {
                 this.opusSubscription.unsubscribe();
@@ -49,7 +49,7 @@ export class PartDetailComponent implements OnInit, OnDestroy {
                 this.navigation.changeBreadcrumbs([new Breadcrumb('Opuses', '/opuses'),
                 new Breadcrumb('"' + opus.name + '"', '/opuses/' + part.opus_id),
                 new Breadcrumb('Parts', '/parts'),
-                new Breadcrumb('"' + partID.toString() + '"', '/parts/' + partID)]);
+                new Breadcrumb('"' + part.name + '"', '/parts/' + partID)]);
             });
         });
     }
