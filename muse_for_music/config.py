@@ -24,6 +24,7 @@ class DebugConfig(Config):
     JWT_SECRET_KEY = 'debug'  # FIXME
     LOG_PATH = '/tmp'
     SQLALCHEMY_ECHO = True
+    WEBPACK_ASSETS_URL = 'http://localhost:2992/'
 
 
 class TestingConfig(Config):

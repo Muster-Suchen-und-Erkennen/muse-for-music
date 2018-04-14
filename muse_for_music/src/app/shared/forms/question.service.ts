@@ -59,7 +59,7 @@ export class QuestionService implements OnInit {
 
     }
 
-    private parseModel(spec:any, modelID: string, questionOptions?: Map<string, QuestionOptions>) {
+    private parseModel(spec:any, modelID: string, questionOptions?: Map<string, QuestionOptions>, orderMultiplier: number = 1) {
         let recursionStart = false;
         if (questionOptions == undefined) {
             questionOptions = new Map<string, QuestionOptions>();
@@ -76,17 +76,18 @@ export class QuestionService implements OnInit {
                 let tempModel;
                 for (var parent of model.allOf) {
                     if (parent.$ref != null) {
-                        this.parseModel(spec, parent.$ref, questionOptions);
+                        this.parseModel(spec, parent.$ref, questionOptions, orderMultiplier);
                     }
                     if (parent.properties != null) {
                         tempModel = parent;
                     }
+                    orderMultiplier *= 100;
                 }
                 model = tempModel;
             }
             if (model.properties != null) {
                 for (var propID in model.properties) {
-                    this.updateOptions(questionOptions, propID, model);
+                    this.updateOptions(questionOptions, propID, model, orderMultiplier);
                 }
             }
         }
@@ -99,7 +100,7 @@ export class QuestionService implements OnInit {
         }
     }
 
-    private updateOptions(questionOptions: Map<string, QuestionOptions>, propID: string, model: any) {
+    private updateOptions(questionOptions: Map<string, QuestionOptions>, propID: string, model: any, orderMultiplier: number = 1) {
         let options: QuestionOptions = questionOptions.get(propID);
         if (options == undefined) {
             options = {
@@ -130,27 +131,8 @@ export class QuestionService implements OnInit {
             options.label = prop.title;
         }
         if (prop.description != null) {
-            let re = /\{.*\}/;
-            let matches = prop.description.match(re);
-            if (matches != null && matches.length >= 1) {
-                let temp = JSON.parse(matches[0]);
-                if (temp.reference != null) {
-                    options.controlType = 'reference';
-                    options.valueType = temp.reference;
-                }
-                if (temp.taxonomy != null) {
-                    options.controlType = 'taxonomy';
-                    options.valueType = temp.taxonomy;
-                }
-                if (temp.isArray != null) {
-                    options.isArray = temp.isArray;
-                }
-                if (temp.isNested != null) {
-                    options.controlType = 'object';
-                    options.valueType = prop.$ref;
-                }
-            }
         }
+
         options.readOnly = !!prop.readOnly;
         if (prop.example != null) {
             options.value = prop.example;
@@ -175,6 +157,28 @@ export class QuestionService implements OnInit {
         }
         if (prop.maximum != null) {
             options.max = prop.maximum;
+        }
+
+        if (prop['x-order'] != null) {
+            options.order = prop['x-order'] * orderMultiplier;
+        }
+        if (prop['x-reference'] != null) {
+            options.controlType = 'reference';
+            options.valueType = prop['x-reference'];
+        }
+        if (prop['x-taxonomy'] != null) {
+            options.controlType = 'taxonomy';
+            options.valueType = prop['x-taxonomy'];
+        }
+        if (prop['x-isArray'] != null) {
+            options.isArray = prop['x-isArray'];
+        }
+        if (prop['x-isNested'] != null) {
+            options.controlType = 'object';
+            options.valueType = prop.$ref;
+        }
+        if (prop['x-nullValue'] != null) {
+            options.nullValue = prop['x-nullValue'];
         }
 
         questionOptions.set(propID, options);

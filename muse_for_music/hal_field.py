@@ -35,7 +35,7 @@ if True:
         for i, (name, field) in enumerate(iteritems(self)):
             field = instance(field)
             properties[name] = field.__schema__
-            properties[name]['x-order'] = i
+            properties[name]['x-order'] = i + 1
             if field.required:
                 required.add(name)
             if getattr(field, 'discriminator', False):
