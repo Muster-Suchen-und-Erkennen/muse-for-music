@@ -1,9 +1,10 @@
-import { Component, OnChanges, Input } from '@angular/core';
+import { Component, OnChanges, Input, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
+import { DynamicFormComponent } from '../shared/forms/dynamic-form/dynamic-form.component';
 
 @Component({
   selector: 'm4m-part-edit',
@@ -13,14 +14,12 @@ import { NavigationService, Breadcrumb } from '../navigation/navigation-service'
 export class PartEditComponent implements OnChanges {
 
     @Input() partID: number;
+    @ViewChild(DynamicFormComponent) form;
 
     part: ApiObject = {
         _links: {'self': {'href': ''}},
         name: 'UNBEKANNT'
     };
-
-    valid: boolean = false;
-    data: any = {};
 
     constructor(private api: ApiService, private router: Router) { }
 
@@ -33,22 +32,16 @@ export class PartEditComponent implements OnChanges {
         });
     }
 
-    onValidChange(valid: boolean) {
-        this.valid = valid;
+    save = (event) => {
+        this.api.putPart(this.part.id, event).take(1).subscribe(() => {
+            this.form.saveFinished(true);
+        }, () => {
+            this.form.saveFinished(false);
+        });
     }
 
-    onDataChange(data: any) {
-        this.data = data;
-    }
-
-    save(event) {
-        if (this.valid) {
-            this.api.putPart(this.part.id, this.data);
-        }
-    }
-
-    delete = (() => {
+    delete = () => {
         this.api.deletePart(this.part).take(1).subscribe(() => this.router.navigate(['opuses', this.part.opus_id]));
-    }).bind(this);
+    };
 
 }

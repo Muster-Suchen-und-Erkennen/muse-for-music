@@ -1,9 +1,10 @@
-import { Component, OnChanges, Input } from '@angular/core';
+import { Component, OnChanges, Input, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
+import { DynamicFormComponent } from '../shared/forms/dynamic-form/dynamic-form.component';
 
 @Component({
   selector: 'm4m-subpart-edit',
@@ -14,13 +15,12 @@ export class SubPartEditComponent implements OnChanges {
 
     @Input() subPartID: number;
 
+    @ViewChild(DynamicFormComponent) form;
+
     subpart: ApiObject = {
         _links: {'self': {'href': ''}},
         name: 'UNBEKANNT'
     };
-
-    valid: boolean = false;
-    data: any = {};
 
     constructor(private api: ApiService, private router: Router) { }
 
@@ -33,18 +33,12 @@ export class SubPartEditComponent implements OnChanges {
         });
     }
 
-    onValidChange(valid: boolean) {
-        this.valid = valid;
-    }
-
-    onDataChange(data: any) {
-        this.data = data;
-    }
-
-    save(event) {
-        if (this.valid) {
-            this.api.putSubPart(this.subpart.id, this.data);
-        }
+    save = (event) => {
+        this.api.putSubPart(this.subpart.id, event).take(1).subscribe(() => {
+            this.form.saveFinished(true);
+        }, () => {
+            this.form.saveFinished(false);
+        });
     }
 
     delete = () => {

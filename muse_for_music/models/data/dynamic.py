@@ -34,8 +34,14 @@ class Dynamic(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
 
 
-class DynamicContext(db.Model, GetByID):
+class DynamicContext(db.Model, GetByID, UpdateableModelMixin):
     __tablename__ = 'dynamic_context'
+
+    _normal_attributes = (('loudness_before', Lautstaerke),
+                          ('loudness_after', Lautstaerke),
+                          ('dynamic_trend_before', LautstaerkeEinbettung),
+                          ('dynamic_trend_after', LautstaerkeEinbettung))
+
     id = db.Column(db.Integer, primary_key=True)
 
     loudness_before_id = db.Column(db.Integer, db.ForeignKey('lautstaerke.id'),

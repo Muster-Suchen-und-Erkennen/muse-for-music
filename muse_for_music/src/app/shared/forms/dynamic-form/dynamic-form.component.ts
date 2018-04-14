@@ -1,5 +1,7 @@
-import { Component, Input, Output, OnInit, OnChanges, SimpleChanges, EventEmitter, ViewChildren } from '@angular/core';
+import { Component, Input, Output, OnInit, OnChanges, SimpleChanges, EventEmitter, ViewChildren, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+
+import { Subscription } from 'rxjs/Rx';
 
 import { QuestionBase } from '../question-base';
 import { QuestionService } from '../question.service';
@@ -7,6 +9,7 @@ import { QuestionControlService } from '../question-control.service';
 
 import { ApiObject } from '../../rest/api-base.service';
 import { patch } from 'webdriver-js-extender';
+import { SaveButtonComponent } from './save-button/save-button.component';
 
 @Component({
     selector: 'dynamic-form',
@@ -18,13 +21,20 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     @Input() objectModel: string;
     @Input() startValues: ApiObject = {_links:{self:{href:''}}};
 
+    @Input() showSaveButton: boolean = false;
+    @Input() saveSuccess: boolean = false;
+
     questions: QuestionBase<any>[] = [];
     form: FormGroup;
+    valueChangeSubscription: Subscription;
 
     @Output() valid: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() data: EventEmitter<any> = new EventEmitter<any>();
 
+    @Output() save: EventEmitter<any> = new EventEmitter<any>();
+
     @ViewChildren('questions') questionDivs;
+    @ViewChild(SaveButtonComponent) savebutton: SaveButtonComponent;
 
     constructor(private qcs: QuestionControlService, private qs: QuestionService) { }
 
@@ -71,7 +81,15 @@ export class DynamicFormComponent implements OnInit, OnChanges {
                 });
             }
             patchValues(this.startValues, this.questions, patched);
+            if (this.valueChangeSubscription != null) {
+                this.valueChangeSubscription.unsubscribe();
+            }
             this.form.patchValue(patched);
+            this.valueChangeSubscription = this.form.valueChanges.take(1).subscribe(() => {
+                if (this.savebutton != null) {
+                    this.savebutton.resetStatus();
+                }
+            });
         }
     }
 
@@ -86,6 +104,18 @@ export class DynamicFormComponent implements OnInit, OnChanges {
             if (this.form != null && changes.startValues != null) {
                 this.patchFormValues();
             }
+        }
+    }
+
+    saveForm = () => {
+        if (this.form != null && this.form.valid) {
+            this.save.emit(this.form.value);
+        }
+    }
+
+    saveFinished = (success: boolean) => {
+        if (this.savebutton != null) {
+            this.savebutton.saveFinished(success);
         }
     }
 }

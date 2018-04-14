@@ -36,6 +36,8 @@ export class DateInputComponent implements ControlValueAccessor {
     set value(val: string) {
         if (val === this.question.nullValue) {
             this.inputValue = '';
+        } else {
+            this.inputValue = val;
         }
         this.onChange(val);
         this.onTouched();

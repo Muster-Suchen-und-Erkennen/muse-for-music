@@ -162,6 +162,9 @@ export class QuestionService implements OnInit {
         if (prop['x-order'] != null) {
             options.order = prop['x-order'] * orderMultiplier;
         }
+        if (prop['x-nullable'] != null) {
+            options.nullable = prop['x-nullable'];
+        }
         if (prop['x-reference'] != null) {
             options.controlType = 'reference';
             options.valueType = prop['x-reference'];

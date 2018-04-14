@@ -62,9 +62,9 @@ person_post = api.model('PersonPOST', {
 })
 
 person_put = api.inherit('PersonPUT', person_post, {
-    'canonical_name': fields.String(title='Kanonischer Name', max_length=255, default='', example='admin'),
-    'birth_date': fields.Date(title='Geburtstag', example='1921-2-4'),
-    'death_date': fields.Date(title='Todestag', example='1921-3-23'),
+    'canonical_name': fields.String(title='Kanonischer Name', max_length=255, default='', example='admin', nullable=True),
+    'birth_date': fields.Date(title='Geburtstag', example='1921-2-4', nullable=True),
+    'death_date': fields.Date(title='Todestag', example='1921-3-23', nullable=True),
 })
 
 person_get = api.inherit('PersonGET', person_put, {
@@ -455,15 +455,15 @@ voice_post = api.model('VoicePOST', {
 })
 
 voice_put = api.inherit('VoicePUT', voice_post, {
+    'instrumentation': fields.List(fields.Nested(taxonomy_item_put), isArray=True, taxonomy='Instrument', default=[]),
     'has_melody': fields.Boolean(default=False),
     'is_symmetric': fields.Boolean(default=False),
     'is_repetitive': fields.Boolean(default=False),
     'cites_own_melody_later': fields.Boolean(default=False),
     'contains_repetition_from_outside': fields.Boolean(default=False),
-    'name': fields.String(default='', ),
     'share': fields.Nested(taxonomy_item_put, taxonomy='Anteil'),
     'occurence_in_part': fields.Nested(taxonomy_item_put, taxonomy='AuftretenWerkausschnitt'),
-    'satz': fields.Nested(satz_put, description='Satz'),
+    'satz': fields.Nested(satz_put, description='Satz', isNested=True),
     'highest_pitch': fields.Nested(taxonomy_item_put, taxonomy='Grundton'),
     'lowest_pitch': fields.Nested(taxonomy_item_put, taxonomy='Grundton'),
     'highest_octave': fields.Nested(taxonomy_item_put, taxonomy='Oktave'),
@@ -472,7 +472,6 @@ voice_put = api.inherit('VoicePUT', voice_post, {
     'melody_form': fields.Nested(taxonomy_item_put, taxonomy='Melodieform'),
     'intervallik': fields.Nested(taxonomy_item_put, taxonomy='Intervallik'),
     'dominant_note_values': fields.List(fields.Nested(taxonomy_item_put), isArray=True, taxonomy='Notenwert', default=[]),
-    'instrumentation': fields.List(fields.Nested(taxonomy_item_put), isArray=True, taxonomy='Instrument', default=[]),
 })
 
 voice_get = api.inherit('VoiceGET', voice_post, {

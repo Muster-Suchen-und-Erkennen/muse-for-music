@@ -1,9 +1,10 @@
-import { Component, OnChanges, Input } from '@angular/core';
+import { Component, OnChanges, Input, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
+import { DynamicFormComponent } from '../shared/forms/dynamic-form/dynamic-form.component';
 
 @Component({
   selector: 'm4m-opus-edit',
@@ -14,13 +15,12 @@ export class OpusEditComponent implements OnChanges {
 
     @Input() opusID: number;
 
+    @ViewChild(DynamicFormComponent) form;
+
     opus: ApiObject = {
         _links: {'self': {'href': ''}},
         name: 'UNBEKANNT'
     };
-
-    valid: boolean = false;
-    data: any = {};
 
     constructor(private api: ApiService, private router: Router) { }
 
@@ -33,22 +33,16 @@ export class OpusEditComponent implements OnChanges {
         });
     }
 
-    onValidChange(valid: boolean) {
-        this.valid = valid;
+    save = (event) => {
+        this.api.putOpus(this.opus.id, event).take(1).subscribe(() => {
+            this.form.saveFinished(true);
+        }, () => {
+            this.form.saveFinished(false);
+        });
     }
 
-    onDataChange(data: any) {
-        this.data = data;
-    }
-
-    save(event) {
-        if (this.valid) {
-            this.api.putOpus(this.opus.id, this.data);
-        }
-    }
-
-    delete = (() => {
+    delete = () => {
         this.api.deleteOpus(this.opusID).take(1).subscribe(() => this.router.navigate(['opuses']));
-    }).bind(this);
+    };
 
 }

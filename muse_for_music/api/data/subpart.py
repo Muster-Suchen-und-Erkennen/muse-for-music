@@ -108,6 +108,7 @@ class SubPartVoiceResource(Resource):
         new_values = request.get_json()
 
         voice.update(new_values)
+        db.session.commit()
         return marshal(voice, voice_get)
 
     @ns.response(404, 'voice not found.')

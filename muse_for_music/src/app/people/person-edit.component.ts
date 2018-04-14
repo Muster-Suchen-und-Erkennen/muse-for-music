@@ -1,7 +1,8 @@
-import { Component, OnInit, OnChanges, SimpleChanges, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Input, OnDestroy, ViewChild } from '@angular/core';
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { Subscription } from 'rxjs/Rx';
+import { DynamicFormComponent } from '../shared/forms/dynamic-form/dynamic-form.component';
 
 @Component({
   selector: 'm4m-person-edit',
@@ -12,14 +13,13 @@ export class PersonEditComponent implements OnInit, OnChanges, OnDestroy {
 
     private subscription: Subscription;
 
+    @ViewChild(DynamicFormComponent) form;
+
     @Input() personID: number;
     person: ApiObject = {
         _links: {'self': {'href': ''}},
         name: 'UNBEKANNT'
     };
-
-    valid: boolean = false;
-    data: any = {};
 
     constructor(private api: ApiService) { }
 
@@ -50,22 +50,16 @@ export class PersonEditComponent implements OnInit, OnChanges, OnDestroy {
         this.unsubscribe();
     }
 
-    onValidChange(valid: boolean) {
-        this.valid = valid;
+    save = (event) => {
+        this.api.putPerson(this.personID, event).take(1).subscribe(() => {
+            this.form.saveFinished(true);
+        }, () => {
+            this.form.saveFinished(false);
+        });
     }
 
-    onDataChange(data: any) {
-        this.data = data;
-    }
-
-    save(event) {
-        if (this.valid) {
-            this.api.putPerson(this.personID, this.data);
-        }
-    }
-
-    delete = (() => {
+    delete = () => {
         this.api.deletePerson(this.person);
-    }).bind(this);
+    };
 
 }

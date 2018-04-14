@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { DynamicFormComponent } from './forms/dynamic-form/dynamic-form.component';
 import { DynamicFormQuestionComponent } from './forms/dynamic-form/dynamic-form-question.component';
+import { SaveButtonComponent } from './forms/dynamic-form/save-button/save-button.component';
 import { NumberInputComponent } from './forms/dynamic-form/number-input/number-input.component';
 import { BooleanInputComponent } from './forms/dynamic-form/boolean-input/boolean-input.component';
 import { DateInputComponent } from './forms/dynamic-form/date-input/date-input.component';
@@ -40,6 +41,7 @@ import { ClickOutsideDirective } from './click-outside.directive';
         myTableComponent,
         DynamicFormComponent,
         DynamicFormQuestionComponent,
+        SaveButtonComponent,
         NumberInputComponent,
         BooleanInputComponent,
         DateInputComponent,
@@ -65,6 +67,7 @@ import { ClickOutsideDirective } from './click-outside.directive';
         myTableComponent,
         DynamicFormComponent,
         DynamicFormQuestionComponent,
+        SaveButtonComponent,
         NumberInputComponent,
         BooleanInputComponent,
         DateInputComponent,

@@ -8,9 +8,9 @@
     </div>
 </m4m-box>
 
-<m4m-dialog [dialogType]="'save-cancel'" [valid]="valid" [icon]="'save'" [okCallback]="save" #newSubPart >
+<m4m-dialog [dialogType]="'save-cancel'" [valid]="form.valid | async" [icon]="'save'" [okCallback]="save" #newSubPart >
     <h1 class="mv0" title>New SubPart:</h1>
     <div class="w-100 ph3 pv2" body>
-        <dynamic-form [objectModel]="'SubPartPOST'" [startValues]="{}" (valid)="onValidChange($event)" (data)="onDataChange($event)"></dynamic-form>
+        <dynamic-form [objectModel]="'SubPartPOST'" [startValues]="{}" (valid)="onValidChange($event)" (data)="onDataChange($event)" #form></dynamic-form>
     </div>
 </m4m-dialog>

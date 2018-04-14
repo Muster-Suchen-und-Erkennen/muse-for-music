@@ -60,7 +60,7 @@ export class TaxonomySelectComponent implements ControlValueAccessor {
                 this._value = (val as ApiObject[]);
             }
         }
-        this.onChange(val);
+        this.onChange(this.value);
         this.onTouched();
     }
 

@@ -3,7 +3,7 @@ from typing import Union, Sequence
 from ... import db
 from ..taxonomies import Instrument, InstrumentierungEinbettungQualitaet, \
                          InstrumentierungEinbettungQuantitaet
-from ..helper_classes import GetByID, UpdateListMixin
+from ..helper_classes import GetByID, UpdateListMixin, UpdateableModelMixin
 
 
 class Instrumentation(db.Model, GetByID, UpdateListMixin):
@@ -32,8 +32,15 @@ class InstumentationToInstrument(db.Model):
         self.instrument = instrument
 
 
-class InstrumentationContext(db.Model, GetByID):
+class InstrumentationContext(db.Model, GetByID, UpdateableModelMixin):
     __tablename__ = 'instrumentation_context'
+
+    _normal_attributes = (('instrumentation_quantity_before', InstrumentierungEinbettungQuantitaet),
+                          ('instrumentation_quantity_after', InstrumentierungEinbettungQuantitaet),
+                          ('instrumentation_quality_before', InstrumentierungEinbettungQualitaet),
+                          ('instrumentation_quality_after', InstrumentierungEinbettungQualitaet))
+
+
     id = db.Column(db.Integer, primary_key=True)
     instr_quantity_before_id = db.Column(db.Integer,
                                          db.ForeignKey('instrumentierung_einbettung_quantitaet.id'),
