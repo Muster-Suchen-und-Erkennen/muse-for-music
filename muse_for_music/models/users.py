@@ -6,6 +6,7 @@ from .. import db, bcrypt
 class RoleEnum(enum.Enum):
     user = 1
     admin = 2
+    taxonomy_editor = 3
 
 
 class User(db.Model):

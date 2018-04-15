@@ -12,7 +12,7 @@
 <body>
     <script>
         window.apiBasePath = "{{url_for('api.default_root_resource', _external=True)}}";
-        window.userApiBasePath = "{{url_for('user_api.doc', _external=True)}}";
+        window.userApiBasePath = "{{url_for('user_api.default_root_resource', _external=True)}}";
     </script>
     <script>window.__theme = 'bs4';</script>
     <m4m-root class="h-100 flex flex-column"></m4m-root>

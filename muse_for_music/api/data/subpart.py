@@ -2,6 +2,7 @@
 
 from flask import jsonify, url_for, request
 from flask_restplus import Resource, marshal, abort
+from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import IntegrityError
 
 
@@ -10,6 +11,7 @@ from . import api
 from .models import subpart_get, subpart_put, voice_get, voice_post, voice_put
 
 from ... import db
+from ...user_api import has_roles, RoleEnum
 from ...models.data.subpart import SubPart
 from ...models.data.voice import Voice
 from ...models.taxonomies import Anteil, InstrumentierungEinbettungQualitaet, \
@@ -23,6 +25,7 @@ ns = api.namespace('subpart', description='Resource for Subparts.', path='/subpa
 class SubPartListResource(Resource):
 
     @ns.marshal_list_with(subpart_get)
+    @jwt_required
     def get(self):
         return SubPart.query.all()
 
@@ -32,6 +35,7 @@ class SubPartResource(Resource):
 
     @ns.marshal_with(subpart_get)
     @ns.response(404, 'Subpart not found.')
+    @jwt_required
     def get(self, subpart_id):
         subpart = SubPart.get_by_id(subpart_id)  # type: SubPart
         if subpart is None:
@@ -40,6 +44,8 @@ class SubPartResource(Resource):
 
     @ns.doc(model=subpart_get, body=subpart_put)
     @ns.response(404, 'Subpart not found.')
+    @jwt_required
+    @has_roles([RoleEnum.user])
     def put(self, subpart_id):
         subpart = SubPart.get_by_id(subpart_id)  # type: SubPart
         if subpart is None:
@@ -53,6 +59,8 @@ class SubPartResource(Resource):
         return marshal(subpart, subpart_get)
 
     @ns.response(404, 'Subpart not found.')
+    @jwt_required
+    @has_roles([RoleEnum.user])
     def delete(self, subpart_id):
         subpart = SubPart.get_by_id(subpart_id)  # type: SubPart
         if subpart is None:
@@ -66,6 +74,7 @@ class SubPartVoiceListResource(Resource):
 
     @ns.marshal_list_with(voice_get)
     @ns.response(404, 'Subpart not found.')
+    @jwt_required
     def get(self, subpart_id):
         subpart = SubPart.get_by_id(subpart_id)  # type: SubPart
         if subpart is None:
@@ -74,6 +83,8 @@ class SubPartVoiceListResource(Resource):
 
     @ns.doc(model=voice_get, body=voice_post)
     @ns.response(404, 'Subpart not found.')
+    @jwt_required
+    @has_roles([RoleEnum.user])
     def post(self, subpart_id):
         subpart = SubPart.get_by_id(subpart_id)  # type: SubPart
         if subpart is None:
@@ -92,6 +103,7 @@ class SubPartVoiceResource(Resource):
 
     @ns.marshal_with(voice_get)
     @ns.response(404, 'voice not found.')
+    @jwt_required
     def get(self, subpart_id, voice_id):
         voice = Voice.get_by_id(voice_id)  # type: Voice
         if voice is None:
@@ -100,6 +112,8 @@ class SubPartVoiceResource(Resource):
 
     @ns.doc(model=voice_get, body=voice_put)
     @ns.response(404, 'voice not found.')
+    @jwt_required
+    @has_roles([RoleEnum.user])
     def put(self, subpart_id, voice_id):
         voice = Voice.get_by_id(voice_id)  # type: Voice
         if voice is None:
@@ -112,6 +126,8 @@ class SubPartVoiceResource(Resource):
         return marshal(voice, voice_get)
 
     @ns.response(404, 'voice not found.')
+    @jwt_required
+    @has_roles([RoleEnum.user])
     def delete(self, subpart_id, voice_id):
         voice = Voice.get_by_id(voice_id)  # type: Voice
         if voice is None:

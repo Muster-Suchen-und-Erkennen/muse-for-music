@@ -3,6 +3,7 @@
 
 from flask import jsonify, url_for, request
 from flask_restplus import Resource, marshal, reqparse, abort
+from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 
@@ -12,6 +13,7 @@ from .. import api
 from .models import person_post, person_put, person_get, parse_date
 
 from ... import db
+from ...user_api import has_roles, RoleEnum
 from ...models.data.people import Person, GenderEnum
 
 ns = api.namespace('person', description='Resource for persons.', path='/persons')
@@ -21,11 +23,14 @@ ns = api.namespace('person', description='Resource for persons.', path='/persons
 class PersonListResource(Resource):
 
     @ns.marshal_list_with(person_get)
+    @jwt_required
     def get(self):
         return Person.query.all()
 
     @ns.doc(model=person_get, body=person_post)
     @ns.response(409, 'Name is not unique.')
+    @jwt_required
+    @has_roles([RoleEnum.user])
     def post(self):
         new_person = Person(**request.get_json())
         try:
@@ -44,6 +49,7 @@ class PersonResource(Resource):
 
     @ns.marshal_with(person_get)
     @ns.response(404, 'Person not found.')
+    @jwt_required
     def get(self, id):
         person = Person.query.filter_by(id=id).first()
         if person is None:
@@ -52,6 +58,8 @@ class PersonResource(Resource):
 
     @ns.doc(model=person_get, body=person_put, vaidate=True)
     @ns.response(404, 'Person not found.')
+    @jwt_required
+    @has_roles([RoleEnum.user])
     def put(self, id):
         person = Person.query.filter_by(id=id).first()  # type: Person
         if person is None:
@@ -77,6 +85,8 @@ class PersonResource(Resource):
         return marshal(person, person_get)
 
     @ns.response(404, 'Person not found.')
+    @jwt_required
+    @has_roles([RoleEnum.user])
     def delete(self, id):
         person = Person.query.filter_by(id=id).first()
         if person is None:

@@ -3,6 +3,7 @@
 
 from flask import jsonify, url_for, request
 from flask_restplus import Resource, marshal, abort
+from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import IntegrityError
 
 
@@ -12,6 +13,7 @@ from .models import opus_post, opus_put, opus_get, parse_date, opus_get, opus_po
                     part_get, part_post
 
 from ... import db
+from ...user_api import has_roles, RoleEnum
 from ...models.data.opus import Opus
 from ...models.data.part import Part
 
@@ -23,11 +25,14 @@ ns = api.namespace('opus', description='Resource for opuses.', path='/opuses')
 class OpusListResource(Resource):
 
     @ns.marshal_list_with(opus_get)
+    @jwt_required
     def get(self):
         return Opus.query.all()
 
     @ns.doc(model=opus_get, body=opus_post)
     @ns.response(409, 'Name is not unique.')
+    @jwt_required
+    @has_roles([RoleEnum.user])
     def post(self):
         new_opus = Opus(**request.get_json())
         try:
@@ -46,6 +51,7 @@ class OpusResource(Resource):
 
     @ns.marshal_with(opus_get)
     @ns.response(404, 'Opus not found.')
+    @jwt_required
     def get(self, id):
         opus = Opus.get_by_id(id)  # type: Opus
         if opus is None:
@@ -54,6 +60,8 @@ class OpusResource(Resource):
 
     @ns.doc(model=opus_get, body=opus_put)
     @ns.response(404, 'Opus not found.')
+    @jwt_required
+    @has_roles([RoleEnum.user])
     def put(self, id):
         opus = Opus.get_by_id(id)  # type: Opus
         if opus is None:
@@ -65,6 +73,8 @@ class OpusResource(Resource):
         return marshal(opus, opus_get)
 
     @ns.response(404, 'Opus not found.')
+    @jwt_required
+    @has_roles([RoleEnum.user])
     def delete(self, id):
         opus = Opus.get_by_id(id)  # type: Opus
         if opus is None:
@@ -79,11 +89,15 @@ class OpusResource(Resource):
 class OpusPartsResource(Resource):
 
     @ns.marshal_list_with(part_get)
+    @jwt_required
+    @has_roles([RoleEnum.user])
     def get(self, id):
         parts = Part.query.filter_by(opus_id=id).all()
         return parts
 
     @ns.doc(model=part_get, body=part_post)
+    @jwt_required
+    @has_roles([RoleEnum.user])
     def post(self, id):
         new_values = request.get_json()
         new_values['opus_id'] = id

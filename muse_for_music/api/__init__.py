@@ -3,12 +3,24 @@
 from flask import Blueprint
 from flask_restplus import Api, abort
 from flask_restplus.errors import ValidationError
+from flask_jwt_extended.exceptions import NoAuthorizationError
 from .. import app
+from ..user_api import log_unauthorized
 
 api_blueprint = Blueprint('api', __name__)
 
+authorizations = {
+    'jwt': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'Authorization',
+        'description': 'Standard JWT access token from user Api.'
+    },
+}
+
 api = Api(api_blueprint, version='0.1', title='MUSE4Music API', doc='/doc/',
-          description='The reatful api for muse 4 music.')
+          authorizations=authorizations, security='jwt',
+          description='The restful api for muse 4 music.')
 
 from . import root, taxonomies, data
 
@@ -20,5 +32,10 @@ def handle_validation_erorr(error: ValidationError):
         "message": "Input payload validation failed"
     }
 
+
+@api.errorhandler(NoAuthorizationError)
+def missing_header(error):
+    log_unauthorized(error.message)
+    return {'message': error.message}, 401
 
 app.register_blueprint(api_blueprint, url_prefix='/api')

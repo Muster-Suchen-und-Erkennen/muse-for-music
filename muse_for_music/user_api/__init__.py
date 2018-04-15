@@ -8,7 +8,7 @@ from flask_restplus import Api, abort
 from flask_jwt_extended import get_jwt_claims
 from flask_jwt_extended.exceptions import NoAuthorizationError
 from .. import app, jwt
-from ..models.users import User, UserRole
+from ..models.users import User, RoleEnum
 
 
 authorizations = {
@@ -27,7 +27,7 @@ authorizations = {
 }
 
 
-def has_roles(roles: List[UserRole]):
+def has_roles(roles: List[RoleEnum]):
     """
     Check if the requesting user has one of the given roles.
 
@@ -43,8 +43,8 @@ def has_roles(roles: List[UserRole]):
             else:
                 auth_logger.debug('Access to ressource with isufficient rights. User roles: %s, required roles: %s',
                                   [role.name for role in roles], claims)
-                abort(403, 'Only members of the group(s) {} have access to this resource.'.format(
-                    ', '.join([role.name for role in roles])
+                abort(403, 'Only members of the group(s) "{}" have access to this resource.'.format(
+                    '", "'.join([role.name for role in roles])
                 ))
             return f(*args, **kwargs)
         return wrapper

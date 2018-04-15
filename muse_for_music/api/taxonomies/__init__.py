@@ -2,10 +2,12 @@
 
 from flask import request
 from flask_restplus import Resource, marshal, abort
+from flask_jwt_extended import jwt_required
 
 from ...models.taxonomies import get_taxonomies, T
 from .. import api
 from ... import app, db
+from ...user_api import has_roles, RoleEnum
 
 from typing import TypeVar, Dict, Type, cast
 
@@ -24,6 +26,7 @@ taxonomies = get_taxonomies()  # type:Dict[str, Type[T]]
 class TaxonomyListResource(Resource):
 
     @ns.marshal_with(taxonomy_list_resource)
+    @jwt_required
     def get(self):
         taxonomy_list = list(taxonomies.values())
         return{'taxonomies': taxonomy_list}
@@ -46,6 +49,7 @@ class TaxonomyResource(Resource):
     @ns.marshal_with(taxonomy_model)
     @ns.response(400, 'Mismatching taxonomy type.')
     @ns.response(404, 'Taxonomy not found.')
+    @jwt_required
     def get(self, taxonomy_type: str, taxonomy: str):
         return get_taxonomy(taxonomy_type, taxonomy)
 
@@ -56,6 +60,7 @@ class ListTaxonomyResource(Resource):
     @ns.marshal_with(list_taxonomy_model)
     @ns.response(400, 'Mismatching taxonomy type.')
     @ns.response(404, 'Taxonomy not found.')
+    @jwt_required
     def get(self, taxonomy: str):
         tax = get_taxonomy('list', taxonomy)
         if tax is None:
@@ -63,6 +68,8 @@ class ListTaxonomyResource(Resource):
         return tax
 
     @ns.doc(model=taxonomy_item_get, body=taxonomy_item_post, vaidate=True)
+    @jwt_required
+    @has_roles([RoleEnum.taxonomy_editor])
     def post(self, taxonomy: str):
         tax = get_taxonomy('list', taxonomy)
         if tax is None:
@@ -79,6 +86,7 @@ class TreeTaxonomyResource(Resource):
     @ns.response('200', 'success', tree_taxonomy_model_json)
     @ns.response(400, 'Mismatching taxonomy type.')
     @ns.response(404, 'Taxonomy not found.')
+    @jwt_required
     def get(self, taxonomy: str):
         tax = get_taxonomy('tree', taxonomy)
         if tax is None:
@@ -141,6 +149,7 @@ class TaxonomyItemResource(Resource):
     @ns.marshal_with(taxonomy_item_get)
     @ns.response(400, 'Mismatching taxonomy type.')
     @ns.response(404, 'Taxonomy or Item not found.')
+    @jwt_required
     def get(self, taxonomy_type: str, taxonomy: str, item_id: int):
         tax = get_taxonomy(taxonomy_type, taxonomy)
         if tax is None:
@@ -150,6 +159,8 @@ class TaxonomyItemResource(Resource):
     @ns.response(400, 'Mismatching taxonomy type.')
     @ns.response(404, 'Taxonomy or Item not found.')
     @ns.doc(model=taxonomy_item_get, body=taxonomy_item_post, vaidate=True)
+    @jwt_required
+    @has_roles([RoleEnum.taxonomy_editor])
     def put(self, taxonomy_type: str, taxonomy: str, item_id: int):
         tax = get_taxonomy(taxonomy_type, taxonomy)
         if tax is None:
@@ -160,6 +171,8 @@ class TaxonomyItemResource(Resource):
 
     @ns.response(400, 'Mismatching taxonomy type.')
     @ns.response(404, 'Taxonomy or Item not found.')
+    @jwt_required
+    @has_roles([RoleEnum.taxonomy_editor])
     def delete(self, taxonomy_type: str, taxonomy: str, item_id: int):
         tax = get_taxonomy(taxonomy_type, taxonomy)
         if tax is None:
@@ -173,6 +186,7 @@ class ListTaxonomyItemResource(Resource):
     @ns.marshal_with(taxonomy_item_get)
     @ns.response(400, 'Mismatching taxonomy type.')
     @ns.response(404, 'Taxonomy or Item not found.')
+    @jwt_required
     def get(self, taxonomy: str, item_id: int):
         tax = get_taxonomy('list', taxonomy)
         if tax is None:
@@ -182,6 +196,8 @@ class ListTaxonomyItemResource(Resource):
     @ns.response(400, 'Mismatching taxonomy type.')
     @ns.response(404, 'Taxonomy or Item not found.')
     @ns.doc(model=taxonomy_item_get, body=taxonomy_item_post, vaidate=True)
+    @jwt_required
+    @has_roles([RoleEnum.taxonomy_editor])
     def put(self, taxonomy: str, item_id: int):
         tax = get_taxonomy('list', taxonomy)
         if tax is None:
@@ -192,6 +208,8 @@ class ListTaxonomyItemResource(Resource):
 
     @ns.response(400, 'Mismatching taxonomy type.')
     @ns.response(404, 'Taxonomy or Item not found.')
+    @jwt_required
+    @has_roles([RoleEnum.taxonomy_editor])
     def delete(self, taxonomy: str, item_id: int):
         tax = get_taxonomy('list', taxonomy)
         if tax is None:
@@ -205,6 +223,7 @@ class TreeTaxonomyItemResource(Resource):
     @ns.response(200, 'success', model=taxonomy_tree_item_get_json)
     @ns.response(400, 'Mismatching taxonomy type.')
     @ns.response(404, 'Taxonomy or Item not found.')
+    @jwt_required
     def get(self, taxonomy: str, item_id: int):
         tax = get_taxonomy('tree', taxonomy)
         if tax is None:
@@ -212,6 +231,8 @@ class TreeTaxonomyItemResource(Resource):
         return marshal(get_taxonomy_item(tax, item_id), taxonomy_tree_item_get)
 
     @ns.doc(model=taxonomy_tree_item_get_json, body=taxonomy_item_post, vaidate=True)
+    @jwt_required
+    @has_roles([RoleEnum.taxonomy_editor])
     def post(self, taxonomy: str, item_id: int):
         tax = get_taxonomy('tree', taxonomy)
         if tax is None:
@@ -226,6 +247,8 @@ class TreeTaxonomyItemResource(Resource):
     @ns.response(400, 'Mismatching taxonomy type.')
     @ns.response(404, 'Taxonomy or Item not found.')
     @ns.doc(model=taxonomy_tree_item_get_json, body=taxonomy_item_post, vaidate=True)
+    @jwt_required
+    @has_roles([RoleEnum.taxonomy_editor])
     def put(self, taxonomy: str, item_id: int):
         tax = get_taxonomy('tree', taxonomy)
         if tax is None:
@@ -236,6 +259,8 @@ class TreeTaxonomyItemResource(Resource):
 
     @ns.response(400, 'Mismatching taxonomy type.')
     @ns.response(404, 'Taxonomy or Item not found.')
+    @jwt_required
+    @has_roles([RoleEnum.taxonomy_editor])
     def delete(self, taxonomy: str, item_id: int):
         tax = get_taxonomy('tree', taxonomy)
         if tax is None:

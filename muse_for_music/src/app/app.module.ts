@@ -5,21 +5,15 @@ import {HttpModule} from '@angular/http';
 import { ReactiveFormsModule } from '@angular/forms';
 
 
-import { WerkausschnittModule } from './legacy/werkausschnitt/werkausschnitt.module';
-import { TreeModule } from 'angular-tree-component';
-import { DropdownTreeButtonComponent } from './legacy/dropdown-tree-button/dropdown-tree-button.component';
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { TreeService } from './legacy/tree/tree.service';
-import { TreeViewComponent } from './legacy/tree-view/tree-view.component';
-
-
 import {SharedModule} from './shared/shared.module';
 
 import { BreadcrumbsComponent } from './navigation/breadcrumbs.component';
 import { TitleBarComponent } from './navigation/title-bar.component';
 import { NavigationService } from './navigation/navigation-service';
 
+import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
+
 import { PeopleOverviewComponent } from './people/people-overview.component';
 import { PersonEditComponent } from './people/person-edit.component';
 import { OpusesOverviewComponent } from './opuses/opuses-overview.component';
@@ -42,7 +36,9 @@ import { AppComponent } from './app.component';
   declarations: [
     AppComponent,
 
+    LoginComponent,
     HomeComponent,
+
     PeopleOverviewComponent,
     PersonEditComponent,
     OpusesOverviewComponent,
@@ -65,12 +61,10 @@ import { AppComponent } from './app.component';
     HttpModule,
     BrowserModule,
     ReactiveFormsModule,
-    TreeModule,
     SharedModule,
-    BsDropdownModule.forRoot(),
     AppRoutingModule
   ],
-  providers: [TreeService,
+  providers: [
     NavigationService,
   ],
   bootstrap: [AppComponent]

@@ -18,6 +18,8 @@ import { QuestionControlService } from './forms/question-control.service';
 import { QuestionService } from './forms/question.service';
 import { BaseApiService } from './rest/api-base.service';
 import { ApiService } from './rest/api.service';
+import { UserApiService } from './rest/user-api.service';
+import { LoginGuard } from './rest/login.guard';
 
 
 import { InfoComponent } from './info/info.component';
@@ -56,8 +58,10 @@ import { ClickOutsideDirective } from './click-outside.directive';
         InfoService,
         QuestionService,
         QuestionControlService,
-        ApiService,
         BaseApiService,
+        ApiService,
+        UserApiService,
+        LoginGuard,
     ],
     exports: [
         InfoComponent,

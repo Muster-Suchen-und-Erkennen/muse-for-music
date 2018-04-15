@@ -2,6 +2,7 @@
 
 from flask import jsonify, url_for, request
 from flask_restplus import Resource, marshal, abort
+from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import IntegrityError
 
 
@@ -10,6 +11,7 @@ from . import api
 from .models import part_get, part_post, part_put, subpart_get, subpart_post
 
 from ... import db
+from ...user_api import has_roles, RoleEnum
 from ...models.data.part import Part
 from ...models.data.subpart import SubPart
 from ...models.data.measure import Measure
@@ -26,6 +28,7 @@ ns = api.namespace('part', description='Resource for Parts.', path='/parts')
 class PartsListResource(Resource):
 
     @ns.marshal_list_with(part_get)
+    @jwt_required
     def get(self):
         return Part.query.all()
 
@@ -35,6 +38,7 @@ class PartResource(Resource):
 
     @ns.marshal_with(part_get)
     @ns.response(404, 'Part not found.')
+    @jwt_required
     def get(self, id):
         part = Part.get_by_id(id)  # type: Part
         if part is None:
@@ -43,6 +47,8 @@ class PartResource(Resource):
 
     @ns.doc(model=part_get, body=part_put)
     @ns.response(404, 'Part not found.')
+    @jwt_required
+    @has_roles([RoleEnum.user])
     def put(self, id):
         part = Part.get_by_id(id)  # type: Part
         if part is None:
@@ -55,6 +61,8 @@ class PartResource(Resource):
         return marshal(part, part_get)
 
     @ns.response(404, 'Part not found.')
+    @jwt_required
+    @has_roles([RoleEnum.user])
     def delete(self, id):
         part = Part.get_by_id(id)  # type: Part
         if part is None:
@@ -67,11 +75,14 @@ class PartResource(Resource):
 class PartSubpartsResource(Resource):
 
     @ns.marshal_list_with(subpart_get)
+    @jwt_required
     def get(self, id):
         subparts = SubPart.query.filter_by(part_id=id).all()
         return subparts
 
     @ns.doc(model=subpart_get, body=subpart_post)
+    @jwt_required
+    @has_roles([RoleEnum.user])
     def post(self, id):
         new_values = request.get_json()
         new_values['part_id'] = id

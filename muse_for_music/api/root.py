@@ -7,6 +7,7 @@ from .models import root_model
 ns = api.namespace('default', path='/')
 
 @ns.route('/')
+@ns.doc(security=None)
 class RootResource(Resource):
 
     @ns.marshal_with(root_model)

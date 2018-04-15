@@ -149,10 +149,11 @@ export class UserApiService implements OnInit {
 
     getAuthRoot(): Observable<AuthRootModel> {
         if (!this.authRootSource.isStopped) {
-            let url = '/api'
-            if ((window as any).apiBasePath != null) {
-                url = (window as any).apiBasePath;
+            let url = '/users'
+            if ((window as any).userApiBasePath != null) {
+                url = (window as any).userApiBasePath;
             }
+            console.log(url);
             this.rest.get(url).subscribe(data => {
                 this.authRootSource.next((data as AuthRootModel));
                 this.authRootSource.complete();
@@ -164,6 +165,7 @@ export class UserApiService implements OnInit {
     login(username: string, password: string): Observable<boolean> {
         const success = new AsyncSubject<boolean>();
         this.getAuthRoot().subscribe(auth => {
+            console.log(auth._links.login)
             this.rest.post(auth._links.login, {username: username, password: password}).subscribe(data => {
                 this.updateTokens(data.access_token, data.refresh_token);
                 success.next(true);
