@@ -44,7 +44,7 @@ export class UserApiService implements OnInit {
                 let future = new Date();
                 future = new Date(future.getTime() + (3 * 60 * 1000))
                 if (this.expiration(this.token) < future) {
-                    this.refreshLogin(this.refreshToken;
+                    this.refreshLogin(this.refreshToken);
                 }
             }
         }).bind(this));
@@ -78,7 +78,7 @@ export class UserApiService implements OnInit {
         return JSON.parse(atob(token.split('.')[1]));
     }
 
-    private expiration(token: string): Date {
+    private expiration = (token: string): Date => {
         const decoded = this.tokenToJson(token);
         const exp = new Date(0);
         exp.setUTCSeconds(decoded.exp);
@@ -189,7 +189,7 @@ export class UserApiService implements OnInit {
         });
     }
 
-    refreshLogin(refreshToken: string) {
+    refreshLogin = (refreshToken: string) => {
         this.getAuthRoot().subscribe(auth => {
             this.rest.post(auth._links.refresh, {}, refreshToken).subscribe(data => {
                 this.updateTokens(data.access_token);
