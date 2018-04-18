@@ -66,11 +66,11 @@ export class UserApiService implements OnInit {
         this.router.navigate(['/login']);
     }
 
-    get token() {
+    get token(): string {
         return localStorage.getItem(this.TOKEN);
     }
 
-    get refreshToken() {
+    get refreshToken(): string {
         return localStorage.getItem(this.REFRESH_TOKEN);
     }
 
@@ -85,22 +85,22 @@ export class UserApiService implements OnInit {
         return exp;
     }
 
-    get loggedIn() {
+    get loggedIn(): boolean {
         const token = this.refreshToken;
         return (token != null) && (this.expiration(token) > new Date());
     }
 
-    get tokenIsActive() {
+    get tokenIsActive(): boolean {
         const token = this.token;
         return (token != null) && (this.expiration(token) > new Date());
     }
 
-    get tokenIsFresh() {
+    get tokenIsFresh(): boolean {
         const token = this.token;
         return (token != null) && !(!this.tokenToJson(token).fresh);
     }
 
-    get username() {
+    get username(): string {
         const token = this.token;
         if (token == null) {
             return undefined;
@@ -108,9 +108,10 @@ export class UserApiService implements OnInit {
         return this.tokenToJson(token).identity;
     }
 
-    get roles() {
+    get roles(): Set<string> {
         const token = this.token;
-        return this.tokenToJson(token).user_claims;
+        const roleList = this.tokenToJson(token).user_claims;
+        return new Set<string>(roleList);
     }
 
     // API Functions ///////////////////////////////////////////////////////////

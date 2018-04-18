@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
+import { UserOverviewComponent } from './users/user-overview.component';
 
 import { PeopleOverviewComponent } from './people/people-overview.component';
 import { OpusesOverviewComponent } from './opuses/opuses-overview.component';
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'subparts/:subpartID/voices/:voiceID', component: VoiceDetailComponent, canActivate: [LoginGuard] },
   { path: '', pathMatch: 'full', component: HomeComponent, canActivate: [LoginGuard] },
   { path: 'login', pathMatch: 'full', component: LoginComponent},
+  { path: 'user', pathMatch: 'full', component: UserOverviewComponent, canActivate: [LoginGuard]},
   { path: '**', redirectTo: 'dashboard' }
 ]
 

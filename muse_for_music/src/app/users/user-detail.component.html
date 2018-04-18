@@ -1,0 +1,24 @@
+
+<m4m-box>
+    <h1 class="mv0" title>User "{{userApi.username}}":</h1>
+    <div class="tooltip tooltip-left button h2 pv1 ph2 ml3 br2 link bg-animate hover-bg-light-silver pointer" data-tooltip="reload" (click)="userApi.refreshLogin(userApi.refreshToken)" title-right>
+        <i class="fa fa-refresh"></i>
+    </div>
+    <div class="w-100 ph3 pv2" body>
+        <div>
+            <p class="f4 b">Roles:</p>
+            <p *ngIf="userApi.roles.has('user')">
+                <span class="f5 b">User:</span>
+                You can edit add and delete data.
+            </p>
+            <p *ngIf="userApi.roles.has('taxonomy_editor')">
+                <span class="f5 b">Taxonomy-Editor:</span>
+                You can edit taxonomies.
+            </p>
+            <p *ngIf="userApi.roles.has('admin')">
+                <span class="f5 b">Admin:</span>
+                You can edit add and remove Users.
+            </p>
+        </div>
+    </div>
+</m4m-box>
