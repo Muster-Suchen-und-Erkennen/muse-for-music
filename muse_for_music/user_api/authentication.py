@@ -2,7 +2,8 @@ from flask import url_for, request
 from flask_restplus import Resource, fields, abort
 from flask_jwt_extended import jwt_required, create_access_token, \
                                get_jwt_identity, create_refresh_token, \
-                               get_jwt_claims, jwt_refresh_token_required
+                               get_jwt_claims, jwt_refresh_token_required, \
+                               fresh_jwt_required
 
 from . import user_api as api
 from .import auth_logger
@@ -19,6 +20,11 @@ user_auth_model = api.model('UserAuth', {
     'password': fields.String(required=True, example='admin')
 })
 
+password_change_model = api.model('PasswordChange', {
+    'password': fields.String(required=True, example='admin'),
+    'password_repeat': fields.String(required=False, example='admin')
+})
+
 jwt_response = api.model('JWT', {
     'access_token': fields.String(required=True)
 })
@@ -27,7 +33,7 @@ jwt_response_full = api.inherit('JWT_FULL', jwt_response, {
     'refresh_token': fields.String(reqired=True)
 })
 
-check_response = api.model('check', {
+user_model = api.model('UserModel', {
     'username': fields.String(required=True),
     'roles': fields.List(fields.String())
 })
@@ -86,11 +92,29 @@ class FreshLogin(Resource):
         return ret
 
 
+@ns.route('/change-password/')
+class ChangePassword(Resource):
+    """Resource to change user passsword."""
+
+    @api.expect(user_auth_model)
+    @api.response(401, 'Not Authenticated')
+    @fresh_jwt_required
+    def post(self):
+        """Change user password."""
+        user = User.get_user_by_name(get_jwt_identity())
+        password = api.payload.get('password', None)
+        if password is not None:
+            abort(400, 'Incorrect password or password_repeat.')
+        if password != api.payload.get('password_repeat', None):
+            abort(400, 'Incorrect password or password_repeat.')
+        user.set_password(password)
+
+
 @ns.route('/check/')
 class Check(Resource):
     """Resource to check access tokens."""
 
-    @api.marshal_with(check_response)
+    @api.marshal_with(user_model)
     @api.response(401, 'Not Authenticated')
     @jwt_required
     def get(self):

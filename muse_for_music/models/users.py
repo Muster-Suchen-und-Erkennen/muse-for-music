@@ -28,6 +28,9 @@ class User(db.Model):
     def roles_json(self) -> List[str]:
         return [role.role.name for role in self.roles]
 
+    def set_password(self, password: str):
+        self.password = bcrypt.generate_password_hash(password)
+
     def check_password(self, password: str) -> bool:
         return bcrypt.check_password_hash(self.password, password)
 
