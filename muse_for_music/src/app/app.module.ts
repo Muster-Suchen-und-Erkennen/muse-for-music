@@ -14,6 +14,9 @@ import { NavigationService } from './navigation/navigation-service';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 
+import { UserOverviewComponent } from './users/user-overview.component';
+import { UserDetailComponent } from './users/user-detail.component';
+
 import { PeopleOverviewComponent } from './people/people-overview.component';
 import { PersonEditComponent } from './people/person-edit.component';
 import { OpusesOverviewComponent } from './opuses/opuses-overview.component';
@@ -38,6 +41,9 @@ import { AppComponent } from './app.component';
 
     LoginComponent,
     HomeComponent,
+
+    UserOverviewComponent,
+    UserDetailComponent,
 
     PeopleOverviewComponent,
     PersonEditComponent,
