@@ -14,6 +14,7 @@ import { NavigationService } from './navigation/navigation-service';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 
+import { UserManagementComponent } from './users/user-management.component';
 import { UserOverviewComponent } from './users/user-overview.component';
 import { UserDetailComponent } from './users/user-detail.component';
 
@@ -42,6 +43,7 @@ import { AppComponent } from './app.component';
     LoginComponent,
     HomeComponent,
 
+    UserManagementComponent,
     UserOverviewComponent,
     UserDetailComponent,
 

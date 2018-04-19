@@ -14,6 +14,7 @@ root_links = api.inherit('RootLinks', with_curies, {
     'fresh_login': HaLUrl(UrlData('user_api.auth_fresh_login', absolute=True)),
     'refresh': HaLUrl(UrlData('user_api.auth_refresh', absolute=True)),
     'check': HaLUrl(UrlData('user_api.auth_check', absolute=True)),
+    'management': HaLUrl(UrlData('user_api.manage_administration_root_resource', absolute=True)),
 })
 
 root_model = api.model('RootModel', {

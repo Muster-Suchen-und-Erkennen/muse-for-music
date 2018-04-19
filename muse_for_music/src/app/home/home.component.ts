@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
+import { UserApiService } from '../shared/rest/user-api.service';
 
 @Component({
   selector: 'm4m-home',
@@ -8,7 +9,7 @@ import { NavigationService, Breadcrumb } from '../navigation/navigation-service'
 })
 export class HomeComponent implements OnInit {
 
-    constructor(private data: NavigationService) { }
+    constructor(private data: NavigationService, private userApi: UserApiService) { }
 
     ngOnInit(): void {
         this.data.changeTitle('MUSE4Music – Home');

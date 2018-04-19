@@ -87,7 +87,8 @@ class FreshLogin(Resource):
         user = login_user()
 
         ret = {
-            'access_token': create_access_token(identity=user, fresh=True)
+            'access_token': create_access_token(identity=user, fresh=True),
+            'refresh_token': create_refresh_token(identity=user)
         }
         return ret
 

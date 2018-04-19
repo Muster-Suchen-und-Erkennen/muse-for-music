@@ -1,6 +1,7 @@
 from flask import url_for, request
 from flask_restplus import Resource, fields, abort, marshal
 from flask_jwt_extended import jwt_required, fresh_jwt_required, get_jwt_identity, get_jwt_claims
+from ..hal_field import HaLUrl, UrlData, NestedFields
 
 from . import user_api as api
 from .import auth_logger, has_roles
@@ -9,9 +10,19 @@ from .. import jwt, db
 from ..models.users import User, UserRole, RoleEnum
 
 from .authentication import user_auth_model
+from .models import with_curies
 
 ns = api.namespace('manage', description='User Management Resources:')
 
+
+administration_root_links = api.inherit('AdministrationRootLinks', with_curies, {
+    'self': HaLUrl(UrlData('user_api.manage_administration_root_resource', absolute=True)),
+    'user': HaLUrl(UrlData('user_api.manage_users_resource', absolute=True)),
+})
+
+administration_root_model = api.model('AdministrationRootModel', {
+    '_links': NestedFields(administration_root_links),
+})
 
 password_reset_model = api.model('PasswordReset', {
     'password': fields.String(required=True, example='admin')
@@ -25,6 +36,14 @@ user_model = api.model('UserModel', {
     'username': fields.String(required=True),
     'roles': fields.Nested(user_role, as_list=True),
 })
+
+@ns.route('/')
+class AdministrationRootResource(Resource):
+
+    @ns.marshal_list_with(administration_root_model)
+    def get(self):
+        pass
+
 
 @ns.route('/users/')
 class UsersResource(Resource):

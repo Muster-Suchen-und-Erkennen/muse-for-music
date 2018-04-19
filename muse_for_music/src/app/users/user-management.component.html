@@ -1,0 +1,72 @@
+
+<div class="ph3 flex flex-wrap">
+
+    <m4m-box>
+        <h1 class="mv0" title>Users:</h1>
+        <div class="tooltip tooltip-left button h2 pv1 ph2 ml3 br2 link bg-animate hover-bg-light-green pointer" data-tooltip="add user" (click)="newUser.open()" title-right>
+            <i class="fa fa-plus"></i>
+        </div>
+        <div class="w-100 " body>
+            <table class="w-100 table collapse ph3 pv2" body>
+                <tbody>
+                    <tr>
+                        <th class="ph3 pv2 tl ttu">
+                            Username
+                        </th>
+                        <th class="ph3 pv2 tl ttu">
+                            Password
+                        </th>
+                        <th class="ph3 pv2 tl ttu">
+                            Roles
+                        </th>
+                    </tr>
+                    <tr class="bt b--black-10 pointer" *ngFor="let user of users">
+                        <th class="ph3 pv2 tl">{{user?.username}}</th>
+                        <th class="ph3 pv2 tl">pw</th>
+                        <th class="ph3 pv2 tl"><span *ngFor="let role of user?.roles; let last = last" >{{role.role}}<span [hidden]="last">, </span></span></th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </m4m-box>
+
+
+
+    <m4m-dialog [dialogType]="'ok-cancel'" [icon]="'info'" [okCallback]="addUser" #newUser >
+        <h1 class="mv0" title>New User:</h1>
+        <div class="w-100 ph3 pv2" body>
+            <div class="flex flex-wrap">
+                <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word">
+                    Username:
+                </label>
+                <div class="flex bb b--gray">
+                    <input class="input-reset bn pa1 flex-grow" type="text" name="username" placeholder="Username" [(ngModel)]="newUsername">
+                </div>
+            </div>
+            <div class="mt2 flex flex-wrap">
+                <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word">
+                    Password:
+                </label>
+                <div class="flex bb b--gray">
+                    <input class="input-reset bn pa1 flex-grow" type="password" name="password" placeholder="Password" [(ngModel)]="newPassword">
+                </div>
+            </div>
+        </div>
+    </m4m-dialog>
+
+
+    <m4m-dialog [dialogType]="'ok-cancel'" [icon]="'info'" [okCallback]="renewLogin" #renewLoginDialog >
+        <h1 class="mv0" title>Please enter your password:</h1>
+        <div class="w-100 ph3 pv2" body>
+            <div class="mt2 flex flex-wrap">
+                <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word">
+                    Password:
+                </label>
+                <div class="flex bb b--gray">
+                    <input class="input-reset bn pa1 flex-grow" type="password" name="password" placeholder="Password" [(ngModel)]="password" (keyup.enter)="renewLoginDialog.close()">
+                </div>
+            </div>
+        </div>
+    </m4m-dialog>
+
+</div>

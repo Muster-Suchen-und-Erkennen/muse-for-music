@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
+import { UserManagementComponent } from './users/user-management.component';
 import { UserOverviewComponent } from './users/user-overview.component';
 
 import { PeopleOverviewComponent } from './people/people-overview.component';
@@ -13,6 +14,7 @@ import { SubPartDetailComponent } from './subparts/subpart-detail.component';
 import { VoiceDetailComponent } from './voices/voice-detail.component';
 
 import { LoginGuard } from './shared/rest/login.guard';
+import { AdminGuard } from './shared/rest/admin.guard';
 
 const routes: Routes = [
   { path: 'people', component: PeopleOverviewComponent, canActivate: [LoginGuard] },
@@ -24,6 +26,7 @@ const routes: Routes = [
   { path: '', pathMatch: 'full', component: HomeComponent, canActivate: [LoginGuard] },
   { path: 'login', pathMatch: 'full', component: LoginComponent},
   { path: 'user', pathMatch: 'full', component: UserOverviewComponent, canActivate: [LoginGuard]},
+  { path: 'users', pathMatch: 'full', component: UserManagementComponent, canActivate: [AdminGuard]},
   { path: '**', redirectTo: 'dashboard' }
 ]
 

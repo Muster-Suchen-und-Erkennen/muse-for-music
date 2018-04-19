@@ -7,4 +7,12 @@
         <i class="f2 fa fa-music"></i>
         <a class="f3 black">Opuses</a>
     </div>
+    <div class="h4 w5 ma2 br3 bg-near-white flex flex-column items-center justify-center grow pointer" routerLink="/taxonomies" *ngIf="userApi.roles.has('taxonomy_editor')">
+        <i class="f2 fa fa-list"></i>
+        <a class="f3 black">Taxonomies</a>
+    </div>
+    <div class="h4 w5 ma2 br3 bg-near-white flex flex-column items-center justify-center grow pointer" routerLink="/users" *ngIf="userApi.roles.has('admin')">
+        <i class="f2 fa fa-users"></i>
+        <a class="f3 black">Users</a>
+    </div>
 </div>

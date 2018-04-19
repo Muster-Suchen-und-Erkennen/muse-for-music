@@ -2,19 +2,28 @@ import { Injectable, OnInit, Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseApiService, ApiObject, LinkObject, ApiLinksObject } from './api-base.service';
 import { InfoService } from '../info/info.service';
-import { Observable, } from 'rxjs/Rx';
+import { Observable, Subject, } from 'rxjs/Rx';
 import { AsyncSubject } from 'rxjs/AsyncSubject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 export interface AuthRootLinks extends ApiLinksObject {
     login: LinkObject;
     fresh_login: LinkObject;
     refresh: LinkObject;
     check: LinkObject;
+    management: LinkObject;
 };
 
 export interface AuthRootModel extends ApiObject {
     _links: AuthRootLinks;
+    [propName: string]: any;
+};
+
+export interface ManagementRootLinks extends ApiLinksObject {
+    user: LinkObject;
+};
+
+export interface ManagementRootModel extends ApiObject {
+    _links: ManagementRootLinks;
     [propName: string]: any;
 };
 
@@ -26,8 +35,12 @@ export class UserApiService implements OnInit {
     private errorSet = new Set([500, 501, ]);
 
     private authRootSource = new AsyncSubject<AuthRootModel>();
-
     private currentAuthRoot = this.authRootSource.asObservable();
+
+    private managementRootSource = new AsyncSubject<ManagementRootModel>();
+    private currentManagementRoot = this.managementRootSource.asObservable();
+
+    private streams: {[propName: string]: Subject<ApiObject | ApiObject[]>} = {};
 
     readonly TOKEN = 'token';
     readonly REFRESH_TOKEN = 'refresh_token';
@@ -154,7 +167,6 @@ export class UserApiService implements OnInit {
             if ((window as any).userApiBasePath != null) {
                 url = (window as any).userApiBasePath;
             }
-            console.log(url);
             this.rest.get(url).subscribe(data => {
                 this.authRootSource.next((data as AuthRootModel));
                 this.authRootSource.complete();
@@ -184,18 +196,68 @@ export class UserApiService implements OnInit {
         return success.asObservable();
     }
 
-    guestLogin() {
-        this.getAuthRoot().subscribe(auth => {
-            this.rest.post(auth._links.guest_login, {}).subscribe(data => {
-                this.updateTokens(data.access_token, data.refresh_token);
-            });
-        });
-    }
-
     refreshLogin = (refreshToken: string) => {
         this.getAuthRoot().subscribe(auth => {
             this.rest.post(auth._links.refresh, {}, refreshToken).subscribe(data => {
                 this.updateTokens(data.access_token);
+            });
+        });
+    }
+
+    freshLogin = (password: string) => {
+        const finished = new AsyncSubject<boolean>();
+        this.getAuthRoot().subscribe(auth => {
+            this.rest.post(auth._links.fresh_login, { username: this.username, password: password }).subscribe(data => {
+                this.updateTokens(data.access_token, data.refresh_token);
+                finished.next(true);
+                finished.complete();
+            });
+        });
+        return finished.asObservable()
+    }
+
+
+    // User Management /////////////////////////////////////////////////////////
+
+    private getStreamSource(streamID: string, create: boolean = true) {
+        if (this.streams[streamID] == null && create) {
+            this.streams[streamID] = new Subject<ApiObject | ApiObject[]>();
+        }
+        return this.streams[streamID];
+    }
+
+
+    getManagementRoot(): Observable<ManagementRootModel> {
+        return this.getAuthRoot().flatMap(authRoot => {
+            if (!this.managementRootSource.isStopped) {
+                this.rest.get(authRoot._links.management).subscribe(data => {
+                    this.managementRootSource.next((data as ManagementRootModel));
+                    this.managementRootSource.complete();
+                }, error => this.errorHandler(error, 'root', 'GET'));
+            }
+            return this.currentManagementRoot;
+        })
+    }
+
+    getUsers(): Observable<ApiObject[]> {
+        const resource = 'users';
+        const stream = this.getStreamSource(resource);
+        this.getManagementRoot().subscribe(management => {
+            this.rest.get(management._links.user, this.token).subscribe(data => {
+                stream.next(data);
+            }, error => this.errorHandler(error, resource, 'GET'));
+        }, error => this.errorHandler(error, resource, 'GET'));
+        return stream.asObservable() as Observable<ApiObject[]>;
+    }
+
+    addUser(username: string, password: string): Observable<ApiObject> {
+        const baseResource = 'users';
+        return this.getManagementRoot().flatMap(management => {
+            return this.rest.post(management._links.user, {username: username, password: password}, this.token).flatMap(data => {
+                const stream = this.getStreamSource(baseResource + '/' + data.username);
+                stream.next(data);
+                this.getUsers();
+                return stream.asObservable() as Observable<ApiObject>;
             });
         });
     }
