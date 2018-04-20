@@ -252,13 +252,48 @@ export class UserApiService implements OnInit {
 
     addUser(username: string, password: string): Observable<ApiObject> {
         const baseResource = 'users';
-        return this.getManagementRoot().flatMap(management => {
+        const stream = this.getManagementRoot().flatMap(management => {
             return this.rest.post(management._links.user, {username: username, password: password}, this.token).flatMap(data => {
                 const stream = this.getStreamSource(baseResource + '/' + data.username);
                 stream.next(data);
                 this.getUsers();
                 return stream.asObservable() as Observable<ApiObject>;
             });
+        }).catch(error => {
+            this.errorHandler(error, baseResource, 'POST');
+            return Observable.throw(error);
         });
+        stream.take(1).subscribe();
+        return stream;
+    }
+
+    addRole(user: ApiObject, role) {
+        const resource = 'users/' + user.username + '/roles';
+        const stream = this.rest.post(user._links.roles, role, this.token).flatMap(data => {
+            const stream = this.getStreamSource(resource);
+            stream.next(data);
+            this.getUsers();
+            return stream.asObservable() as Observable<ApiObject>;
+        }).catch(error => {
+            this.errorHandler(error, resource, 'POST');
+            return Observable.throw(error);
+        });
+        stream.take(1).subscribe();
+        return stream;
+    }
+
+    removeRole(user: ApiObject, role) {
+        const resource = 'users/' + user.username + '/roles';
+        const stream = this.rest.delete(user._links.roles, this.token, role).flatMap(data => {
+            const stream = this.getStreamSource(resource);
+            stream.next(data);
+            this.getUsers();
+            return stream.asObservable() as Observable<ApiObject>;
+        }).catch(error => {
+            this.errorHandler(error, resource, 'DELETE');
+            return Observable.throw(error);
+        });
+        stream.take(1).subscribe();
+        return stream;
     }
 }
