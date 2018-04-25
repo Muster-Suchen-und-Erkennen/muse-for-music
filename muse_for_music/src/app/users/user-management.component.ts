@@ -24,6 +24,9 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     private newUsername;
     private newPassword;
 
+    currentUser: ApiObject;
+    role: string;
+
     @ViewChild('renewLoginDialog') loginDialog: myDialogComponent;
 
 
@@ -48,12 +51,46 @@ export class UserManagementComponent implements OnInit, OnDestroy {
             this.pendingActionSubscription.unsubscribe();
         }
         if (this.userApi.tokenIsFresh) {
-            this.userApi.addUser(this.newUsername, this.newPassword).take(1).subscribe();
+            this.userApi.addUser(this.newUsername, this.newPassword);
         } else {
             this.loginDialog.open();
             this.pendingActionSubscription = this.freshLogin.subscribe(sucess => {
                 if (sucess) {
-                    this.userApi.addUser(this.newUsername, this.newPassword).take(1).subscribe();
+                    this.userApi.addUser(this.newUsername, this.newPassword);
+                }
+            })
+        }
+    }
+
+    addRole = () => {
+        const user = this.currentUser;
+        const role = {role: this.role};
+        if (this.pendingActionSubscription != null) {
+            this.pendingActionSubscription.unsubscribe();
+        }
+        if (this.userApi.tokenIsFresh) {
+            this.userApi.addRole(user, role);
+        } else {
+            this.loginDialog.open();
+            this.pendingActionSubscription = this.freshLogin.subscribe(sucess => {
+                if (sucess) {
+                    this.userApi.addRole(user, role);
+                }
+            })
+        }
+    }
+
+    removeRole = (user, role) => {
+        if (this.pendingActionSubscription != null) {
+            this.pendingActionSubscription.unsubscribe();
+        }
+        if (this.userApi.tokenIsFresh) {
+            this.userApi.removeRole(user, role);
+        } else {
+            this.loginDialog.open();
+            this.pendingActionSubscription = this.freshLogin.subscribe(sucess => {
+                if (sucess) {
+                    this.userApi.removeRole(user, role);
                 }
             })
         }

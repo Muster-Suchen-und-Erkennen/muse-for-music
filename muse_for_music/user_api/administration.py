@@ -32,7 +32,13 @@ user_role = api.model('UserRoleModel', {
     'role': fields.String(attribute="role.name", enum=[en.name for en in RoleEnum]),
 })
 
+user_links_model = api.model('UserLinks', {
+    'self': HaLUrl(UrlData('user_api.manage_user_resource', url_data={'username': 'username'}, absolute=True)),
+    'roles': HaLUrl(UrlData('user_api.manage_user_role_resource', url_data={'username': 'username'}, absolute=True)),
+})
+
 user_model = api.model('UserModel', {
+    '_links': NestedFields(user_links_model),
     'username': fields.String(required=True),
     'roles': fields.Nested(user_role, as_list=True),
 })
@@ -108,7 +114,7 @@ class UserResource(Resource):
         db.session.commit()
 
 
-@ns.route('/users/<string:username>/roles')
+@ns.route('/users/<string:username>/roles/')
 class UserRoleResource(Resource):
 
     @ns.marshal_list_with(user_role)

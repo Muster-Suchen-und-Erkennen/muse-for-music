@@ -20,16 +20,41 @@
                             Roles
                         </th>
                     </tr>
-                    <tr class="bt b--black-10 pointer" *ngFor="let user of users">
+                    <tr class="bt b--black-10" *ngFor="let user of users">
                         <th class="ph3 pv2 tl">{{user?.username}}</th>
                         <th class="ph3 pv2 tl">pw</th>
-                        <th class="ph3 pv2 tl"><span *ngFor="let role of user?.roles; let last = last" >{{role.role}}<span [hidden]="last">, </span></span></th>
+                        <th class="ph3 pv2 tl">
+                            <span *ngFor="let role of user?.roles; let last = last" [ngClass]="{mr2: last}">
+                                {{role.role}}
+                                <i class="fa fa-times pointer grow link hover-red" (click)="removeRole(user, role)"></i>
+                                <span [hidden]="last">, </span>
+                            </span>
+                            <i class="fa fa-plus pa1 bg-near-white br1 background-animate hover-bg-light-green pointer" (click)="currentUser = user; newRole.open()"></i>
+                        </th>
                     </tr>
                 </tbody>
             </table>
         </div>
     </m4m-box>
 
+
+
+    <m4m-dialog [dialogType]="'ok-cancel'" [icon]="'info'" [okCallback]="addRole" #newRole >
+            <h1 class="mv0" title>Add Role to user {{currentUser?.username}}:</h1>
+            <div class="w-100 ph3 pv2" body>
+                <div class="flex flex-wrap">
+                    <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word">
+                        Role:
+                    </label>
+                    <div class="flex bb b--gray gray hover-black">
+                        <select id="role" class="min-w5 input-reset bn pa1 bg-white black flex-grow" [(ngModel)]="role" #inputSelect>
+                            <option *ngFor="let opt of ['user', 'taxonomy_editor', 'admin']" [value]="opt">{{opt}}</option>
+                        </select>
+                        <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem; pointer-events: none" (click)="inputSelect.click($event)"><i class="f4 fa fa-angle-down"></i></div>
+                    </div>
+                </div>
+            </div>
+        </m4m-dialog>
 
 
     <m4m-dialog [dialogType]="'ok-cancel'" [icon]="'info'" [okCallback]="addUser" #newUser >
@@ -63,7 +88,7 @@
                     Password:
                 </label>
                 <div class="flex bb b--gray">
-                    <input class="input-reset bn pa1 flex-grow" type="password" name="password" placeholder="Password" [(ngModel)]="password" (keyup.enter)="renewLoginDialog.close()">
+                    <input class="input-reset bn pa1 flex-grow" type="password" name="password" placeholder="Password" [(ngModel)]="password" (keyup.enter)="renewLoginDialog.ok()">
                 </div>
             </div>
         </div>
