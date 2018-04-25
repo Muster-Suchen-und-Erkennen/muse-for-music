@@ -8,49 +8,49 @@
     <span class="tooltip tooltip-right" [attr.data-tooltip]="error" [hidden]="isValid"  [ngStyle]="{'order': (question.controlType === 'object' && question?.nestedQuestions?.length > 2) ? '1': '0'}"><i class="w2 tc mr1 f5 red fa fa-exclamation"></i></span>
 
     <div class="flex-grow flex flex-wrap">
-    <label class="f4 min-w4 mr2 ws-normal flex-grow" [ngClass]="{'pointer': question.controlType === 'object' && question?.nestedQuestions?.length > 2}"  style="word-wrap: break-word" [attr.for]="question.key">
-        {{question.label}}
-    </label>
+        <label class="f4 min-w4 mr2 ws-normal flex-grow" [ngClass]="{'pointer': question.controlType === 'object' && question?.nestedQuestions?.length > 2}"  style="word-wrap: break-word" [attr.for]="question.key">
+            {{question.label}}
+        </label>
 
-    <div class="pl1" class="min-w5 flex-grow flex items-center">
-        <div [ngSwitch]="question.controlType" class="flex-grow">
+        <div class="pl1 min-w5 flex-grow flex items-center">
+            <div [ngSwitch]="question.controlType" class="flex-grow">
 
-            <div *ngSwitchCase="'string'" class="flex bb b--gray">
-                <input class="input-reset bn pa1 flex-grow" [formControlName]="question.key" [id]="question.key" [type]="question.type">
+                <div *ngSwitchCase="'string'" class="flex bb b--gray">
+                    <input class="input-reset bn pa1 flex-grow" [formControlName]="question.key" [id]="question.key" [type]="question.type">
+                </div>
+
+                <div *ngSwitchCase="'text'" class="flex">
+                    <textarea class="min-w5 flex-grow" [formControlName]="question.key" [id]="question.key"></textarea>
+                </div>
+
+                <div *ngSwitchCase="'date'" class="min-w5 flex-grow flex bb b--gray">
+                    <m4m-date-input class="flex flex-grow" [formControlName]="question.key" [question]="question"></m4m-date-input>
+                </div>
+
+                <div *ngSwitchCase="'number'" class="min-w5 flex-grow flex bb b--gray">
+                    <m4m-number-input class="flex flex-grow" [formControlName]="question.key" [question]="question"></m4m-number-input>
+                </div>
+
+                <div *ngSwitchCase="'boolean'" class="min-w5 flex-grow flex items-center">
+                    <m4m-boolean-input [formControlName]="question.key" [question]="question"></m4m-boolean-input>
+                </div>
+
+                <div *ngSwitchCase="'dropdown'" class="min-w5 flex-grow flex bb b--gray gray hover-black">
+                    <select [id]="question.key" class="input-reset bn pa1 bg-white black flex-grow" [formControlName]="question.key" #inputSelect>
+                        <option *ngFor="let opt of question.options" [value]="opt">{{opt}}</option>
+                    </select>
+                    <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem; pointer-events: none" (click)="inputSelect.click($event)"><i class="f4 fa fa-angle-down"></i></div>
+                </div>
+
+                <m4m-reference-chooser *ngSwitchCase="'reference'" [formControlName]="question.key" [question]="question"></m4m-reference-chooser>
+
+                <m4m-taxonomy-select *ngSwitchCase="'taxonomy'" [formControlName]="question.key" [question]="question"></m4m-taxonomy-select>
+
             </div>
 
-            <div *ngSwitchCase="'text'" class="flex">
-                <textarea class="min-w5 flex-grow" [formControlName]="question.key" [id]="question.key"></textarea>
-            </div>
-
-            <div *ngSwitchCase="'date'" class="min-w5 flex-grow flex bb b--gray">
-                <m4m-date-input class="flex flex-grow" [formControlName]="question.key" [question]="question"></m4m-date-input>
-            </div>
-
-            <div *ngSwitchCase="'number'" class="min-w5 flex-grow flex bb b--gray">
-                <m4m-number-input class="flex flex-grow" [formControlName]="question.key" [question]="question"></m4m-number-input>
-            </div>
-
-            <div *ngSwitchCase="'boolean'" class="min-w5 flex-grow flex items-center">
-                <m4m-boolean-input [formControlName]="question.key" [question]="question"></m4m-boolean-input>
-            </div>
-
-            <div *ngSwitchCase="'dropdown'" class="min-w5 flex-grow flex bb b--gray gray hover-black">
-                <select [id]="question.key" class="input-reset bn pa1 bg-white black flex-grow" [formControlName]="question.key" #inputSelect>
-                    <option *ngFor="let opt of question.options" [value]="opt">{{opt}}</option>
-                </select>
-                <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem; pointer-events: none" (click)="inputSelect.click($event)"><i class="f4 fa fa-angle-down"></i></div>
-            </div>
-
-            <m4m-reference-chooser *ngSwitchCase="'reference'" [formControlName]="question.key" [question]="question"></m4m-reference-chooser>
-
-            <m4m-taxonomy-select *ngSwitchCase="'taxonomy'" [formControlName]="question.key" [question]="question"></m4m-taxonomy-select>
-
+            <!--div class="f6">{{question.label}} is required</div-->
         </div>
-
-        <!--div class="f6">{{question.label}} is required</div-->
     </div>
-</div>
 </div>
 
 <m4m-array-input [question]="question" [array]="form.controls[question.key]" *ngIf="question.controlType === 'array'"></m4m-array-input>

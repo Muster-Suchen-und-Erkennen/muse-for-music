@@ -8,7 +8,6 @@ import { QuestionService } from '../question.service';
 import { QuestionControlService } from '../question-control.service';
 
 import { ApiObject } from '../../rest/api-base.service';
-import { patch } from 'webdriver-js-extender';
 import { SaveButtonComponent } from './save-button/save-button.component';
 
 @Component({
@@ -75,7 +74,11 @@ export class DynamicFormComponent implements OnInit, OnChanges {
                         if (question.isArray) {
                             patched[question.key] = [];
                         } else {
-                            patched[question.key] = question.nullValue;
+                            if (question.value != null) {
+                                patched[question.key] = question.value;
+                            } else {
+                                patched[question.key] = question.nullValue;
+                            }
                         }
                     }
                 });
