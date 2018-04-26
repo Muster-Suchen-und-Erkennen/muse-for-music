@@ -15,6 +15,7 @@ from .models import person_post, person_put, person_get, parse_date
 from ... import db
 from ...user_api import has_roles, RoleEnum
 from ...models.data.people import Person, GenderEnum
+from ...models.data.history import History, MethodEnum
 
 ns = api.namespace('person', description='Resource for persons.', path='/persons')
 
@@ -35,6 +36,8 @@ class PersonListResource(Resource):
         new_person = Person(**request.get_json())
         try:
             db.session.add(new_person)
+            hist = History(MethodEnum.create, new_person)
+            db.session.add(hist)
             db.session.commit()
             return marshal(new_person, person_get)
         except IntegrityError as err:
@@ -81,6 +84,8 @@ class PersonResource(Resource):
             person.gender = value
 
         db.session.add(person)
+        hist = History(MethodEnum.update, person)
+        db.session.add(hist)
         db.session.commit()
         return marshal(person, person_get)
 
@@ -91,5 +96,7 @@ class PersonResource(Resource):
         person = Person.query.filter_by(id=id).first()
         if person is None:
             abort(404, 'Requested person not found!')
+        hist = History(MethodEnum.delete, person)
+        db.session.add(hist)
         db.session.delete(person)
         db.session.commit()

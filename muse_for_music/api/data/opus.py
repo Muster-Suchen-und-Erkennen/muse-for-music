@@ -3,7 +3,7 @@
 
 from flask import jsonify, url_for, request
 from flask_restplus import Resource, marshal, abort
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_claims
 from sqlalchemy.exc import IntegrityError
 
 
@@ -16,6 +16,7 @@ from ... import db
 from ...user_api import has_roles, RoleEnum
 from ...models.data.opus import Opus
 from ...models.data.part import Part
+from ...models.data.history import History, MethodEnum
 
 
 ns = api.namespace('opus', description='Resource for opuses.', path='/opuses')
@@ -37,6 +38,8 @@ class OpusListResource(Resource):
         new_opus = Opus(**request.get_json())
         try:
             db.session.add(new_opus)
+            hist = History(MethodEnum.create, new_opus)
+            db.session.add(hist)
             db.session.commit()
             return marshal(new_opus, opus_get)
         except IntegrityError as err:
@@ -69,6 +72,8 @@ class OpusResource(Resource):
         new_values = request.get_json()
 
         opus.update(new_values)
+        hist = History(MethodEnum.update, opus)
+        db.session.add(hist)
         db.session.commit()
         return marshal(opus, opus_get)
 
@@ -79,6 +84,10 @@ class OpusResource(Resource):
         opus = Opus.get_by_id(id)  # type: Opus
         if opus is None:
             abort(404, 'Requested opus not found!')
+        if RoleEnum.admin.name not in get_jwt_claims() and not History.isOwner(opus):
+            abort(403, 'Only the owner of a resource and Administrators can delete a resource!')
+        hist = History(MethodEnum.delete, opus)
+        db.session.add(hist)
         db.session.delete(opus)
         db.session.commit()
 
@@ -103,5 +112,7 @@ class OpusPartsResource(Resource):
         new_values['opus_id'] = id
         new_part = Part(**new_values)
         db.session.add(new_part)
+        hist = History(MethodEnum.create, new_part)
+        db.session.add(hist)
         db.session.commit()
         return marshal(new_part, part_get)

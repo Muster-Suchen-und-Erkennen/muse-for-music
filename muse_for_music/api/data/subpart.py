@@ -2,7 +2,7 @@
 
 from flask import jsonify, url_for, request
 from flask_restplus import Resource, marshal, abort
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_claims
 from sqlalchemy.exc import IntegrityError
 
 
@@ -16,6 +16,7 @@ from ...models.data.subpart import SubPart
 from ...models.data.voice import Voice
 from ...models.taxonomies import Anteil, InstrumentierungEinbettungQualitaet, \
                                  InstrumentierungEinbettungQuantitaet
+from ...models.data.history import History, MethodEnum
 
 
 ns = api.namespace('subpart', description='Resource for Subparts.', path='/subparts')
@@ -55,6 +56,9 @@ class SubPartResource(Resource):
 
         subpart.update(new_values)
 
+        hist = History(MethodEnum.update, SubPart)
+        db.session.add(hist)
+
         db.session.commit()
         return marshal(subpart, subpart_get)
 
@@ -65,6 +69,10 @@ class SubPartResource(Resource):
         subpart = SubPart.get_by_id(subpart_id)  # type: SubPart
         if subpart is None:
             abort(404, 'Requested subpart not found!')
+        if RoleEnum.admin.name not in get_jwt_claims() and not History.isOwner(subpart):
+            abort(403, 'Only the owner of a resource and Administrators can delete a resource!')
+        hist = History(MethodEnum.delete, subpart)
+        db.session.add(hist)
         db.session.delete(subpart)
         db.session.commit()
 
@@ -94,6 +102,8 @@ class SubPartVoiceListResource(Resource):
 
         new_voice = Voice(subpart, **new_values)
         db.session.add(new_voice)
+        hist = History(MethodEnum.create, new_voice)
+        db.session.add(hist)
         db.session.commit()
         return marshal(new_voice, voice_get)
 
@@ -122,6 +132,8 @@ class SubPartVoiceResource(Resource):
         new_values = request.get_json()
 
         voice.update(new_values)
+        hist = History(MethodEnum.update, voice)
+        db.session.add(hist)
         db.session.commit()
         return marshal(voice, voice_get)
 
@@ -132,5 +144,9 @@ class SubPartVoiceResource(Resource):
         voice = Voice.get_by_id(voice_id)  # type: Voice
         if voice is None:
             abort(404, 'Requested voice not found!')
+        if RoleEnum.admin.name not in get_jwt_claims() and not History.isOwner(voice):
+            abort(403, 'Only the owner of a resource and Administrators can delete a resource!')
+        hist = History(MethodEnum.delete, voice)
+        db.session.add(hist)
         db.session.delete(voice)
         db.session.commit()

@@ -7,6 +7,10 @@ from flask_jwt_extended import get_jwt_identity
 from ... import db
 from ..users import User
 from .people import Person
+from .opus import Opus
+from .part import Part
+from .subpart import SubPart
+from .voice import Voice
 
 
 class MethodEnum(enum.Enum):
@@ -44,4 +48,44 @@ class History(db.Model):
             db.session.flush((resource,))
         if isinstance(resource, Person):
             self.type = TypeEnum.person
-            self.resource = dumps({'id': resource.id})
+            self.resource = dumps({'id': resource.id}, sort_keys=True)
+        if isinstance(resource, Opus):
+            self.type = TypeEnum.opus
+            self.resource = dumps({'id': resource.id}, sort_keys=True)
+        if isinstance(resource, Part):
+            self.type = TypeEnum.part
+            self.resource = dumps({'id': resource.id, 'opus_id': resource.opus_id}, sort_keys=True)
+        if isinstance(resource, SubPart):
+            self.type = TypeEnum.subpart
+            self.resource = dumps({'id': resource.id, 'part_id': resource.part_id}, sort_keys=True)
+        if isinstance(resource, Voice):
+            self.type = TypeEnum.voice
+            self.resource = dumps({'id': resource.id, 'subpart_id': resource.subpart_id}, sort_keys=True)
+
+    @classmethod
+    def isOwner(cls, resource, user: [str, User]=None):
+        if user is None:
+            user = get_jwt_identity()
+        if isinstance(user, str):
+            user = User.get_user_by_name(user)
+        if user is None:
+            return False
+        type = None
+        resource_id = None
+        if isinstance(resource, Person):
+            type = TypeEnum.person
+            resource_id = dumps({'id': resource.id}, sort_keys=True)
+        if isinstance(resource, Opus):
+            type = TypeEnum.opus
+            resource_id = dumps({'id': resource.id}, sort_keys=True)
+        if isinstance(resource, Part):
+            type = TypeEnum.part
+            resource_id = dumps({'id': resource.id, 'opus_id': resource.opus_id}, sort_keys=True)
+        if isinstance(resource, SubPart):
+            type = TypeEnum.subpart
+            resource_id = dumps({'id': resource.id, 'part_id': resource.part_id}, sort_keys=True)
+        if isinstance(resource, Voice):
+            type = TypeEnum.voice
+            resource_id = dumps({'id': resource.id, 'subpart_id': resource.subpart_id}, sort_keys=True)
+        result = cls.query.filter(cls.user == user, cls.method == MethodEnum.create, cls.type == type, cls.resource == resource_id).first()
+        return result is not None

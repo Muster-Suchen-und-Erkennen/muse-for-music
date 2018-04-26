@@ -76,6 +76,10 @@ class Part(db.Model, GetByID, UpdateableModelMixin):
         db.session.add(self.form)
 
         from .subpart import SubPart
+        from .history import History, MethodEnum
 
         subpart = SubPart(self)
         db.session.add(subpart)
+
+        hist = History(MethodEnum.create, subpart)
+        db.session.add(hist)

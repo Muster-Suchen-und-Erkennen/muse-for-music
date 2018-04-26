@@ -94,10 +94,11 @@ class UserResource(Resource):
         user = User.get_user_by_name(username)
         if user is None:
             abort()
-        password = api.payload.get('password', None);
+        password = api.payload.get('password', None)
         if password is None:
             abort(400, 'Password must not be empty!')
         user.set_password(password)
+        user.deleted = False
         db.session.add(user)
         db.session.commit()
 
@@ -110,7 +111,8 @@ class UserResource(Resource):
         user = User.get_user_by_name(username)
         if user is None:
             abort()
-        db.session.delete(user)
+        user.deleted = True
+        db.session.add(user)
         db.session.commit()
 
 

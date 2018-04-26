@@ -2,7 +2,7 @@
 
 from flask import jsonify, url_for, request
 from flask_restplus import Resource, marshal, abort
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_claims
 from sqlalchemy.exc import IntegrityError
 
 
@@ -19,6 +19,7 @@ from ...models.taxonomies import InstrumentierungEinbettungQuantitaet, \
                                  InstrumentierungEinbettungQualitaet, \
                                  Lautstaerke, LautstaerkeEinbettung, \
                                  TempoEinbettung, TempoEntwicklung
+from ...models.data.history import History, MethodEnum
 
 
 ns = api.namespace('part', description='Resource for Parts.', path='/parts')
@@ -57,6 +58,9 @@ class PartResource(Resource):
 
         part.update(new_values)
 
+        hist = History(MethodEnum.update, part)
+        db.session.add(hist)
+
         db.session.commit()
         return marshal(part, part_get)
 
@@ -67,6 +71,10 @@ class PartResource(Resource):
         part = Part.get_by_id(id)  # type: Part
         if part is None:
             abort(404, 'Requested part not found!')
+        if RoleEnum.admin.name not in get_jwt_claims() and not History.isOwner(part):
+            abort(403, 'Only the owner of a resource and Administrators can delete a resource!')
+        hist = History(MethodEnum.delete, part)
+        db.session.add(hist)
         db.session.delete(part)
         db.session.commit()
 
@@ -88,6 +96,8 @@ class PartSubpartsResource(Resource):
         new_values['part_id'] = id
         new_subpart = SubPart(**new_values)
         db.session.add(new_subpart)
+        hist = History(MethodEnum.create, new_subpart)
+        db.session.add(hist)
         db.session.commit()
         return marshal(new_subpart, subpart_get)
 
