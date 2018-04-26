@@ -13,6 +13,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120), unique=True, index=True)
     password = db.Column(db.String(64))
+    deleted = db.Column(db.Boolean(), default=False)
     roles = db.relationship('UserRole', backref='User', lazy='joined',
                             cascade="all, delete-orphan",
                             passive_deletes=True)
@@ -31,7 +32,9 @@ class User(db.Model):
     def set_password(self, password: str):
         self.password = bcrypt.generate_password_hash(password)
 
-    def check_password(self, password: str) -> bool:
+    def check_password(self, password: str, ignore_deleted: bool=False) -> bool:
+        if self.deleted and not ignore_deleted:
+            return False
         return bcrypt.check_password_hash(self.password, password)
 
     @classmethod
