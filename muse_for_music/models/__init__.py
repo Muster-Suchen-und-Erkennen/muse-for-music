@@ -20,6 +20,7 @@ DB_COMMAND_LOGGER.addHandler(handler)
 from . import taxonomies
 from . import data
 from .data.people import Person
+from .data.history import History, MethodEnum
 
 
 @app.cli.command('create_db')
@@ -62,6 +63,9 @@ def init_db_function():
     #add person unknown
     unknown = Person('Unbekannt', 'other')
     db.session.add(unknown)
+
+    temp = History(MethodEnum.create, unknown, admin)
+    db.session.add(temp)
     db.session.commit()
     app.logger.info('Database populated.')
 
