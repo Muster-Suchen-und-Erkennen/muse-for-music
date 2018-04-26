@@ -49,7 +49,7 @@ class PartResource(Resource):
     @ns.doc(model=part_get, body=part_put)
     @ns.response(404, 'Part not found.')
     @jwt_required
-    @has_roles([RoleEnum.user])
+    @has_roles([RoleEnum.user, RoleEnum.admin])
     def put(self, id):
         part = Part.get_by_id(id)  # type: Part
         if part is None:
@@ -66,7 +66,7 @@ class PartResource(Resource):
 
     @ns.response(404, 'Part not found.')
     @jwt_required
-    @has_roles([RoleEnum.user])
+    @has_roles([RoleEnum.user, RoleEnum.admin])
     def delete(self, id):
         part = Part.get_by_id(id)  # type: Part
         if part is None:
@@ -90,7 +90,7 @@ class PartSubpartsResource(Resource):
 
     @ns.doc(model=subpart_get, body=subpart_post)
     @jwt_required
-    @has_roles([RoleEnum.user])
+    @has_roles([RoleEnum.user, RoleEnum.admin])
     def post(self, id):
         new_values = request.get_json()
         new_values['part_id'] = id

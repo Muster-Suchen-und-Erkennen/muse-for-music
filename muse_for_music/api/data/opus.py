@@ -33,7 +33,7 @@ class OpusListResource(Resource):
     @ns.doc(model=opus_get, body=opus_post)
     @ns.response(409, 'Name is not unique.')
     @jwt_required
-    @has_roles([RoleEnum.user])
+    @has_roles([RoleEnum.user, RoleEnum.admin])
     def post(self):
         new_opus = Opus(**request.get_json())
         try:
@@ -64,7 +64,7 @@ class OpusResource(Resource):
     @ns.doc(model=opus_get, body=opus_put)
     @ns.response(404, 'Opus not found.')
     @jwt_required
-    @has_roles([RoleEnum.user])
+    @has_roles([RoleEnum.user, RoleEnum.admin])
     def put(self, id):
         opus = Opus.get_by_id(id)  # type: Opus
         if opus is None:
@@ -79,7 +79,7 @@ class OpusResource(Resource):
 
     @ns.response(404, 'Opus not found.')
     @jwt_required
-    @has_roles([RoleEnum.user])
+    @has_roles([RoleEnum.user, RoleEnum.admin])
     def delete(self, id):
         opus = Opus.get_by_id(id)  # type: Opus
         if opus is None:
@@ -99,14 +99,14 @@ class OpusPartsResource(Resource):
 
     @ns.marshal_list_with(part_get)
     @jwt_required
-    @has_roles([RoleEnum.user])
+    @has_roles([RoleEnum.user, RoleEnum.admin])
     def get(self, id):
         parts = Part.query.filter_by(opus_id=id).all()
         return parts
 
     @ns.doc(model=part_get, body=part_post)
     @jwt_required
-    @has_roles([RoleEnum.user])
+    @has_roles([RoleEnum.user, RoleEnum.admin])
     def post(self, id):
         new_values = request.get_json()
         new_values['opus_id'] = id

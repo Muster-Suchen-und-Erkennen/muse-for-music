@@ -31,7 +31,7 @@ class PersonListResource(Resource):
     @ns.doc(model=person_get, body=person_post)
     @ns.response(409, 'Name is not unique.')
     @jwt_required
-    @has_roles([RoleEnum.user])
+    @has_roles([RoleEnum.user, RoleEnum.admin])
     def post(self):
         new_person = Person(**request.get_json())
         try:
@@ -62,7 +62,7 @@ class PersonResource(Resource):
     @ns.doc(model=person_get, body=person_put, vaidate=True)
     @ns.response(404, 'Person not found.')
     @jwt_required
-    @has_roles([RoleEnum.user])
+    @has_roles([RoleEnum.user, RoleEnum.admin])
     def put(self, id):
         person = Person.query.filter_by(id=id).first()  # type: Person
         if person is None:
@@ -91,7 +91,7 @@ class PersonResource(Resource):
 
     @ns.response(404, 'Person not found.')
     @jwt_required
-    @has_roles([RoleEnum.user])
+    @has_roles([RoleEnum.user, RoleEnum.admin])
     def delete(self, id):
         person = Person.query.filter_by(id=id).first()
         if person is None:

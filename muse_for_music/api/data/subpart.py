@@ -46,7 +46,7 @@ class SubPartResource(Resource):
     @ns.doc(model=subpart_get, body=subpart_put)
     @ns.response(404, 'Subpart not found.')
     @jwt_required
-    @has_roles([RoleEnum.user])
+    @has_roles([RoleEnum.user, RoleEnum.admin])
     def put(self, subpart_id):
         subpart = SubPart.get_by_id(subpart_id)  # type: SubPart
         if subpart is None:
@@ -64,7 +64,7 @@ class SubPartResource(Resource):
 
     @ns.response(404, 'Subpart not found.')
     @jwt_required
-    @has_roles([RoleEnum.user])
+    @has_roles([RoleEnum.user, RoleEnum.admin])
     def delete(self, subpart_id):
         subpart = SubPart.get_by_id(subpart_id)  # type: SubPart
         if subpart is None:
@@ -92,7 +92,7 @@ class SubPartVoiceListResource(Resource):
     @ns.doc(model=voice_get, body=voice_post)
     @ns.response(404, 'Subpart not found.')
     @jwt_required
-    @has_roles([RoleEnum.user])
+    @has_roles([RoleEnum.user, RoleEnum.admin])
     def post(self, subpart_id):
         subpart = SubPart.get_by_id(subpart_id)  # type: SubPart
         if subpart is None:
@@ -123,7 +123,7 @@ class SubPartVoiceResource(Resource):
     @ns.doc(model=voice_get, body=voice_put)
     @ns.response(404, 'voice not found.')
     @jwt_required
-    @has_roles([RoleEnum.user])
+    @has_roles([RoleEnum.user, RoleEnum.admin])
     def put(self, subpart_id, voice_id):
         voice = Voice.get_by_id(voice_id)  # type: Voice
         if voice is None:
@@ -139,7 +139,7 @@ class SubPartVoiceResource(Resource):
 
     @ns.response(404, 'voice not found.')
     @jwt_required
-    @has_roles([RoleEnum.user])
+    @has_roles([RoleEnum.user, RoleEnum.admin])
     def delete(self, subpart_id, voice_id):
         voice = Voice.get_by_id(voice_id)  # type: Voice
         if voice is None:
