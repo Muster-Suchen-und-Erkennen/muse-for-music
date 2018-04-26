@@ -1,6 +1,7 @@
 from csv import DictReader
 from collections import OrderedDict
 from logging import Logger
+import re
 from ... import db
 from ..helper_classes import GetByID, X
 from typing import Dict, List, Sequence, Any, Type, TypeVar
@@ -104,6 +105,7 @@ class TreeTaxonomy(Taxonomy):
     @classmethod
     def load(cls, input_data: DictReader, logger: Logger):
         """Load taxonomy from csv file."""
+        pattern = re.compile('^(\d+|\(\d+\)|\[\d+\]|\{\d+\}|<\d+>),?\s+')
         items = OrderedDict()  # type: Dict[str, TreeTaxonomy]
         for row in input_data:
             name = row['name']  # type: str
@@ -114,7 +116,7 @@ class TreeTaxonomy(Taxonomy):
                                name, items[name])
                 break
             if not row.get('parent'):
-                items[name] = cls(name=name)
+                items[name] = cls(name=pattern.sub('', name))
             else:
                 parent_name = row['parent']
                 if parent_name not in items:
@@ -122,7 +124,7 @@ class TreeTaxonomy(Taxonomy):
                                    name, parent_name)
                     break
                 parent = items[parent_name]
-                items[name] = cls(name=name, parent=parent, description=description)
+                items[name] = cls(name=pattern.sub('', name), parent=parent, description=description)
         else:
             for name, value in items.items():
                 db.session.add(value)
