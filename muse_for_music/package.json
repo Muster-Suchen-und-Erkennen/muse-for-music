@@ -5,7 +5,8 @@
   "scripts": {
     "ng": "ng",
     "start": "webpack-dev-server --port 2992 --content-base build/public --hot --inline",
-    "build": "webpack --progress --profile --colors",
+    "build": "webpack --progress --profile --colors --env.production",
+    "build-docker": "webpack --progress --profile --colors --env.production --env.DEPLOY_URL='./assets/'",
     "test": "karma start ./karma.conf.js",
     "lint": "ng lint",
     "e2e": "protractor ./protractor.conf.js",
