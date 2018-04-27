@@ -1,13 +1,13 @@
 import click
-from flask import Flask, logging
-from logging import Logger, StreamHandler, Formatter
+from flask import Flask
+from logging import Logger, StreamHandler, Formatter, getLogger, DEBUG
 from sys import stdout
 
 
 from .. import app, db
 from .users import User, UserRole, RoleEnum
 
-DB_COMMAND_LOGGER = logging.create_logger(app)  # type: Logger
+DB_COMMAND_LOGGER = getLogger(app.logger_name + '.db')  # type: Logger
 
 formatter = Formatter(fmt='[%(levelname)s] [%(name)-16s] %(message)s')
 
@@ -16,6 +16,8 @@ handler = StreamHandler(stream=stdout)
 handler.setFormatter(formatter)
 
 DB_COMMAND_LOGGER.addHandler(handler)
+
+DB_COMMAND_LOGGER.setLevel(DEBUG)
 
 from . import taxonomies
 from . import data
@@ -32,7 +34,7 @@ def create_db():
 
 def create_db_function():
     db.create_all()
-    app.logger.info('Database created.')
+    DB_COMMAND_LOGGER.info('Database created.')
 
 
 @app.cli.command('drop_db')
@@ -44,7 +46,7 @@ def drop_db():
 
 def drop_db_function():
     db.drop_all()
-    app.logger.info('Dropped Database.')
+    DB_COMMAND_LOGGER.info('Dropped Database.')
 
 
 @app.cli.command('init_db')
@@ -67,7 +69,7 @@ def init_db_function():
     temp = History(MethodEnum.create, unknown, admin)
     db.session.add(temp)
     db.session.commit()
-    app.logger.info('Database populated.')
+    DB_COMMAND_LOGGER.info('Database populated.')
 
 
 @app.cli.command('create_populated_db')

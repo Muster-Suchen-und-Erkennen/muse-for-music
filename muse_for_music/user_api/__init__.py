@@ -1,4 +1,4 @@
-from logging import Formatter, Logger, DEBUG
+from logging import Formatter, Logger, DEBUG, getLogger
 from logging.handlers import RotatingFileHandler
 from os import path
 from functools import wraps
@@ -51,7 +51,7 @@ def has_roles(roles: List[RoleEnum]):
     return has_roles_decorator
 
 
-auth_logger = logging.create_logger(app)  # type: Logger
+auth_logger = getLogger(app.logger_name + '.auth')  # type: Logger
 
 formatter = Formatter(fmt=app.config['AUTH_LOG_FORMAT'])
 
@@ -61,6 +61,8 @@ fh = RotatingFileHandler(path.join(app.config['LOG_PATH'], 'muse4music_auth.log'
 fh.setFormatter(formatter)
 
 fh.setLevel(DEBUG)
+
+auth_logger.setLevel(DEBUG)
 
 auth_logger.addHandler(fh)
 
