@@ -25,29 +25,29 @@ marschartige Auftaktfloskel,root
 Kuckucksmotiv (absteigende kleine Terz),root
 Kreuzmotiv,root
 """Tonleiter-Lauf mit jeweils zwei Schritten vor und einem zurück""",root
-... in ungerader Aufteilung des Notenwerts (Triolen etc.),"""Tonleiter-Lauf mit jeweils zwei Schritten vor und einem zurück"""
-...abwechselnd aufwärts und abwärts,... in ungerader Aufteilung des Notenwerts (Triolen etc.)
-... abwärts,... in ungerader Aufteilung des Notenwerts (Triolen etc.)
-... aufwärts,... in ungerader Aufteilung des Notenwerts (Triolen etc.)
-"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)","""Tonleiter-Lauf mit jeweils zwei Schritten vor und einem zurück"""
-...abwechselnd aufwärts und abwärts,"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
-... abwärts,"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
-... aufwärts,"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+(1) ... in ungerader Aufteilung des Notenwerts (Triolen etc.),"""Tonleiter-Lauf mit jeweils zwei Schritten vor und einem zurück"""
+(1) ...abwechselnd aufwärts und abwärts,(1) ... in ungerader Aufteilung des Notenwerts (Triolen etc.)
+(1) ... abwärts,(1) ... in ungerader Aufteilung des Notenwerts (Triolen etc.)
+(1) ... aufwärts,(1) ... in ungerader Aufteilung des Notenwerts (Triolen etc.)
+"(1) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)","""Tonleiter-Lauf mit jeweils zwei Schritten vor und einem zurück"""
+(2) ...abwechselnd aufwärts und abwärts,"(1) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+(2) ... abwärts,"(1) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+(2) ... aufwärts,"(1) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
 markante Drei- oder Vierklangsbrechung,root
 Akkordbrechung mit Sprung,markante Drei- oder Vierklangsbrechung
-... in ungerader Aufteilung des Notenwerts (Triolen etc.),Akkordbrechung mit Sprung
-"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)",Akkordbrechung mit Sprung
-... in anderem Stil,"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
-... im Stile eines Alberti-Basses,"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+(2) ... in ungerader Aufteilung des Notenwerts (Triolen etc.),Akkordbrechung mit Sprung
+"(2) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)",Akkordbrechung mit Sprung
+... in anderem Stil,"(2) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+... im Stile eines Alberti-Basses,"(2) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
 Arpeggio,markante Drei- oder Vierklangsbrechung
-... in ungerader Aufteilung des Notenwerts (Triolen etc.),Arpeggio
-...abwechselnd aufwärts und abwärts,... in ungerader Aufteilung des Notenwerts (Triolen etc.)
-... abwärts,... in ungerader Aufteilung des Notenwerts (Triolen etc.)
-... aufwärts,... in ungerader Aufteilung des Notenwerts (Triolen etc.)
-"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)",Arpeggio
-...abwechselnd aufwärts und abwärts,"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
-... abwärts,"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
-... aufwärts,"... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+(3) ... in ungerader Aufteilung des Notenwerts (Triolen etc.),Arpeggio
+(3) ...abwechselnd aufwärts und abwärts,(3) ... in ungerader Aufteilung des Notenwerts (Triolen etc.)
+(3) ... abwärts,(3) ... in ungerader Aufteilung des Notenwerts (Triolen etc.)
+(3) ... aufwärts,(3) ... in ungerader Aufteilung des Notenwerts (Triolen etc.)
+"(3) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)",Arpeggio
+(4) ...abwechselnd aufwärts und abwärts,"(3) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+(4) ... abwärts,"(3) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+(4) ... aufwärts,"(3) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
 """Arpeggio mit Sekunde""",root
 """Arpeggio mit Sekunde"" abwärts","""Arpeggio mit Sekunde"""
 """Arpeggio mit Sekunde"" aufwärts","""Arpeggio mit Sekunde"""

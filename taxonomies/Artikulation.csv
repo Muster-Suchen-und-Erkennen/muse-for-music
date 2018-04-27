@@ -4,11 +4,11 @@ andere Artikulation,root
 sostenuto,root
 Tremolo,root
 Einzelnoten,Tremolo
-rhythmisch gebunden,Einzelnoten
-frei,Einzelnoten
+(1) rhythmisch gebunden,Einzelnoten
+(1) frei,Einzelnoten
 Wechselnoten,Tremolo
-rhythmisch gebunden,Wechselnoten
-frei,Wechselnoten
+(2) rhythmisch gebunden,Wechselnoten
+(2) frei,Wechselnoten
 rinforzato,root
 sotto voce,root
 marcato,root

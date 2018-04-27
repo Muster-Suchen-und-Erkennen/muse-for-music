@@ -7,8 +7,8 @@ Xylo / nah am Resonanzkörper abgedrückt,Anweisung speziell für Harfe
 près de la table / bas dans les cordes /  nah am Resonanzkörper gezupft,Anweisung speziell für Harfe
 Anweisung für alle Zupfinstrumente,Anweisung für Zupfinstrumente
 andere Anweisung für alle Zupfinstrumente,Anweisung für alle Zupfinstrumente
-Arpeggio,Anweisung für alle Zupfinstrumente
-Flageolett,Anweisung für alle Zupfinstrumente
+(1) Arpeggio,Anweisung für alle Zupfinstrumente
+(1) Flageolett,Anweisung für alle Zupfinstrumente
 Anweisung für Streicher,root
 andere Anweisung für Streicher,Anweisung für Streicher
 "Schlagbass / ""Slap""",Anweisung für Streicher
@@ -19,12 +19,12 @@ Quadrupelgriff,Mehrfachgriff
 Tripelgriff,Mehrfachgriff
 Doppelgriff,Mehrfachgriff
 Portamento,Anweisung für Streicher
-Arpeggio,Anweisung für Streicher
+(2) Arpeggio,Anweisung für Streicher
 Glissando,Anweisung für Streicher
 Bogentremolo / -vibrato (nicht ausnotiert),Anweisung für Streicher
 Flautando / sehr wenig Bogen,Anweisung für Streicher
-Flageolett,Anweisung für Streicher
- sul ponticello / dicht am Steg,Anweisung für Streicher
+(2) Flageolett,Anweisung für Streicher
+sul ponticello / dicht am Steg,Anweisung für Streicher
 martélé / besonders stark gespieltes détaché,Anweisung für Streicher
 détaché / 1 Bogenstrich pro Note,Anweisung für Streicher
 spiccato / springender Bogen,Anweisung für Streicher
@@ -36,7 +36,7 @@ pizzicato / gezupft,Anweisung für Streicher
 Anweisung für Schlaginstrumente,root
 Anweisung für Stabspiele,Anweisung für Schlaginstrumente
 andere Anweisung für Stabspiele,Anweisung für Stabspiele
-Arpeggio,Anweisung für Stabspiele
+(3) Arpeggio,Anweisung für Stabspiele
 Dämpfer,Anweisung für Stabspiele
 Anweisung für Trommeln,Anweisung für Schlaginstrumente
 andere Anweisung für Trommeln,Anweisung für Trommeln
@@ -57,7 +57,7 @@ Anweisung für alle Tasteninstrumente,Anweisung für Tasteninstrumente
 andere Anweisung für alle Tasteninstrumente,Anweisung für alle Tasteninstrumente
 mano destra  / r. Hand,Anweisung für alle Tasteninstrumente
 mano sinistra / l. Hand),Anweisung für alle Tasteninstrumente
-Arpeggio,Anweisung für alle Tasteninstrumente
+(4) Arpeggio,Anweisung für alle Tasteninstrumente
 Anweisung für Bläser,root
 andere Anweisung für Bläser,Anweisung für Bläser
 gestopft,Anweisung für Bläser
