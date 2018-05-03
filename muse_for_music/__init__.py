@@ -24,6 +24,7 @@ elif app.config['MODE'] == 'DEBUG':
 elif app.config['MODE'] == 'TEST':
     app.config.from_object('muse_for_music.config.TestingConfig')
 
+app.config.from_pyfile('/etc/muse_for_music.conf', silent=True)
 app.config.from_pyfile('muse_for_music.conf', silent=True)
 
 # TODO use nevironment variables
