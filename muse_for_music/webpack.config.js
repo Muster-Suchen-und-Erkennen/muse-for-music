@@ -24,6 +24,9 @@ const baseHref = "";
 module.exports = env => {
 
     let deployUrl = "http://localhost:2992/";
+    if (process.env.DEPLOY_URL != null) {
+        deployUrl = process.env.DEPLOY_URL;
+    }
     if (env.DEPLOY_URL != null) {
         deployUrl = env.DEPLOY_URL;
     }
