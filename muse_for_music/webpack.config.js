@@ -27,7 +27,7 @@ module.exports = env => {
     if (process.env.DEPLOY_URL != null) {
         deployUrl = process.env.DEPLOY_URL;
     }
-    if (env.DEPLOY_URL != null) {
+    if (env != null && env.DEPLOY_URL != null) {
         deployUrl = env.DEPLOY_URL;
     }
     const postcssPlugins = function () {
@@ -423,7 +423,7 @@ module.exports = env => {
             new AotPlugin({
                 "mainPath": "main.ts",
                 "hostReplacementPaths": {
-                    "environments/environment.ts": env.production ? "environments/environment.prod.ts" : "environments/environment.ts"
+                    "environments/environment.ts": (env != null && env.production) ? "environments/environment.prod.ts" : "environments/environment.ts"
                 },
                 "exclude": [],
                 "tsConfigPath": "src/tsconfig.app.json",
