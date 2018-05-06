@@ -18,6 +18,8 @@ import { UserManagementComponent } from './users/user-management.component';
 import { UserOverviewComponent } from './users/user-overview.component';
 import { UserDetailComponent } from './users/user-detail.component';
 
+import { TaxonomyEditorComponent } from './taxonomies/taxonomy-editor.component';
+
 import { PeopleOverviewComponent } from './people/people-overview.component';
 import { PersonEditComponent } from './people/person-edit.component';
 import { OpusesOverviewComponent } from './opuses/opuses-overview.component';
@@ -46,6 +48,8 @@ import { AppComponent } from './app.component';
     UserManagementComponent,
     UserOverviewComponent,
     UserDetailComponent,
+
+    TaxonomyEditorComponent,
 
     PeopleOverviewComponent,
     PersonEditComponent,

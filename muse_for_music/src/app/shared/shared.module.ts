@@ -21,6 +21,7 @@ import { ApiService } from './rest/api.service';
 import { UserApiService } from './rest/user-api.service';
 import { LoginGuard } from './rest/login.guard';
 import { AdminGuard } from './rest/admin.guard';
+import { TaxonomyEditorGuard } from './rest/taxonomy-editor.guard';
 
 
 import { InfoComponent } from './info/info.component';
@@ -64,6 +65,7 @@ import { ClickOutsideDirective } from './click-outside.directive';
         UserApiService,
         LoginGuard,
         AdminGuard,
+        TaxonomyEditorGuard,
     ],
     exports: [
         InfoComponent,

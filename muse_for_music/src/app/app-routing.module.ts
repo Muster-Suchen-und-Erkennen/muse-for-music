@@ -6,6 +6,8 @@ import { HomeComponent } from './home/home.component';
 import { UserManagementComponent } from './users/user-management.component';
 import { UserOverviewComponent } from './users/user-overview.component';
 
+import { TaxonomyEditorComponent } from './taxonomies/taxonomy-editor.component';
+
 import { PeopleOverviewComponent } from './people/people-overview.component';
 import { OpusesOverviewComponent } from './opuses/opuses-overview.component';
 import { OpusDetailComponent } from './opuses/opus-detail.component';
@@ -15,6 +17,7 @@ import { VoiceDetailComponent } from './voices/voice-detail.component';
 
 import { LoginGuard } from './shared/rest/login.guard';
 import { AdminGuard } from './shared/rest/admin.guard';
+import { TaxonomyEditorGuard } from './shared/rest/taxonomy-editor.guard';
 
 const routes: Routes = [
   { path: 'people', component: PeopleOverviewComponent, canActivate: [LoginGuard] },
@@ -27,6 +30,7 @@ const routes: Routes = [
   { path: 'login', pathMatch: 'full', component: LoginComponent},
   { path: 'user', pathMatch: 'full', component: UserOverviewComponent, canActivate: [LoginGuard]},
   { path: 'users', pathMatch: 'full', component: UserManagementComponent, canActivate: [AdminGuard]},
+  { path: 'taxonomies', pathMatch: 'full', component: TaxonomyEditorComponent, canActivate: [TaxonomyEditorGuard]},
   { path: '**', redirectTo: 'dashboard' }
 ]
 

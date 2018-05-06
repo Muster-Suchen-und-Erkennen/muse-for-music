@@ -1,0 +1,46 @@
+<div class="pa3 flex flex-wrap">
+    <m4m-box>
+        <h1 class="mv0" title>Taxonomy Editor:</h1>
+        <div class="w-100 ph3 pv2" body>
+            <div class="mb3 min-w5 flex-grow flex bb b--gray gray hover-black">
+                <select class="input-reset bn pa1 bg-white black flex-grow" [(ngModel)]="selectedTaxonomy" (ngModelChange)="updateTaxonomy()" #inputSelect>
+                    <option *ngFor="let tax of taxonomyList" [value]="tax.name">{{tax.name}} {{tax.taxonomy_type === 'tree' ? '(Baum)': ''}}</option>
+                </select>
+                <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem; pointer-events: none" (click)="inputSelect.click($event)"><i class="f4 fa fa-angle-down"></i></div>
+            </div>
+            <div class="">
+                <div class="flex items-center" *ngFor="let item of items"  [ngStyle]="{'display': visible(item) ? 'flex' : 'none'}">
+                    <div [ngStyle]="{'width': item.depth + 'rem'}" *ngIf="isTree"></div>
+                    <div class="w2 ph1 pointer" (click)="toggleClosed(item)" *ngIf="isTree && item.children.length > 0">
+                        <i class="fa fa-fw fa-plus" [hidden]="!closed.has(item.id)"></i>
+                        <i class="fa fa-fw fa-minus" [hidden]="closed.has(item.id)"></i>
+                    </div>
+                    <div class="flex flex-column self-stretch" *ngIf="isTree && item.children.length <= 0">
+                        <div class="flex-grow-1 w2 bl bw1" style=""></div>
+                    </div>
+                    <div class="min-w1 mv1">
+                        <div class="flex items-center">
+                            <p class="min-w1 mv0 pa2 br-pill bg-near-white">
+                                {{item.name === 'root' ? selectedTaxonomy : item.name}}
+                            </p>
+                            <i class="ml2 fa fa-pencil"></i>
+                            <i class="ml2 fa fa-plus" *ngIf="isTree"></i>
+                            <i class="ml2 fa fa-trash"></i>
+                        </div>
+                        <p class="mv0 min-w1">{{item.description}}</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-center pa2 br-pill bg-near-white" *ngIf="!isTree && items?.length > 0">
+                    <i class="fa fa-plus"></i>
+                </div>
+            </div>
+        </div>
+    </m4m-box>
+
+    <!--m4m-dialog [closable]="false" [dialogType]="'delete-cancel'" [icon]="'delete'" [okCallback]="delete" #confirm>
+        <h1 class="mv0" title>Delete "{{opus?.name}}"</h1>
+        <div class="w-100 ph3 pv2" body>
+            Do you want to delete "{{opus?.name}}"?
+        </div>
+    </m4m-dialog-->
+</div>
