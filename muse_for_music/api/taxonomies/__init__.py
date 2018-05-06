@@ -124,6 +124,8 @@ def edit_taxonomy_item(item: T, new_values: Dict):
         new_values: Dict -- The new Values in the JSON Object
     """
     if 'name' in new_values:
+        if item.name == 'root' and new_values['name'] != 'root':
+            abort(400, 'Can not change name of "root"!')
         item.name = new_values['name']
     if 'description' in new_values:
         item.description = new_values['description']
@@ -138,6 +140,8 @@ def delete_taxonomy_item(taxonomy: Type[T], item_id: int):
         item_id: int -- The id of the Taxonomy Item to remove.
     """
     item = get_taxonomy_item(taxonomy, item_id)
+    if item.name == 'root':
+        abort(400, 'Can not delete "root"!')
     db.session.delete(item)
     db.session.commit()
     app.logger.info('Taxonomy item %s deleted.', item)
@@ -238,6 +242,8 @@ class TreeTaxonomyItemResource(Resource):
         if tax is None:
             abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
         new_item = request.get_json()
+        if new_item['name'] == 'root':
+            abort(400, 'Name "root" is forbidden!')
         new_item['parent'] = get_taxonomy_item(tax, item_id)
         item = create_taxonomy_item(tax, new_item)
         db.session.add(item)
