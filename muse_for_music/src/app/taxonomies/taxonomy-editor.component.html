@@ -10,13 +10,13 @@
             </div>
             <div class="">
                 <div class="flex items-center" *ngFor="let item of items"  [ngStyle]="{'display': visible(item) ? 'flex' : 'none'}">
-                    <div [ngStyle]="{'width': item.depth + 'rem'}" *ngIf="isTree"></div>
+                    <div [ngStyle]="{'min-width': item.depth + 'rem'}" *ngIf="isTree"></div>
                     <div class="w2 ph1 pointer" (click)="toggleClosed(item)" *ngIf="isTree && item.children.length > 0">
                         <i class="fa fa-fw fa-plus" [hidden]="!closed.has(item.id)"></i>
                         <i class="fa fa-fw fa-minus" [hidden]="closed.has(item.id)"></i>
                     </div>
                     <div class="flex flex-column self-stretch" *ngIf="isTree && item.children.length <= 0">
-                        <div class="flex-grow-1 w2 bl bw1" style=""></div>
+                        <div class="flex-grow-1 min-w2 bl bw1" style=""></div>
                     </div>
                     <div class="min-w1 mv1">
                         <div class="flex items-center">
