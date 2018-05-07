@@ -27,7 +27,7 @@
                     </div>
                     <div *ngSwitchCase="'ok-cancel'" class="w100 h2 bt b--black-10 flex flex-row-reverse items-center">
                         <div class="button pv1 ph2 br2 dim pointer" (click)="cancel()">
-                            Cancel
+                            Abbrechen
                         </div>
                         <div class="button pv1 ph2 br2 dim pointer" (click)="ok()">
                             OK
@@ -35,28 +35,28 @@
                     </div>
                     <div *ngSwitchCase="'save'" class="w100 h2 bt b--black-10 flex flex-row-reverse items-center">
                         <div class="button pv1 ph2 br2" [ngClass]="{dim: valid, pointer: valid, 'o-50': !valid}" (click)="ok()">
-                            Save
+                            Speichern
                         </div>
                     </div>
                     <div *ngSwitchCase="'save-cancel'" class="w100 h2 bt b--black-10 flex flex-row-reverse items-center">
                         <div class="button pv1 ph2 br2 dim pointer" (click)="cancel()">
-                            Cancel
+                            Abbrechen
                         </div>
                         <div class="button pv1 ph2 br2" [ngClass]="{dim: valid, pointer: valid, 'o-50': !valid}" (click)="ok()">
-                                <i class="mr1 fa fa-check green" [hidden]="!valid"></i><i class="mr1 fa fa-times red" [hidden]="valid"></i>Save
+                                <i class="mr1 fa fa-check green" [hidden]="!valid"></i><i class="mr1 fa fa-times red" [hidden]="valid"></i>Speichern
                         </div>
                     </div>
                     <div *ngSwitchCase="'delete'" class="w100 h2 bt b--black-10 flex flex-row-reverse items-center">
                         <div class="button pv1 ph2 br2 link hover-red pointer" (click)="ok()">
-                            <i class="mr1 fa fa-trash"></i>Delete
+                            <i class="mr1 fa fa-trash"></i>Löschen
                         </div>
                     </div>
                     <div *ngSwitchCase="'delete-cancel'" class="w100 h2 bt b--black-10 flex flex-row-reverse items-center">
                         <div class="button pv1 ph2 br2 dim pointer" (click)="cancel()">
-                            Cancel
+                            Abbrechen
                         </div>
                         <div class="button pv1 ph2 br2 link hover-red  pointer" (click)="ok()">
-                            <i class="mr1 fa fa-trash"></i>Delete
+                            <i class="mr1 fa fa-trash"></i>Löschen
                         </div>
                     </div>
                 </ng-container>

@@ -49,20 +49,20 @@ export class ApiService implements OnInit {
 
     private errorHandler(error, resource: string, method: string) {
         let title;
-        let message = 'Unknown Error.';
+        let message = 'Unbekannter Error.';
         switch (method) {
             case 'POST':
-                title = 'Error while creating new resource under "' + resource + '".';
+                title = 'Error beim Erstellen einer neuen Ressource unter "' + resource + '".';
                 break;
             case 'PUT':
-                title = 'Error while updating existing resource "' + resource + '".';
+                title = 'Error beim ändern der existierenden Ressource "' + resource + '".';
                 break;
                 case 'DELETE':
-                    title = 'Error while deleting existing resource "' + resource + '".';
+                    title = 'Error beim löschen der Ressource "' + resource + '".';
                     break;
 
             default:
-                title = 'Error while retrieving resource "' + resource + '".'
+                title = 'Error beim Abrufen der Ressource "' + resource + '".'
                 break;
         }
         if (error.message != null) {

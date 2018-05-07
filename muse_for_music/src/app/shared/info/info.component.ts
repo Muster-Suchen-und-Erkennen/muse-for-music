@@ -4,7 +4,7 @@ import { Observable, } from 'rxjs/Rx';
 import { timeout } from 'rxjs/operator/timeout';
 
 @Component({
-  selector: 'ttf-info',
+  selector: 'm4m-info',
   templateUrl: './info.component.html'
 })
 export class InfoComponent implements OnInit {

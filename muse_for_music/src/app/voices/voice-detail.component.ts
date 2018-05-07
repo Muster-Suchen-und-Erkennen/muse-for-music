@@ -28,9 +28,9 @@ export class VoiceDetailComponent implements OnInit, OnDestroy {
         this.subPartID = subPartID;
         this.voiceID = voiceID;
         this.navigation.changeTitle('MUSE4Music – Voice');
-        this.navigation.changeBreadcrumbs([new Breadcrumb('Subparts', '/subparts'),
+        this.navigation.changeBreadcrumbs([new Breadcrumb('Teilwerkausschnitte', '/subparts'),
             new Breadcrumb('"' + subPartID.toString() + '"', '/subparts/' + subPartID),
-            new Breadcrumb('Voices', '/voices'),
+            new Breadcrumb('Stimmen', '/voices'),
             new Breadcrumb('"' + voiceID.toString() + '"', '/subparts/' + subPartID + '/voices/' + voiceID)]);
 
         if (this.subPartSubscription != null) {
@@ -41,11 +41,11 @@ export class VoiceDetailComponent implements OnInit, OnDestroy {
                 return;
             }
 
-            this.navigation.changeBreadcrumbs([new Breadcrumb('Parts', '/parts'),
+            this.navigation.changeBreadcrumbs([new Breadcrumb('Werkausschnitte', '/parts'),
                 new Breadcrumb('"' + subpart.part_id.toString() + '"', '/parts/' + subpart.part_id),
-                new Breadcrumb('Subparts', '/subparts'),
+                new Breadcrumb('Teilwerkausschnitte', '/subparts'),
                 new Breadcrumb('"' + subpart.label + '"', '/subparts/' + subPartID),
-                new Breadcrumb('Voices', '/voices'),
+                new Breadcrumb('Stimmen', '/voices'),
                 new Breadcrumb('"' + voiceID.toString() + '"', '/subparts/' + subPartID + '/voices/' + voiceID)]);
 
 
@@ -57,11 +57,11 @@ export class VoiceDetailComponent implements OnInit, OnDestroy {
                     return;
                 }
 
-                this.navigation.changeBreadcrumbs([new Breadcrumb('Parts', '/parts'),
+                this.navigation.changeBreadcrumbs([new Breadcrumb('Werkausschnitte', '/parts'),
                     new Breadcrumb('"' + subpart.part_id.toString() + '"', '/parts/' + subpart.part_id),
-                    new Breadcrumb('Subparts', '/subparts'),
+                    new Breadcrumb('Teilwerkausschnitte', '/subparts'),
                     new Breadcrumb('"' + subpart.label + '"', '/subparts/' + subPartID),
-                    new Breadcrumb('Voices', '/voices'),
+                    new Breadcrumb('Stimmen', '/voices'),
                     new Breadcrumb('"' + voice.name + '"', '/subparts/' + subPartID + '/voices/' + voiceID)]);
 
                 if (this.partSubscription != null) {
@@ -71,13 +71,13 @@ export class VoiceDetailComponent implements OnInit, OnDestroy {
                     if (part == undefined) {
                         return;
                     }
-                    this.navigation.changeBreadcrumbs([new Breadcrumb('Opuses', '/opuses'),
+                    this.navigation.changeBreadcrumbs([new Breadcrumb('Werke', '/opuses'),
                         new Breadcrumb('"' + part.opus_id.toString() + '"', '/opuses/' + part.opus_id),
-                        new Breadcrumb('Parts', '/parts'),
+                        new Breadcrumb('Werkausschnitte', '/parts'),
                         new Breadcrumb('"' + part.id.toString() + '"', '/parts/' + part.id),
-                        new Breadcrumb('Subparts', '/subparts'),
+                        new Breadcrumb('Teilwerkausschnitte', '/subparts'),
                         new Breadcrumb('"' + subpart.label + '"', '/subparts/' + subPartID),
-                        new Breadcrumb('Voices', '/voices'),
+                        new Breadcrumb('Stimmen', '/voices'),
                         new Breadcrumb('"' + voice.name + '"', '/subparts/' + subPartID + '/voices/' + voiceID)]);
 
                     if (this.opusSubscription != null) {
@@ -87,13 +87,13 @@ export class VoiceDetailComponent implements OnInit, OnDestroy {
                         if (opus == undefined) {
                             return;
                         }
-                        this.navigation.changeBreadcrumbs([new Breadcrumb('Opuses', '/opuses'),
+                        this.navigation.changeBreadcrumbs([new Breadcrumb('Werke', '/opuses'),
                             new Breadcrumb('"' + opus.name + '"', '/opuses/' + part.opus_id),
-                            new Breadcrumb('Parts', '/parts'),
+                            new Breadcrumb('Werkausschnitte', '/parts'),
                             new Breadcrumb('"' + part.id.toString() + '"', '/parts/' + part.id),
-                            new Breadcrumb('Subparts', '/subparts'),
+                            new Breadcrumb('Teilwerkausschnitte', '/subparts'),
                             new Breadcrumb('"' + subpart.label + '"', '/subparts/' + subPartID),
-                            new Breadcrumb('Voices', '/voices'),
+                            new Breadcrumb('Stimmen', '/voices'),
                             new Breadcrumb('"' + voice.name + '"', '/subparts/' + subPartID + '/voices/' + voiceID)]);
                     });
                 });
@@ -102,7 +102,7 @@ export class VoiceDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.navigation.changeTitle('MUSE4Music – Voice');
+        this.navigation.changeTitle('MUSE4Music – Stimme');
         this.paramSubscription = this.route.params.subscribe(params => {
             this.update(parseInt(params['subpartID'], 10), parseInt(params['voiceID'], 10));
         });

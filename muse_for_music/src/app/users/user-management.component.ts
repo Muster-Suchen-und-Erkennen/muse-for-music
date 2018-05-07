@@ -33,8 +33,8 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     constructor(private navigation: NavigationService, private userApi: UserApiService) { }
 
     ngOnInit(): void {
-        this.navigation.changeTitle('MUSE4Music – Usermanagement');
-        this.navigation.changeBreadcrumbs([new Breadcrumb('User', '/users')]);
+        this.navigation.changeTitle('MUSE4Music – Benutzerverwaltung');
+        this.navigation.changeBreadcrumbs([new Breadcrumb('Benutzerverwaltung', '/users')]);
         this.usersubscription = this.userApi.getUsers().subscribe(users => {
             this.users = users;
         });

@@ -2,7 +2,7 @@
 <div class="ph3 flex flex-wrap">
 
     <m4m-box>
-        <h1 class="mv0" title>Users:</h1>
+        <h1 class="mv0" title>Benutzer:</h1>
         <div class="tooltip tooltip-left button h2 pv1 ph2 ml3 br2 link bg-animate hover-bg-light-green pointer" data-tooltip="add user" (click)="newUser.open()" title-right>
             <i class="fa fa-plus"></i>
         </div>
@@ -11,13 +11,13 @@
                 <tbody>
                     <tr>
                         <th class="ph3 pv2 tl ttu">
-                            Username
+                            Benutzername
                         </th>
                         <th class="ph3 pv2 tl ttu">
-                            Password
+                            Passwort
                         </th>
                         <th class="ph3 pv2 tl ttu">
-                            Roles
+                            Rollen
                         </th>
                     </tr>
                     <tr class="bt b--black-10" *ngFor="let user of users">
@@ -40,11 +40,11 @@
 
 
     <m4m-dialog [dialogType]="'ok-cancel'" [icon]="'info'" [okCallback]="addRole" #newRole >
-            <h1 class="mv0" title>Add Role to user {{currentUser?.username}}:</h1>
+            <h1 class="mv0" title>Füge dem Benutzer {{currentUser?.username}} eine Rolle hinzu:</h1>
             <div class="w-100 ph3 pv2" body>
                 <div class="flex flex-wrap">
                     <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word">
-                        Role:
+                        Rolle:
                     </label>
                     <div class="flex bb b--gray gray hover-black">
                         <select id="role" class="min-w5 input-reset bn pa1 bg-white black flex-grow" [(ngModel)]="role" #inputSelect>
@@ -58,22 +58,22 @@
 
 
     <m4m-dialog [dialogType]="'ok-cancel'" [icon]="'info'" [okCallback]="addUser" #newUser >
-        <h1 class="mv0" title>New User:</h1>
+        <h1 class="mv0" title>Neuer Benutzer:</h1>
         <div class="w-100 ph3 pv2" body>
             <div class="flex flex-wrap">
                 <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word">
-                    Username:
+                    Benutzername:
                 </label>
                 <div class="flex bb b--gray">
-                    <input class="input-reset bn pa1 flex-grow" type="text" name="username" placeholder="Username" [(ngModel)]="newUsername">
+                    <input class="input-reset bn pa1 flex-grow" type="text" name="username" placeholder="Benutzername" [(ngModel)]="newUsername">
                 </div>
             </div>
             <div class="mt2 flex flex-wrap">
                 <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word">
-                    Password:
+                    Passwort:
                 </label>
                 <div class="flex bb b--gray">
-                    <input class="input-reset bn pa1 flex-grow" type="password" name="password" placeholder="Password" [(ngModel)]="newPassword">
+                    <input class="input-reset bn pa1 flex-grow" type="password" name="password" placeholder="Passwort" [(ngModel)]="newPassword">
                 </div>
             </div>
         </div>
@@ -81,14 +81,14 @@
 
 
     <m4m-dialog [dialogType]="'ok-cancel'" [icon]="'info'" [okCallback]="renewLogin" #renewLoginDialog >
-        <h1 class="mv0" title>Please enter your password:</h1>
+        <h1 class="mv0" title>Bitte geben sie erneut ihr Passwort ein:</h1>
         <div class="w-100 ph3 pv2" body>
             <div class="mt2 flex flex-wrap">
                 <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word">
-                    Password:
+                    Passwort:
                 </label>
                 <div class="flex bb b--gray">
-                    <input class="input-reset bn pa1 flex-grow" type="password" name="password" placeholder="Password" [(ngModel)]="password" (keyup.enter)="renewLoginDialog.ok()">
+                    <input class="input-reset bn pa1 flex-grow" type="password" name="password" placeholder="Passwort" [(ngModel)]="password" (keyup.enter)="renewLoginDialog.ok()">
                 </div>
             </div>
         </div>

@@ -17,7 +17,7 @@ export class Breadcrumb {
 @Injectable()
 export class NavigationService {
 
-    private titleSource = new BehaviorSubject<string>("MUSE4Music");
+    private titleSource = new BehaviorSubject<string>('MUSE4Music');
     private breadcrumSource = new BehaviorSubject<Array<Breadcrumb>>([]);
 
     currentTitle = this.titleSource.asObservable();

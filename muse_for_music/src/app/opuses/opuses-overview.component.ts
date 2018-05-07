@@ -24,8 +24,8 @@ export class OpusesOverviewComponent implements OnInit {
     constructor(private data: NavigationService, private api: ApiService, private router: Router, private route: ActivatedRoute) { }
 
     ngOnInit(): void {
-        this.data.changeTitle('MUSE4Music – Opuses');
-        this.data.changeBreadcrumbs([new Breadcrumb('Opuses', '/opuses')]);
+        this.data.changeTitle('MUSE4Music – Werke');
+        this.data.changeBreadcrumbs([new Breadcrumb('Werke', '/opuses')]);
         this.api.getOpuses().subscribe(data => {
             if (data == undefined) {
                 return;
@@ -40,13 +40,13 @@ export class OpusesOverviewComponent implements OnInit {
         });
     }
 
-    save = (() => {
+    save = () => {
         if (this.valid) {
             this.api.postOpus(this.newOpusData).subscribe(data => {
                 this.router.navigate([data.id], {relativeTo: this.route});
             });
         }
-    }).bind(this);
+    };
 
     onValidChange(valid: boolean) {
         this.valid = valid;

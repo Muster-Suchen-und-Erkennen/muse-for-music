@@ -1,5 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit, OnDestroy } from '@angular/core';
 
+import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
+
 import { ApiObject } from '../shared/rest/api-base.service';
 import { ApiService } from '../shared/rest/api.service';
 import { Subscription } from 'rxjs/Rx';
@@ -63,9 +65,11 @@ export class TaxonomyEditorComponent implements OnInit, OnDestroy {
         }
     }
 
-    constructor(private api: ApiService) {}
+    constructor(private api: ApiService, private navigation: NavigationService) {}
 
     ngOnInit(): void {
+        this.navigation.changeTitle('MUSE4Music – Taxonomien')
+        this.navigation.changeBreadcrumbs([new Breadcrumb('Taxonomien', 'taxonomies')])
         this.taxonomyListSubscription = this.api.getTaxonomies().subscribe((taxonomies: ApiObject) => {
             if (taxonomies == null) {
                 this.taxonomyList = [] as ApiObject[];
