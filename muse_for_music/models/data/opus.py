@@ -7,12 +7,21 @@ from .people import Person
 
 class Opus(db.Model, GetByID, UpdateableModelMixin):
 
-    _normal_attributes = (('composition_year', int), ('notes', str), ('score_link', str),
-                          ('composer', Person), ('name', str), ('original_name', str),
-                          ('first_printed_in', int), ('first_printed_at', int),
-                          ('first_played_in', int), ('first_played_at', int),
-                          ('movements', int), ('genre', GattungNineteenthCentury),
-                          ('grundton', Grundton), ('tonalitaet', Tonalitaet))
+    _normal_attributes = (('name', str),
+                          ('original_name', str),
+                          ('composer', Person),
+                          ('score_link', str),
+                          ('first_printed_at', int),
+                          ('first_printed_in', int),
+                          ('composition_year', int),
+                          ('composition_place', str),
+                          ('first_played_at', int),
+                          ('first_played_in', int),
+                          ('notes', str),
+                          ('movements', int),
+                          ('genre', GattungNineteenthCentury),
+                          ('grundton', Grundton),
+                          ('tonalitaet', Tonalitaet))
 
     _reference_only_attributes = ('composer', )
 
