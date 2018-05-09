@@ -24,8 +24,8 @@ export class SubPartDetailComponent implements OnInit, OnDestroy {
 
     update(subPartID: number) {
         this.subPartID = subPartID;
-        this.navigation.changeTitle('MUSE4Music – Subpart');
-        this.navigation.changeBreadcrumbs([new Breadcrumb('Subparts', '/subparts'),
+        this.navigation.changeTitle('MUSE4Music – Teilwerkausschnitt');
+        this.navigation.changeBreadcrumbs([new Breadcrumb('Teilwerkausschnitte', '/subparts'),
             new Breadcrumb('"' + subPartID.toString() + '"', '/subparts/' + subPartID)]);
 
         if (this.subPartSubscription != null) {
@@ -36,9 +36,9 @@ export class SubPartDetailComponent implements OnInit, OnDestroy {
                 return;
             }
 
-            this.navigation.changeBreadcrumbs([new Breadcrumb('Parts', '/parts'),
+            this.navigation.changeBreadcrumbs([new Breadcrumb('Werkausschnitte', '/parts'),
                 new Breadcrumb('"' + subpart.part_id.toString() + '"', '/parts/' + subpart.part_id),
-                new Breadcrumb('Subparts', '/subparts'),
+                new Breadcrumb('Teilwerkausschnitte', '/subparts'),
                 new Breadcrumb('"' + subpart.label + '"', '/subparts/' + subPartID)]);
             if (this.partSubscription != null) {
                 this.partSubscription.unsubscribe();
@@ -47,11 +47,11 @@ export class SubPartDetailComponent implements OnInit, OnDestroy {
                 if (part == undefined) {
                     return;
                 }
-                this.navigation.changeBreadcrumbs([new Breadcrumb('Opuses', '/opuses'),
+                this.navigation.changeBreadcrumbs([new Breadcrumb('Werke', '/opuses'),
                     new Breadcrumb('"' + part.opus_id.toString() + '"', '/opuses/' + part.opus_id),
-                    new Breadcrumb('Parts', '/parts'),
+                    new Breadcrumb('Werkausschnitte', '/parts'),
                     new Breadcrumb('"' + part.id.toString() + '"', '/parts/' + part.id),
-                    new Breadcrumb('Subparts', '/subparts'),
+                    new Breadcrumb('Teilwerkausschnitte', '/subparts'),
                     new Breadcrumb('"' + subpart.label + '"', '/subparts/' + subPartID)]);
 
                 if (this.opusSubscription != null) {
@@ -61,11 +61,11 @@ export class SubPartDetailComponent implements OnInit, OnDestroy {
                     if (opus == undefined) {
                         return;
                     }
-                    this.navigation.changeBreadcrumbs([new Breadcrumb('Opuses', '/opuses'),
+                    this.navigation.changeBreadcrumbs([new Breadcrumb('Werke', '/opuses'),
                         new Breadcrumb('"' + opus.name + '"', '/opuses/' + part.opus_id),
-                        new Breadcrumb('Parts', '/parts'),
+                        new Breadcrumb('Werkausschnitte', '/parts'),
                         new Breadcrumb('"' + part.id.toString() + '"', '/parts/' + part.id),
-                        new Breadcrumb('Subparts', '/subparts'),
+                        new Breadcrumb('Teilwerkausschnitte', '/subparts'),
                         new Breadcrumb('"' + subpart.label + '"', '/subparts/' + subPartID)]);
                 });
             });
@@ -73,7 +73,7 @@ export class SubPartDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.navigation.changeTitle('MUSE4Music – SubPart');
+        this.navigation.changeTitle('MUSE4Music – Teilwerkausschnitt');
         this.paramSubscription = this.route.params.subscribe(params => {
             this.update(parseInt(params['id'], 10));
         });

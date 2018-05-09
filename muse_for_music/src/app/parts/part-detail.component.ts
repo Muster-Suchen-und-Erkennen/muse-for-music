@@ -23,8 +23,8 @@ export class PartDetailComponent implements OnInit, OnDestroy {
 
     update(partID: number) {
         this.partID = partID;
-        this.navigation.changeTitle('MUSE4Music – Part');
-        this.navigation.changeBreadcrumbs([new Breadcrumb('Parts', '/parts'),
+        this.navigation.changeTitle('MUSE4Music – Werkausschnitt');
+        this.navigation.changeBreadcrumbs([new Breadcrumb('Werkausschnitte', '/parts'),
         new Breadcrumb('"' + partID.toString() + '"', '/parts/' + partID)]);
 
         if (this.partSubscription != null) {
@@ -34,9 +34,9 @@ export class PartDetailComponent implements OnInit, OnDestroy {
             if (part == undefined) {
                 return;
             }
-            this.navigation.changeBreadcrumbs([new Breadcrumb('Opuses', '/opuses'),
+            this.navigation.changeBreadcrumbs([new Breadcrumb('Werke', '/opuses'),
             new Breadcrumb('"' + part.opus_id.toString() + '"', '/opuses/' + part.opus_id),
-            new Breadcrumb('Parts', '/parts'),
+            new Breadcrumb('Werkausschnitte', '/parts'),
             new Breadcrumb('"' + part.name + '"', '/parts/' + partID)]);
 
             if (this.opusSubscription != null) {
@@ -46,16 +46,16 @@ export class PartDetailComponent implements OnInit, OnDestroy {
                 if (opus == undefined) {
                     return;
                 }
-                this.navigation.changeBreadcrumbs([new Breadcrumb('Opuses', '/opuses'),
+                this.navigation.changeBreadcrumbs([new Breadcrumb('Werke', '/opuses'),
                 new Breadcrumb('"' + opus.name + '"', '/opuses/' + part.opus_id),
-                new Breadcrumb('Parts', '/parts'),
+                new Breadcrumb('Werkausschnitte', '/parts'),
                 new Breadcrumb('"' + part.name + '"', '/parts/' + partID)]);
             });
         });
     }
 
     ngOnInit(): void {
-        this.navigation.changeTitle('MUSE4Music – Part');
+        this.navigation.changeTitle('MUSE4Music – Werkausschnitt');
         this.paramSubscription = this.route.params.subscribe(params => {
             this.update(parseInt(params['id'], 10));
         });

@@ -48,11 +48,11 @@ export class SubPartVoicesComponent implements OnInit {
     }
 
 
-    save = (() => {
+    save = () => {
         if (this.valid) {
             this.api.postVoice(this.subpart, this.newVoiceData).subscribe(_ => {return});
         }
-    }).bind(this);
+    };
 
     onValidChange(valid: boolean) {
         this.valid = valid;

@@ -48,11 +48,11 @@ export class PartSubpartsComponent implements OnInit {
     }
 
 
-    save = (() => {
+    save = () => {
         if (this.valid) {
             this.api.postSubPart(this.part, this.newSubPartData).subscribe(_ => {return});
         }
-    }).bind(this);
+    };
 
     onValidChange(valid: boolean) {
         this.valid = valid;

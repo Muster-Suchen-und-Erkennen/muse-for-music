@@ -25,21 +25,21 @@ export class OpusDetailComponent implements OnInit, OnDestroy {
             this.opusSubscription.unsubscribe();
         }
         this.opusID = opusID;
-        this.navigation.changeTitle('MUSE4Music – Opus');
-        this.navigation.changeBreadcrumbs([new Breadcrumb('Opuses', '/opuses'),
+        this.navigation.changeTitle('MUSE4Music – Werk');
+        this.navigation.changeBreadcrumbs([new Breadcrumb('Werke', '/opuses'),
         new Breadcrumb('"' + opusID.toString() + '"', '/opuses/' + opusID)]);
         this.opusSubscription = this.api.getOpus(opusID).subscribe(data => {
             if (data == undefined) {
                 return;
             }
-            this.navigation.changeTitle('MUSE4Music – Opus: ' + data.name);
-            this.navigation.changeBreadcrumbs([new Breadcrumb('Opuses', '/opuses'),
+            this.navigation.changeTitle('MUSE4Music – Werk: ' + data.name);
+            this.navigation.changeBreadcrumbs([new Breadcrumb('Werke', '/opuses'),
             new Breadcrumb('"' + data.name + '"', '/opuses/' + opusID)]);
         });
     }
 
     ngOnInit(): void {
-        this.navigation.changeTitle('MUSE4Music – Opus');
+        this.navigation.changeTitle('MUSE4Music – Werk');
         this.paramSubscription = this.route.params.subscribe(params => {
             this.update(parseInt(params['id'], 10));
         });

@@ -1,16 +1,16 @@
 <div class="ph3 flex flex-wrap-reverse">
     <m4m-box>
-        <h1 class="mv0" title>Opuses</h1>
+        <h1 class="mv0" title>Werke</h1>
         <div class="button h2 pv1 ph2 br2 bg-light-silver link bg-animate hover-bg-light-green pointer" (click)="newOpus.open()" title-right>
-            <i class="fa fa-plus mr2"></i>New
+            <i class="fa fa-plus mr2"></i>Neu
         </div>
         <div class="w6" body>
-            <m4m-table [headings]="['Name', 'Genre', 'Composer']" [rows]="tableData" [sortByColumn]="0"></m4m-table>
+            <m4m-table [headings]="['Name', 'Genre', 'Komponist']" [rows]="tableData" [sortByColumn]="0"></m4m-table>
         </div>
     </m4m-box>
 
     <m4m-dialog [dialogType]="'save-cancel'" [valid]="form.valid | async" [icon]="'save'" [okCallback]="save" #newOpus >
-        <h1 class="mv0" title>New Opus:</h1>
+        <h1 class="mv0" title>Neues Werk:</h1>
         <div class="w-100 ph3 pv2" body>
             <dynamic-form [objectModel]="'OpusPOST'" [startValues]="{name:'New Opus'}" (valid)="onValidChange($event)" (data)="onDataChange($event)" #form></dynamic-form>
         </div>

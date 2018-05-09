@@ -131,20 +131,20 @@ export class UserApiService implements OnInit {
 
     private errorHandler(error, resource: string, method: string) {
         let title;
-        let message = 'Unknown Error.';
+        let message = 'Unbekannter Error.';
         switch (method) {
             case 'POST':
-                title = 'Error while creating new resource under "' + resource + '".';
+                title = 'Error beim Erstellen einer neuen Ressource unter "' + resource + '".';
                 break;
             case 'PUT':
-                title = 'Error while updating existing resource "' + resource + '".';
+                title = 'Error beim ändern der existierenden Ressource "' + resource + '".';
                 break;
                 case 'DELETE':
-                    title = 'Error while deleting existing resource "' + resource + '".';
+                    title = 'Error beim löschen der Ressource "' + resource + '".';
                     break;
 
             default:
-                title = 'Error while retrieving resource "' + resource + '".'
+                title = 'Error beim Abrufen der Ressource "' + resource + '".'
                 break;
         }
         if (error.message != null) {
@@ -185,9 +185,9 @@ export class UserApiService implements OnInit {
                 success.complete();
             }, error => {
                 if (error.status === 401 ) {
-                    this.info.emitWarning('Wrong username or password!', null, 5000);
+                    this.info.emitWarning('Falscher Benutzername oder Passwort!', null, 5000);
                 } else {
-                    this.info.emitError('Something went wrong with that login. Please try again.', 'Ooops', 10000);
+                    this.info.emitError('Mit dem Login ist irgendwas schiefgegangen.', 'Ooops', 10000);
                 }
                 success.next(false);
                 success.complete();
