@@ -13,9 +13,12 @@ import { TableRow } from '../shared/table/table.component';
 })
 export class PeopleOverviewComponent implements OnInit {
 
+    valid: boolean;
+    newPersonData: any;
+
     persons: Array<ApiObject>;
     tableData: TableRow[];
-    selected: number = 1;
+    selected: number;
 
     swagger: any;
 
@@ -32,11 +35,11 @@ export class PeopleOverviewComponent implements OnInit {
             const tableData = [];
             let selected;
             this.persons.forEach(person => {
-                if (this.selected !== selected) {
+                if (this.selected == null || this.selected !== selected) {
                     selected = person.id;
                 }
-                let birth = this.datePipe.transform(person.birth_date, 'mediumDate') + ' *';
-                let death = this.datePipe.transform(person.death_date, 'mediumDate') + ' ✝';
+                let birth = this.formatDate(person.birth_date) + ' *';
+                let death = this.formatDate(person.death_date) + ' ✝';
                 if (person.birth_date === '0001-01-01') {
                     birth = 'na';
                 }
@@ -52,13 +55,29 @@ export class PeopleOverviewComponent implements OnInit {
         });
     }
 
-    newPerson(event) {
-        this.api.postPerson({
-            "name": "NEU",
-            "gender": "other"
-          }).take(1).subscribe(person => {
-            this.selected = person.id;
-        });
+    formatDate(date: string): string {
+        if (date.match(/[0-9]{4}-[0-9]{2}-[0-9]{2}/)) {
+            const parts = date.split('-');
+            return parts[2] + '.' + parts[1] + '.' + parts[0];
+        } else {
+            return date;
+        }
+    }
+
+    save = () => {
+        if (this.valid) {
+            this.api.postPerson(this.newPersonData).subscribe(person => {
+                this.selected = person.id;
+            });
+        }
+    };
+
+    onValidChange(valid: boolean) {
+        this.valid = valid;
+    }
+
+    onDataChange(data: any) {
+        this.newPersonData = data;
     }
 
     selectPerson(event, person: ApiObject) {

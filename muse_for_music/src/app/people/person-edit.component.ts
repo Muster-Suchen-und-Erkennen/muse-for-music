@@ -25,11 +25,13 @@ export class PersonEditComponent implements OnInit, OnChanges, OnDestroy {
 
     update() {
         this.unsubscribe();
-        this.subscription = this.api.getPerson(this.personID).subscribe(data => {
-            if (data != undefined) {
-                this.person = data;
-            }
-        });
+        if (this.personID != null) {
+            this.subscription = this.api.getPerson(this.personID).subscribe(data => {
+                if (data != undefined) {
+                    this.person = data;
+                }
+            });
+        }
     }
 
     unsubscribe() {

@@ -5,6 +5,7 @@ from flask import jsonify, url_for, request
 from flask_restplus import Resource, marshal, reqparse, abort
 from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy import literal
 
 
 from .. import api
@@ -15,9 +16,26 @@ from .models import person_post, person_put, person_get, parse_date
 from ... import db
 from ...user_api import has_roles, RoleEnum
 from ...models.data.people import Person, GenderEnum
+from ...models.data.opus import Opus
+from ...models.data.citations import PersonToCitations
 from ...models.data.history import History, MethodEnum
 
 ns = api.namespace('person', description='Resource for persons.', path='/persons')
+
+
+def check_if_person_exists(name):
+    q = Person.query.enable_eagerloads(False).filter(Person.name == name).exists()
+    if db.session.query(literal(True)).filter(q).scalar():
+        abort(409, 'Name "{}" is already in use!'.format(name))
+
+
+def check_if_person_is_in_use(person: Person):
+    q = Opus.query.enable_eagerloads(False).filter(Opus.composer == person).exists()
+    if db.session.query(literal(True)).filter(q).scalar():
+        abort(409, 'Can not delete Person "{}" beacause it is still in use!'.format(person.name))
+    q = PersonToCitations.query.enable_eagerloads(False).filter(PersonToCitations.person == person).exists()
+    if db.session.query(literal(True)).filter(q).scalar():
+        abort(409, 'Can not delete Person "{}" beacause it is still in use!'.format(person.name))
 
 
 @ns.route('/')
@@ -33,6 +51,7 @@ class PersonListResource(Resource):
     @jwt_required
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def post(self):
+        check_if_person_exists(request.get_json()['name'])
         new_person = Person(**request.get_json())
         try:
             db.session.add(new_person)
@@ -69,6 +88,8 @@ class PersonResource(Resource):
             abort(404, 'Requested person not found!')
         new_values = request.get_json()
 
+        check_if_person_exists(new_values['name'])
+
         attrs = ('name', 'canonical_name')
         for attribute in attrs:
             if attribute in new_values:
@@ -96,6 +117,7 @@ class PersonResource(Resource):
         person = Person.query.filter_by(id=id).first()
         if person is None:
             abort(404, 'Requested person not found!')
+        check_if_person_is_in_use(person)
         hist = History(MethodEnum.delete, person)
         db.session.add(hist)
         db.session.delete(person)
