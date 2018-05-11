@@ -7,7 +7,7 @@ from flask_jwt_extended import jwt_required, create_access_token, \
 
 from . import user_api as api
 from .import auth_logger
-from .. import jwt
+from .. import jwt, db
 
 from ..models.users import User, UserRole, RoleEnum
 
@@ -97,18 +97,20 @@ class FreshLogin(Resource):
 class ChangePassword(Resource):
     """Resource to change user passsword."""
 
-    @api.expect(user_auth_model)
+    @api.expect(password_change_model)
     @api.response(401, 'Not Authenticated')
     @fresh_jwt_required
     def post(self):
         """Change user password."""
         user = User.get_user_by_name(get_jwt_identity())
         password = api.payload.get('password', None)
-        if password is not None:
+        if password is None:
             abort(400, 'Incorrect password or password_repeat.')
         if password != api.payload.get('password_repeat', None):
             abort(400, 'Incorrect password or password_repeat.')
         user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
 
 
 @ns.route('/check/')

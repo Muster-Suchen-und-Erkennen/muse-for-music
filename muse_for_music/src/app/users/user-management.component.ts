@@ -96,6 +96,25 @@ export class UserManagementComponent implements OnInit, OnDestroy {
         }
     }
 
+    resetPassword = (user, password) => {
+        if (password.length < 3) {
+            return;
+        }
+        if (this.pendingActionSubscription != null) {
+            this.pendingActionSubscription.unsubscribe();
+        }
+        if (this.userApi.tokenIsFresh) {
+            this.userApi.resetPassword(user, password);
+        } else {
+            this.loginDialog.open();
+            this.pendingActionSubscription = this.freshLogin.subscribe(sucess => {
+                if (sucess) {
+                    this.userApi.resetPassword(user, password);
+                }
+            })
+        }
+    }
+
     renewLogin = () => {
         if (this.userApi.tokenIsFresh) {
             this.freshLogin.next(true);

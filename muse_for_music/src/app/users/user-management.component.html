@@ -11,7 +11,7 @@
                 <tbody>
                     <tr>
                         <th class="ph3 pv2 tl ttu">
-                            Benutzername
+                            Benutzer
                         </th>
                         <th class="ph3 pv2 tl ttu">
                             Passwort
@@ -22,12 +22,20 @@
                     </tr>
                     <tr class="bt b--black-10" *ngFor="let user of users">
                         <th class="ph3 pv2 tl">{{user?.username}}</th>
-                        <th class="ph3 pv2 tl">pw</th>
                         <th class="ph3 pv2 tl">
-                            <span *ngFor="let role of user?.roles; let last = last" [ngClass]="{mr2: last}">
+                            <div class="flex bb b--gray" *ngIf="user.username !== userApi.username">
+                                <input class="input-reset bn pa1 w4" type="password" name="password" placeholder="Reset Passwort" #resetPasswordInput>
+                            </div>
+                            <span class="pointer dim" (click)="resetPassword(user, resetPasswordInput.value)" [hidden]="user.username === userApi.username">
+                                <i class="fa fa-check"></i>
+                                Passwort setzen.
+                            </span>
+                        </th>
+                        <th class="ph3 pv2 tl">
+                            <span class="inline-flex" *ngFor="let role of user?.roles; let last = last" [ngClass]="{mr2: last}">
                                 {{role.role}}
                                 <i class="fa fa-times pointer grow link hover-red" (click)="removeRole(user, role)"></i>
-                                <span [hidden]="last">, </span>
+                                <span class="mr1" [hidden]="last">, </span>
                             </span>
                             <i class="fa fa-plus pa1 bg-near-white br1 background-animate hover-bg-light-green pointer" (click)="currentUser = user; newRole.open()"></i>
                         </th>
@@ -81,7 +89,7 @@
 
 
     <m4m-dialog [dialogType]="'ok-cancel'" [icon]="'info'" [okCallback]="renewLogin" #renewLoginDialog >
-        <h1 class="mv0" title>Bitte geben sie erneut ihr Passwort ein:</h1>
+        <h1 class="mv0" title>Bitte geben sie erneut ihr Benutzerpasswort ein:</h1>
         <div class="w-100 ph3 pv2" body>
             <div class="mt2 flex flex-wrap">
                 <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word">

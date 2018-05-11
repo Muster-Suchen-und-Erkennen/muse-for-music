@@ -19,6 +19,42 @@
                 <span class="f5 b">Administrator:</span>
                 Ein Administrator kann die Benutzer verwalten.
             </p>
+            <p class="f4 b">Passwort ändern:</p>
+            <div class="mt2 flex flex-wrap">
+                <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word">
+                    Neues Passwort:
+                </label>
+                <div class="flex bb b--gray">
+                    <input class="input-reset bn pa1 flex-grow" type="password" name="password" placeholder="Neues Passwort" [(ngModel)]="password">
+                </div>
+            </div>
+            <div class="mt2 flex flex-wrap">
+                <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word">
+                    Passwort wiederholen:
+                </label>
+                <div class="flex bb b--gray">
+                    <input class="input-reset bn pa1 flex-grow" type="password" name="password" placeholder="Passwort wiederholen" [(ngModel)]="passwordRepeat">
+                </div>
+            </div>
+            <div class="flex items-center justify-center mt1 pa2 br-pill bg-near-white bg-animate hover-bg-light-silver pointer" *ngIf="password != null && password?.length >= 3 && password === passwordRepeat" (click)="changePassword()">
+                Passwort ändern.
+            </div>
+            <p class="tr mb0 mt1" [hidden]="!passwordChangeSuccess">Passwort erfolgreich geändert.</p>
         </div>
     </div>
 </m4m-box>
+
+
+<m4m-dialog [dialogType]="'ok-cancel'" [icon]="'info'" [okCallback]="changePassword" #renewLoginDialog >
+    <h1 class="mv0" title>Bitte geben sie erneut ihr Benutzerpasswort ein:</h1>
+    <div class="w-100 ph3 pv2" body>
+        <div class="mt2 flex flex-wrap">
+            <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word">
+                Passwort:
+            </label>
+            <div class="flex bb b--gray">
+                <input class="input-reset bn pa1 flex-grow" type="password" name="password" placeholder="Passwort" [(ngModel)]="oldPassword" (keyup.enter)="renewLoginDialog.ok()">
+            </div>
+        </div>
+    </div>
+</m4m-dialog>

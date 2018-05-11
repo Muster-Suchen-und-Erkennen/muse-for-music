@@ -36,7 +36,7 @@
                         <p class="mv0 min-w1">{{item.description}}</p>
                     </div>
                 </div>
-                <div class="flex items-center justify-center pa2 br-pill bg-near-white bg-animate hover-bg-light-silver" *ngIf="!isTree && items?.length > 0" (click)="selectedParent = null; addItemDialog.open()">
+                <div class="flex items-center justify-center pa2 br-pill bg-near-white bg-animate hover-bg-light-silver pointer" *ngIf="!isTree && items?.length > 0" (click)="selectedParent = null; addItemDialog.open()">
                     <i class="fa fa-plus"></i>
                 </div>
             </div>

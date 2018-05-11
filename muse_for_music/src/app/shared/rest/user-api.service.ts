@@ -216,6 +216,20 @@ export class UserApiService implements OnInit {
         return finished.asObservable()
     }
 
+    changePassword = (password: string, passwordRepeat) => {
+        const success = new AsyncSubject<boolean>();
+        this.getAuthRoot().subscribe(auth => {
+            this.rest.post(auth._links['change_password'], {
+                password: password,
+                password_repeat: passwordRepeat
+            }, this.token).subscribe(data => {
+                success.next(true);
+                success.complete();
+            });
+        });
+        return success.asObservable();
+    }
+
 
     // User Management /////////////////////////////////////////////////////////
 
@@ -295,5 +309,16 @@ export class UserApiService implements OnInit {
         });
         stream.take(1).subscribe();
         return stream;
+    }
+
+    resetPassword(user: ApiObject, password: string) {
+        const success = new AsyncSubject<boolean>();
+        this.rest.post(user, {
+            password: password,
+        }, this.token).subscribe(data => {
+            success.next(true);
+            success.complete();
+        }, error => this.errorHandler(error, 'users/' + user.username + '/password-reset', 'POST'));
+        return success.asObservable();
     }
 }
