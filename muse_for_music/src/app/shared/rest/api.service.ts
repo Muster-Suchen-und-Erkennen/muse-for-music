@@ -187,6 +187,46 @@ export class ApiService implements OnInit {
         return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
     }
 
+    postTaxonomyItem(taxonomy: ApiObject, newItem: any, parent?: ApiObject): Observable<ApiObject> {
+        const baseResource = 'taxonomies';
+        let resource = baseResource + '/' + taxonomy.name;
+        let url = taxonomy._links.self;
+        if (parent != null) {
+            resource = baseResource + '/' + taxonomy.name + '/' + parent.id;
+            url = parent._links.self;
+        }
+        return this.rest.post(url, newItem, this.userApi.token).flatMap(() => {
+            return this.getTaxonomy(taxonomy.name);
+        }).catch(error => {
+            this.errorHandler(error, resource, 'POST');
+            return Observable.throw(error);
+        });
+    }
+
+    putTaxonomyItem(taxonomy: ApiObject, item: ApiObject, newValues: any): Observable<ApiObject> {
+        const baseResource = 'taxonomies';
+        const resource = baseResource + '/' + taxonomy.name + '/' + item.id;
+
+        return this.rest.put(item._links.self, newValues, this.userApi.token).flatMap(() => {
+            return this.getTaxonomy(taxonomy.name);
+        }).catch(error => {
+            this.errorHandler(error, resource, 'PUT');
+            return Observable.throw(error);
+        });
+    }
+
+    deleteTaxonomyItem(taxonomy: ApiObject, item: ApiObject): Observable<ApiObject> {
+        const baseResource = 'taxonomies';
+        const resource = baseResource + '/' + taxonomy.name + '/' + item.id;
+
+        return this.rest.delete(item._links.self, this.userApi.token).flatMap(() => {
+            return this.getTaxonomy(taxonomy.name);
+        }).catch(error => {
+            this.errorHandler(error, resource, 'DELETE');
+            return Observable.throw(error);
+        });
+    }
+
 
     /// People /////////////////////////////////////////////////////////////////
     getPeople(): Observable<Array<ApiObject>> {

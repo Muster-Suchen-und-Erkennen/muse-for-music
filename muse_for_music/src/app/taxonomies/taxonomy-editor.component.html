@@ -23,24 +23,48 @@
                             <p class="min-w1 mv0 pa2 br-pill bg-near-white">
                                 {{item.name === 'root' ? selectedTaxonomy : item.name}}
                             </p>
-                            <i class="ml2 fa fa-pencil"></i>
-                            <i class="ml2 fa fa-plus" *ngIf="isTree"></i>
-                            <i class="ml2 fa fa-trash"></i>
+                            <span class="tooltip tooltip-bottom link" data-tooltip="bearbeiten" (click)="selectedItem = item.data; editItemDialog.open()">
+                                <i class="ml2 fa fa-pencil dim"></i>
+                            </span>
+                            <span class="tooltip tooltip-bottom link" data-tooltip="Kindknoten einfügen" (click)="selectedParent = item.data; addItemDialog.open()">
+                                <i class="ml2 fa fa-plus dim" *ngIf="isTree"></i>
+                            </span>
+                            <span class="tooltip tooltip-bottom link hover-red" data-tooltip="löschen" *ngIf="item.name !== 'root'" (click)="selectedItem = item.data; deleteItemDialog.open()">
+                                <i class="ml2 fa fa-trash"></i>
+                            </span>
                         </div>
                         <p class="mv0 min-w1">{{item.description}}</p>
                     </div>
                 </div>
-                <div class="flex items-center justify-center pa2 br-pill bg-near-white" *ngIf="!isTree && items?.length > 0">
+                <div class="flex items-center justify-center pa2 br-pill bg-near-white bg-animate hover-bg-light-silver" *ngIf="!isTree && items?.length > 0" (click)="selectedParent = null; addItemDialog.open()">
                     <i class="fa fa-plus"></i>
                 </div>
             </div>
         </div>
     </m4m-box>
 
-    <!--m4m-dialog [closable]="false" [dialogType]="'delete-cancel'" [icon]="'delete'" [okCallback]="delete" #confirm>
-        <h1 class="mv0" title>Delete "{{opus?.name}}"</h1>
+    <m4m-dialog [closable]="true" [dialogType]="'save-cancel'" [icon]="'save'" [okCallback]="addItem" #addItemDialog>
+        <h1 class="mv0" title>Neuer Eintrag:</h1>
         <div class="w-100 ph3 pv2" body>
-            Do you want to delete "{{opus?.name}}"?
+            <div *ngIf="selectedParent != null" >
+                <span>Kind von:</span>
+                <span>{{selectedParent?.name}}</span>
+            </div>
+            <dynamic-form [objectModel]="'TaxonomyItemPOST'" [startValues]="{}" (valid)="onValidChange($event)" (data)="onDataChange($event)" #form></dynamic-form>
         </div>
-    </m4m-dialog-->
+    </m4m-dialog>
+
+    <m4m-dialog [closable]="true" [dialogType]="'save-cancel'" [icon]="'save'" [okCallback]="editItem" #editItemDialog>
+        <h1 class="mv0" title>Eintrag bearbeiten:</h1>
+        <div class="w-100 ph3 pv2" body>
+            <dynamic-form [objectModel]="'TaxonomyItemPUT'" [startValues]="selectedItem" (valid)="onValidChange($event)" (data)="onDataChange($event)" #form></dynamic-form>
+        </div>
+    </m4m-dialog>
+
+    <m4m-dialog [closable]="false" [dialogType]="'delete-cancel'" [icon]="'delete'" [okCallback]="deleteItem" #deleteItemDialog>
+        <h1 class="mv0" title>"{{selectedItem?.name}}" löschen?</h1>
+        <div class="w-100 ph3 pv2" body>
+            Soll "{{selectedItem?.name}}" wirklich gelöscht werden?
+        </div>
+    </m4m-dialog>
 </div>

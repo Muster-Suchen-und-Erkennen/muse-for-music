@@ -35,11 +35,11 @@ taxonomy_item_links = ns.model('TaxonomyItemLinks', {
 
 taxonomy_item_post = ns.model('TaxonomyItemPOST', {
     'name': fields.String(default='', required=True),
-    'description': fields.String(default='', required=False),
+    'description': fields.String(default='', required=False, nullable=True),
 })
 
 taxonomy_item_put = ns.inherit('TaxonomyItemPUT', taxonomy_item_post, {
-    'id': fields.Integer(default=-1, required=True, example=1),
+    'id': fields.Integer(default=-1, required=True, example=1, readonly=True),
 })
 
 taxonomy_item_get = ns.inherit('TaxonomyItemGET', taxonomy_item_put, {

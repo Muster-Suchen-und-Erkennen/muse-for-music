@@ -52,6 +52,12 @@ export class TaxonomyEditorComponent implements OnInit, OnDestroy {
     openNodes: Set<number> = new Set<number>();
 
 
+    selectedParent: ApiObject = null;
+    selectedItem: ApiObject = null;
+    valid: boolean;
+    itemData: any;
+
+
     visible(selectable: TaxonomyItem): boolean {
         if (this.selectedTaxonomy != null && this.isTree) {
             for (const parent of selectable.parents) {
@@ -156,5 +162,40 @@ export class TaxonomyEditorComponent implements OnInit, OnDestroy {
                 this.closed.add(selectable.id);
             }
         }
+    }
+
+    addItem = () => {
+        if (this.valid) {
+            const taxonomy = this.taxonomyList.find(tax => tax.name === this.selectedTaxonomy);
+            if (taxonomy != null) {
+                this.api.postTaxonomyItem(taxonomy, this.itemData, this.selectedParent).subscribe(_ => {return});
+            }
+        }
+    };
+
+    editItem = () => {
+        if (this.valid) {
+            const taxonomy = this.taxonomyList.find(tax => tax.name === this.selectedTaxonomy);
+            if (taxonomy != null) {
+                this.api.putTaxonomyItem(taxonomy, this.selectedItem, this.itemData).subscribe(_ => {return});
+            }
+        }
+    };
+
+    deleteItem = () => {
+        if (this.valid) {
+            const taxonomy = this.taxonomyList.find(tax => tax.name === this.selectedTaxonomy);
+            if (taxonomy != null) {
+                this.api.deleteTaxonomyItem(taxonomy, this.selectedItem).subscribe(_ => {return});
+            }
+        }
+    };
+
+    onValidChange(valid: boolean) {
+        this.valid = valid;
+    }
+
+    onDataChange(data: any) {
+        this.itemData = data;
     }
 }
