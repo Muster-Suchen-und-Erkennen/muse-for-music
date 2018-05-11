@@ -27,7 +27,10 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     form: FormGroup;
     valueChangeSubscription: Subscription;
 
+    private canSave: boolean;
+
     @Output() valid: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() validForSave: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() data: EventEmitter<any> = new EventEmitter<any>();
 
     @Output() save: EventEmitter<any> = new EventEmitter<any>();
@@ -50,6 +53,21 @@ export class DynamicFormComponent implements OnInit, OnChanges {
                 this.form.statusChanges.subscribe(status => {
                     this.valid.emit(this.form.valid);
                     this.data.emit(this.form.value);
+                    if (this.form.valid) {
+                        this.validForSave.emit(true);
+                        this.canSave = true;
+                    } else {
+                        let valid = true;
+                        this.questions.forEach(qstn => {
+                            if (!qstn.allowSave) {
+                                if (!this.form.controls[qstn.key].valid) {
+                                    valid = false;
+                                }
+                            }
+                        });
+                        this.canSave = valid;
+                        this.validForSave.emit(valid);
+                    }
                 });
                 this.patchFormValues();
             });
@@ -111,7 +129,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     }
 
     saveForm = () => {
-        if (this.form != null && this.form.valid) {
+        if (this.form != null && this.canSave) {
             this.save.emit(this.form.value);
         }
     }

@@ -6,6 +6,7 @@ export interface QuestionOptions {
     label?: string,
     required?: boolean,
     nullable?: boolean,
+    allowSave?: boolean,
     readOnly?: boolean,
     min?: number | string,
     max?: number | string,
@@ -24,6 +25,7 @@ export class QuestionBase<T>{
     label: string;
     required: boolean;
     nullable: boolean;
+    allowSave: boolean;
     readOnly: boolean;
     min: number | string | undefined;
     max: number | string | undefined;
@@ -42,6 +44,7 @@ export class QuestionBase<T>{
         this.label = options.label || '';
         this.required = !!options.required;
         this.nullable = !!options.nullable;
+        this.allowSave = !!options.allowSave;
         this.readOnly = !!options.readOnly;
         this.min = options.min;
         this.max = options.max;

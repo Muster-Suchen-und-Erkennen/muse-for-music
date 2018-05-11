@@ -165,6 +165,9 @@ export class QuestionService implements OnInit {
         if (prop['x-nullable'] != null) {
             options.nullable = prop['x-nullable'];
         }
+        if (prop['x-allowSave'] != null) {
+            options.allowSave = prop['x-allowSave'];
+        }
         if (prop['x-reference'] != null) {
             options.controlType = 'reference';
             options.valueType = prop['x-reference'];

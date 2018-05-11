@@ -17,6 +17,13 @@ export class DynamicFormQuestionComponent {
 
     open: boolean = false;
 
+    isCollapsible() {
+        if (this.question == null || this.question.nestedQuestions == null) {
+            return false;
+        }
+        return this.question.nestedQuestions.filter(qstn => !qstn.readOnly).length > 2;
+    }
+
     toggleOpen() {
         if (this.question != null && this.question.controlType === 'object' &&
             this.question.nestedQuestions != null && this.question.nestedQuestions.length > 2) {

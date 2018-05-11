@@ -5,5 +5,5 @@
             <df-question [question]="question" [form]="form" (opened)="closeUnrelated($event)" #questions></df-question>
         </div>
     </form>
-    <m4m-save-button [formValid]="form?.valid" (click)="saveForm()" *ngIf="showSaveButton"></m4m-save-button>
+    <m4m-save-button [formValid]="validForSave | async" (click)="saveForm()" *ngIf="showSaveButton"></m4m-save-button>
 </div>
