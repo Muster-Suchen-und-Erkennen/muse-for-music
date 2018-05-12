@@ -4,6 +4,7 @@ from logging.handlers import RotatingFileHandler
 
 from flask import Flask, logging
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 from flask_webpack import Webpack
@@ -46,6 +47,7 @@ app.logger.info('Connecting to database %s.', app.config['SQLALCHEMY_DATABASE_UR
 
 # Setup DB and bcrypt
 db = SQLAlchemy(app)  # type: SQLAlchemy
+migrate = Migrate(app, db)  # type: Migrate
 bcrypt = Bcrypt(app)  # type: Bcrypt
 
 # Setup JWT
