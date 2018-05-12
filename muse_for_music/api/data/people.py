@@ -7,6 +7,7 @@ from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy import literal
 
+from json import dumps
 
 from .. import api
 
@@ -18,7 +19,9 @@ from ...user_api import has_roles, RoleEnum
 from ...models.data.people import Person, GenderEnum
 from ...models.data.opus import Opus
 from ...models.data.citations import PersonToCitations
-from ...models.data.history import History, MethodEnum
+from ...models.data.history import History, MethodEnum, TypeEnum, Backup
+
+from .backup import to_backup_json
 
 ns = api.namespace('person', description='Resource for persons.', path='/persons')
 
@@ -120,5 +123,7 @@ class PersonResource(Resource):
         check_if_person_is_in_use(person)
         hist = History(MethodEnum.delete, person)
         db.session.add(hist)
+        backup = Backup(TypeEnum.person, dumps(to_backup_json(person)))
+        db.session.add(backup)
         db.session.delete(person)
         db.session.commit()

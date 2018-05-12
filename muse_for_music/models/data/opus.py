@@ -38,9 +38,9 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
     first_played_in = db.Column(db.Integer, nullable=True)
     notes = db.Column(db.Text, nullable=True)
     movements = db.Column(db.Integer)
-    genre_id = db.Column(db.Integer, db.ForeignKey('gattung_nineteenth_century.id'))
-    grundton_id = db.Column(db.Integer, db.ForeignKey('grundton.id'))
-    tonalitaet_id = db.Column(db.Integer, db.ForeignKey('tonalitaet.id'))
+    genre_id = db.Column(db.Integer, db.ForeignKey('gattung_nineteenth_century.id', ondelete='RESTRICT'))
+    grundton_id = db.Column(db.Integer, db.ForeignKey('grundton.id', ondelete='RESTRICT'))
+    tonalitaet_id = db.Column(db.Integer, db.ForeignKey('tonalitaet.id', ondelete='RESTRICT'))
 
     composer = db.relationship('Person', lazy='select')
     genre = db.relationship(GattungNineteenthCentury, lazy='joined')

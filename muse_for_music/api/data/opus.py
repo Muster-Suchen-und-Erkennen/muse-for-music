@@ -6,6 +6,7 @@ from flask_restplus import Resource, marshal, abort
 from flask_jwt_extended import jwt_required, get_jwt_claims
 from sqlalchemy.exc import IntegrityError
 
+from json import dumps
 
 from . import api
 
@@ -16,8 +17,9 @@ from ... import db
 from ...user_api import has_roles, RoleEnum
 from ...models.data.opus import Opus
 from ...models.data.part import Part
-from ...models.data.history import History, MethodEnum
+from ...models.data.history import History, MethodEnum, TypeEnum, Backup
 
+from .backup import to_backup_json
 
 ns = api.namespace('opus', description='Resource for opuses.', path='/opuses')
 
@@ -88,6 +90,8 @@ class OpusResource(Resource):
             abort(403, 'Only the owner of a resource and Administrators can delete a resource!')
         hist = History(MethodEnum.delete, opus)
         db.session.add(hist)
+        backup = Backup(TypeEnum.opus, dumps(to_backup_json(opus)))
+        db.session.add(backup)
         db.session.delete(opus)
         db.session.commit()
 

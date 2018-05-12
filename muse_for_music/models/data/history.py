@@ -89,3 +89,14 @@ class History(db.Model):
             resource_id = dumps({'id': resource.id, 'subpart_id': resource.subpart_id}, sort_keys=True)
         result = cls.query.filter(cls.user == user, cls.method == MethodEnum.create, cls.type == type, cls.resource == resource_id).first()
         return result is not None
+
+
+class Backup(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    time = db.Column(db.DateTime, server_default=func.now())
+    type = db.Column(db.Enum(TypeEnum))
+    resource = db.Column(db.Text())
+
+    def __init__(self, resource_type: TypeEnum, resource: str):
+        self.type = resource_type
+        self.resource = resource

@@ -5,6 +5,7 @@ from flask_restplus import Resource, marshal, abort
 from flask_jwt_extended import jwt_required, get_jwt_claims
 from sqlalchemy.exc import IntegrityError
 
+from json import dumps
 
 from . import api
 
@@ -16,7 +17,9 @@ from ...models.data.subpart import SubPart
 from ...models.data.voice import Voice
 from ...models.taxonomies import Anteil, InstrumentierungEinbettungQualitaet, \
                                  InstrumentierungEinbettungQuantitaet
-from ...models.data.history import History, MethodEnum
+from ...models.data.history import History, MethodEnum, TypeEnum, Backup
+
+from .backup import to_backup_json
 
 
 ns = api.namespace('subpart', description='Resource for Subparts.', path='/subparts')
@@ -73,6 +76,8 @@ class SubPartResource(Resource):
             abort(403, 'Only the owner of a resource and Administrators can delete a resource!')
         hist = History(MethodEnum.delete, subpart)
         db.session.add(hist)
+        backup = Backup(TypeEnum.subpart, dumps(to_backup_json(subpart)))
+        db.session.add(backup)
         db.session.delete(subpart)
         db.session.commit()
 
@@ -148,5 +153,7 @@ class SubPartVoiceResource(Resource):
             abort(403, 'Only the owner of a resource and Administrators can delete a resource!')
         hist = History(MethodEnum.delete, voice)
         db.session.add(hist)
+        backup = Backup(TypeEnum.voice, dumps(to_backup_json(voice)))
+        db.session.add(backup)
         db.session.delete(voice)
         db.session.commit()

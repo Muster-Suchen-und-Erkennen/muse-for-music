@@ -5,6 +5,7 @@ from flask_restplus import Resource, marshal, abort
 from flask_jwt_extended import jwt_required, get_jwt_claims
 from sqlalchemy.exc import IntegrityError
 
+from json import dumps
 
 from . import api
 
@@ -19,7 +20,9 @@ from ...models.taxonomies import InstrumentierungEinbettungQuantitaet, \
                                  InstrumentierungEinbettungQualitaet, \
                                  Lautstaerke, LautstaerkeEinbettung, \
                                  TempoEinbettung, TempoEntwicklung
-from ...models.data.history import History, MethodEnum
+from ...models.data.history import History, MethodEnum, TypeEnum, Backup
+
+from .backup import to_backup_json
 
 
 ns = api.namespace('part', description='Resource for Parts.', path='/parts')
@@ -75,6 +78,8 @@ class PartResource(Resource):
             abort(403, 'Only the owner of a resource and Administrators can delete a resource!')
         hist = History(MethodEnum.delete, part)
         db.session.add(hist)
+        backup = Backup(TypeEnum.part, dumps(to_backup_json(part)))
+        db.session.add(backup)
         db.session.delete(part)
         db.session.commit()
 
