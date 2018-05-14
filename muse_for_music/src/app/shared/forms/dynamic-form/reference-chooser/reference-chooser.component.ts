@@ -25,7 +25,7 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
 
     @ViewChild(myDropdownComponent) dropdown: myDropdownComponent
 
-    @Input('value') _value: any = undefined;
+    selected: any[] = [];
     @Input() question: QuestionBase<any>;
 
     searchTerm: string;
@@ -38,20 +38,30 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
 
     onTouched: any = () => {};
 
-    get value(): ApiObject {
-        if (this.choices == undefined || this._value == undefined) {
-            return {_links: {self: {href: ''}}, id: -1}
+    @Input('value')
+    get value(): ApiObject|ApiObject[] {
+        if (this.choices == null || this.selected == null || this.selected.length === 0) {
+            if (this.question.isArray) {
+                return [];
+            } else {
+                return {_links: {self: {href: ''}}, id: -1};
+            }
         }
-        return this._value;
+        if (this.question.isArray) {
+            return this.selected;
+        } else {
+            return this.selected[0];
+        }
     }
 
-    set value(val: ApiObject) {
-        this._value = val;
+    set value(val: ApiObject|ApiObject[]) {
+        if (this.question.isArray) {
+            this.selected = (val as ApiObject[]);
+        } else {
+            this.selected = [val];
+        }
         this.onChange(val);
         this.onTouched();
-        if (val.id != -1) {
-            this.searchTerm = val.name;
-        }
     }
 
     constructor(private api: ApiService) {}
@@ -82,7 +92,15 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
     }
 
     selectedChange(selected: ApiObject) {
-        this.value = selected;
+        if (this.question.isArray) {
+            if (this.selected.findIndex(sel => selected.id === sel.id) < 0) {
+                this.selected.push(selected);
+            } else {
+                this.selected = this.selected.filter(sel => selected.id !== sel.id);
+            }
+        } else {
+            this.value = selected;
+        }
         this.dropdown.closeDropdown();
         this.onTouched();
     }
