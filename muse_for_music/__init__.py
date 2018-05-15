@@ -53,7 +53,7 @@ db = SQLAlchemy(app, metadata=MetaData(naming_convention={
     'fk': 'fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s',
     'ix': 'ix_%(table_name)s_%(column_0_name)s',
     'uq': 'uq_%(table_name)s_%(column_0_name)s',
-    'ck': 'ck_%(table_name)s_%(constraint_name)s',
+    'ck': 'ck_%(table_name)s_%(column_0_name)s',
 }))
 migrate = Migrate(app, db)  # type: Migrate
 bcrypt = Bcrypt(app)  # type: Bcrypt
