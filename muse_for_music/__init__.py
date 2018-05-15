@@ -4,6 +4,7 @@ from logging.handlers import RotatingFileHandler
 
 from flask import Flask, logging
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.schema import MetaData
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
@@ -46,7 +47,14 @@ app.logger.info('Connecting to database %s.', app.config['SQLALCHEMY_DATABASE_UR
 
 
 # Setup DB and bcrypt
-db = SQLAlchemy(app)  # type: SQLAlchemy
+db = None  # type: SQLAlchemy
+db = SQLAlchemy(app, metadata=MetaData(naming_convention={
+    'pk': 'pk_%(table_name)s',
+    'fk': 'fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s',
+    'ix': 'ix_%(table_name)s_%(column_0_name)s',
+    'uq': 'uq_%(table_name)s_%(column_0_name)s',
+    'ck': 'ck_%(table_name)s_%(constraint_name)s',
+}))
 migrate = Migrate(app, db)  # type: Migrate
 bcrypt = Bcrypt(app)  # type: Bcrypt
 
