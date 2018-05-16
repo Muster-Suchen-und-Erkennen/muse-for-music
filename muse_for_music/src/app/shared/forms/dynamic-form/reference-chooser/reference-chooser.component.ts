@@ -44,13 +44,17 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
             if (this.question.isArray) {
                 return [];
             } else {
-                return {_links: {self: {href: ''}}, id: -1};
+                return this.question.nullValue;
             }
         }
         if (this.question.isArray) {
             return this.selected;
         } else {
-            return this.selected[0];
+            if (this.selected.length > 0) {
+                return this.selected[0];
+            } else {
+                return this.question.nullValue;
+            }
         }
     }
 
@@ -58,7 +62,13 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
         if (this.question.isArray) {
             this.selected = (val as ApiObject[]);
         } else {
-            this.selected = [val];
+            if (val != null && this.question.nullValue != null
+                && (val as ApiObject).id != null
+                && (val as ApiObject).id === this.question.nullValue.id) {
+                this.selected = [];
+            } else {
+                this.selected = [val];
+            }
         }
         this.onChange(val);
         this.onTouched();
