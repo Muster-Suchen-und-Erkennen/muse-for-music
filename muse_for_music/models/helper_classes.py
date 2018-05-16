@@ -87,7 +87,7 @@ class UpdateableModelMixin():
     def _update_normal_attributes(self, new_values: Dict, partial: bool=False):
         expire_self = False
         for name, cls in self._normal_attributes:
-            self.check_for_required_attr(name, new_values, partial)
+            self.check_for_required_attr(name, new_values, cls, partial)
             value = new_values.get(name)
             if issubclass(cls, UpdateableModelMixin) and (name not in self._reference_only_attributes):
                 expire_self = self.update_complex_object(name, value, cls, expire_self)
@@ -115,9 +115,21 @@ class UpdateableModelMixin():
         if expire_self:
             db.session.expire(self)
 
-    def check_for_required_attr(self, name, new_values, partial: bool=False):
-        if not partial and name not in new_values and name not in self._optional_attributes:
-            raise ValidationError("'{}' is a required property".format(name))
+    def check_for_required_attr(self, name, new_values, cls, partial: bool=False):
+        if name not in new_values and name not in self._optional_attributes:
+            if not partial:
+                raise ValidationError("'{}' is a required property".format(name))
+            else:
+                if cls == str:
+                    new_values.name = ''
+                elif cls == int:
+                    new_values = -1
+                elif cls == float:
+                    new_values = -1
+                elif cls == bool:
+                    new_values = False
+                else:
+                    raise ValidationError("'{}' is a required property".format(name))
 
     def update_complex_object(self, name, value, cls, expire_self):
         attr_to_update = getattr(self, name)  # type: UpdateableModelMixin

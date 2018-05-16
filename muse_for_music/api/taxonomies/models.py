@@ -42,6 +42,12 @@ taxonomy_item_put = ns.inherit('TaxonomyItemPUT', taxonomy_item_post, {
     'id': fields.Integer(default=-1, required=True, example=1, readonly=True),
 })
 
+taxonomy_item_ref = ns.model('TaxonomyItemREF', {
+    'id': fields.Integer(default=-1, required=True, example=1, readonly=True),
+    'name': fields.String(default='', required=False),
+    'description': fields.String(default='', required=False, nullable=True),
+})
+
 taxonomy_item_get = ns.inherit('TaxonomyItemGET', taxonomy_item_put, {
     'id': fields.Integer(default=-1, readonly=True, example=1),
     '_links': NestedFields(taxonomy_item_links),
