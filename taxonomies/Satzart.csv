@@ -1,21 +1,16 @@
-name,parent
+name,parent,description
 root,
-Satzart,root
-polyphone Satzart,Satzart
-andere polyphone Satzart,polyphone Satzart
-unbestimmte polyphone Satzart,polyphone Satzart
-Imitation,polyphone Satzart
-Kontrapunkt,polyphone Satzart
-andere kontrapunktische Satzart,Kontrapunkt
-fugierte Satzart,Kontrapunkt
-Texturwechsel,polyphone Satzart
-Durchbrochene Arbeit,polyphone Satzart
-Melodie und eigenständige Begleitung (polyphon),polyphone Satzart
-homophone Satzart,Satzart
-andere homophone Satzart,homophone Satzart
-unbestimmte homophone Satzart,homophone Satzart
+andere Satzart,root
+unbestimmte Satzart,root
+Melodie und Begleitung,root
+homophone Satzart,root
+Einstimmiges Spiel,homophone Satzart
+Sonstige Hauptstimme(n) und Begleitung,homophone Satzart
+Nur Begleitung (bzw. Begleitfigur),homophone Satzart
 Akkordsatz,homophone Satzart
-anderer Akkordsatz,Akkordsatz
 Choralsatz / Kantionalsatz,Akkordsatz
-Melodie und Begleitung (homophon),homophone Satzart
-solistische Satzart,Satzart
+anderer Akkordsatz,Akkordsatz,"Homophoner Satz, bei dem der Melodierhythmus gleich dem Akkordrhythmus ist (Blockakkorde)."
+polyphone Satzart,root
+Durchbrochene Arbeit,polyphone Satzart,"Motivische Elemente werden in mehreren Instrumenten/Instrumentengruppen im Wechsel aufgegriffen. "
+Kontrapunkt,polyphone Satzart
+fugierte Satzart,Kontrapunkt

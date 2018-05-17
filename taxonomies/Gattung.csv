@@ -1,25 +1,28 @@
 name,parent
 root,
 andere Gattung,root
-Solo-Klaviermusik allgemein,root
-Serenade,root
-Präludium,root
-Passion,root
-Sinfonietta,root
-Ballett,root
-Marsch,root
-Symphonischer Tanz,root
-Ouvertüre,root
-Oratorium,root
-Motette,root
-Madrigal,root
-Kantate,root
-Choral,root
-Symphonie,root
-Symphonische Dichtung,root
-Messe,root
-Oratorium**,root
-Kunstlied,root
-Oper,root
+Instrumentalkonzert / Konzertstück,root
 Streichquartett,root
-Instrumentalkonzert,root
+Oper,root
+Kunstlied,root
+Oratorium,root
+Messe,root
+Symphonische Dichtung,root
+Symphonie,root
+Choral,root
+Kantate,root
+Madrigal,root
+Motette,root
+Oratorium,root
+Ouvertüre,root
+Passion,root
+Symphonischer Tanz,root
+Marsch,root
+Ballett,root
+Sinfonietta,root
+Sinfonia,root
+Präludium,root
+Serenade,root
+Reverie,root
+Capriccio,root
+Solo-Klaviermusik allgemein,root

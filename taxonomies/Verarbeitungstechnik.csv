@@ -1,33 +1,21 @@
-name,parent
+name,parent,description
 root,
-motivisch-thematische Arbeit und Kontrapunkt,root
-verzierende Variation,motivisch-thematische Arbeit und Kontrapunkt
-sonstige Variantenbildung,motivisch-thematische Arbeit und Kontrapunkt
-andere sonstige Variantenbildung,sonstige Variantenbildung
-"sonstige, sowohl diastematische als auch rhythmische Variantenbildung",sonstige Variantenbildung
-sonstige diastematische Variantenbildung,sonstige Variantenbildung
-sonstige rhythmische Variantenbildung,sonstige Variantenbildung
-Augmentation,motivisch-thematische Arbeit und Kontrapunkt
-rhythmische Augmentation durch Verlängerung von Notendauern,Augmentation
-diastematische Augmentation durch Intervallweitung,Augmentation
-Diminution,motivisch-thematische Arbeit und Kontrapunkt
-rhythmische Diminution durch Verkürzung von Notendauern,Diminution
+Wiederholung als motivische Arbeit,root,"Nur eintragen, wenn nicht unter „Wiederholung“ eingetragen."
+Ableitung,root,"„Gewinn von neuem motivischen Material durch motivische oder thematische Verwandlung bzw. Umwandlung des Ausgangsmaterials unter Beibehaltung (zumindest in erkennbaren Ansätzen) der melodischen oder rhythmischen Struktur“ (Amon 2011, S. 245-246. Statt melodisch lies: diastematisch*)."
+Erweiterung,root
+äußere Erweiterung (Anfügen von neuem Material),Erweiterung,"Ein Motiv wird erweitert, indem neues Material angefügt wird, das Motiv aber in seiner Form bestehen bleibt. Vgl. Amon 2011, S. 247."
+innere Erweiterung (Einarbeiten von neuem Material),Erweiterung,"Ein Motiv wird erweitert, indem neues Material in die Motivstruktur eingearbeitet wird. Vgl. Amon 2011, S. 247."
+Auflösung / Dekonstruktion,root,"Reduktion eines Motivs, indem Material aus seinem Kontext herausgenommen wird."
+Fortspinnung,root,"Eine Melodik kann man fortspinnend nennen, wenn ein Motiv, das eher linear orientiert und nicht klar abgegrenzt ist, als Ganzes oder in Teilen wiederholt und sequenziert wird, sowie im Verlauf seiner Weiterführung ständig umgeformt und dann von einem anderen Motiv abgelöst wird. Vgl. Amon 2011, S. 242."
+Imitation,root,"Wörtliche oder leicht veränderte Wiederholung eines Motivs in einer anderen Stimme."
+Krebs,root,"Spiegelung eines Motivs an einer vertikalen Achse. Vgl. Amon 2011, S. 246."
+Umkehrung,root,"Geschieht, wenn ein Motiv so abgewandelt wird, dass seine Intervalle in die entgegengesetzte Richtung gesetzt sind. (Bspw. wird aus einer steigenden Tonleiter eine fallende). vgl. Amon 2011, S. 247."
+Spiegelkrebs,root,"Gleichzeitige Kombination von Krebs und Umkehrung."
+Diminution,root,"Verkleinerung entweder des Intervalls (diastematisch) oder der Notenlänge (rhythmisch)."
 diastematische Diminution durch Intervallverengung,Diminution
-Abspaltung,motivisch-thematische Arbeit und Kontrapunkt
-Umkehrung,motivisch-thematische Arbeit und Kontrapunkt
-Spiegelkrebs,motivisch-thematische Arbeit und Kontrapunkt
-Krebs,motivisch-thematische Arbeit und Kontrapunkt
-Transposition,motivisch-thematische Arbeit und Kontrapunkt
-Imitation,motivisch-thematische Arbeit und Kontrapunkt
-Fortspinnung,motivisch-thematische Arbeit und Kontrapunkt
-Auflösung / Dekonstruktion,motivisch-thematische Arbeit und Kontrapunkt
-Erweiterung,motivisch-thematische Arbeit und Kontrapunkt
-innere Erweiterung (Einarbeiten von neuem Material),Erweiterung
-äußere Erweiterung (Anfügen von neuem Material),Erweiterung
-Ableitung,motivisch-thematische Arbeit und Kontrapunkt
-nicht-kontrastierende Ableitung,Ableitung
-kontrastierende Ableitung,Ableitung
-Sequenz,motivisch-thematische Arbeit und Kontrapunkt
-Wiederholung,root
-leicht variierte Wiederholung,Wiederholung
-exakte Wiederholung,Wiederholung
+rhythmische Diminution durch Verkürzung von Notendauern,Diminution
+Augmentation,root,"Erweiterung, Vergrößerung, entweder des Intervalls (diastematisch) oder der Notenlänge (rhythmisch). Vgl. Amon 2011, S. 246."
+diastematische Augmentation durch Intervallweitung,Augmentation
+rhythmische Augmentation durch Verlängerung von Notendauern,Augmentation
+Verzierung,root
+sonstige Variantenbildung,root

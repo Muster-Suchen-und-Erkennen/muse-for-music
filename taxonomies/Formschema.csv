@@ -1,22 +1,18 @@
 name,parent
 root,
-formlos,root
-A,root
-A-A,root
-A-A-A…,root
-A-A',root
-|:A:|-|:A'-A:|,root
-A-A'-A''-A''',root
-A-B,root
-A-A-B,root
-A-B-A,root
-|:A:|-|:B-A:|,root
-A-A-B-A,root
-|:A:|-|:B-A':|,root
-A-B-A',root
-A-B-B,root
-A-A-B-B,root
-A-A-B-C,root
-A-B-A-C,root
-A-B-C-D,root
+kein erkennbares Formschema,root
 anderes Formschema,root
+A,root
+A–A,root
+A–A–A,root
+A–A–A–A…,root
+A–B,root
+A–A–B,root
+A–B–A,root
+|:A:|–|:B–A:|,root
+A–A–B–A,root
+A–B–B,root
+A–A–B–B,root
+A–A–B–C,root
+A–B–A–C,root
+A–B–C…,root

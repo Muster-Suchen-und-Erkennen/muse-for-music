@@ -1,8 +1,8 @@
-name,parent
+name,parent,description
 root,
-quasi,root
-possibile,root
-poco,root
-più,root
-molto,root
 meno,root
+molto,root
+più,root
+poco,root,"Das Zeichen „pf“ steht für „poco forte“."
+possibile,root
+quasi,root

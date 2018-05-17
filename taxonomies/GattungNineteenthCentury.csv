@@ -2,13 +2,16 @@ name,parent
 root,
 unbestimmte Gattung,root
 andere Gattung,root
-Serenade,root
-Konzertstück,root
-symphonischer Marsch,root
-symphonischer Tanz,root
-Ouvertüre,root
-Symphonische Dichtung,root
-Instrumentalkonzert,root
-Sinfonia,root
-Sinfonietta,root
 Symphonie,root
+Sinfonietta,root
+Sinfonia,root
+Instrumentalkonzert,root
+Symphonische Dichtung,root
+Ouvertüre,root
+symphonischer Tanz,root
+symphonischer Marsch,root
+Konzertstück,root
+Ballett,root
+Reverie,root
+Serenade,root
+Capriccio,root

@@ -1,17 +1,17 @@
-name,parent
+name,parent,description
 root,
 andere Funktion,root
 unklare Funktion,root
-Moll-Subdominante,root
-Dur-Subdominante,root
-Moll-Dominante,root
-andere Mediante,root
-Tonikaparallele,root
-Dominantgegenklang,root
-Dominante,root
-Subdominante,root
-Tonikagegenklang,root
-Dominantparallele,root
-Subdominantparallele,root
-Moll-Tonika,root
 Tonika,root
+Varianttonika,root
+Tonikaparallele (Tp /tP),root
+Tonikagegenklang (Tg / tG),root
+Subdominante,root
+Variantsubdominante,root
+Subdominantparallele (Sp / sP),root
+Subdominantgegenklang (Sg / sG),root
+Dominante,root
+Molldominante,root
+Dominantparallele (Dp / dP),root
+Dominantgegenklang (Dg / dG),root
+"Terzverwandtschaft 2., 3. oder 4. Grades",root,"2. Grades: entfernte Terzverwandtschaft, z.B. TP in Dur oder tp in Moll.    3. Grades: nahe Variantik, z.B. tP in Dur oder Tp in Moll.    4. Grades: entfernte Variantik, z.B. tp in Dur oder TP in Moll."

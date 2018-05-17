@@ -1,8 +1,33 @@
 name,parent
 root,
-Held,root
-Antike,root
+anderer Gegenstand,root
+Kunst,root
+Militär,root
+Nation/Land/Region,root
+andere,Nation/Land/Region
+unbestimmt,Nation/Land/Region
+Dänemark,Nation/Land/Region
+Schweden,Nation/Land/Region
+Norwegen,Nation/Land/Region
+Finnland,Nation/Land/Region
+Russland,Nation/Land/Region
+Ungarn,Nation/Land/Region
+Polen,Nation/Land/Region
+Portugal,Nation/Land/Region
+Spanien,Nation/Land/Region
+Italien,Nation/Land/Region
+Niederlande,Nation/Land/Region
+Belgien,Nation/Land/Region
+Frankreich,Nation/Land/Region
+Schweiz,Nation/Land/Region
+Österreich,Nation/Land/Region
+Deutschland,Nation/Land/Region
+Schottland,Nation/Land/Region
+Irland,Nation/Land/Region
+England,Nation/Land/Region
+Mythos/Sage,root
 Natur,root
+Historisches Ereignis,root
 Religion,root
 unbestimmte Religion,Religion
 andere Religion,Religion
@@ -17,26 +42,3 @@ anglikanisches Christentum,christlicher Glaube
 Protestantismus,christlicher Glaube
 Katholizismus,christlicher Glaube
 Christentum im Allgemeinen,christlicher Glaube
-Nation,root
-andere,Nation
-unbestimmt,Nation
-Dänemark,Nation
-Schweden,Nation
-Norwegen,Nation
-Finnland,Nation
-Russland,Nation
-Ungarn,Nation
-Polen,Nation
-Portugal,Nation
-Spanien,Nation
-Italien,Nation
-Niederlande,Nation
-Belgien,Nation
-Frankreich,Nation
-Schweiz,Nation
-Österreich,Nation
-Deutschland,Nation
-Schottland,Nation
-Irland,Nation
-England,Nation
-Militär,root

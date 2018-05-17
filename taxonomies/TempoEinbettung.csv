@@ -1,5 +1,6 @@
-name,parent
+name,parent,description
 root,
 langsamer,root
 gleich schnell,root
 schneller,root
+nicht anwendbar,root,"Am Anfang oder am Ende ohne Kontext"

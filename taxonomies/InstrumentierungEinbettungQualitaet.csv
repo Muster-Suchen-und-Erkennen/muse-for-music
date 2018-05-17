@@ -1,5 +1,6 @@
-name,parent
+name,parent,description
 root,
 weitgehend gleiche Instrumentierung,root
 "andere, aber ähnliche Instrumentierung",root
 ganz andere Instrumentierung,root
+nicht anwendbar,root,"Am Anfang oder am Ende ohne Kontext"

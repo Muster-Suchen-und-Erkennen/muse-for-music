@@ -1,19 +1,19 @@
-name,parent
+name,parent,description
 root,
-plötzliche dynamische Veränderung / Akzentuierung,root
-ondeggiato,plötzliche dynamische Veränderung / Akzentuierung
-subito piano,plötzliche dynamische Veränderung / Akzentuierung
-subito forte,plötzliche dynamische Veränderung / Akzentuierung
-fortepiano,plötzliche dynamische Veränderung / Akzentuierung
-rinforzato,plötzliche dynamische Veränderung / Akzentuierung
-Akzent,plötzliche dynamische Veränderung / Akzentuierung
-"sforzato, sforzando / forzando, forzato",plötzliche dynamische Veränderung / Akzentuierung
 gleitende dynamische Veränderung,root
-dal niente,gleitende dynamische Veränderung
-al niente,gleitende dynamische Veränderung
-decrescendo-->crescendo,gleitende dynamische Veränderung
-crescendo-->decrescendo,gleitende dynamische Veränderung
-morendo,gleitende dynamische Veränderung
-decrescendo,gleitende dynamische Veränderung
+gleichbleibende Dynamik,gleitende dynamische Veränderung
 crescendo,gleitende dynamische Veränderung
-gleichbleibend,gleitende dynamische Veränderung
+decrescendo/diminuendo,gleitende dynamische Veränderung
+crescendo-->decrescendo,gleitende dynamische Veränderung
+decrescendo-->crescendo,gleitende dynamische Veränderung
+morendo,gleitende dynamische Veränderung
+al niente,gleitende dynamische Veränderung,"Oftmals auch als Decrescendozeichen dargestellt, an dessen Ende ein n oder o steht."
+dal niente,gleitende dynamische Veränderung,"Oftmals auch als Crescendozeichen dargestellt, an dessen Anfang ein n oder o steht."
+plötzliche dynamische Veränderung / Akzentuierung,root
+fortepiano (fp),plötzliche dynamische Veränderung / Akzentuierung
+subito forte,plötzliche dynamische Veränderung / Akzentuierung
+subito piano,plötzliche dynamische Veränderung / Akzentuierung
+"sforzato/sforzando (sf/sfz) / forzando/forzato (fz)",plötzliche dynamische Veränderung / Akzentuierung
+rinforzato (rf/rfz),plötzliche dynamische Veränderung / Akzentuierung
+Akzent (> oder ^),plötzliche dynamische Veränderung / Akzentuierung
+ondeggiato,plötzliche dynamische Veränderung / Akzentuierung,"An- und Abschwellen des Tons."

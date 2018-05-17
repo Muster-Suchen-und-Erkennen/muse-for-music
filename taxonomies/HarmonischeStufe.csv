@@ -2,47 +2,47 @@ name,parent
 root,
 andere Stufe,root
 unklare Stufe,root
-Moll-Stufe,root
-vii#,Moll-Stufe
-vii,Moll-Stufe
-viib,Moll-Stufe
-vi#,Moll-Stufe
-vi,Moll-Stufe
-vib,Moll-Stufe
-v#,Moll-Stufe
-v,Moll-Stufe
-vb,Moll-Stufe
-iv#,Moll-Stufe
-iv,Moll-Stufe
-ivb,Moll-Stufe
-iii#,Moll-Stufe
-iii,Moll-Stufe
-iiib,Moll-Stufe
-ii# ,Moll-Stufe
-ii,Moll-Stufe
-iib,Moll-Stufe
-i#,Moll-Stufe
-i,Moll-Stufe
-ib ,Moll-Stufe
 Dur-Stufe,root
-VII#,Dur-Stufe
-VII,Dur-Stufe
-VIIb,Dur-Stufe
-VI#,Dur-Stufe
-VI,Dur-Stufe
-VIb,Dur-Stufe
-V#,Dur-Stufe
- V,Dur-Stufe
-Vb,Dur-Stufe
-IV#,Dur-Stufe
-IV,Dur-Stufe
-IVb,Dur-Stufe
-III#,Dur-Stufe
-III,Dur-Stufe
-IIIb,Dur-Stufe
-II# ,Dur-Stufe
-II,Dur-Stufe
-IIb,Dur-Stufe
-I#,Dur-Stufe
-I,Dur-Stufe
 Ib ,Dur-Stufe
+I,Dur-Stufe
+I#,Dur-Stufe
+IIb,Dur-Stufe
+II,Dur-Stufe
+II# ,Dur-Stufe
+IIIb,Dur-Stufe
+III,Dur-Stufe
+III#,Dur-Stufe
+IVb,Dur-Stufe
+IV,Dur-Stufe
+IV#,Dur-Stufe
+Vb,Dur-Stufe
+V,Dur-Stufe
+VIb,Dur-Stufe
+VI,Dur-Stufe
+V#,Dur-Stufe
+VIIb,Dur-Stufe
+VII,Dur-Stufe
+VII#,Dur-Stufe
+VI#,Dur-Stufe
+Moll-Stufe,root
+ib ,Moll-Stufe
+i,Moll-Stufe
+i#,Moll-Stufe
+iib,Moll-Stufe
+ii,Moll-Stufe
+ii# ,Moll-Stufe
+iiib,Moll-Stufe
+iii,Moll-Stufe
+iii#,Moll-Stufe
+ivb,Moll-Stufe
+iv,Moll-Stufe
+iv#,Moll-Stufe
+vb,Moll-Stufe
+v,Moll-Stufe
+v#,Moll-Stufe
+vib,Moll-Stufe
+vi,Moll-Stufe
+vi#,Moll-Stufe
+viib,Moll-Stufe
+vii,Moll-Stufe
+vii#,Moll-Stufe

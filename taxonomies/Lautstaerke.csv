@@ -1,13 +1,10 @@
 name,parent
 root,
 ffff und lauter,root
-fff,root
-ff,root
-f,root
-mf,root
-mp,root
-p,root
-pp,root
-ppp,root
-pppp,root
-ppppp und leiser,root
+fff – fortefortissimo,root
+ff – fortissimo,root
+f – forte,root
+mf – mezzoforte,root
+mp – mezzopiano,root
+p – piano,root
+pp – pianopianissimo und leiser,root

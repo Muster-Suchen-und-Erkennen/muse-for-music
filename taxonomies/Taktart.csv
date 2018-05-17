@@ -1,21 +1,23 @@
-name,parent
+name,parent,description
 root,
+andere Taktart,root
+symmetrisch zusammengesetzte Taktart,root
+binär unterteilte Taktart,symmetrisch zusammengesetzte Taktart
+(1) 2/2,binär unterteilte Taktart,alla breve
+(1) 2/4,binär unterteilte Taktart
+(1) 3/4,binär unterteilte Taktart
+(1) 4/4,binär unterteilte Taktart
+(1) 4/8,binär unterteilte Taktart
+(1) 8/4,binär unterteilte Taktart
+(1) 8/8,binär unterteilte Taktart
+tenär unterteilte Taktart,symmetrisch zusammengesetzte Taktart
+(1) 6/8,tenär unterteilte Taktart
+(1) 3/8,tenär unterteilte Taktart
+(1) 9/8,tenär unterteilte Taktart
+(1) 12/8,tenär unterteilte Taktart
 asymmetrisch zusammengesetzte Taktart,root
 anderer zusammengesetzter Takt,asymmetrisch zusammengesetzte Taktart
-7/8,asymmetrisch zusammengesetzte Taktart
-7/4,asymmetrisch zusammengesetzte Taktart
-5/8,asymmetrisch zusammengesetzte Taktart
-5/4,asymmetrisch zusammengesetzte Taktart
-tenär unterteilte Taktart (symmetrisch zusammengesetzt),root
-12/8,tenär unterteilte Taktart (symmetrisch zusammengesetzt)
-9/8,tenär unterteilte Taktart (symmetrisch zusammengesetzt)
-3/8,tenär unterteilte Taktart (symmetrisch zusammengesetzt)
-6/8,tenär unterteilte Taktart (symmetrisch zusammengesetzt)
-binär unterteilte Taktart (symmetrisch zusammengesetzt),root
-8/8,binär unterteilte Taktart (symmetrisch zusammengesetzt)
-8/4,binär unterteilte Taktart (symmetrisch zusammengesetzt)
-4/8,binär unterteilte Taktart (symmetrisch zusammengesetzt)
-4/4,binär unterteilte Taktart (symmetrisch zusammengesetzt)
-3/4,binär unterteilte Taktart (symmetrisch zusammengesetzt)
-2/4,binär unterteilte Taktart (symmetrisch zusammengesetzt)
-2/2,binär unterteilte Taktart (symmetrisch zusammengesetzt)
+(1) 7/8,asymmetrisch zusammengesetzte Taktart
+(1) 7/4,asymmetrisch zusammengesetzte Taktart
+(1) 5/8,asymmetrisch zusammengesetzte Taktart
+(1) 5/4,asymmetrisch zusammengesetzte Taktart

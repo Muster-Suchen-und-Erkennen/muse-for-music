@@ -1,32 +1,32 @@
-name,parent
+name,parent,description
 root,
-Rückungen,root
-Rückung um eine Quint,Rückungen
-Rückung um eine Quart,Rückungen
-chromatische Rückung,Rückungen
-mediantische Rückung,Rückungen
-diatonische Rückung,Rückungen
-Schweifen,root
-Changieren,root
-Kadenz,root
-andere Kadenz,Kadenz
-Trugschluss (D-Tp o.ä.),Kadenz
-Quartvorhalt-Kadenz,Kadenz
-plagale Kadenz (T-S-T),Kadenz
-plagaler Schluss (S-T),Kadenz
-Vollkadenz (T-S(Sp)-D-T),Kadenz
-authentische Kadenz (T-D-T),Kadenz
-authentischer Schluss (D-T),Kadenz
-Teufelsmühle / Omnibus,root
-harmonsiches Sequenzmuster,root
-anderes harmonisches Sequenzmuster,harmonsiches Sequenzmuster
-Quartfallsequenz,harmonsiches Sequenzmuster
-Quintfallsequenz,harmonsiches Sequenzmuster
-mehrmaliger schneller Wechsel von Dominante und Tonika (im Stile einer Schlusskadenz),root
-Pendeln,root
 Stillstand,root
 Stillstand auf einer Tonart und ihrer Dominante,Stillstand
 Stillstand auf einer Tonart,Stillstand
+Pendeln,root,"Akkordfolge von mindestens fünf Klängen, bei der jeder zweite Klang in seiner Funktion identisch ist, z.B. etwa T–S–T–S–T oder T–S­–T–D–T."
+mehrmaliger schneller Wechsel von Dominante und Tonika (im Stile einer Schlusskadenz),root
+Teufelsmühle / Omnibus,root,"Harmonische Sequenz, bei der sich ein chromatisch steigender oder fallender Bass mit Dominantsept-, verminderten Sept- und Moll-Quartsextakkorden verbindet. Außenstimmen in Gegenbewegung. Vgl. Amon 2015, S. 100."
+harmonsiches Sequenzmuster,root
+anderes harmonisches Sequenzmuster,harmonsiches Sequenzmuster
+Quintfallsequenz,harmonsiches Sequenzmuster
+Quartfallsequenz,harmonsiches Sequenzmuster
+Kadenz,root
+andere Kadenz,Kadenz
+plagale Kadenz (T-S-T),Kadenz
+plagaler Schluss (S-T),Kadenz
+Quartvorhalt-Kadenz,Kadenz
+Vollkadenz (T-S(Sp)-D-T),Kadenz
+Trugschluss (D-Tp o.ä.),Kadenz
+authentische Kadenz (T-D-T),Kadenz
+authentischer Schluss (D-T),Kadenz
+Changieren,root,"Unklare Tonart"
+Schweifen,root,"Harmonische Bewegung, die kein klares Ziel oder Bezugspunkt besitzt, mithin keine Ausweichung darstellt."
+Rückungen,root
+andere Rückung,Rückungen
+Rückung im Halbtonschritt,Rückungen,"Bspw. von C-Dur nach H-Dur."
+chromatische Rückung,Rückungen,"Bspw. von C-Dur nach Cis-Dur."
+terzverwandte Rückung,Rückungen,"nicht Parallel- oder Gegenklang"
+Rückung um einen Tritonus,Rückungen
 Modulation,root
 entfernte harmonische Funktion,Modulation
 sonstige Tonart,entfernte harmonische Funktion

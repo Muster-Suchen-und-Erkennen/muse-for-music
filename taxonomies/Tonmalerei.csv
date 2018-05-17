@@ -2,32 +2,32 @@ name,parent
 root,
 anderer Gegenstand,root
 unbestimmter Gegenstand,root
-Kultur-Gegenstand,root
-zum Militär gehöriger Gegenstand,Kultur-Gegenstand
-anderer zum Militär gehöriger Gegenstand,zum Militär gehöriger Gegenstand
-Fanfaren,zum Militär gehöriger Gegenstand
-Schüsse,zum Militär gehöriger Gegenstand
-zur Kirche gehöriger Gegenstand,Kultur-Gegenstand
-anderer zur Kirche gehöriger Gegenstand,zur Kirche gehöriger Gegenstand
-Messgesang,zur Kirche gehöriger Gegenstand
-Glocke,zur Kirche gehöriger Gegenstand
-zur Jagd gehöriger Gegenstand,Kultur-Gegenstand
-zum Landleben gehöriger Gegenstand,Kultur-Gegenstand
 Natur-Gegenstand,root
 anderer Naturgegenstand,Natur-Gegenstand
+Tiere betreffender Gegenstand,Natur-Gegenstand
+anderer Tiere betreffender Gegenstand,Tiere betreffender Gegenstand
+Tierstimme,Tiere betreffender Gegenstand
+andere Tierstimme,Tierstimme
+Vogelstimme,Tierstimme
 Naturereignis,Natur-Gegenstand
-nicht-wetterbezogenes Naturereignis,Naturereignis
-anderes nicht-wetterbezogenes Naturereignis,nicht-wetterbezogenes Naturereignis
-Meer / Wellen,nicht-wetterbezogenes Naturereignis
-Echo,nicht-wetterbezogenes Naturereignis
 Wetterphänomen,Naturereignis
 anderes Wetterphänomen,Wetterphänomen
 Wind,Wetterphänomen
 Regen,Wetterphänomen
 Donner,Wetterphänomen
 Blitz,Wetterphänomen
-Tiere betreffender Gegenstand,Natur-Gegenstand
-anderer Tiere betreffender Gegenstand,Tiere betreffender Gegenstand
-Tierstimme,Tiere betreffender Gegenstand
-andere Tierstimme,Tierstimme
-Vogelstimme,Tierstimme
+nicht-wetterbezogenes Naturereignis,Naturereignis
+Echo,nicht-wetterbezogenes Naturereignis
+Meer / Wellen,nicht-wetterbezogenes Naturereignis
+anderes nicht-wetterbezogenes Naturereignis,nicht-wetterbezogenes Naturereignis
+Kultur-Gegenstand,root
+zum Landleben gehöriger Gegenstand,Kultur-Gegenstand
+zur Jagd gehöriger Gegenstand,Kultur-Gegenstand
+zur Kirche gehöriger Gegenstand,Kultur-Gegenstand
+anderer zur Kirche gehöriger Gegenstand,zur Kirche gehöriger Gegenstand
+Glocke,zur Kirche gehöriger Gegenstand
+Messgesang,zur Kirche gehöriger Gegenstand
+zum Militär gehöriger Gegenstand,Kultur-Gegenstand
+anderer zum Militär gehöriger Gegenstand,zum Militär gehöriger Gegenstand
+Fanfaren,zum Militär gehöriger Gegenstand
+Schüsse,zum Militär gehöriger Gegenstand

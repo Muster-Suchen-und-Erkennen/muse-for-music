@@ -1,6 +1,7 @@
-name,parent
+name,parent,description
 root,
 Crescendo,root
 Decrescendo,root
 "gleichbleibende Lautstärke",root
 "wechselnde Lautstärke",root
+nicht anwendbar,root,"Am Anfang oder am Ende ohne Kontext"

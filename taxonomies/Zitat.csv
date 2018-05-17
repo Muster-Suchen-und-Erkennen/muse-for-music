@@ -1,9 +1,11 @@
-name,parent
+name,parent,description
 root,
 exaktes Zitat,root
 verändertes Zitat,root
-Adaption,verändertes Zitat
+Adaption,verändertes Zitat,"Material entstammt einem anderen Werk und ist exakt übernommen, nur dass es an die Gegebenheiten des neuen Kontextes adaptiert wurde, bspw. anders besetzt wurde."
+Parodie,verändertes Zitat,"Material entstammt einem anderen Werk und wird so verändert oder in einen anderen Kontext gesetzt, dass eine komische, ironische oder sogar satirische Absicht erkennbar wird."
+Leicht verändertes Zitat,verändertes Zitat
 Mittelstark verändertes Zitat,verändertes Zitat
 Stark verändertes Zitat,verändertes Zitat
-Parodie,verändertes Zitat
 anderweitige Verfremdung,verändertes Zitat
+verstecktes Zitat Zitat,root

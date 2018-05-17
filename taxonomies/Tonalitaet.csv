@@ -1,22 +1,13 @@
-name,parent
+name,parent,description
 root,
-Atonalität,root
-modale Tonalität,root
-Ganztonleiter,modale Tonalität
-Kirchentonleiter,modale Tonalität
-hypoionische Tonleiter,Kirchentonleiter
-hypoäolische Tonleiter,Kirchentonleiter
-hypomixolydische Tonleiter,Kirchentonleiter
-mixolydische Tonleiter,Kirchentonleiter
-hypolydische Tonleiter,Kirchentonleiter
-lydische Tonleiter,Kirchentonleiter
-hypophrygische Tonleiter,Kirchentonleiter
-phrygische Tonleiter,Kirchentonleiter
-hypodorische Tonleiter,Kirchentonleiter
-dorische Tonleiter,Kirchentonleiter
+unbestimmt,root
 Dur-Moll-Tonalität,root
-unbestimmtes Tongeschlecht,Dur-Moll-Tonalität
-wechselndes Tongeschlecht,Dur-Moll-Tonalität
-changierendes Tongeschlecht,Dur-Moll-Tonalität
-Moll,Dur-Moll-Tonalität
 Dur,Dur-Moll-Tonalität
+Moll,Dur-Moll-Tonalität
+wechselndes Tongeschlecht,Dur-Moll-Tonalität,"Zwischen Dur und Moll wechselnd, allerdings so, dass jeweils meist klar ist, welches der beiden vorliegt."
+changierendes Tongeschlecht,Dur-Moll-Tonalität,"Zwischen Dur und Moll wechselnd, allerdings so, dass oft unklar ist, welches der beiden vorliegt."
+unbestimmtes Tongeschlecht,Dur-Moll-Tonalität
+modale Tonalität,root
+Kirchentonleiter,modale Tonalität
+Ganztonleiter,modale Tonalität
+Atonalität,root

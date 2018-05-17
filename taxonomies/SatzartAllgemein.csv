@@ -3,3 +3,6 @@ root,,
 solistisch,root,
 homophon,root,"Mehrstimmige Satzart, bei der primär eine Stimme als Hauptstimme erklingt, die von den untergeordneten anderen Stimmen harmonisch ausgedeutet oder gestützt wird."
 polyphon,root,
+uneindeutig,root,
+eher homophon,root,
+eher polyphon,root,

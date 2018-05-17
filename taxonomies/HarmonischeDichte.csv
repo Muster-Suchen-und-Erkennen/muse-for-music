@@ -1,6 +1,6 @@
-name,parent
+name,parent,description
 root,
-durchschnittliche Anzahl von Harmonien pro Takt nimmt zu,root
-durchschnittliche Anzahl von Harmonien pro Takt nimmt ab,root
-durchschnittliche Anzahl von Harmonien pro Takt ist wechselhaft,root
-durchschnittliche Anzahl von Harmonien pro Takt bleibt konstant,root
+Hoch,root,"80 bis 100 % der Melodietöne weisen einen Harmoniewechsel auf."
+Mittel+,root,"66 bis 79 % der Melodietöne weisen einen Harmoniewechsel auf."
+Mittel-,root,"51 bis 65 % der Melodietöne weisen einen Harmoniewechsel auf."
+Niedrig,root,"bis zu 50% der Melodietöne weisen einen Harmoniewechsel auf."
