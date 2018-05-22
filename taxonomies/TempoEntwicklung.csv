@@ -1,6 +1,7 @@
-name,parent
+name,parent,description
 root,
 wechselndes Tempo,root
 gleichbleibendes Tempo,root
-Accelerando,root
-Ritardando,root
+Accelerando,root,"Beschleunigung: Bezeichnet mit Accelerando (accel.) oder Stringendo (string.)."
+Ritardando,root,"Verzögerung: Bezeichnet mit Ritardando (rit./ritard.) oder Rallentando (rall.), auch Ritenuto (riten.)."
+a Tempo,root,"Wiederaufnahme des Tempos"

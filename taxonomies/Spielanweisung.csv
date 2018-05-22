@@ -1,69 +1,72 @@
-name,parent
+name,parent,description
 root,
-Anweisung für Zupfinstrumente,root
-Anweisung speziell für Harfe,Anweisung für Zupfinstrumente
-andere Anweisung speziell für Harfe,Anweisung speziell für Harfe
-Xylo / nah am Resonanzkörper abgedrückt,Anweisung speziell für Harfe
-près de la table / bas dans les cordes /  nah am Resonanzkörper gezupft,Anweisung speziell für Harfe
-Anweisung für alle Zupfinstrumente,Anweisung für Zupfinstrumente
-andere Anweisung für alle Zupfinstrumente,Anweisung für alle Zupfinstrumente
-(1) Arpeggio,Anweisung für alle Zupfinstrumente
-(1) Flageolett,Anweisung für alle Zupfinstrumente
-Anweisung für Streicher,root
-andere Anweisung für Streicher,Anweisung für Streicher
-"Schlagbass / ""Slap""",Anweisung für Streicher
-legato (s. Artikulation),Anweisung für Streicher
-Bariolage,Anweisung für Streicher
-Mehrfachgriff,Anweisung für Streicher
-Quadrupelgriff,Mehrfachgriff
-Tripelgriff,Mehrfachgriff
-Doppelgriff,Mehrfachgriff
-Portamento,Anweisung für Streicher
-(2) Arpeggio,Anweisung für Streicher
-Glissando,Anweisung für Streicher
-Bogentremolo / -vibrato (nicht ausnotiert),Anweisung für Streicher
-Flautando / sehr wenig Bogen,Anweisung für Streicher
-(2) Flageolett,Anweisung für Streicher
-sul ponticello / dicht am Steg,Anweisung für Streicher
-martélé / besonders stark gespieltes détaché,Anweisung für Streicher
-détaché / 1 Bogenstrich pro Note,Anweisung für Streicher
-spiccato / springender Bogen,Anweisung für Streicher
-arco (coll'arco) / mit dem Bogen,Anweisung für Streicher
-con legno / mit dem Holz,Anweisung für Streicher
-col legno battuto / mit dem Holz geschlagen,Anweisung für Streicher
-con sordino / mit Dämpfer,Anweisung für Streicher
-pizzicato / gezupft,Anweisung für Streicher
-Anweisung für Schlaginstrumente,root
-Anweisung für Stabspiele,Anweisung für Schlaginstrumente
-andere Anweisung für Stabspiele,Anweisung für Stabspiele
-(3) Arpeggio,Anweisung für Stabspiele
-Dämpfer,Anweisung für Stabspiele
-Anweisung für Trommeln,Anweisung für Schlaginstrumente
-andere Anweisung für Trommeln,Anweisung für Trommeln
-mit Rute geschlagen (Rod),Anweisung für Trommeln
-coperto / bedecktes Fell,Anweisung für Trommeln
-Anweisung für Tasteninstrumente,root
-Anweisung speziell für Orgel,Anweisung für Tasteninstrumente
-andere Anweisung für Orgel,Anweisung speziell für Orgel
-Manualiter (auf dem Manual),Anweisung speziell für Orgel
-Anweisung speziell für Klavier / Flügel,Anweisung für Tasteninstrumente
-andere Anweisung für Klavier / Flügel,Anweisung speziell für Klavier / Flügel
-Pedal-Anweisung,Anweisung speziell für Klavier / Flügel
-Fortepedal / senza sordino / Dämpferaufhebung (re.),Pedal-Anweisung
-Moderatorenpedal / Dämpfung (mi.),Pedal-Anweisung
-Tonhaltepedal / Sostenuto-Pedal (mi.),Pedal-Anweisung
-Pianopedal / una corda / nur 1 Saite (li.),Pedal-Anweisung
-Anweisung für alle Tasteninstrumente,Anweisung für Tasteninstrumente
-andere Anweisung für alle Tasteninstrumente,Anweisung für alle Tasteninstrumente
-mano destra  / r. Hand,Anweisung für alle Tasteninstrumente
-mano sinistra / l. Hand),Anweisung für alle Tasteninstrumente
-(4) Arpeggio,Anweisung für alle Tasteninstrumente
+Andere Spielanweisung,root
 Anweisung für Bläser,root
 andere Anweisung für Bläser,Anweisung für Bläser
-gestopft,Anweisung für Bläser
 mit Dämpfer,Anweisung für Bläser
 mit unspezifiziertem Dämpfer,mit Dämpfer
 mit anderem Dämpfer,mit Dämpfer
-mit Stopf-Dämpfer (Horn),mit Dämpfer
+"mit Spitzdämpfer",mit Dämpfer,"„mit Dämpfer“ bzw. „con sordino“ vor 1920"
 mit Waldhorn-Dämpfer,mit Dämpfer
-"mit Spitzdämpfer (""mit Dämpfer"" vor 1920)",mit Dämpfer
+mit Stopf-Dämpfer (Horn),mit Dämpfer
+gestopft,Anweisung für Bläser
+Anweisung für Tasteninstrumente,root
+Anweisung für alle Tasteninstrumente,Anweisung für Tasteninstrumente
+andere Anweisung für alle Tasteninstrumente,Anweisung für alle Tasteninstrumente
+(4) Arpeggio,Anweisung für alle Tasteninstrumente
+Tremolo,Anweisung für alle Tasteninstrumente
+mano destra  / r. Hand,Anweisung für alle Tasteninstrumente
+mano sinistra / l. Hand),Anweisung für alle Tasteninstrumente
+Anweisung speziell für Klavier / Flügel,Anweisung für Tasteninstrumente
+andere Anweisung für Klavier / Flügel,Anweisung speziell für Klavier / Flügel
+Pedal-Anweisung,Anweisung speziell für Klavier / Flügel
+Pianopedal / una corda / nur 1 Saite (li.),Pedal-Anweisung
+Fortepedal / senza sordino / Dämpferaufhebung (re.),Pedal-Anweisung
+Moderatorenpedal / Dämpfung (mi.),Pedal-Anweisung
+Tonhaltepedal / Sostenuto-Pedal (mi.),Pedal-Anweisung
+Anweisung speziell für Orgel,Anweisung für Tasteninstrumente
+andere Anweisung für Orgel,Anweisung speziell für Orgel
+Manualiter (auf dem Manual),Anweisung speziell für Orgel
+Anweisung für Schlaginstrumente,root
+Anweisung für Trommeln,Anweisung für Schlaginstrumente
+andere Anweisung für Trommeln,Anweisung für Trommeln
+Wirbel,Anweisung für Trommeln,"𝄖𝄥𝄖𝅝𝅬𝄖𝆖𝅝𝄖"
+coperto / bedecktes Fell,Anweisung für Trommeln
+mit Rute geschlagen (Rod),Anweisung für Trommeln
+Anweisung für Stabspiele,Anweisung für Schlaginstrumente
+andere Anweisung für Stabspiele,Anweisung für Stabspiele
+Dämpfer,Anweisung für Stabspiele
+(3) Arpeggio,Anweisung für Stabspiele
+Anweisung für Streicher,root
+andere Anweisung für Streicher,Anweisung für Streicher
+pizzicato / gezupft,Anweisung für Streicher
+con sordino / mit Dämpfer,Anweisung für Streicher
+col legno battuto / mit dem Holz geschlagen,Anweisung für Streicher
+con legno / mit dem Holz,Anweisung für Streicher
+arco (coll'arco) / mit dem Bogen,Anweisung für Streicher
+spiccato / springender Bogen,Anweisung für Streicher
+détaché / 1 Bogenstrich pro Note,Anweisung für Streicher
+martélé / besonders stark gespieltes détaché,Anweisung für Streicher
+sul ponticello / dicht am Steg,Anweisung für Streicher
+(2) Flageolett,Anweisung für Streicher,""
+Flautando / sehr wenig Bogen,Anweisung für Streicher
+Bogentremolo / -vibrato (nicht ausnotiert),Anweisung für Streicher
+Glissando,Anweisung für Streicher
+(2) Arpeggio,Anweisung für Streicher
+Portamento,Anweisung für Streicher
+Mehrfachgriff,Anweisung für Streicher
+Doppelgriff,Mehrfachgriff,"Gleichzeitiges Streichen von zwei Saiten. Dabei gilt zu prüfen, ob im Vorfeld nicht „divisi“ (div.) gefordert wurde."
+Tripelgriff,Mehrfachgriff,"Gleichzeitiges Streichen von drei Saiten. Dabei gilt zu prüfen, ob im Vorfeld nicht „divisi“ (div.) gefordert wurde."
+Quadrupelgriff,Mehrfachgriff,"Gleichzeitiges Streichen von vier Saiten. Dabei gilt zu prüfen, ob im Vorfeld nicht „divisi“ (div.) gefordert wurde."
+Bariolage,Anweisung für Streicher,"Alternieren zwischen leerer und gegriffener Saite für denselben Ton."
+legato (s. Artikulation),Anweisung für Streicher
+"Schlagbass / „Slap“",Anweisung für Streicher
+Anweisung für Zupfinstrumente,root
+Anweisung für alle Zupfinstrumente,Anweisung für Zupfinstrumente
+andere Anweisung für alle Zupfinstrumente,Anweisung für alle Zupfinstrumente
+(1) Flageolett,Anweisung für alle Zupfinstrumente
+(1) Arpeggio,Anweisung für alle Zupfinstrumente
+Anweisung speziell für Harfe,Anweisung für Zupfinstrumente
+andere Anweisung speziell für Harfe,Anweisung speziell für Harfe
+près de la table / bas dans les cordes /  nah am Resonanzkörper gezupft,Anweisung speziell für Harfe
+Xylo / nah am Resonanzkörper abgedrückt,Anweisung speziell für Harfe

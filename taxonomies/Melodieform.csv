@@ -1,8 +1,8 @@
-name,parent
+name,parent,description
 root,
-keine erkennbare Melodieform,root
-andere Melodieform,root
-wiederholende Form,root
+"„fortspinnende“ Melodieform",root,"Eine Melodik kann man fortspinnend nennen, wenn ein Motiv, das eher linear orientiert und nicht klar abgegrenzt ist, als Ganzes oder in Teilen wiederholt und sequenziert wird, sowie im Verlauf seiner Weiterführung ständig umgeformt und dann von einem anderen Motiv abgelöst wird. Vgl. Amon 2011, S. 242."
+"„sich entwickelnde Melodieform“",root,"Man kann von einer Melodik als „sich entwickelnd“ sprechen, wenn sie mit motivisch-thematischer Arbeit ein relativ klar abgegrenztes, prägnantes Motiv weiterentwickelt und dieses dabei erkennbar bleibt. Vgl. Amon 2011, S. 242."
 reihende Form,root
-sich entwickelnde Melodieform,root
-"""fortspinnende"" Melodieform",root
+wiederholende Form,root
+andere Melodieform,root
+keine erkennbare Melodieform,root

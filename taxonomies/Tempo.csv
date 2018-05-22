@@ -1,18 +1,23 @@
 name,parent
 root,
 andere Tempobezeichnung,root
-larghissimo,root
-largo,root
-larghetto,root
-lento,root
-adagio,root
-grave,root
-andante,root
-andantino,root
-moderato,root
-allegretto,root
-allegro,root
-vivace,root
-presto,root
-vivacissimo,root
-prestissimo,root
+(eher) schnell,root
+prestissimo,(eher) schnell
+vivacissimo,(eher) schnell
+presto,(eher) schnell
+vivace/vivo,(eher) schnell
+allegro,(eher) schnell
+animati,(eher) schnell
+(eher) mäßig,root
+allegretto,(eher) mäßig
+moderato,(eher) mäßig
+andantino,(eher) mäßig
+andante,(eher)(eher) mäßig mäßig
+(eher) langsam,root
+adagio,(eher) langsam
+adagietto,(eher) langsam
+grave,(eher) langsam
+lento,(eher) langsam
+larghetto,(eher) langsam
+largo,(eher) langsam
+larghissimo,(eher) langsam

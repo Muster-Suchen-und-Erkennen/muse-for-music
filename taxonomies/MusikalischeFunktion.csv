@@ -1,44 +1,43 @@
-name,parent
+name,parent,description
 root,
 unbestimmte funktionale Rolle,root
 andere funktionale Rolle,root
-akzentuiert,root
-akzentuiert andere Zählzeit,akzentuiert
-akzentuiert die Zählzeit 6,akzentuiert
-akzentuiert die Zählzeit 5,akzentuiert
-akzentuiert die Zählzeit 4,akzentuiert
-akzentuiert die Zählzeit 3,akzentuiert
-akzentuiert die Zählzeit 2,akzentuiert
-akzentuiert die Zählzeit 1,akzentuiert
-spielt Begleitung,root
-spielt folgende Begleitfigur,spielt Begleitung
-Begleitfigur,spielt folgende Begleitfigur
-Akkord-Akzent,Begleitfigur
-Viertelpause und drei Viertelnoten,Begleitfigur
-Trommelbass,Begleitfigur
-Murky-Bässe,Begleitfigur
-Alberti-Bass,Begleitfigur
-andere Begleitfigur,Begleitfigur
-Umspielung,Begleitfigur
-Ostinato,Begleitfigur
-Orgelpunkt,Begleitfigur
-anderer Orgelpunkt,Orgelpunkt
-Bordun,Orgelpunkt
-Melodie-Ergänzung,Begleitfigur
-Parallelführung,Begleitfigur
-Walzer,Begleitfigur
-Tonrepetitionen,Begleitfigur
-Tremolo,Begleitfigur
-Blockakkorde,Begleitfigur
-Haltetöne,Begleitfigur
-"Dreinklangs-brechungen",Begleitfigur
-andere Dreiklangsbrechungen,"Dreinklangs-brechungen"
-Arpeggio,"Dreinklangs-brechungen"
-Präsenz,spielt Begleitung
-eher zurückhaltend,Präsenz
-eher präsent,Präsenz
 spielt Melodie,root
 anderweitig melodisch tätig,spielt Melodie
-gleichberechtigt in melodischem Geflecht,spielt Melodie
-spielt Gegenstimme zur führenden Melodie,spielt Melodie
 spielt Melodieführung,spielt Melodie
+spielt Gegenstimme zur führenden Melodie,spielt Melodie
+gleichberechtigt in melodischem Geflecht,spielt Melodie
+spielt Begleitung,root
+"speilt Begleitung, aber keine Begleitfigur",spielt folgende Begleitfigur
+spielt folgende Begleitfigur,spielt Begleitung
+andere Begleitfigur,spielt folgende Begleitfigur
+"Dreinklangs-brechungen",spielt folgende Begleitfigur
+andere Dreiklangsbrechungen,"Dreinklangs-brechungen"
+Arpeggio,"Dreinklangs-brechungen"
+Haltetöne,spielt folgende Begleitfigur
+Blockakkorde,spielt folgende Begleitfigur,"bzw. ist Teil von Blockakkorden"
+Tremolo,spielt folgende Begleitfigur
+Tonrepetitionen,spielt folgende Begleitfigur
+"Basslinie, Walking Bass",spielt folgende Begleitfigur
+Alberti-Bass,spielt folgende Begleitfigur
+Murky-Bass,spielt folgende Begleitfigur,"„Fortlaufende gebrochene Oktavbässe im Sinne eines Bass-Ostinato.“ Amon 2011, S. 248. Geht bei höherer Geschwindigkeit in ein Tremolo über."
+Trommelbass,spielt folgende Begleitfigur
+Viertelpause und drei Viertelnoten,spielt folgende Begleitfigur,"𝄚𝄽𝄚𝅘𝅥𝄚𝅘𝅥𝄚𝅘𝅥𝄚"
+Walzer,spielt folgende Begleitfigur
+Parallelführung,spielt folgende Begleitfigur
+Melodie-Ergänzung,spielt folgende Begleitfigur
+Orgelpunkt,spielt folgende Begleitfigur
+anderer Orgelpunkt,Orgelpunkt
+Bordun,Orgelpunkt
+Ostinato,spielt folgende Begleitfigur
+Akkord-Akzent,spielt folgende Begleitfigur
+akzentuiert,root
+akzentuiert andere Zählzeit,akzentuiert
+akzentuiert die Zählzeit 1,akzentuiert
+akzentuiert die Zählzeit 2,akzentuiert
+akzentuiert die Zählzeit 3,akzentuiert
+akzentuiert die Zählzeit 4,akzentuiert
+akzentuiert die Zählzeit 5,akzentuiert
+akzentuiert die Zählzeit 6,akzentuiert
+akzentuiert die Zählzeit 7,akzentuiert
+akzentuiert die Zählzeit 8,akzentuiert
