@@ -1,38 +1,19 @@
-name,parent
+name,parent,description
 root,
-Spielfiguren,root
-"(Triller s. ""Spielanweisungen"")",Spielfiguren
-Mannheimer Rakete,Spielfiguren
-absteigende Sekunde am Phrasenende (auch „Seufzer“),Spielfiguren
-"schneller Wechsel zweier Töne im punktierten Rhythmus (auch ""Ribattuta"")",Spielfiguren
-"ansteigende Sekunde am Phrasenende (auch ""Interrogatio"")",Spielfiguren
-schneller Lauf auf kleinem Intervallraum,Spielfiguren
-"Umspielen eines Tons mit dessen Ober-, dann Untersekunde (auch ""Doppelschlag"")",Spielfiguren
-"Umkreisen eines Tons in Sekunden (auch ""Circulatio"")",Spielfiguren
-"rasche Tonwiederholung (auch ""Bombus"")",Spielfiguren
-Walze,root
-Kette von absteigenden Sekunden,root
-Wirbel,root
-harmonisches Motiv,root
-Tristanakkord,harmonisches Motiv
-Schreckensakkord,harmonisches Motiv
-phrygischer Schluss,harmonisches Motiv
-mystischer Akkord,harmonisches Motiv
-Dresdner Amen,harmonisches Motiv
-Quartsprungmotiv,harmonisches Motiv
-Quintfallmotiv,harmonisches Motiv
-marschartige Auftaktfloskel,root
-Kuckucksmotiv (absteigende kleine Terz),root
-Kreuzmotiv,root
-"""Tonleiter-Lauf mit jeweils zwei Schritten vor und einem zurück""",root
-(1) ... in ungerader Aufteilung des Notenwerts (Triolen etc.),"""Tonleiter-Lauf mit jeweils zwei Schritten vor und einem zurück"""
-(1) ...abwechselnd aufwärts und abwärts,(1) ... in ungerader Aufteilung des Notenwerts (Triolen etc.)
-(1) ... abwärts,(1) ... in ungerader Aufteilung des Notenwerts (Triolen etc.)
-(1) ... aufwärts,(1) ... in ungerader Aufteilung des Notenwerts (Triolen etc.)
-"(1) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)","""Tonleiter-Lauf mit jeweils zwei Schritten vor und einem zurück"""
-(2) ...abwechselnd aufwärts und abwärts,"(1) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
-(2) ... abwärts,"(1) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
-(2) ... aufwärts,"(1) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+"""Walking Bass""",root
+absteigender Walking Bass,"""Walking Bass"""
+diatonisch absteigender Walking Bass,absteigender Walking Bass
+chromatisch absteigender Walking Bass,absteigender Walking Bass
+aufsteigender Walking Bass,"""Walking Bass"""
+diatonisch aufsteigender Walking Bass,aufsteigender Walking Bass
+chromatisch aufsteigender Walking Bass,aufsteigender Walking Bass
+"""Tonleiter mit eingeschobenen Nebentönen""",root
+aufsteigende Tonleiter mit eingeschobenen oberen Nebentönen,"""Tonleiter mit eingeschobenen Nebentönen"""
+... mit eingeschobenen kleinen Sekunden als oberen Nebentönen,aufsteigende Tonleiter mit eingeschobenen oberen Nebentönen
+... mit eingeschobenen leitereigenen oberen Nebentönen,aufsteigende Tonleiter mit eingeschobenen oberen Nebentönen
+absteigende Tonleiter mit eingeschobenen unteren Nebentönen,"""Tonleiter mit eingeschobenen Nebentönen"""
+... mit eingeschobenen kleinen Sekunden als unteren Nebentönen,absteigende Tonleiter mit eingeschobenen unteren Nebentönen
+... mit eingeschobenen leitereigenen unteren Nebentönen,absteigende Tonleiter mit eingeschobenen unteren Nebentönen
 markante Drei- oder Vierklangsbrechung,root
 Akkordbrechung mit Sprung,markante Drei- oder Vierklangsbrechung
 (2) ... in ungerader Aufteilung des Notenwerts (Triolen etc.),Akkordbrechung mit Sprung
@@ -51,17 +32,34 @@ Arpeggio,markante Drei- oder Vierklangsbrechung
 """Arpeggio mit Sekunde""",root
 """Arpeggio mit Sekunde"" abwärts","""Arpeggio mit Sekunde"""
 """Arpeggio mit Sekunde"" aufwärts","""Arpeggio mit Sekunde"""
-"""Tonleiter mit eingeschobenen Nebentönen""",root
-aufsteigende Tonleiter mit eingeschobenen oberen Nebentönen,"""Tonleiter mit eingeschobenen Nebentönen"""
-... mit eingeschobenen kleinen Sekunden als oberen Nebentönen,aufsteigende Tonleiter mit eingeschobenen oberen Nebentönen
-... mit eingeschobenen leitereigenen oberen Nebentönen,aufsteigende Tonleiter mit eingeschobenen oberen Nebentönen
-absteigende Tonleiter mit eingeschobenen unteren Nebentönen,"""Tonleiter mit eingeschobenen Nebentönen"""
-... mit eingeschobenen kleinen Sekunden als unteren Nebentönen,absteigende Tonleiter mit eingeschobenen unteren Nebentönen
-... mit eingeschobenen leitereigenen unteren Nebentönen,absteigende Tonleiter mit eingeschobenen unteren Nebentönen
-"""Walking Bass""",root
-absteigender Walking Bass,"""Walking Bass"""
-diatonisch absteigender Walking Bass,absteigender Walking Bass
-chromatisch absteigender Walking Bass,absteigender Walking Bass
-aufsteigender Walking Bass,"""Walking Bass"""
-diatonisch aufsteigender Walking Bass,aufsteigender Walking Bass
-chromatisch aufsteigender Walking Bass,aufsteigender Walking Bass
+"""Tonleiter-Lauf mit jeweils zwei Schritten vor und einem zurück""",root
+(1) ... in ungerader Aufteilung des Notenwerts (Triolen etc.),"""Tonleiter-Lauf mit jeweils zwei Schritten vor und einem zurück"""
+(1) ...abwechselnd aufwärts und abwärts,(1) ... in ungerader Aufteilung des Notenwerts (Triolen etc.)
+(1) ... abwärts,(1) ... in ungerader Aufteilung des Notenwerts (Triolen etc.)
+(1) ... aufwärts,(1) ... in ungerader Aufteilung des Notenwerts (Triolen etc.)
+"(1) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)","""Tonleiter-Lauf mit jeweils zwei Schritten vor und einem zurück"""
+(2) ...abwechselnd aufwärts und abwärts,"(1) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+(2) ... abwärts,"(1) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+(2) ... aufwärts,"(1) ... in gerader Aufteilung des Notenwerts (16-tel, 8-tel etc.)"
+Kuckucksmotiv (absteigende kleine Terz),root
+harmonisches Motiv,root
+Quintfallmotiv,harmonisches Motiv
+Quartsprungmotiv,harmonisches Motiv
+Dresdner Amen,harmonisches Motiv
+mystischer Akkord,harmonisches Motiv
+phrygischer Schluss,harmonisches Motiv
+Schreckensakkord,harmonisches Motiv
+Tristanakkord,harmonisches Motiv
+Spielfiguren,root
+"rasche Tonwiederholung (auch „Bombus“)",Spielfiguren,"Zum Beispiel: 𝅘𝅥𝅫"
+"Umkreisen eines Tons in Sekunden (auch „Circulatio“)",Spielfiguren
+"Umspielen eines Tons mit dessen Ober-, dann Untersekunde (auch „Doppelschlag“)",Spielfiguren
+schneller Lauf auf kleinem Intervallraum,Spielfiguren
+"ansteigende Sekunde am Phrasenende (auch „Interrogatio“)",Spielfiguren
+absteigende Sekunde am Phrasenende (auch „Seufzer“),Spielfiguren
+Kette von absteigenden Sekunden,Spielfiguren
+Wirbel,Spielfiguren
+"(Triller s. „Spielanweisungen“)",Spielfiguren
+Mannheimer Rakete,Spielfiguren
+"schneller Wechsel zweier Töne im punktierten Rhythmus (auch „Ribattuta“)",Spielfiguren
+Walze,Spielfiguren
