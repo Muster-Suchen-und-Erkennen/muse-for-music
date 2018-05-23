@@ -7,14 +7,21 @@ from typing import Union, Sequence, List
 
 class Composition(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
 
-    _normal_attributes = (('nr_varied_repetitions', int), ('nr_exact_repetitions', int))
-    _list_attributes = ('sequences',)
+    _normal_attributes = (
+        ('nr_repetitions_1_2', int),
+        ('nr_repetitions_3_4', int),
+        ('nr_repetitions_5_6', int),
+        ('nr_repetitions_5_6', int)
+    )
+    _list_attributes = ('sequences', 'composition_techniques')
 
     __tablename__ = 'composition'
     id = db.Column(db.Integer, primary_key=True)
 
-    nr_exact_repetitions = db.Column(db.Integer, server_default=db.text("'0'"))
-    nr_varied_repetitions = db.Column(db.Integer, server_default=db.text("'0'"))
+    nr_repetitions_1_2 = db.Column(db.Integer, server_default=db.text("'0'"))
+    nr_repetitions_3_4 = db.Column(db.Integer, server_default=db.text("'0'"))
+    nr_repetitions_5_6 = db.Column(db.Integer, server_default=db.text("'0'"))
+    nr_repetitions_7_10 = db.Column(db.Integer, server_default=db.text("'0'"))
 
     @property
     def composition_techniques(self):

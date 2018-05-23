@@ -27,7 +27,7 @@ class Person(db.Model, GetByID, UpdateableModelMixin):
     gender = db.Column(db.Enum(GenderEnum))
     birth_date = db.Column(db.Date(), nullable=True)
     death_date = db.Column(db.Date(), nullable=True)
-    nationality = db.Column(db.String(40), nullable=True)
+    nationality = db.Column(db.String(100), nullable=True)
 
     def __init__(self, name: str, gender: Union[str, GenderEnum],
                  birth_date: Union[int, str, date]=date(1,1,1),

@@ -65,6 +65,7 @@ person_put = api.inherit('PersonPUT', person_post, {
     'canonical_name': fields.String(title='Vollständiger Name', max_length=255, default='', example='admin', nullable=True),
     'birth_date': fields.Date(title='Geburtstag', example='1921-2-4', nullable=True),
     'death_date': fields.Date(title='Todestag', example='1921-3-23', nullable=True),
+    'nationality': fields.String(title='Nationalität', max_length=100, default='', nullable=True),
 })
 
 person_get = api.inherit('PersonGET', person_put, {
@@ -303,16 +304,22 @@ musicial_sequence_get = api.model('MusicialSequenceGET', {
 
 composition_put = api.model('CompositionPUT', {
     'id': fields.Integer(default=1, readonly=True, example=1),
+    'nr_repetitions_1_2': fields.Integer(default=0, title='Anzahl Wiederholungen (1-2 Takte)'),
+    'nr_repetitions_3_4': fields.Integer(default=0, title='Anzahl Wiederholungen (3-4 Takte)'),
+    'nr_repetitions_5_6': fields.Integer(default=0, title='Anzahl Wiederholungen (5-6 Takte)'),
+    'nr_repetitions_7_10': fields.Integer(default=0, title='Anzahl Wiederholungen (7-10 Takte)'),
+    'composition_techniques':  fields.Nested(taxonomy_item_ref, taxonomy='Verarbeitungstechnik', title='Verarbeitungstechnik'),
     'sequences': fields.List(fields.Nested(musicial_sequence_put), default=[], title='Musikalische Sequenz'),
-    'nr_exact_repetitions': fields.Integer(default=0, title='Anzahl exakter Wiederholungen'),
-    'nr_varied_repetitions': fields.Integer(default=0, title='Anzahl variierter Wiederholungen'),
 })
 
 composition_get = api.model('CompositionGET', {
     'id': fields.Integer(default=1, readonly=True, example=1),
+    'nr_repetitions_1_2': fields.Integer(default=0, title='Anzahl Wiederholungen (1-2 Takte)'),
+    'nr_repetitions_3_4': fields.Integer(default=0, title='Anzahl Wiederholungen (3-4 Takte)'),
+    'nr_repetitions_5_6': fields.Integer(default=0, title='Anzahl Wiederholungen (5-6 Takte)'),
+    'nr_repetitions_7_10': fields.Integer(default=0, title='Anzahl Wiederholungen (7-10 Takte)'),
+    'composition_techniques':  fields.Nested(taxonomy_item_get, taxonomy='Verarbeitungstechnik', title='Verarbeitungstechnik'),
     'sequences': fields.List(fields.Nested(musicial_sequence_get, description='MusicialSequence'), default=[], title='Musikalische Sequenz'),
-    'nr_exact_repetitions': fields.Integer(default=0, title='Anzahl exakter Wiederholungen'),
-    'nr_varied_repetitions': fields.Integer(default=0, title='Anzahl variierter Wiederholungen'),
 })
 
 opus_citation_put = api.model('OpusCitationPUT', {
