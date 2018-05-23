@@ -150,14 +150,14 @@ tempo_context_get = api.model('TempoContextGET', {
 
 form_put = api.model('FormPUT', {
     'id': fields.Integer(default=1, readonly=True, example=1),
-    'contains_theme': fields.Boolean(default=True, title='Enthält Thema'),
+    'contains_theme': fields.Boolean(default=False, title='Enthält Thema'),
     'form_schema': fields.Nested(taxonomy_item_ref, taxonomy='Formschema', title='Formschema'),
     'formal_function': fields.Nested(taxonomy_item_ref, taxonomy='FormaleFunktion', title='Formale Funktion'),
 })
 
 form_get = api.model('FormGET', {
     'id': fields.Integer(default=1, readonly=True, example=1),
-    'contains_theme': fields.Boolean(default=True, title='Enthält Thema'),
+    'contains_theme': fields.Boolean(default=False, title='Enthält Thema'),
     'form_schema': fields.Nested(taxonomy_item_get, taxonomy='Formschema', title='Formschema'),
     'formal_function': fields.Nested(taxonomy_item_get, taxonomy='FormaleFunktion', title='Formale Funktion'),
 })
@@ -304,11 +304,11 @@ musicial_sequence_get = api.model('MusicialSequenceGET', {
 
 composition_put = api.model('CompositionPUT', {
     'id': fields.Integer(default=1, readonly=True, example=1),
-    'nr_repetitions_1_2': fields.Integer(default=0, title='Anzahl Wiederholungen (1-2 Takte)'),
+    'nr_repetitions_1_2': fields.Integer(default=0, example=0, title='Anzahl Wiederholungen (1-2 Takte)'),
     'nr_repetitions_3_4': fields.Integer(default=0, title='Anzahl Wiederholungen (3-4 Takte)'),
     'nr_repetitions_5_6': fields.Integer(default=0, title='Anzahl Wiederholungen (5-6 Takte)'),
     'nr_repetitions_7_10': fields.Integer(default=0, title='Anzahl Wiederholungen (7-10 Takte)'),
-    'composition_techniques':  fields.Nested(taxonomy_item_ref, taxonomy='Verarbeitungstechnik', title='Verarbeitungstechnik'),
+    'composition_techniques': fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Verarbeitungstechnik', default=[], title='Verarbeitungstechnik'),
     'sequences': fields.List(fields.Nested(musicial_sequence_put), default=[], title='Musikalische Sequenz'),
 })
 
@@ -318,7 +318,7 @@ composition_get = api.model('CompositionGET', {
     'nr_repetitions_3_4': fields.Integer(default=0, title='Anzahl Wiederholungen (3-4 Takte)'),
     'nr_repetitions_5_6': fields.Integer(default=0, title='Anzahl Wiederholungen (5-6 Takte)'),
     'nr_repetitions_7_10': fields.Integer(default=0, title='Anzahl Wiederholungen (7-10 Takte)'),
-    'composition_techniques':  fields.Nested(taxonomy_item_get, taxonomy='Verarbeitungstechnik', title='Verarbeitungstechnik'),
+    'composition_techniques': fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Verarbeitungstechnik', default=[], title='Verarbeitungstechnik'),
     'sequences': fields.List(fields.Nested(musicial_sequence_get, description='MusicialSequence'), default=[], title='Musikalische Sequenz'),
 })
 
