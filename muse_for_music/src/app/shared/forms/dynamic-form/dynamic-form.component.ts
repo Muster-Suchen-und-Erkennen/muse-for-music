@@ -1,5 +1,5 @@
 import { Component, Input, Output, OnInit, OnChanges, SimpleChanges, EventEmitter, ViewChildren, ViewChild } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormArray } from '@angular/forms';
 
 import { Subscription } from 'rxjs/Rx';
 
@@ -105,6 +105,44 @@ export class DynamicFormComponent implements OnInit, OnChanges {
             if (this.valueChangeSubscription != null) {
                 this.valueChangeSubscription.unsubscribe();
             }
+            const patchArrays = (patched, questions, path) => {
+                questions.forEach(question => {
+                    if (question.controlType === 'object') {
+                        const newpath = path.length > 0 ? path + '.' + question.key : question.key
+                        patchArrays(patched[question.key], question.nestedQuestions, newpath);
+                        return;
+                    }
+                    if (path === 'composition') {
+                        console.log(question)
+                    }
+                    if (question.isArray || question.controlType === 'array') {
+                        if (question.type !== 'taxonomy' && question.type !== 'reference') {
+                            const newpath = path.length > 0 ? path + '.' + question.key : question.key
+                            const arrayControl: FormArray = this.form.get(newpath) as FormArray;
+                            console.log(newpath)
+                            console.log(arrayControl.length !== patched[question.key].length)
+                            let counter = 0;
+                            while (arrayControl.length !== patched[question.key].length) {
+                                counter ++;
+                                if (counter > 100000) {
+                                    break; // don't allow infinite loops
+                                }
+                                if (arrayControl.length < patched[question.key].length) {
+                                    this.qs.getQuestions(question.valueType).take(1).subscribe((questions => {
+                                        this.qcs.toFormGroup(questions).take(1).subscribe((group => {
+                                            arrayControl.push(group);
+                                        }));
+                                    }));
+                                }
+                                if (arrayControl.length > patched[question.key].length) {
+                                    arrayControl.removeAt(arrayControl.length - 1);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            patchArrays(patched, this.questions, '')
             this.form.patchValue(patched);
             this.valueChangeSubscription = this.form.valueChanges.take(1).subscribe(() => {
                 if (this.savebutton != null) {
