@@ -34,10 +34,10 @@ def check_if_person_exists(name):
 
 def check_if_person_is_in_use(person: Person):
     q = Opus.query.enable_eagerloads(False).filter(Opus.composer == person).exists()
-    if db.session.query(literal(True)).filter(q).scalar():
+    if db.session.query(q).scalar():
         abort(409, 'Can not delete Person "{}" beacause it is still in use!'.format(person.name))
     q = PersonToCitations.query.enable_eagerloads(False).filter(PersonToCitations.person == person).exists()
-    if db.session.query(literal(True)).filter(q).scalar():
+    if db.session.query(q).scalar():
         abort(409, 'Can not delete Person "{}" beacause it is still in use!'.format(person.name))
 
 
