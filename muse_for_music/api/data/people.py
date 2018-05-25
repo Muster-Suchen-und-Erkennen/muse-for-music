@@ -28,7 +28,7 @@ ns = api.namespace('person', description='Resource for persons.', path='/persons
 
 def check_if_person_exists(name):
     q = Person.query.enable_eagerloads(False).filter(Person.name == name).exists()
-    if db.session.query(literal(True)).filter(q).scalar():
+    if db.session.query(q).scalar():
         abort(409, 'Name "{}" is already in use!'.format(name))
 
 
