@@ -11,7 +11,7 @@ VENV_DIR=/usr/lib/
 VENV_FOLDER=muse-for-music
 NPM_BUILD_SCRIPT=build-docker
 
-CONFIG_FILE=/etc/${NAME}.conf
+CONFIG_FILE=/etc/${PACKAGE}.conf
 LOG_PATH=/var/log/$NAME
 
 HTTP_ROOT=/var/www

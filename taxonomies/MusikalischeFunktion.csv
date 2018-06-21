@@ -8,8 +8,8 @@ spielt Melodieführung,spielt Melodie
 spielt Gegenstimme zur führenden Melodie,spielt Melodie
 gleichberechtigt in melodischem Geflecht,spielt Melodie
 spielt Begleitung,root
-"speilt Begleitung, aber keine Begleitfigur",spielt folgende Begleitfigur
 spielt folgende Begleitfigur,spielt Begleitung
+"speilt Begleitung, aber keine Begleitfigur",spielt folgende Begleitfigur
 andere Begleitfigur,spielt folgende Begleitfigur
 "Dreinklangs-brechungen",spielt folgende Begleitfigur
 andere Dreiklangsbrechungen,"Dreinklangs-brechungen"
