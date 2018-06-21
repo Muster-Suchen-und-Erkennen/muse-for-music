@@ -335,9 +335,9 @@ def upgrade():
                     )
     op.create_table('person',
                     sa.Column('id', sa.Integer(), nullable=False),
-                    sa.Column('name', sa.String(length=255), nullable=True),
+                    sa.Column('name', sa.String(length=191), nullable=True),
                     sa.Column('canonical_name', sa.String(
-                        length=255), nullable=True),
+                        length=191), nullable=True),
                     sa.Column('gender', sa.Enum('male', 'female',
                                                 'other', name='genderenum'), nullable=True),
                     sa.Column('birth_date', sa.Date(), nullable=True),
@@ -719,9 +719,9 @@ def upgrade():
                     )
     op.create_table('opus',
                     sa.Column('id', sa.Integer(), nullable=False),
-                    sa.Column('name', sa.String(length=255), nullable=True),
+                    sa.Column('name', sa.String(length=191), nullable=True),
                     sa.Column('original_name', sa.String(
-                        length=255), nullable=True),
+                        length=191), nullable=True),
                     sa.Column('composer_id', sa.Integer(), nullable=True),
                     sa.Column('score_link', sa.Text(), nullable=True),
                     sa.Column('first_printed_at', sa.String(
@@ -962,7 +962,7 @@ def upgrade():
     op.create_table('part',
                     sa.Column('id', sa.Integer(), nullable=False),
                     sa.Column('opus_id', sa.Integer(), nullable=False),
-                    sa.Column('name', sa.String(length=255), nullable=True),
+                    sa.Column('name', sa.String(length=191), nullable=True),
                     sa.Column('movement', sa.Integer(), nullable=False),
                     sa.Column('measure_start_id',
                               sa.Integer(), nullable=False),
@@ -1085,7 +1085,7 @@ def upgrade():
     op.create_table('voice',
                     sa.Column('id', sa.Integer(), nullable=False),
                     sa.Column('subpart_id', sa.Integer(), nullable=False),
-                    sa.Column('name', sa.String(length=255), nullable=True),
+                    sa.Column('name', sa.String(length=191), nullable=True),
                     sa.Column('instrumentation_id',
                               sa.Integer(), nullable=False),
                     sa.Column('satz_id', sa.Integer(), nullable=True),
