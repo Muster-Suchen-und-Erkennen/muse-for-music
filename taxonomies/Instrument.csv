@@ -108,16 +108,16 @@ Altophikleide,Ophikleide
 Bassophikleide,Ophikleide
 Kontrabassophikleide (Monstrum-Ophikleide),Ophikleide
 Schlaginstrument,root
-Membranopon,Schlaginstrument
-anderes Membranophon,Membranopon
-Pauke,Membranopon
-kleine Trommel,Membranopon
+Membranophon,Schlaginstrument
+anderes Membranophon,Membranophon
+Pauke,Membranophon
+kleine Trommel,Membranophon
 kleine Trommel mit Schnarrsaite,kleine Trommel
 kleine Trommel ohne Schnarrsaite (auch Rührtrommel),kleine Trommel
-Gong Drum,Membranopon
-Tenortrommel,Membranopon
-Schellentrommel / Tambourin,Membranopon
-große Trommel,Membranopon
+Gong Drum,Membranophon
+Tenortrommel,Membranophon
+Schellentrommel / Tambourin,Membranophon
+große Trommel,Membranophon
 Stabspiel,Schlaginstrument
 anderes Stabspiel,Stabspiel
 Glockenspiel,Stabspiel
