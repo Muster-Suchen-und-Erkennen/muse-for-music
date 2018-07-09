@@ -1,140 +1,24 @@
-name,parent
+name,parent,description
 root,
-Streichinstrument,root
-anderes Streichinstrument,Streichinstrument
-Kontrabass,Streichinstrument
-Viola d'amore,Streichinstrument
-Violoncello,Streichinstrument
-Viola,Streichinstrument
-Violine,Streichinstrument
-Zupfinstrument,root
-anderes Zupfinstrument,Zupfinstrument
-Zither,Zupfinstrument
-Balalaika,Zupfinstrument
-Gitarre,Zupfinstrument
-Mandoline,Zupfinstrument
-Harfe,Zupfinstrument
-Tasteninstrument,root
-idiophones Tasteninstrument,Tasteninstrument
-anderes idiophones Tasteninstrument,idiophones Tasteninstrument
-Celesta,idiophones Tasteninstrument
-aerophones Tasteninstrument,Tasteninstrument
-anderes aerophones Tasteninstrument,aerophones Tasteninstrument
-Harmonium,aerophones Tasteninstrument
-Orgel,aerophones Tasteninstrument
-chordophones Tasteninstrument,Tasteninstrument
-anderes chordophones Tasteninstrument,chordophones Tasteninstrument
-Cembalo,chordophones Tasteninstrument
-Klavier,chordophones Tasteninstrument
-Schlaginstrument,root
-Idiophon,Schlaginstrument
-anderes Idiophon,Idiophon
-Metall-Idiophon,Idiophon
-anderes Metall-Idiophon,Metall-Idiophon
-Donnerblech,Metall-Idiophon
-Kette,Metall-Idiophon
-Amboss,Metall-Idiophon
-Metall-Guiro,Metall-Idiophon
-Glocke,Metall-Idiophon
-unbestimmte Glocke,Glocke
-andere Glocke,Glocke
-Röhrenglocke,Glocke
-Herdenglocke,Glocke
-Plattenglocke,Glocke
-Gong,Metall-Idiophon
-"Zimbeln (auch cimbales antiques, Krotali)",Metall-Idiophon
-Schellen,Metall-Idiophon
-Schellen unbestimmter Tonhöhe,Schellen
-Schellen bestimmter Tonhöhe,Schellen
-Tamtam,Metall-Idiophon
-Triangel,Metall-Idiophon
-Becken,Metall-Idiophon
-einzelnes Hängebecken,Becken
-doppelte Handbecken,Becken
-Holz-Idiophon,Idiophon
-anderes Holz-Idiophon,Holz-Idiophon
-Holz-Guiro,Holz-Idiophon
-Windmaschine,Holz-Idiophon
-Kastagnetten,Holz-Idiophon
-Holzblock,Holz-Idiophon
-Orchesterpeitsche,Holz-Idiophon
-Ratsche,Holz-Idiophon
-Stabspiel,Schlaginstrument
-anderes Stabspiel,Stabspiel
-Vibraphon,Stabspiel
-Xylophon,Stabspiel
-Marimbaphon,Stabspiel
-Glockenspiel,Stabspiel
-Membranopon,Schlaginstrument
-anderes Membranophon,Membranopon
-Schellentrommel / Tambourin,Membranopon
-Tenortrommel,Membranopon
-Gong Drum,Membranopon
-kleine Trommel,Membranopon
-kleine Trommel ohne Schnarrsaite (auch Rührtrommel),kleine Trommel
-kleine Trommel mit Schnarrsaite,kleine Trommel
-große Trommel,Membranopon
-Pauke,Membranopon
-Blechblasinstrument,root
-sonstiges Blechblasinstrument,Blechblasinstrument
-anderes Blechblasinstrument,sonstiges Blechblasinstrument
-Ophikleide,sonstiges Blechblasinstrument
-Unbestimmte Ophikleide,Ophikleide
-Altophikleide,Ophikleide
-Bassophikleide,Ophikleide
-Kontrabassophikleide (Monstrum-Ophikleide),Ophikleide
-Tenorhorn,sonstiges Blechblasinstrument
-Baritonhorn,sonstiges Blechblasinstrument
-Euphonium,sonstiges Blechblasinstrument
-Wagnertuba,sonstiges Blechblasinstrument
-tubenartiges Instrument,Blechblasinstrument
-Sousaphon,tubenartiges Instrument
-Tuba,tubenartiges Instrument
-unbestimmte Tuba,Tuba
-andere Tuba,Tuba
-Tenortuba,Tuba
-Basstuba,Tuba
-Kontrabasstuba,Tuba
-Posaune,Blechblasinstrument
-Zugposaune,Posaune
-(1) Altposaune,Zugposaune
-(1) Tenorposaune,Zugposaune
-(1) Bassposaune,Zugposaune
-(1) Kontrabassposaune,Zugposaune
-Ventilposaune,Posaune
-(2) Altposaune,Ventilposaune
-(2) Tenorposaune,Ventilposaune
-(2) Bassposaune,Ventilposaune
-(2) Kontrabassposaune,Ventilposaune
-Unbestimmte Posaune,Posaune
-(3) Altposaune,Unbestimmte Posaune
-(3) Tenorposaune,Unbestimmte Posaune
-(3) Bassposaune,Unbestimmte Posaune
-(3) Kontrabassposaune,Unbestimmte Posaune
-trompetenartiges Instrument,Blechblasinstrument
-andere trompeten- oder hornartige Instrumente,trompetenartiges Instrument
-Naturkornett (cornet),andere trompeten- oder hornartige Instrumente
-Ventilkornett (cornet à pistons),andere trompeten- oder hornartige Instrumente
-Unbestimmtes Kornett,andere trompeten- oder hornartige Instrumente
-Flügelhorn,andere trompeten- oder hornartige Instrumente
-Piccolotrompete,andere trompeten- oder hornartige Instrumente
-Basstrompete,andere trompeten- oder hornartige Instrumente
-Piccolo-Trompete,trompetenartiges Instrument
-Hoch-H/C-Piccolo-Trompete,Piccolo-Trompete
-Hoch-B/A-Piccolo-Trompete,Piccolo-Trompete
-G-Piccolo-Trompete,Piccolo-Trompete
-F-Piccolo-Trompete,Piccolo-Trompete
-Trompete,trompetenartiges Instrument
-unbestimmte Trompete,Trompete
-Naturtrompete,Trompete
-Ventiltrompete,Trompete
-Klappentrompete,Trompete
-Horn,Blechblasinstrument
-unbestimmtes Horn,Horn
-Naturhorn,Horn
-Ventilhorn,Horn
-Klappenhorn,Horn
 Holzblasinstrument,root
+Luftblattinstrument / Flöte,Holzblasinstrument
+Querflöte,Luftblattinstrument / Flöte
+andere Querflöte,Querflöte
+unbestimmte Querflöte,Querflöte
+Bassflöte,Querflöte
+Tenorflöte,Querflöte
+Altflöte,Querflöte
+Flauto d'Amore,Querflöte
+(Große) Flöte,Querflöte
+Piccolo-Flöte,Querflöte
+Blockflöte,Luftblattinstrument / Flöte
+andere Blockflöte,Blockflöte
+unbestimmte Blockflöte,Blockflöte
+Bassblockflöte,Blockflöte
+Tenorblockflöte,Blockflöte
+Altblockflöte,Blockflöte
+Sopranblockflöte,Blockflöte
+Sopraninoblockflöte,Blockflöte
 Rohrblattinstrument,Holzblasinstrument
 anderes Rohrblattinstrument,Rohrblattinstrument
 Doppelrohrblattinstrument,Rohrblattinstrument
@@ -151,11 +35,6 @@ Fagott,fagottartiges Isntrument
 Kontrafagott,fagottartiges Isntrument
 Einfachrohrblattinstrument,Rohrblattinstrument
 anderes Einfachrohrblattinstrument,Einfachrohrblattinstrument
-Saxophon,Einfachrohrblattinstrument
-Baritonsaxophon,Saxophon
-Tenorsaxophon,Saxophon
-Altsaxophon,Saxophon
-Sopransaxophon,Saxophon
 klarinettenartiges Instrument,Einfachrohrblattinstrument
 kleine Klarinette,klarinettenartiges Instrument,"Klarinette in D, Es, F oder As."
 gewöhnliche Klarinette,klarinettenartiges Instrument,"Klarinette in A, B, H oder C."
@@ -164,21 +43,142 @@ Altklarinette,klarinettenartiges Instrument
 Bassklarinette,klarinettenartiges Instrument
 Kontrabassklarinette,klarinettenartiges Instrument
 anderes klarinettenartiges Instrument,klarinettenartiges Instrument
-Luftblattinstrument / Flöte,Holzblasinstrument
-Blockflöte,Luftblattinstrument / Flöte
-andere Blockflöte,Blockflöte
-unbestimmte Blockflöte,Blockflöte
-Bassblockflöte,Blockflöte
-Tenorblockflöte,Blockflöte
-Altblockflöte,Blockflöte
-Sopranblockflöte,Blockflöte
-Sopraninoblockflöte,Blockflöte
-Querflöte,Luftblattinstrument / Flöte
-andere Querflöte,Querflöte
-unbestimmte Querflöte,Querflöte
-Bassflöte,Querflöte
-Tenorflöte,Querflöte
-Altflöte,Querflöte
-Flauto d'Amore,Querflöte
-(Große) Flöte,Querflöte
-Piccolo-Flöte,Querflöte
+Saxophon,Einfachrohrblattinstrument
+Baritonsaxophon,Saxophon
+Tenorsaxophon,Saxophon
+Altsaxophon,Saxophon
+Sopransaxophon,Saxophon
+Blechblasinstrument,root
+Horn,Blechblasinstrument
+unbestimmtes Horn,Horn
+Naturhorn,Horn
+Ventilhorn,Horn
+Klappenhorn,Horn
+trompetenartiges Instrument,Blechblasinstrument
+Trompete,trompetenartiges Instrument
+unbestimmte Trompete,Trompete
+Naturtrompete,Trompete
+Ventiltrompete,Trompete
+Klappentrompete,Trompete
+Piccolo-Trompete,trompetenartiges Instrument
+Hoch-H/C-Piccolo-Trompete,Piccolo-Trompete
+Hoch-B/A-Piccolo-Trompete,Piccolo-Trompete
+G-Piccolo-Trompete,Piccolo-Trompete
+F-Piccolo-Trompete,Piccolo-Trompete
+andere trompeten- oder hornartige Instrumente,trompetenartiges Instrument
+Naturkornett (cornet),andere trompeten- oder hornartige Instrumente
+Ventilkornett (cornet à pistons),andere trompeten- oder hornartige Instrumente
+Unbestimmtes Kornett,andere trompeten- oder hornartige Instrumente
+Flügelhorn,andere trompeten- oder hornartige Instrumente
+Piccolotrompete,andere trompeten- oder hornartige Instrumente
+Basstrompete,andere trompeten- oder hornartige Instrumente
+Posaune,Blechblasinstrument
+Zugposaune,Posaune
+(1) Altposaune,Zugposaune
+(1) Tenorposaune,Zugposaune
+(1) Bassposaune,Zugposaune
+(1) Kontrabassposaune,Zugposaune
+Ventilposaune,Posaune
+(2) Altposaune,Ventilposaune
+(2) Tenorposaune,Ventilposaune
+(2) Bassposaune,Ventilposaune
+(2) Kontrabassposaune,Ventilposaune
+Unbestimmte Posaune,Posaune
+(3) Altposaune,Unbestimmte Posaune
+(3) Tenorposaune,Unbestimmte Posaune
+(3) Bassposaune,Unbestimmte Posaune
+(3) Kontrabassposaune,Unbestimmte Posaune
+tubenartiges Instrument,Blechblasinstrument
+Tuba,tubenartiges Instrument
+unbestimmte Tuba,Tuba
+andere Tuba,Tuba
+Tenortuba,Tuba
+Basstuba,Tuba
+Kontrabasstuba,Tuba
+Sousaphon,tubenartiges Instrument
+sonstiges Blechblasinstrument,Blechblasinstrument
+anderes Blechblasinstrument,sonstiges Blechblasinstrument
+Wagnertuba,sonstiges Blechblasinstrument
+Euphonium,sonstiges Blechblasinstrument
+Baritonhorn,sonstiges Blechblasinstrument
+Tenorhorn,sonstiges Blechblasinstrument
+Ophikleide,sonstiges Blechblasinstrument
+Unbestimmte Ophikleide,Ophikleide
+Altophikleide,Ophikleide
+Bassophikleide,Ophikleide
+Kontrabassophikleide (Monstrum-Ophikleide),Ophikleide
+Schlaginstrument,root
+Membranophon,Schlaginstrument
+anderes Membranophon,Membranophon
+Pauke,Membranophon
+kleine Trommel,Membranophon
+kleine Trommel mit Schnarrsaite,kleine Trommel
+kleine Trommel ohne Schnarrsaite (auch Rührtrommel),kleine Trommel
+Gong Drum,Membranophon
+Tenortrommel,Membranophon
+Schellentrommel / Tambourin,Membranophon
+große Trommel,Membranophon
+Stabspiel,Schlaginstrument
+anderes Stabspiel,Stabspiel
+Glockenspiel,Stabspiel
+Marimbaphon,Stabspiel
+Xylophon,Stabspiel
+Vibraphon,Stabspiel
+Idiophon,Schlaginstrument
+anderes Idiophon,Idiophon
+Holz-Idiophon,Idiophon
+anderes Holz-Idiophon,Holz-Idiophon
+Ratsche,Holz-Idiophon
+Orchesterpeitsche,Holz-Idiophon
+Holzblock,Holz-Idiophon
+Kastagnetten,Holz-Idiophon
+Windmaschine,Holz-Idiophon
+Holz-Guiro,Holz-Idiophon
+Metall-Idiophon,Idiophon
+anderes Metall-Idiophon,Metall-Idiophon
+Becken,Metall-Idiophon
+einzelnes Hängebecken,Becken
+doppelte Handbecken,Becken
+Schellen,Metall-Idiophon
+Schellen unbestimmter Tonhöhe,Schellen
+Schellen bestimmter Tonhöhe,Schellen
+Glocke,Metall-Idiophon
+unbestimmte Glocke,Glocke
+andere Glocke,Glocke
+Plattenglocke,Glocke
+Herdenglocke,Glocke
+Röhrenglocke,Glocke
+Triangel,Metall-Idiophon
+Tamtam,Metall-Idiophon
+"Zimbeln (auch cimbales antiques, Krotali)",Metall-Idiophon
+Gong,Metall-Idiophon
+Metall-Guiro,Metall-Idiophon
+Amboss,Metall-Idiophon
+Kette,Metall-Idiophon
+Donnerblech,Metall-Idiophon
+Tasteninstrument,root
+chordophones Tasteninstrument,Tasteninstrument
+anderes chordophones Tasteninstrument,chordophones Tasteninstrument
+Klavier,chordophones Tasteninstrument
+Cembalo,chordophones Tasteninstrument
+aerophones Tasteninstrument,Tasteninstrument
+anderes aerophones Tasteninstrument,aerophones Tasteninstrument
+Orgel,aerophones Tasteninstrument
+Harmonium,aerophones Tasteninstrument
+idiophones Tasteninstrument,Tasteninstrument
+anderes idiophones Tasteninstrument,idiophones Tasteninstrument
+Celesta,idiophones Tasteninstrument
+Zupfinstrument,root
+anderes Zupfinstrument,Zupfinstrument
+Harfe,Zupfinstrument
+Gitarre,Zupfinstrument
+Mandoline,Zupfinstrument
+Balalaika,Zupfinstrument
+Zither,Zupfinstrument
+Streichinstrument,root
+anderes Streichinstrument,Streichinstrument
+Violine,Streichinstrument
+Viola,Streichinstrument
+Viola d'amore,Streichinstrument
+Violoncello,Streichinstrument
+Kontrabass,Streichinstrument
