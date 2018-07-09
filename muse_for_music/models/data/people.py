@@ -22,8 +22,8 @@ class Person(db.Model, GetByID, UpdateableModelMixin):
 
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), unique=True, index=True)
-    canonical_name = db.Column(db.String(255), index=True)
+    name = db.Column(db.String(191), unique=True, index=True)
+    canonical_name = db.Column(db.String(191), index=True)
     gender = db.Column(db.Enum(GenderEnum))
     birth_date = db.Column(db.Date(), nullable=True)
     death_date = db.Column(db.Date(), nullable=True)

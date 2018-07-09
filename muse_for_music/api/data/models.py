@@ -57,12 +57,12 @@ person_links = api.model('PersonLinks', {
 })
 
 person_post = api.model('PersonPOST', {
-    'name': fields.String(title='Name', description='Name der Person', max_length=255, default='', required=True, example='admin'),
+    'name': fields.String(title='Name', description='Name der Person', max_length=191, default='', required=True, example='admin'),
     'gender': GenderField(title='Geschlecht', description='Geschlecht der Person', required=True, example='male', enum=['male', 'female', 'other'])
 })
 
 person_put = api.inherit('PersonPUT', person_post, {
-    'canonical_name': fields.String(title='Vollständiger Name', max_length=255, default='', example='admin', nullable=True),
+    'canonical_name': fields.String(title='Vollständiger Name', max_length=191, default='', example='admin', nullable=True),
     'birth_date': fields.Date(title='Geburtstag', example='1921-2-4', nullable=True),
     'death_date': fields.Date(title='Todestag', example='1921-3-23', nullable=True),
     'nationality': fields.String(title='Nationalität', max_length=100, default='', nullable=True),
@@ -87,7 +87,7 @@ opus_links = api.inherit('OpusLinks', with_curies, {
 })
 
 opus_post = api.model('OpusPOST', {
-    'name': fields.String(max_length=255, default='', required=True, example='duett in g moll', title='Name'),
+    'name': fields.String(max_length=191, default='', required=True, example='duett in g moll', title='Name'),
     'composer': fields.Nested(person_get, description='The composer.', reference='person', title='Komponist', required=True),
 })
 
@@ -408,7 +408,7 @@ part_links = api.inherit('PartLinks', with_curies, {
 })
 
 part_post = api.model('PartPOST', {
-    'name': fields.String(required=True, max_length=255, title='Name'),
+    'name': fields.String(required=True, max_length=191, title='Name'),
     'movement': fields.Integer(required=True, min=1, default=1, example=1, title='In Satz'),
     'measure_start': fields.Nested(measure_model, required=True, isNested=True, title='Starttakt'),
     'measure_end': fields.Nested(measure_model, required=True, isNested=True, title='Endtakt'),
@@ -460,7 +460,7 @@ voice_links = api.inherit('VoiceLinks', with_curies, {
 })
 
 voice_post = api.model('VoicePOST', {
-    'name': fields.String(default='', required=True, max_length=255, title='Name'),
+    'name': fields.String(default='', required=True, max_length=191, title='Name'),
 })
 
 voice_put = api.inherit('VoicePUT', voice_post, {
@@ -542,18 +542,18 @@ part_get = api.inherit('PartGET', part_put, {
 })
 
 opus_put = api.inherit('OpusPUT', opus_post, {
-    'original_name': fields.String(max_length=255, default='', required=True, title='Name / Opus Nr.'),
+    'original_name': fields.String(max_length=191, default='', required=True, title='Name / Opus Nr.'),
     'movements': fields.Integer(default=1, required=True, title='Anzahl Sätze'),
     'genre': fields.Nested(taxonomy_item_ref, taxonomy='GattungNineteenthCentury', required=True, title='Genre'),
     'grundton': fields.Nested(taxonomy_item_ref, taxonomy='Grundton', required=True, title='Grundton'),
     'tonalitaet': fields.Nested(taxonomy_item_ref, taxonomy='Tonalitaet', required=True, title='Tonalität'),
     'composition_year': fields.Integer(default=-1, required=True, title='Kompositionsjahr', nullable=True),
-    'composition_place': fields.String(max_length=255, default='', required=True, title='Kompositionsort', nullable=True),
+    'composition_place': fields.String(max_length=191, default='', required=True, title='Kompositionsort', nullable=True),
     'notes': fields.String(default='', required=True, title='Notizen', nullable=True),
     'score_link': fields.String(default='', required=True, description='Ein Link zu einer Partitur.', title='Partitur (Link)', nullable=True),
-    'first_printed_at': fields.String(max_length=255, default='', required=True, title='Ort der Partitur', nullable=True),
+    'first_printed_at': fields.String(max_length=191, default='', required=True, title='Ort der Partitur', nullable=True),
     'first_printed_in': fields.Integer(default=-1, required=True, title='Jahr der Partitur', nullable=True),
-    'first_played_at': fields.String(max_length=255, default='', required=True, title='Ort der Uraufführung', nullable=True),
+    'first_played_at': fields.String(max_length=191, default='', required=True, title='Ort der Uraufführung', nullable=True),
     'first_played_in': fields.Integer(default=-1, required=True, title='Jahr der Uraufführung', nullable=True),
 })
 

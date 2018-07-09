@@ -26,15 +26,15 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
     _reference_only_attributes = ('composer', )
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), unique=True, index=True)
-    original_name = db.Column(db.String(255), unique=True, index=True, nullable=True)
+    name = db.Column(db.String(191), unique=True, index=True)
+    original_name = db.Column(db.String(191), unique=True, index=True, nullable=True)
     composer_id = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=True)
     score_link = db.Column(db.Text, nullable=True)
-    first_printed_at = db.Column(db.String(255), nullable=True)  # TODO Foreign key
+    first_printed_at = db.Column(db.String(191), nullable=True)  # TODO Foreign key
     first_printed_in = db.Column(db.Integer, nullable=True)
     composition_year = db.Column(db.Integer, nullable=True)
-    composition_place = db.Column(db.String(255), nullable=True)  # TODO Foreign key
-    first_played_at = db.Column(db.String(255), nullable=True)  # TODO Foreign key
+    composition_place = db.Column(db.String(191), nullable=True)  # TODO Foreign key
+    first_played_at = db.Column(db.String(191), nullable=True)  # TODO Foreign key
     first_played_in = db.Column(db.Integer, nullable=True)
     notes = db.Column(db.Text, nullable=True)
     movements = db.Column(db.Integer)

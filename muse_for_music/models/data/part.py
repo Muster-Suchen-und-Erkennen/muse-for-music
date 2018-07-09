@@ -27,7 +27,7 @@ class Part(db.Model, GetByID, UpdateableModelMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     opus_id = db.Column(db.Integer, db.ForeignKey('opus.id'), nullable=False)
-    name = db.Column(db.String(255), nullable=True)
+    name = db.Column(db.String(191), nullable=True)
     movement = db.Column(db.Integer, nullable=False)
     measure_start_id = db.Column(db.Integer, db.ForeignKey('measure.id'), nullable=False)
     measure_end_id = db.Column(db.Integer, db.ForeignKey('measure.id'), nullable=False)

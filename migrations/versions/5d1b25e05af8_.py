@@ -661,7 +661,7 @@ def upgrade():
                     sa.Column('type', sa.Enum('person', 'opus', 'part',
                                               'subpart', 'voice', name='typeenum'), nullable=True),
                     sa.Column('resource', sa.String(
-                        length=255), nullable=True),
+                        length=191), nullable=True),
                     sa.ForeignKeyConstraint(
                         ['user_id'], ['user.id'], name='history_ibfk_1', ),
                     sa.PrimaryKeyConstraint('id')
@@ -725,13 +725,13 @@ def upgrade():
                     sa.Column('composer_id', sa.Integer(), nullable=True),
                     sa.Column('score_link', sa.Text(), nullable=True),
                     sa.Column('first_printed_at', sa.String(
-                        length=255), nullable=True),
+                        length=191), nullable=True),
                     sa.Column('first_printed_in', sa.Integer(), nullable=True),
                     sa.Column('composition_year', sa.Integer(), nullable=True),
                     sa.Column('composition_place', sa.String(
-                        length=255), nullable=True),
+                        length=191), nullable=True),
                     sa.Column('first_played_at', sa.String(
-                        length=255), nullable=True),
+                        length=191), nullable=True),
                     sa.Column('first_played_in', sa.Integer(), nullable=True),
                     sa.Column('notes', sa.Text(), nullable=True),
                     sa.Column('movements', sa.Integer(), nullable=True),

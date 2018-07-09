@@ -41,7 +41,7 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     subpart_id = db.Column(db.Integer, db.ForeignKey('sub_part.id'), nullable=False)
-    name = db.Column(db.String(255), nullable=True)
+    name = db.Column(db.String(191), nullable=True)
     instrumentation_id = db.Column(db.Integer, db.ForeignKey('instrumentation.id', ondelete='CASCADE'), nullable=False)
     satz_id = db.Column(db.Integer, db.ForeignKey('satz.id'), nullable=True)
     # stimmverlauf

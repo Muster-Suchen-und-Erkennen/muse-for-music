@@ -33,7 +33,7 @@ class History(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     method = db.Column(db.Enum(MethodEnum))
     type = db.Column(db.Enum(TypeEnum))
-    resource = db.Column(db.String(255))
+    resource = db.Column(db.String(191))
 
     user = db.relationship(User)
 
