@@ -50,7 +50,7 @@ export class SubPartDetailComponent implements OnInit, OnDestroy {
                 this.navigation.changeBreadcrumbs([new Breadcrumb('Werke', '/opuses'),
                     new Breadcrumb('"' + part.opus_id.toString() + '"', '/opuses/' + part.opus_id),
                     new Breadcrumb('Werkausschnitte', '/parts'),
-                    new Breadcrumb('"' + part.id.toString() + '"', '/parts/' + part.id),
+                    new Breadcrumb('"' + part.name + '"', '/parts/' + part.id),
                     new Breadcrumb('Teilwerkausschnitte', '/subparts'),
                     new Breadcrumb('"' + subpart.label + '"', '/subparts/' + subPartID)]);
 
@@ -64,7 +64,7 @@ export class SubPartDetailComponent implements OnInit, OnDestroy {
                     this.navigation.changeBreadcrumbs([new Breadcrumb('Werke', '/opuses'),
                         new Breadcrumb('"' + opus.name + '"', '/opuses/' + part.opus_id),
                         new Breadcrumb('Werkausschnitte', '/parts'),
-                        new Breadcrumb('"' + part.id.toString() + '"', '/parts/' + part.id),
+                        new Breadcrumb('"' + part.name + '"', '/parts/' + part.id),
                         new Breadcrumb('Teilwerkausschnitte', '/subparts'),
                         new Breadcrumb('"' + subpart.label + '"', '/subparts/' + subPartID)]);
                 });
