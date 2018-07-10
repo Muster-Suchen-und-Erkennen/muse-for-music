@@ -105,6 +105,13 @@ body {
     opacity: 0.9;
     pointer-events: all;
 }
+.tooltip-wo-triangle:before{
+    visibility: hidden;
+}
+.tooltip-small:after {
+    max-width: 12em;
+
+}
 .tooltip-left:after {
     right: calc(100% + 0.375rem);
     top: calc(50% - 0.75rem);
