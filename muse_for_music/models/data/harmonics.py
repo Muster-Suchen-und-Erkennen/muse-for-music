@@ -12,7 +12,6 @@ from typing import Union, Sequence, List
 class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
 
     _normal_attributes = (('degree_of_dissonance', Dissonanzgrad),
-                          ('nr_of_different_chords_per_measure', float),
                           ('harmonic_density', HarmonischeDichte),
                           ('nr_of_melody_tones_per_harmony', float),
                           ('melody_tones_in_melody_one', AnzahlMelodietoene),
@@ -28,7 +27,6 @@ class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
     id = db.Column(db.Integer, primary_key=True)
     harmonic_function_modulation_id = db.Column(db.Integer, db.ForeignKey('harmonische_funktion_verwandschaft.id'))
     degree_of_dissonance_id = db.Column(db.Integer, db.ForeignKey('dissonanzgrad.id'))
-    nr_of_different_chords_per_measure = db.Column(db.Float)
     harmonic_density_id = db.Column(db.Integer, db.ForeignKey('harmonische_dichte.id'))
     harmonic_complexity_id = db.Column(db.Integer, db.ForeignKey('harmonische_komplexitaet.id'))
     nr_of_melody_tones_per_harmony = db.Column(db.Float)

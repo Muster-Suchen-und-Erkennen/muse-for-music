@@ -120,8 +120,8 @@ dynamic_context_put = api.model('DynamicContextPUT', {
     'id': fields.Integer(default=1, readonly=True, example=1),
     'loudness_before': fields.Nested(taxonomy_item_ref, taxonomy='Lautstaerke', title='Lautstärke davor'),
     'loudness_after': fields.Nested(taxonomy_item_ref, taxonomy='Lautstaerke', title='Lautstärke danach'),
-    'dynamic_trend_before': fields.Nested(taxonomy_item_ref, taxonomy='LautstaerkeEinbettung', title='Lautstärke Einbettung davor'),
-    'dynamic_trend_after': fields.Nested(taxonomy_item_ref, taxonomy='LautstaerkeEinbettung', title='Lautstärke Einbettung danach'),
+    'dynamic_trend_before': fields.Nested(taxonomy_item_ref, taxonomy='LautstaerkeEinbettung', title='Lautstärkeentwicklung davor'),
+    'dynamic_trend_after': fields.Nested(taxonomy_item_ref, taxonomy='LautstaerkeEinbettung', title='Lautstärkeentwicklung danach'),
 })
 
 dynamic_context_get = api.model('DynamicContextGET', {
@@ -136,16 +136,16 @@ tempo_context_put = api.model('TempoContextPUT', {
     'id': fields.Integer(default=1, readonly=True, example=1),
     'tempo_context_before': fields.Nested(taxonomy_item_ref, taxonomy='TempoEinbettung', title='Tempo Einbettung davor'),
     'tempo_context_after': fields.Nested(taxonomy_item_ref, taxonomy='TempoEinbettung', title='Tempo Einbettung danach'),
-    'tempo_trend_before': fields.Nested(taxonomy_item_ref, taxonomy='TempoEntwicklung', title='Tempo Entwicklung davor'),
-    'tempo_trend_after': fields.Nested(taxonomy_item_ref, taxonomy='TempoEntwicklung', title='Tempo Entwicklung danach'),
+    'tempo_trend_before': fields.Nested(taxonomy_item_ref, taxonomy='TempoEntwicklung', title='Tempoentwicklung davor'),
+    'tempo_trend_after': fields.Nested(taxonomy_item_ref, taxonomy='TempoEntwicklung', title='Tempoentwicklung danach'),
 })
 
 tempo_context_get = api.model('TempoContextGET', {
     'id': fields.Integer(default=1, readonly=True, example=1),
     'tempo_context_before': fields.Nested(taxonomy_item_get, taxonomy='TempoEinbettung', title='Tempo Einbettung davor'),
     'tempo_context_after': fields.Nested(taxonomy_item_get, taxonomy='TempoEinbettung', title='Tempo Einbettung danach'),
-    'tempo_trend_before': fields.Nested(taxonomy_item_get, taxonomy='TempoEntwicklung', title='Tempo Entwicklung davor'),
-    'tempo_trend_after': fields.Nested(taxonomy_item_get, taxonomy='TempoEntwicklung', title='Tempo Entwicklung danach'),
+    'tempo_trend_before': fields.Nested(taxonomy_item_get, taxonomy='TempoEntwicklung', title='Tempoentwicklung davor'),
+    'tempo_trend_after': fields.Nested(taxonomy_item_get, taxonomy='TempoEntwicklung', title='Tempoentwicklung danach'),
 })
 
 form_put = api.model('FormPUT', {
@@ -183,7 +183,6 @@ harmonics_put = api.model('HarmonicsPUT', {
     'degree_of_dissonance': fields.Nested(taxonomy_item_ref, taxonomy='Dissonanzgrad', title='Dissonanzgrad'),
     'dissonances': fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Dissonanzen', default=[], title='Dissonanzen'),
     'harmonic_complexity': fields.Nested(taxonomy_item_ref, taxonomy='HarmonischeKomplexitaet', title='Harmonische Komplexität'),
-    'nr_of_different_chords_per_measure': fields.Float(default='-1', title='# untersch. Akkorde pro Takt'),
     'harmonic_density': fields.Nested(taxonomy_item_ref, taxonomy='HarmonischeDichte', title='Harmonische Dichte'),
     'nr_of_melody_tones_per_harmony': fields.Float(default='-1', title='# Melodietöne in Harmonie'),
     'melody_tones_in_melody_one': fields.Nested(taxonomy_item_ref, taxonomy='AnzahlMelodietoene', title='# Melodietöne in Melodie 1'),
@@ -192,7 +191,7 @@ harmonics_put = api.model('HarmonicsPUT', {
     'harmonic_rhythm_follows_rule': fields.Boolean(default=False, title='Rhythmus folgt einer Regel'),
     'harmonic_phenomenons': fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='HarmonischePhaenomene', default=[], title='Harmonische Phänomene'),
     'harmonic_changes': fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='HarmonischeEntwicklung', default=[], title='Harmonische Entwicklung'),
-    'harmonische_funktion': fields.Nested(taxonomy_item_ref, taxonomy='HarmonischeFunktionVerwandschaft', title='Harmonische Verwandschaft'),
+    'harmonische_funktion': fields.Nested(taxonomy_item_ref, taxonomy='HarmonischeFunktionVerwandschaft', title='Zeigt Modulation zu Tonart mit folgender Funktion (bezogen auf Werkausschnitt)'),
     'harmonic_centers': fields.List(fields.Nested(harmonic_center_put, description='HarmonicCenter'), default=[], title='Harmonische Zentren'),
 })
 
@@ -201,16 +200,15 @@ harmonics_get = api.model('HarmonicsGET', {
     'degree_of_dissonance': fields.Nested(taxonomy_item_get, taxonomy='Dissonanzgrad', title='Dissonanzgrad'),
     'dissonances': fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Dissonanzen', default=[], title='Dissonanzen'),
     'harmonic_complexity': fields.Nested(taxonomy_item_get, taxonomy='HarmonischeKomplexitaet', title='Harmonische Komplexität'),
-    'nr_of_different_chords_per_measure': fields.Float(default='-1', title='# untersch. Akkorde pro Takt'),
     'harmonic_density': fields.Nested(taxonomy_item_get, taxonomy='HarmonischeDichte', title='Harmonische Dichte'),
     'nr_of_melody_tones_per_harmony': fields.Float(default='-1', title='# Melodietöne in Harmonie'),
     'melody_tones_in_melody_one': fields.Nested(taxonomy_item_get, taxonomy='AnzahlMelodietoene', title='# Melodietöne in Melodie 1'),
     'melody_tones_in_melody_two': fields.Nested(taxonomy_item_get, taxonomy='AnzahlMelodietoene', title='# Melodietöne in Melodie 2'),
-    'harmonic_rhythm_is_static': fields.Boolean(default=False, title='Statischer Rhythmus'),
-    'harmonic_rhythm_follows_rule': fields.Boolean(default=False, title='Rhythmus folgt einer Regel'),
+    'harmonic_rhythm_is_static': fields.Boolean(default=False, title='Statischer Harmonischer-Rhythmus'),
+    'harmonic_rhythm_follows_rule': fields.Boolean(default=False, title='Harmonischer-Rhythmus folgt einer Regel'),
     'harmonic_phenomenons': fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='HarmonischePhaenomene', default=[], title='Harmonische Phänomene'),
     'harmonic_changes': fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='HarmonischeEntwicklung', default=[], title='Harmonische Entwicklung'),
-    'harmonische_funktion': fields.Nested(taxonomy_item_get, taxonomy='HarmonischeFunktionVerwandschaft', title='Harmonische Verwandschaft'),
+    'harmonische_funktion': fields.Nested(taxonomy_item_get, taxonomy='HarmonischeFunktionVerwandschaft', title='Zeigt Modulation zu Tonart mit folgender Funktion (bezogen auf Werkausschnitt)'),
     'harmonic_centers': fields.List(fields.Nested(harmonic_center_get, description='HarmonicCenter'), default=[], title='Harmonische Zentren'),
 })
 
@@ -218,8 +216,8 @@ dramaturgic_context_put = api.model('DramaturgicContextPUT', {
     'id': fields.Integer(default=1, readonly=True, example=1),
     'ambitus_context_before': fields.Nested(taxonomy_item_ref, taxonomy='AmbitusEinbettung', title='Ambitus Einbettung davor'),
     'ambitus_context_after': fields.Nested(taxonomy_item_ref, taxonomy='AmbitusEinbettung', title='Ambitus Einbettung danach'),
-    'ambitus_change_before': fields.Nested(taxonomy_item_ref, taxonomy='AmbitusEntwicklung', title='Ambitus-Entwicklung davor'),
-    'ambitus_change_after': fields.Nested(taxonomy_item_ref, taxonomy='AmbitusEntwicklung', title='Ambitus-Entwicklung danach'),
+    'ambitus_change_before': fields.Nested(taxonomy_item_ref, taxonomy='AmbitusEntwicklung', title='Ambitusentwicklung davor'),
+    'ambitus_change_after': fields.Nested(taxonomy_item_ref, taxonomy='AmbitusEntwicklung', title='Ambitusentwicklung danach'),
     'melodic_line_before': fields.Nested(taxonomy_item_ref, taxonomy='Melodiebewegung', title='Melodielinie davor'),
     'melodic_line_after': fields.Nested(taxonomy_item_ref, taxonomy='Melodiebewegung', title='Melodielinie danach'),
 })
@@ -228,8 +226,8 @@ dramaturgic_context_get = api.model('DramaturgicContextGET', {
     'id': fields.Integer(default=1, readonly=True, example=1),
     'ambitus_context_before': fields.Nested(taxonomy_item_get, taxonomy='AmbitusEinbettung', title='Ambitus Einbettung davor'),
     'ambitus_context_after': fields.Nested(taxonomy_item_get, taxonomy='AmbitusEinbettung', title='Ambitus Einbettung danach'),
-    'ambitus_change_before': fields.Nested(taxonomy_item_get, taxonomy='AmbitusEntwicklung', title='Ambitus-Entwicklung davor'),
-    'ambitus_change_after': fields.Nested(taxonomy_item_get, taxonomy='AmbitusEntwicklung', title='Ambitus-Entwicklung danach'),
+    'ambitus_change_before': fields.Nested(taxonomy_item_get, taxonomy='AmbitusEntwicklung', title='Ambitusentwicklung davor'),
+    'ambitus_change_after': fields.Nested(taxonomy_item_get, taxonomy='AmbitusEntwicklung', title='Ambitusentwicklung danach'),
     'melodic_line_before': fields.Nested(taxonomy_item_get, taxonomy='Melodiebewegung', title='Melodielinie davor'),
     'melodic_line_after': fields.Nested(taxonomy_item_get, taxonomy='Melodiebewegung', title='Melodielinie danach'),
 })
@@ -368,14 +366,14 @@ citations_get = api.model('CitationsGET', {
 tempo_put = api.model('TempoPUT', {
     'id': fields.Integer(default=1, readonly=True, example=1),
     'tempo_markings': fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Tempo', default=[], title='Tempo'),
-    'tempo_changes': fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='TempoEntwicklung', default=[], title='Tempo-Entwicklung'),
+    'tempo_changes': fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='TempoEntwicklung', default=[], title='Tempoentwicklung'),
     'tempo_context': fields.Nested(tempo_context_put, isNested=True, title='Tempo Einbettung'),
 })
 
 tempo_get = api.model('TempoGET', {
     'id': fields.Integer(default=1, readonly=True, example=1),
     'tempo_markings': fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Tempo', default=[], title='Tempo'),
-    'tempo_changes': fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='TempoEntwicklung', default=[], title='Tempo-Entwicklung'),
+    'tempo_changes': fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='TempoEntwicklung', default=[], title='Tempoentwicklung'),
     'tempo_context': fields.Nested(tempo_context_get, isNested=True, title='Tempo Einbettung'),
 })
 
