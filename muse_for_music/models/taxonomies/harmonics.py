@@ -16,6 +16,7 @@ class HarmonischeEntwicklung(db.Model, TreeTaxonomy):
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('HarmonischeEntwicklung',
+                               passive_deletes='all',
                                backref=db.backref('parent',
                                                   remote_side=[id],
                                                   lazy='joined',
@@ -33,6 +34,7 @@ class Tonalitaet(db.Model, TreeTaxonomy):
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('Tonalitaet',
+                               passive_deletes='all',
                                backref=db.backref('parent',
                                                   remote_side=[id],
                                                   lazy='joined',
@@ -59,6 +61,7 @@ class HarmonischeStufe(db.Model, TreeTaxonomy):
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('HarmonischeStufe',
+                               passive_deletes='all',
                                backref=db.backref('parent',
                                                   remote_side=[id],
                                                   lazy='joined',
@@ -76,6 +79,7 @@ class HarmonischeFunktionVerwandschaft(db.Model, TreeTaxonomy):
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('HarmonischeFunktionVerwandschaft',
+                               passive_deletes='all',
                                backref=db.backref('parent',
                                                   remote_side=[id],
                                                   lazy='joined',
@@ -93,6 +97,7 @@ class HarmonischePhaenomene(db.Model, TreeTaxonomy):
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('HarmonischePhaenomene',
+                               passive_deletes='all',
                                backref=db.backref('parent',
                                                   remote_side=[id],
                                                   lazy='joined',

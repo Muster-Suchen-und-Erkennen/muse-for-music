@@ -45,6 +45,8 @@ def init_taxonomies(reload, folder_path: str):
     if not path.isdir(folder_path):
         click.echo('Please provide a path to a folder!')
         return
+    if reload and app.config.get('DEBUG', False):
+        app.config['SQLITE_FOREIGN_KEYS'] = False
     folder_path = path.abspath(folder_path)
     click.echo('Scanning folder "{}"'.format(folder_path))
     files = glob(path.join(folder_path, '*.csv'))

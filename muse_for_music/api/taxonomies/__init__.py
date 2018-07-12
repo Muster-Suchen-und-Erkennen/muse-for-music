@@ -3,6 +3,7 @@
 from flask import request
 from flask_restplus import Resource, marshal, abort
 from flask_jwt_extended import jwt_required
+from sqlalchemy.exc import IntegrityError
 
 from ...models.taxonomies import get_taxonomies, T
 from .. import api
@@ -181,7 +182,10 @@ class TaxonomyItemResource(Resource):
         tax = get_taxonomy(taxonomy_type, taxonomy)
         if tax is None:
             abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
-        delete_taxonomy_item(tax, item_id)
+        try:
+            delete_taxonomy_item(tax, item_id)
+        except IntegrityError:
+            abort(400, 'Taxonomy item is still in use!')
 
 
 @ns.route('/list/<string:taxonomy>/<int:item_id>/')
@@ -218,7 +222,10 @@ class ListTaxonomyItemResource(Resource):
         tax = get_taxonomy('list', taxonomy)
         if tax is None:
             abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
-        delete_taxonomy_item(tax, item_id)
+        try:
+            delete_taxonomy_item(tax, item_id)
+        except IntegrityError:
+            abort(400, 'Taxonomy item is still in use!')
 
 
 @ns.route('/tree/<string:taxonomy>/<int:item_id>/')
@@ -271,4 +278,7 @@ class TreeTaxonomyItemResource(Resource):
         tax = get_taxonomy('tree', taxonomy)
         if tax is None:
             abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
-        delete_taxonomy_item(tax, item_id)
+        try:
+            delete_taxonomy_item(tax, item_id)
+        except IntegrityError:
+            abort(400, 'The taxonomy item or one of its children is still in use!')

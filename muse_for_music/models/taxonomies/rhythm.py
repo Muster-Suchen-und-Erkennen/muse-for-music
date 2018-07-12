@@ -13,6 +13,7 @@ class Taktart(db.Model, TreeTaxonomy):
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('Taktart',
+                               passive_deletes='all',
                                backref=db.backref('parent',
                                                   remote_side=[id],
                                                   lazy='joined',
@@ -30,6 +31,7 @@ class Rhythmustyp(db.Model, TreeTaxonomy):
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('Rhythmustyp',
+                               passive_deletes='all',
                                backref=db.backref('parent',
                                                   remote_side=[id],
                                                   lazy='joined',
@@ -47,6 +49,7 @@ class RhythmischesPhaenomen(db.Model, TreeTaxonomy):
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('RhythmischesPhaenomen',
+                               passive_deletes='all',
                                backref=db.backref('parent',
                                                   remote_side=[id],
                                                   lazy='joined',

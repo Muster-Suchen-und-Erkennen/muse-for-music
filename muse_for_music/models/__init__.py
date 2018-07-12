@@ -2,6 +2,8 @@ import click
 from flask import Flask
 from logging import Logger, StreamHandler, Formatter, getLogger, DEBUG
 from sys import stdout
+from sqlalchemy.engine import Engine
+from sqlalchemy import event
 
 
 from .. import app, db
@@ -23,6 +25,15 @@ from . import taxonomies
 from . import data
 from .data.people import Person
 from .data.history import History, MethodEnum
+
+
+if app.config.get('SQLALCHEMY_DATABASE_URI', '').startswith('sqlite://'):
+    @event.listens_for(Engine, 'connect')
+    def set_sqlite_pragma(dbapi_connection, connection_record):
+        if app.config.get('SQLITE_FOREIGN_KEYS', True):
+            cursor = dbapi_connection.cursor()
+            cursor.execute("PRAGMA foreign_keys=ON")
+            cursor.close()
 
 
 @app.cli.command('create_db')
