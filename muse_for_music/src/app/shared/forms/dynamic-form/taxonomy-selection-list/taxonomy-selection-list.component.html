@@ -18,7 +18,7 @@
             (click)="select(selectable.id)"
             class="hover-bg-black-30"
             [ngClass]="{'bg-light-blue': selectable.id === highlighted, 'b': selectedSet.has(selectable.id)}">
-        <a class="tooltip-bottom tooltip-small" [ngClass]="{tooltip: !(!selectable?.description)}" [attr.data-tooltip]="selectable?.description">{{selectable.name === 'root' ? taxonomy : selectable.name}} test für umbrüche noch mehr text</a>
+        <a class="tooltip-bottom tooltip-small" [ngClass]="{tooltip: !(!selectable?.description)}" [attr.data-tooltip]="selectable?.description">{{selectable.name === 'root' ? taxonomy : selectable.name}}</a>
     </div>
 </ng-container>
 <div [hidden]="matching.size > 0">
