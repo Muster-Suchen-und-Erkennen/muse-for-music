@@ -42,6 +42,9 @@ export class UserApiService implements OnInit {
 
     private streams: {[propName: string]: Subject<ApiObject | ApiObject[]>} = {};
 
+    private sessionExpirySource = new Subject<boolean>();
+    readonly sessionExpiry = this.sessionExpirySource.asObservable();
+
     readonly TOKEN = 'token';
     readonly REFRESH_TOKEN = 'refresh_token';
 
@@ -58,6 +61,9 @@ export class UserApiService implements OnInit {
                 future = new Date(future.getTime() + (3 * 60 * 1000))
                 if (this.expiration(this.token) < future) {
                     this.refreshLogin(this.refreshToken);
+                }
+                if (this.expiration(this.refreshToken) < future) {
+                    this.sessionExpirySource.next(true);
                 }
             }
         }).bind(this));

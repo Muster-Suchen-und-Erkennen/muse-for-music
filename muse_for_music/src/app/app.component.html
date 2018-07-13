@@ -11,4 +11,19 @@
         <router-outlet></router-outlet>
     </div>
 
+    <m4m-dialog [dialogType]="'ok-cancel'" [icon]="'info'" [okCallback]="renewLogin" #renewLoginDialog>
+        <h1 class="mv0" title>Ihre Anmeldung läuft bald ab:</h1>
+        <div class="w-100 ph3 pv2" body>
+            Bitte geben sie ihr Passwort erneut ein:
+            <div class="mt2 flex flex-wrap">
+                <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word">
+                    Passwort:
+                </label>
+                <div class="flex bb b--gray">
+                    <input class="input-reset bn pa1 flex-grow" type="password" name="password" placeholder="Passwort" [(ngModel)]="password" (keyup.enter)="renewLoginDialog.ok()">
+                </div>
+            </div>
+        </div>
+    </m4m-dialog>
+
 </div>
