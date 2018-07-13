@@ -281,6 +281,16 @@ export class UserApiService implements OnInit {
         return stream;
     }
 
+    deleteUser(user: ApiObject): void {
+        const baseResource = 'users';
+        const resource = baseResource + '/' + user.username;
+        const stream = this.getStreamSource(resource);
+        this.rest.delete(user, this.token).take(1).subscribe(data => {
+            stream.next(null);
+            this.getUsers();
+        });
+    }
+
     addRole(user: ApiObject, role) {
         const resource = 'users/' + user.username + '/roles';
         const stream = this.rest.post(user._links.roles, role, this.token).flatMap(data => {

@@ -41,6 +41,7 @@ user_model = api.model('UserModel', {
     '_links': NestedFields(user_links_model),
     'username': fields.String(required=True),
     'roles': fields.Nested(user_role, as_list=True),
+    'deleted': fields.Boolean(read_only=True),
 })
 
 @ns.route('/')
@@ -112,6 +113,7 @@ class UserResource(Resource):
         if user is None:
             abort()
         user.deleted = True
+        user.username = user.username + '_DEL'
         db.session.add(user)
         db.session.commit()
 

@@ -20,8 +20,15 @@
                             Rollen
                         </th>
                     </tr>
-                    <tr class="bt b--black-10" *ngFor="let user of users">
-                        <th class="ph3 pv2 tl">{{user?.username}}</th>
+                    <tr class="bt b--black-10" *ngFor="let user of users"
+                        [ngClass]="{'black-50': user?.deleted}">
+                        <th class="ph3 pv2 tl">
+                            {{user?.username}}
+                            <span class="tooltip tooltip-right link hover-red pointer" data-tooltip="Benutzer löschen"
+                                (click)="currentUser = user; removeUser.open()" [hidden]="user.username === userApi.username">
+                                <i class="fa fa-trash"></i>
+                            </span>
+                        </th>
                         <th class="ph3 pv2 tl">
                             <div class="flex bb b--gray" *ngIf="user.username !== userApi.username">
                                 <input class="input-reset bn pa1 w4" type="password" name="password" placeholder="Reset Passwort" #resetPasswordInput>
@@ -37,7 +44,9 @@
                                 <i class="fa fa-times pointer grow link hover-red" (click)="removeRole(user, role)"></i>
                                 <span class="mr1" [hidden]="last">, </span>
                             </span>
-                            <i class="fa fa-plus pa1 bg-near-white br1 background-animate hover-bg-light-green pointer" (click)="currentUser = user; newRole.open()"></i>
+                            <i class="fa fa-plus pa1 bg-near-white br1 background-animate hover-bg-light-green pointer"
+                                (click)="currentUser = user; newRole.open()">
+                            </i>
                         </th>
                     </tr>
                 </tbody>
@@ -48,21 +57,21 @@
 
 
     <m4m-dialog [dialogType]="'ok-cancel'" [icon]="'info'" [okCallback]="addRole" #newRole >
-            <h1 class="mv0" title>Füge dem Benutzer {{currentUser?.username}} eine Rolle hinzu:</h1>
-            <div class="w-100 ph3 pv2" body>
-                <div class="flex flex-wrap">
-                    <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word">
-                        Rolle:
-                    </label>
-                    <div class="flex bb b--gray gray hover-black">
-                        <select id="role" class="min-w5 input-reset bn pa1 bg-white black flex-grow" [(ngModel)]="role" #inputSelect>
-                            <option *ngFor="let opt of ['user', 'taxonomy_editor', 'admin']" [value]="opt">{{opt}}</option>
-                        </select>
-                        <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem; pointer-events: none" (click)="inputSelect.click($event)"><i class="f4 fa fa-angle-down"></i></div>
-                    </div>
+        <h1 class="mv0" title>Füge dem Benutzer {{currentUser?.username}} eine Rolle hinzu:</h1>
+        <div class="w-100 ph3 pv2" body>
+            <div class="flex flex-wrap">
+                <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word">
+                    Rolle:
+                </label>
+                <div class="flex bb b--gray gray hover-black">
+                    <select id="role" class="min-w5 input-reset bn pa1 bg-white black flex-grow" [(ngModel)]="role" #inputSelect>
+                        <option *ngFor="let opt of ['user', 'taxonomy_editor', 'admin']" [value]="opt">{{opt}}</option>
+                    </select>
+                    <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem; pointer-events: none" (click)="inputSelect.click($event)"><i class="f4 fa fa-angle-down"></i></div>
                 </div>
             </div>
-        </m4m-dialog>
+        </div>
+    </m4m-dialog>
 
 
     <m4m-dialog [dialogType]="'ok-cancel'" [icon]="'info'" [okCallback]="addUser" #newUser >
@@ -88,9 +97,18 @@
     </m4m-dialog>
 
 
-    <m4m-dialog [dialogType]="'ok-cancel'" [icon]="'info'" [okCallback]="renewLogin" #renewLoginDialog >
-        <h1 class="mv0" title>Bitte geben sie erneut ihr Benutzerpasswort ein:</h1>
+    <m4m-dialog [dialogType]="'delete-cancel'" [icon]="'delete'" [okCallback]="deleteUser" #removeUser >
+        <h1 class="mv0" title>Benutzer löschen:</h1>
         <div class="w-100 ph3 pv2" body>
+            Soll der Benutzer "{{currentUser?.username}}" wirklich gelöscht werden?
+        </div>
+    </m4m-dialog>
+
+
+    <m4m-dialog [dialogType]="'ok-cancel'" [icon]="'info'" [okCallback]="renewLogin" #renewLoginDialog >
+        <h1 class="mv0" title>Aktion bestätigen:</h1>
+        <div class="w-100 ph3 pv2" body>
+            Um die Aktion zu bestätigen müssen sie erneut ihr eigenes Anmeldepasswort eingeben:
             <div class="mt2 flex flex-wrap">
                 <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word">
                     Passwort:

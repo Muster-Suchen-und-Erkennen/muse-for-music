@@ -62,6 +62,23 @@ export class UserManagementComponent implements OnInit, OnDestroy {
         }
     }
 
+    deleteUser = () => {
+        if (this.pendingActionSubscription != null) {
+            this.pendingActionSubscription.unsubscribe();
+        }
+        alert(this.userApi.tokenIsFresh ? 'fresh' : 'stale');
+        if (this.userApi.tokenIsFresh) {
+            this.userApi.deleteUser(this.currentUser);
+        } else {
+            this.loginDialog.open();
+            this.pendingActionSubscription = this.freshLogin.subscribe(sucess => {
+                if (sucess) {
+                    this.userApi.deleteUser(this.currentUser);
+                }
+            })
+        }
+    }
+
     addRole = () => {
         const user = this.currentUser;
         const role = {role: this.role};
