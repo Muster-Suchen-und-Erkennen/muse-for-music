@@ -8,6 +8,8 @@ import { ApiService } from '../../../rest/api.service';
 
 import { QuestionBase } from '../../question-base';
 import { myDropdownComponent } from '../../../dropdown/dropdown.component';
+import { myDialogComponent } from '../../../dialog/dialog.component';
+import { SelectionListComponent } from '../selection-list/slection-list.component';
 
 
 
@@ -23,7 +25,9 @@ import { myDropdownComponent } from '../../../dropdown/dropdown.component';
 })
 export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
-    @ViewChild(myDropdownComponent) dropdown: myDropdownComponent
+    @ViewChild(myDropdownComponent) dropdown: myDropdownComponent;
+
+    @ViewChild(myDialogComponent) dialog: myDialogComponent;
 
     selected: any[] = [];
     @Input() question: QuestionBase<any>;
@@ -33,6 +37,10 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
     choices: ApiObject[];
 
     private subscription: Subscription;
+
+    valid: boolean;
+
+    newData: any;
 
     onChange: any = () => {};
 
@@ -77,6 +85,10 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
     constructor(private api: ApiService) {}
 
     ngOnInit(): void {
+        this.updateChoices();
+    }
+
+    private updateChoices(): void {
         if (this.question.valueType === 'person') {
             this.subscription = this.api.getPeople().subscribe(data => {
                 if (data == undefined) {
@@ -102,6 +114,11 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
     }
 
     selectedChange(selected: ApiObject) {
+        if (selected.id == null) {
+            this.newData = selected;
+            this.dialog.open();
+            return
+        }
         if (this.question.isArray) {
             if (this.selected.findIndex(sel => selected.id === sel.id) < 0) {
                 this.selected.push(selected);
@@ -126,6 +143,42 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
     writeValue(value) {
         if (value) {
             this.value = value;
+        }
+    }
+
+
+    formModel() {
+        if (this.question.valueType === 'person') {
+            return 'PersonPOST';
+        }
+        if (this.question.valueType === 'opus') {
+            return 'OpusPOST';
+        }
+    }
+
+    private selectNewObject(data) {
+
+        this.updateChoices();
+        if (this.question.isArray) {
+            this.selected.push(data);
+        } else {
+            this.value = data;
+        }
+    }
+
+
+    save = () => {
+        if (this.valid) {
+            if (this.question.valueType === 'person') {
+                this.api.postPerson(this.newData).take(1).subscribe(data => {
+                    this.selectNewObject(data);
+                });
+            }
+            if (this.question.valueType === 'opus') {
+                this.api.postOpus(this.newData).take(1).subscribe(data => {
+                    this.selectNewObject(data);
+                });
+            }
         }
     }
 }

@@ -10,6 +10,13 @@
         <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem" (click)="dropdown.toggleDropdown(); select.updateMatching('')"><i class="f4 fa fa-angle-down"></i></div>
     </div>
     <m4m-selection-list [selectables]="choices" [selected]="value"
-            (selectedChange)="selectedChange($event)"
+            (selectedChange)="selectedChange($event)" [createNewIfNoMatch]="true"
             [display]="'name'" [key]="'id'" [search]="searchTerm" #select dropdown-content></m4m-selection-list>
 </m4m-dropdown>
+
+<m4m-dialog [dialogType]="'save-cancel'" [valid]="valid" [icon]="'save'" [okCallback]="save" #dialog >
+        <h1 class="mv0" title>Neu:</h1>
+        <div class="w-100 ph3 pv2" body>
+            <dynamic-form [objectModel]="formModel()" [startValues]="{name: searchTerm, composer:{id:-1}}" (valid)="valid = $event" (data)="newData = $event" #form></dynamic-form>
+        </div>
+</m4m-dialog>

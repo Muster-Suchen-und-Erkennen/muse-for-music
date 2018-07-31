@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 
 class Selectable {
     label: string;
@@ -34,6 +34,7 @@ export class SelectionListComponent implements OnChanges {
 
     @Input() search: string;
     @Input('selected') _selected: any;
+    @Input() createNewIfNoMatch: boolean = false;
     @Output() selectedChange = new EventEmitter();
 
     highlighted: number = undefined;
@@ -116,6 +117,13 @@ export class SelectionListComponent implements OnChanges {
     }
 
     select(key?: any) {
+        if (this.createNewIfNoMatch && this.matching.size === 0) {
+            const newObject = {};
+            newObject[this.display] = this.search;
+            this.selectedChange.emit(newObject);
+            this.updateMatching('');
+            return
+        }
         if (key == undefined) {
             key = this.highlighted;
         }

@@ -4,5 +4,6 @@
     <a>{{selectable.label}}</a>
 </div>
 <div [hidden]="matching.size > 0">
-    <span>Keine passenden Einträge vorhanden</span>
+    <span [hidden]="createNewIfNoMatch">Keine passenden Einträge vorhanden</span>
+    <span [hidden]="!createNewIfNoMatch">Neu: "{{search}}"</span>
 </div>
