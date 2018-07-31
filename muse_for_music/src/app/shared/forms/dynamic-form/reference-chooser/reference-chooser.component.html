@@ -17,6 +17,6 @@
 <m4m-dialog [dialogType]="'save-cancel'" [valid]="valid" [icon]="'save'" [okCallback]="save" #dialog >
         <h1 class="mv0" title>Neu:</h1>
         <div class="w-100 ph3 pv2" body>
-            <dynamic-form [objectModel]="formModel()" [startValues]="{name: searchTerm, composer:{id:-1}}" (valid)="valid = $event" (data)="newData = $event" #form></dynamic-form>
+            <dynamic-form [objectModel]="formModel()" [startValues]="formStartData()" (valid)="valid = $event" (data)="newData = $event" #form></dynamic-form>
         </div>
 </m4m-dialog>

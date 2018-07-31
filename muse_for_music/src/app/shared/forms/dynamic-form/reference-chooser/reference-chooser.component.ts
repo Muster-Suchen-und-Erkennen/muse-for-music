@@ -156,6 +156,16 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
         }
     }
 
+
+    formStartData() {
+        if (this.question.valueType === 'person') {
+            return {'name': this.searchTerm, 'gender': 'male'};
+        }
+        if (this.question.valueType === 'opus') {
+            return {'name': this.searchTerm, composer: {id: -1}};
+        }
+    }
+
     private selectNewObject(data) {
 
         this.updateChoices();
