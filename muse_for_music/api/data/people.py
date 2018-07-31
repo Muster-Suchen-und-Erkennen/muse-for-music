@@ -91,7 +91,8 @@ class PersonResource(Resource):
             abort(404, 'Requested person not found!')
         new_values = request.get_json()
 
-        check_if_person_exists(new_values['name'])
+        if person.name != new_values['name']:
+            check_if_person_exists(new_values['name'])
 
         attrs = ('name', 'canonical_name')
         for attribute in attrs:

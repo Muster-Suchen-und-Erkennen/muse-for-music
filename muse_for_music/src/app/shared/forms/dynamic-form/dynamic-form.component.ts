@@ -21,6 +21,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     @Input() startValues: ApiObject = {_links:{self:{href:''}}};
 
     @Input() showSaveButton: boolean = false;
+    @Input() alwaysAllowSave: boolean = false;
     @Input() saveSuccess: boolean = false;
 
     questions: QuestionBase<any>[] = [];
@@ -167,7 +168,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     }
 
     saveForm = () => {
-        if (this.form != null && this.canSave) {
+        if (this.form != null && (this.canSave || this.alwaysAllowSave)) {
             this.save.emit(this.form.value);
         }
     }
