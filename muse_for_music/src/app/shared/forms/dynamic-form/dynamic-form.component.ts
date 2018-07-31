@@ -113,15 +113,10 @@ export class DynamicFormComponent implements OnInit, OnChanges {
                         patchArrays(patched[question.key], question.nestedQuestions, newpath);
                         return;
                     }
-                    if (path === 'composition') {
-                        console.log(question)
-                    }
                     if (question.isArray || question.controlType === 'array') {
                         if (question.type !== 'taxonomy' && question.type !== 'reference') {
                             const newpath = path.length > 0 ? path + '.' + question.key : question.key
                             const arrayControl: FormArray = this.form.get(newpath) as FormArray;
-                            console.log(newpath)
-                            console.log(arrayControl.length !== patched[question.key].length)
                             let counter = 0;
                             while (arrayControl.length !== patched[question.key].length) {
                                 counter ++;
