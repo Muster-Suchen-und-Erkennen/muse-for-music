@@ -1,6 +1,6 @@
 import enum
 from typing import Union, Sequence
-from json import dumps
+from json import dumps, loads
 from sqlalchemy.sql import func
 from flask_jwt_extended import get_jwt_identity
 
@@ -89,6 +89,22 @@ class History(db.Model):
             resource_id = dumps({'id': resource.id, 'subpart_id': resource.subpart_id}, sort_keys=True)
         result = cls.query.filter(cls.user == user, cls.method == MethodEnum.create, cls.type == type, cls.resource == resource_id).first()
         return result is not None
+
+    @property
+    def full_resource(self) -> Union[Person, Opus, Part, SubPart, Voice, None]:
+        resource = loads(self.resource)
+        if self.type == TypeEnum.person:
+            return Person.get_by_id_or_dict(resource, lazy=True)
+        elif self.type == TypeEnum.opus:
+            return Opus.get_by_id_or_dict(resource, lazy=True)
+        elif self.type == TypeEnum.part:
+            return Part.get_by_id_or_dict(resource, lazy=True)
+        elif self.type == TypeEnum.subpart:
+            return SubPart.get_by_id_or_dict(resource, lazy=True)
+        elif self.type == TypeEnum.voice:
+            return Voice.get_by_id_or_dict(resource, lazy=True)
+        else:
+            return None
 
 
 class Backup(db.Model):

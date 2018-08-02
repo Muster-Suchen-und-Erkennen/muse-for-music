@@ -8,3 +8,5 @@ from . import people
 from . import opus
 from . import part
 from . import subpart
+
+from . import history

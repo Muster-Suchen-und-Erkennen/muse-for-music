@@ -6,6 +6,11 @@ from ...hal_field import HaLUrl, NestedFields, EmbeddedFields, NestedModel, UrlD
 from . import api
 from ..models import with_curies
 from ..taxonomies.models import taxonomy_item_get, taxonomy_item_ref
+from ...models.data.people import Person
+from ...models.data.opus import Opus
+from ...models.data.part import Part
+from ...models.data.subpart import SubPart
+from ...models.data.voice import Voice
 
 from enum import Enum
 from datetime import datetime, date
@@ -25,7 +30,7 @@ def parse_date(date_str: str) -> date:
     return parsed_date.date()
 
 
-class GenderField(fields.Raw, fields.StringMixin):
+class EnumField(fields.Raw, fields.StringMixin):
     """Custom Class for Gender Enum in a field."""
 
     __schema_type__ = 'string'
@@ -58,7 +63,7 @@ person_links = api.model('PersonLinks', {
 
 person_post = api.model('PersonPOST', {
     'name': fields.String(title='Name', description='Name der Person', max_length=191, default='', required=True, example='admin'),
-    'gender': GenderField(title='Geschlecht', description='Geschlecht der Person', required=True, example='male', enum=['male', 'female', 'other'])
+    'gender': EnumField(title='Geschlecht', description='Geschlecht der Person', required=True, example='male', enum=['male', 'female', 'other'])
 })
 
 person_put = api.inherit('PersonPUT', person_post, {
@@ -563,4 +568,59 @@ opus_get = api.inherit('OpusGET', opus_put, {
     'genre': fields.Nested(taxonomy_item_get),
     'grundton': fields.Nested(taxonomy_item_get),
     'tonalitaet': fields.Nested(taxonomy_item_get),
+})
+
+history_object_get = api.model('HistoryObjectGET', {
+    'type': fields.String(discriminator=True)
+
+})
+
+history_person_get = api.inherit('HistoryPersonGET', history_object_get, {
+    'id': fields.Integer(default=1, readonly=True, example=1),
+    '_links': NestedFields(person_links),
+    'name': fields.String,
+})
+
+history_opus_get = api.inherit('HistoryOpusGET', history_object_get, {
+    'id': fields.Integer(default=1, readonly=True, example=1),
+    '_links': NestedFields(opus_links),
+    'name': fields.String,
+})
+
+history_part_get = api.inherit('HistoryPartGET', history_object_get, {
+    'id': fields.Integer(default=1, readonly=True, example=1),
+    '_links': NestedFields(part_links),
+    'name': fields.String,
+    'opus': fields.Nested(history_opus_get),
+})
+
+history_subpart_get = api.inherit('HistorySubPartGET', history_object_get, {
+    'id': fields.Integer(default=1, readonly=True, example=1),
+    '_links': NestedFields(subpart_links),
+    'name': fields.String(attribute='label'),
+    'part': fields.Nested(history_part_get),
+})
+
+history_voice_get = api.inherit('HistoryVoiceGET', history_object_get, {
+    'id': fields.Integer(default=1, readonly=True, example=1),
+    'subpart_id': fields.Integer(default=1, readonly=True, example=1),
+    '_links': NestedFields(voice_links),
+    'name': fields.String,
+    'subpart': fields.Nested(history_subpart_get),
+})
+
+history_get = api.model('HistoryGET', {
+    'id': fields.Integer(default=1, readonly=True, example=1),
+    #'_links': NestedFields(opus_links),
+    'time': fields.DateTime(readonly=True),
+    'username': fields.String(attribute="user.username", readonly=True),
+    'method': EnumField(enum=['create', 'update', 'delete'], readonly=True),
+    'type': EnumField(enum=['person', 'opus', 'part', 'subpart', 'voice'], readonly=True),
+    'full_resource': fields.Polymorph(mapping={
+        Person: history_person_get,
+        Opus: history_opus_get,
+        Part: history_part_get,
+        SubPart: history_subpart_get,
+        Voice: history_voice_get,
+    }),
 })
