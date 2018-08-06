@@ -45,6 +45,9 @@
 </m4m-box>
 
 
+<m4m-history [user]="userApi.username"></m4m-history>
+
+
 <m4m-dialog [dialogType]="'ok-cancel'" [icon]="'info'" [okCallback]="changePassword" #renewLoginDialog >
     <h1 class="mv0" title>Bitte geben sie erneut ihr Benutzerpasswort ein:</h1>
     <div class="w-100 ph3 pv2" body>

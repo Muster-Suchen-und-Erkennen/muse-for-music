@@ -565,4 +565,25 @@ export class ApiService implements OnInit {
 
         return (stream.asObservable() as Observable<ApiObject>).filter(data => data !== undefined);
     }
+
+
+    /// History ////////////////////////////////////////////////////////////////
+    getHistory(user?: string): Observable<ApiObject[]> {
+        let resource = 'history';
+        if (user != null) {
+            resource = resource + '/' + user;
+        }
+        const stream = new AsyncSubject<ApiObject[]>();
+        this.getRoot().subscribe(root => {
+            let url = root._links.history.href;
+            if (user != null) {
+                url = url + user + '/';
+            }
+            this.rest.get(url, this.userApi.token).subscribe(data => {
+                stream.next(data as ApiObject[]);
+                stream.complete();
+            }, error => this.errorHandler(error, resource, 'GET'));
+        }, error => this.errorHandler(error, resource, 'GET'));
+        return stream.asObservable();
+    }
 }

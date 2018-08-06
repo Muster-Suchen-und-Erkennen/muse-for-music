@@ -49,18 +49,21 @@ class History(db.Model):
         if isinstance(resource, Person):
             self.type = TypeEnum.person
             self.resource = dumps({'id': resource.id}, sort_keys=True)
-        if isinstance(resource, Opus):
+        elif isinstance(resource, Opus):
             self.type = TypeEnum.opus
             self.resource = dumps({'id': resource.id}, sort_keys=True)
-        if isinstance(resource, Part):
+        elif isinstance(resource, Part):
             self.type = TypeEnum.part
             self.resource = dumps({'id': resource.id, 'opus_id': resource.opus_id}, sort_keys=True)
-        if isinstance(resource, SubPart):
+        elif isinstance(resource, SubPart):
             self.type = TypeEnum.subpart
             self.resource = dumps({'id': resource.id, 'part_id': resource.part_id}, sort_keys=True)
-        if isinstance(resource, Voice):
+        elif isinstance(resource, Voice):
             self.type = TypeEnum.voice
             self.resource = dumps({'id': resource.id, 'subpart_id': resource.subpart_id}, sort_keys=True)
+        else:
+            raise TypeError('Resource has wrong Type ' + str(type(resource)))
+
 
     @classmethod
     def isOwner(cls, resource, user: [str, User]=None):
@@ -92,6 +95,8 @@ class History(db.Model):
 
     @property
     def full_resource(self) -> Union[Person, Opus, Part, SubPart, Voice, None]:
+        if not self.resource:
+            return None
         resource = loads(self.resource)
         if self.type == TypeEnum.person:
             return Person.get_by_id_or_dict(resource, lazy=True)

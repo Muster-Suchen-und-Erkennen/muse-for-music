@@ -17,6 +17,7 @@ root_links = api.inherit('RootLinks', with_curies, {
     'opus': HaLUrl(UrlData('api.opus_opus_list_resource', absolute=True)),
     'part': HaLUrl(UrlData('api.part_parts_list_resource', absolute=True)),
     'subpart': HaLUrl(UrlData('api.subpart_sub_part_list_resource', absolute=True)),
+    'history': HaLUrl(UrlData('api.history_history_resource', absolute=True)),
 })
 
 root_model = api.model('RootModel', {

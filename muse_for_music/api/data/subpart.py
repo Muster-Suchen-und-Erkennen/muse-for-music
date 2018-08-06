@@ -59,7 +59,7 @@ class SubPartResource(Resource):
 
         subpart.update(new_values)
 
-        hist = History(MethodEnum.update, SubPart)
+        hist = History(MethodEnum.update, subpart)
         db.session.add(hist)
 
         db.session.commit()

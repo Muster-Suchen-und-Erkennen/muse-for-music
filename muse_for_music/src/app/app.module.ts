@@ -19,6 +19,7 @@ import { UserOverviewComponent } from './users/user-overview.component';
 import { UserDetailComponent } from './users/user-detail.component';
 
 import { TaxonomyEditorComponent } from './taxonomies/taxonomy-editor.component';
+import { HistoryComponent } from './history/history.component';
 
 import { PeopleOverviewComponent } from './people/people-overview.component';
 import { PersonEditComponent } from './people/person-edit.component';
@@ -50,6 +51,7 @@ import { AppComponent } from './app.component';
     UserDetailComponent,
 
     TaxonomyEditorComponent,
+    HistoryComponent,
 
     PeopleOverviewComponent,
     PersonEditComponent,

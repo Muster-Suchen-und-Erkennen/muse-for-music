@@ -1,0 +1,65 @@
+<m4m-box>
+    <h1 class="mv0" title>History:</h1>
+    <div class="w-100 ph3 pv2 overflow-y-auto" style="max-height: 64rem;" body>
+        <div class="flex" *ngFor="let entry of history;">
+            <div class="mr2 mb2">
+                <p class="ma0">{{entry.time | date}}</p>
+                <p class="ma0">{{entry.time | date:'shortTime'}}</p>
+            </div>
+            <div class="flex-grow-1">
+                <div class="f4 flex flex-grow-1">
+                    <div class="flex-grow-1">
+                        <i class="mr2 fa fa-fw" [ngClass]="{
+                            'fa-plus-circle': entry.method == 'create',
+                            'fa-pencil': entry.method == 'update',
+                            'fa-trash': entry.method == 'delete'
+                        }"></i>
+                        <span *ngIf="entry.type == 'person'" >Person</span>
+                        <span *ngIf="entry.type == 'opus'" >Werk</span>
+                        <span *ngIf="entry.type == 'part'" >Werkausschnitt</span>
+                        <span *ngIf="entry.type == 'subpart'" >Teilwerkausschnitt</span>
+                        <span *ngIf="entry.type == 'voice'" >Stimme</span>
+                        <a *ngIf="entry.type == 'person'" class="ml2 black link underline-hover pointer" routerLink="/people">"{{entry.full_resource?.name}}"</a>
+                        <a *ngIf="entry.type == 'opus'" class="ml2 black link underline-hover pointer" routerLink="/opuses/{{entry.full_resource?.id}}">"{{entry.full_resource?.name}}"</a>
+                        <a *ngIf="entry.type == 'part'" class="ml2 black link underline-hover pointer" routerLink="/parts/{{entry.full_resource?.id}}">"{{entry.full_resource?.name}}"</a>
+                        <a *ngIf="entry.type == 'subpart'" class="ml2 black link underline-hover pointer" routerLink="/subparts/{{entry.full_resource?.id}}">"{{entry.full_resource?.name}}"</a>
+                        <a *ngIf="entry.type == 'voice'" class="ml2 black link underline-hover pointer" routerLink="/subparts/{{entry.full_resource?.subpart?.id}}/voices/{{entry.full_resource?.id}}">"{{entry.full_resource?.name}}"</a>
+                    </div>
+                    <div class="ml2 self-end gray">
+                        {{entry.username}}
+                    </div>
+                </div>
+                <div *ngIf="entry.type == 'part'">
+                    <p>
+                        Werk
+                        <a class="ml2 link black underline-hover pointer" routerLink="/opuses/{{entry.full_resource?.opus?.id}}">"{{entry.full_resource?.opus?.name}}"</a>
+                    </p>
+                </div>
+                <div *ngIf="entry.type == 'subpart'">
+                    <p>
+                        Werkausschnitt
+                        <a class="ml2 link black underline-hover pointer" routerLink="/parts/{{entry.full_resource?.part?.id}}">"{{entry.full_resource?.part?.name}}"</a>
+                    </p>
+                    <p>
+                        Werk
+                        <a class="ml2 link black underline-hover pointer" routerLink="/opuses/{{entry.full_resource?.part?.opus?.id}}">"{{entry.full_resource?.part?.opus?.name}}"</a>
+                    </p>
+                </div>
+                <div *ngIf="entry.type == 'voice'">
+                    <p>
+                        Teilwerkausschnitt
+                        <a class="ml2 link black underline-hover pointer" routerLink="/subparts/{{entry.full_resource?.subpart?.id}}">"{{entry.full_resource?.subpart?.name}}"</a>
+                    </p>
+                    <p>
+                        Werkausschnitt
+                        <a class="ml2 link black underline-hover pointer" routerLink="/parts/{{entry.full_resource?.subpart?.part?.id}}">"{{entry.full_resource?.subpart?.part?.name}}"</a>
+                    </p>
+                    <p>
+                        Werk
+                        <a class="ml2 link black underline-hover pointer" routerLink="/opuses/{{entry.full_resource?.subpart?.part?.opus?.id}}">"{{entry.full_resource?.subpart?.part?.opus?.name}}"</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</m4m-box>
