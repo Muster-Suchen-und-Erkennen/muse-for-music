@@ -25,7 +25,7 @@ def upgrade():
     sa.ForeignKeyConstraint(['formale_funktion_id'], ['formale_funktion.id'], name=op.f('fk_formale_funktion_to_form_formale_funktion_id_formale_funktion')),
     sa.PrimaryKeyConstraint('form_id', 'formale_funktion_id', name=op.f('pk_formale_funktion_to_form'))
     )
-    op.execute('INSERT INTO `formale_funktion_to_form` (`form_id`, `Formale_funktion_id`) SELECT `form`.`id`, `form`.`formal_function_id` FROM `form`')
+    op.execute('INSERT INTO `formale_funktion_to_form` (`form_id`, `formale_funktion_id`) SELECT `form`.`id`, `form`.`formal_function_id` FROM `form` WHERE `formal_function_id` != null')
     with op.batch_alter_table('form', schema=None) as batch_op:
         batch_op.drop_constraint('form_ibfk_2', type_='foreignkey')
         batch_op.drop_column('formal_function_id')
