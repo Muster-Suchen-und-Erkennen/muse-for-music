@@ -30,7 +30,7 @@ app.config.from_pyfile('/etc/muse_for_music.conf', silent=True)
 app.config.from_pyfile('muse_for_music.conf', silent=True)
 
 # TODO use nevironment variables
-for env_var in ('SQLALCHEMY_DATABASE_URI', 'JWT_SECRET_KEY', 'LOG_PATH'):
+for env_var in ('SQLALCHEMY_DATABASE_URI', 'JWT_SECRET_KEY', 'LOG_PATH', 'SQLITE_FOREIGN_KEYS'):
     app.config[env_var] = environ.get(env_var, app.config.get(env_var))
 
 

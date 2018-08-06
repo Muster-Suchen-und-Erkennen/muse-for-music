@@ -157,14 +157,14 @@ form_put = api.model('FormPUT', {
     'id': fields.Integer(default=1, readonly=True, example=1),
     'contains_theme': fields.Boolean(default=False, title='Enthält Thema'),
     'form_schema': fields.Nested(taxonomy_item_ref, taxonomy='Formschema', title='Formschema'),
-    'formal_function': fields.Nested(taxonomy_item_ref, taxonomy='FormaleFunktion', title='Formale Funktion'),
+    'formal_functions': fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='FormaleFunktion', title='Formale Funktion'),
 })
 
 form_get = api.model('FormGET', {
     'id': fields.Integer(default=1, readonly=True, example=1),
     'contains_theme': fields.Boolean(default=False, title='Enthält Thema'),
     'form_schema': fields.Nested(taxonomy_item_get, taxonomy='Formschema', title='Formschema'),
-    'formal_function': fields.Nested(taxonomy_item_get, taxonomy='FormaleFunktion', title='Formale Funktion'),
+    'formal_functions': fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='FormaleFunktion', title='Formale Funktion'),
 })
 
 harmonic_center_put = api.model('HarmonicCenterPUT', {
@@ -611,7 +611,6 @@ history_voice_get = api.inherit('HistoryVoiceGET', history_object_get, {
 
 history_get = api.model('HistoryGET', {
     'id': fields.Integer(default=1, readonly=True, example=1),
-    #'_links': NestedFields(opus_links),
     'time': fields.DateTime(readonly=True),
     'username': fields.String(attribute="user.username", readonly=True),
     'method': EnumField(enum=['create', 'update', 'delete'], readonly=True),
