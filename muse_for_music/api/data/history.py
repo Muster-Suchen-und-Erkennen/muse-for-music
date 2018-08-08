@@ -1,6 +1,7 @@
 from flask import jsonify, url_for, request
 from flask_restplus import Resource, marshal, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt_claims
+from typing import List
 
 from . import api
 
@@ -9,7 +10,7 @@ from .models import history_get
 from ... import db
 from ...user_api import has_roles, RoleEnum
 from ...models.users import User
-from ...models.data.history import History
+from ...models.data.history import History, MethodEnum
 from ...models.data.people import Person
 from ...models.data.opus import Opus
 from ...models.data.part import Part
@@ -27,7 +28,8 @@ class HistoryResource(Resource):
     @jwt_required
     @has_roles([RoleEnum.admin])
     def get(self):
-        hist = History.query.order_by(History.time.desc()).all()
+        hist = History.query.order_by(History.time.desc()).all()  # type: List[History]
+        hist = [h for h in hist if h.full_resource or h.method == MethodEnum.delete]
         return hist
 
 
@@ -42,5 +44,6 @@ class UserHistoryResource(Resource):
             if RoleEnum.admin.name not in claims:
                 abort(403, 'Only admin users can access history of other users.')
         user = User.get_user_by_name(username)
-        hist = History.query.filter(History.user_id == user.id).order_by(History.time.desc()).all()
+        hist = History.query.filter(History.user_id == user.id).order_by(History.time.desc()).all()  # type: List[History]
+        hist = [h for h in hist if h.full_resource or h.method == MethodEnum.delete]
         return hist

@@ -64,6 +64,8 @@ class History(db.Model):
         else:
             raise TypeError('Resource has wrong Type ' + str(type(resource)))
 
+        self._full_resource = None
+
 
     @classmethod
     def isOwner(cls, resource, user: [str, User]=None):
@@ -95,21 +97,24 @@ class History(db.Model):
 
     @property
     def full_resource(self) -> Union[Person, Opus, Part, SubPart, Voice, None]:
+        if self._full_resource is not None:
+            return self._full_resource
         if not self.resource:
             return None
         resource = loads(self.resource)
         if self.type == TypeEnum.person:
-            return Person.get_by_id_or_dict(resource, lazy=True)
+            self._full_resource = Person.get_by_id_or_dict(resource, lazy=True)
         elif self.type == TypeEnum.opus:
-            return Opus.get_by_id_or_dict(resource, lazy=True)
+            self._full_resource = Opus.get_by_id_or_dict(resource, lazy=True)
         elif self.type == TypeEnum.part:
-            return Part.get_by_id_or_dict(resource, lazy=True)
+            self._full_resource = Part.get_by_id_or_dict(resource, lazy=True)
         elif self.type == TypeEnum.subpart:
-            return SubPart.get_by_id_or_dict(resource, lazy=True)
+            self._full_resource = SubPart.get_by_id_or_dict(resource, lazy=True)
         elif self.type == TypeEnum.voice:
-            return Voice.get_by_id_or_dict(resource, lazy=True)
+            self._full_resource = Voice.get_by_id_or_dict(resource, lazy=True)
         else:
             return None
+        return self._full_resource
 
 
 class Backup(db.Model):
