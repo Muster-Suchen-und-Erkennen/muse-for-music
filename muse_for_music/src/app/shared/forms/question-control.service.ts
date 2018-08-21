@@ -47,12 +47,12 @@ export class QuestionControlService {
                     if (question.min != null && question.min === 1) {
                         validators.push(Validators.required);
                     }
-                    if (question.pattern != null) {
-                        validators.push(Validators.pattern(question.pattern));
-                    }
                 } else {
                     validators.push(Validators.required);
                 }
+            }
+            if (question.pattern != null) {
+                validators.push(Validators.pattern(question.pattern));
             }
             if (!question.nullable) {
                 validators.push(customNullValidator(question.nullValue));

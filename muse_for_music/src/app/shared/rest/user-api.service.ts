@@ -45,8 +45,8 @@ export class UserApiService implements OnInit {
     private sessionExpirySource = new Subject<boolean>();
     readonly sessionExpiry = this.sessionExpirySource.asObservable();
 
-    readonly TOKEN = 'token';
-    readonly REFRESH_TOKEN = 'refresh_token';
+    readonly TOKEN = 'm4m-token';
+    readonly REFRESH_TOKEN = 'm4m-refresh-token';
 
     constructor (private rest: BaseApiService, private info: InfoService, private router: Router) {
         Observable.timer(1).take(1).subscribe(() => {

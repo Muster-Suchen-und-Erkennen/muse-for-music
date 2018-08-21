@@ -12,7 +12,7 @@ import { TaxonomyQuestion } from './question-taxonomy';
 import { StringQuestion } from './question-string';
 import { TextQuestion } from './question-text';
 import { DateQuestion } from './question-date';
-import { IntegerQuestion } from './question-integer';
+import { NumberQuestion } from './question-number';
 import { DropdownQuestion } from './question-dropdown';
 import { BooleanQuestion } from './question-boolean';
 
@@ -211,8 +211,8 @@ export class QuestionService implements OnInit {
         if (options.controlType === 'boolean') {
             return new BooleanQuestion(options);
         }
-        if (options.controlType === 'integer') {
-            return new IntegerQuestion(options);
+        if (options.controlType === 'integer' || options.controlType === 'number') {
+            return new NumberQuestion(options);
         }
         if (options.controlType === 'string') {
             if (options.pattern != null || options.max != null) {

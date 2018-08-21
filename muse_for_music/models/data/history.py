@@ -37,6 +37,8 @@ class History(db.Model):
 
     user = db.relationship(User)
 
+    _full_resource = None
+
     def __init__(self, method: MethodEnum, resource, user: Union[str, User]=None):
         if user is None:
             user = get_jwt_identity()
