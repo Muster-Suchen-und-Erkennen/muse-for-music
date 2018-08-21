@@ -36,8 +36,8 @@ class InstrumentationContext(db.Model, GetByID, UpdateableModelMixin):
     __tablename__ = 'instrumentation_context'
 
     _normal_attributes = (('instrumentation_quantity_before', InstrumentierungEinbettungQuantitaet),
-                          ('instrumentation_quantity_after', InstrumentierungEinbettungQuantitaet),
                           ('instrumentation_quality_before', InstrumentierungEinbettungQualitaet),
+                          ('instrumentation_quantity_after', InstrumentierungEinbettungQuantitaet),
                           ('instrumentation_quality_after', InstrumentierungEinbettungQualitaet))
 
 

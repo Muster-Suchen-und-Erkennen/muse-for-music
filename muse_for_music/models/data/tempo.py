@@ -9,8 +9,8 @@ from typing import Union, Sequence, Dict
 class TempoContext(db.Model, GetByID, UpdateableModelMixin):
 
     _normal_attributes = (('tempo_trend_before', TempoEntwicklung),
-                          ('tempo_trend_after', TempoEntwicklung),
                           ('tempo_context_before', TempoEinbettung),
+                          ('tempo_trend_after', TempoEntwicklung),
                           ('tempo_context_after', TempoEinbettung))
 
     __tablename__ = 'tempo_context'
@@ -33,14 +33,10 @@ class TempoContext(db.Model, GetByID, UpdateableModelMixin):
 
 class TempoGroup(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
-    _normal_attributes = (('tempo_context', TempoContext),)
     _list_attributes = ('tempo_markings', 'tempo_changes')
 
     __tablename__ = 'tempo_group'
     id = db.Column(db.Integer, primary_key=True)
-    tempo_context_id = db.Column(db.Integer, db.ForeignKey('tempo_context.id'), nullable=True)
-
-    tempo_context = db.relationship(TempoContext, single_parent=True, cascade="all, delete-orphan")
 
     @property
     def tempo_markings(self):

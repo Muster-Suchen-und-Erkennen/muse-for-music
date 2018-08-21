@@ -6,10 +6,10 @@ from ..helper_classes import GetByID, UpdateableModelMixin
 class DramaturgicContext(db.Model, GetByID, UpdateableModelMixin):
 
     _normal_attributes = (('ambitus_context_before', AmbitusEinbettung),
-                          ('ambitus_change_after', AmbitusEntwicklung),
                           ('melodic_line_before', Melodiebewegung),
-                          ('melodic_line_after', Melodiebewegung),
                           ('ambitus_change_before', AmbitusEntwicklung),
+                          ('ambitus_change_after', AmbitusEntwicklung),
+                          ('melodic_line_after', Melodiebewegung),
                           ('ambitus_context_after', AmbitusEinbettung))
 
     __tablename__ = 'dramaturgic_context'
