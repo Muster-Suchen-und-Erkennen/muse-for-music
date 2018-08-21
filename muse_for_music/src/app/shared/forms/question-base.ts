@@ -4,6 +4,7 @@ export interface QuestionOptions {
     valueType?: string;
     key?: string,
     label?: string,
+    description?: string,
     required?: boolean,
     nullable?: boolean,
     allowSave?: boolean,
@@ -23,6 +24,7 @@ export class QuestionBase<T>{
     valueType: string;
     key: string;
     label: string;
+    description: string;
     required: boolean;
     nullable: boolean;
     allowSave: boolean;
@@ -42,6 +44,7 @@ export class QuestionBase<T>{
         this.valueType = options.valueType || 'any';
         this.key = options.key || '';
         this.label = options.label || '';
+        this.description = options.description || '';
         this.required = !!options.required;
         this.nullable = !!options.nullable;
         this.allowSave = !!options.allowSave;

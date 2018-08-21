@@ -131,6 +131,7 @@ export class QuestionService implements OnInit {
             options.label = prop.title;
         }
         if (prop.description != null) {
+            options.description = prop.description;
         }
 
         options.readOnly = !!prop.readOnly;
