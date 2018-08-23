@@ -1,20 +1,18 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit } from '@angular/core';
 
-class Selectable {
-    label: string;
-    id: string|number;
+import { ApiObject } from '../../../rest/api-base.service';
+import { ApiService } from '../../../rest/api.service';
+
+class TaxonomyItem {
+    id: number;
+    name: string;
     data: any;
 
     constructor(data: any, display: string, key: string) {
-        this.label = data[display];
+        this.name = data[display];
         this.id = data[key];
         this.data = data;
     }
-}
-
-
-function isSelectable(toTest: any): toTest is Selectable {
-    return toTest == undefined || ('label' in toTest && 'id' in toTest && 'data' in toTest);
 }
 
 
@@ -25,149 +23,182 @@ function isSelectable(toTest: any): toTest is Selectable {
 })
 export class SelectionListComponent implements OnChanges {
 
-    _selectables: Selectable[];
+    filter: boolean = true;
 
-    @Input('selectables') _rawSelectables: any[] = [];
+    _selectables: TaxonomyItem[];
 
     @Input() display: string = 'id';
     @Input() key: string = 'id';
+    @Input() allowedSelections: number = 0;
+    @Input() createNewIfNoMatch: boolean = false;
 
     @Input() search: string;
-    @Input('selected') _selected: any;
-    @Input() createNewIfNoMatch: boolean = false;
     @Output() selectedChange = new EventEmitter();
+    @Output() createNew = new EventEmitter();
+
+    highlightable: number[] = [];
 
     highlighted: number = undefined;
-    matching: Set<string|number> = new Set<string|number>();
+    selectedSet: Set<number> = new Set<number>();
+    matching: Set<number> = new Set<number>();
 
+    @Input()
+    get selected(): any[] {
+        const selectedList = [];
+        for (const item of this._selectables) {
+            if (this.selectedSet.has(item.id)) {
+                    selectedList.push(item.data);
+            }
+        }
+        return selectedList;
+    }
+
+    set selected(selection: any[]) {
+        const selected = new Set<number>();
+        for (const item of selection) {
+            selected.add(item.id);
+        }
+
+        this.selectedSet = selected;
+    }
+
+    @Input()
     get selectables(): any[] {
-        if (this._selectables != undefined) {
-            return this._selectables;
+        if (this._selectables != null) {
+            const selectables = [];
+            for (const item of this._selectables) {
+                selectables.push(item.data);
+            }
+            return selectables;
         }
         return [];
     }
 
     set selectables(selectables: any[]) {
-        this._rawSelectables = selectables;
-        this.updateSelectables();
-    }
-
-    get selected() {
-        let selectable: Selectable = undefined;
-        let selected = this._selected;
-        if (!isSelectable(selected)) {
-            if (selected.id === -1) {
-                return undefined;
-            }
-            selected = new Selectable(selected, this.display, this.key);
+        if (selectables == null) {
+            selectables = [];
         }
-        if (selected != undefined) {
-            for (let sel of this.selectables) {
-                if (sel.id === selected.id) {
-                    selectable = sel;
-                    break;
-                }
-            }
+        const selectablesList = [];
+        for (const item of selectables) {
+            selectablesList.push(new TaxonomyItem(item, this.display, this.key));
         }
-        return selectable;
-    }
-
-    set selected(selected) {
-        this._selected = selected;
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        this.updateSelectables();
-        if (changes.search != null) {
-            this.updateMatching(this.search);
-        }
-    }
-
-    updateSelectables() {
-        let list = [];
-        if (this._rawSelectables != undefined) {
-            for (let data of this._rawSelectables) {
-                list.push(new Selectable(data, this.display, this.key))
-            }
-        }
-        this._selectables = list.sort((a, b) => ((a.label < b.label) ? -1 : ((a.label > b.label) ? 1 : 0)));
+        this._selectables = selectablesList;
         this.updateMatching(this.search);
     }
 
+    visible(selectable: TaxonomyItem): boolean {
+        if (!this.filter) {
+            return true;
+        }
+        return this.matching.has(selectable.id);
+    }
+
+    constructor(private api: ApiService) { }
+
+    ngOnChanges(changes: SimpleChanges): void {
+            this.updateMatching(this.search);
+        // https://stackoverflow.com/questions/42819549/angular2-scroll-to-element-that-has-ngif
+    }
+
     updateMatching(searchString: string) {
-        if (this.selectables == undefined || this.display == undefined) {
+        if (this._selectables == null) {
             return;
         }
         if (searchString == null) {
-            searchString = '';
+                searchString = '';
         }
         searchString = searchString.toUpperCase();
-        let matches = new Set<string|number>();
-        for (let selectable of (this.selectables as Selectable[])) {
-            if (selectable.label.toString().toUpperCase().includes(searchString)){
-                matches.add(selectable.id);
-            }
-        }
-        if (matches.size > 0) {
-            if (this.highlighted == undefined || !matches.has(this.highlighted)) {
-                this.highlighted = (matches.values().next().value as any);
+        const matches = new Set<number>();
+
+        for (const item of this._selectables) {
+            if (item.name.toUpperCase().includes(searchString)) {
+                matches.add(item.id);
             }
         }
         this.matching = matches;
+        this.updateHighlightable();
+    }
+
+    updateHighlightable() {
+        const items: number[] = [];
+        let highlightedStillValid = false;
+        for (const item of this._selectables) {
+            if (!this.filter || this.matching.has(item.id)) {
+                items.push(item.id);
+                if (item.id === this.highlighted) {
+                    highlightedStillValid = true;
+                }
+            }
+        }
+
+        this.highlightable = items;
+
+        if (!highlightedStillValid && items.length > 0) {
+            this.highlighted = items[0];
+        }
+    }
+
+    toggleClosed(selectable: TaxonomyItem) {
+        this.updateHighlightable();
+    }
+
+    deselect(key?: any) {
+        if (key == null) {
+            return;
+        }
+        this.selectedSet.delete(key);
+        this.selectedChange.emit(this.selected);
     }
 
     select(key?: any) {
-        if (this.createNewIfNoMatch && this.matching.size === 0) {
+        if (key == null && this.createNewIfNoMatch && this.matching.size === 0) {
+            this.updateMatching('');
             const newObject = {};
             newObject[this.display] = this.search;
-            this.selectedChange.emit(newObject);
-            this.updateMatching('');
+            this.createNew.emit(newObject);
             return
         }
-        if (key == undefined) {
+        if (key == null) {
             key = this.highlighted;
         }
-        if (key == undefined) {
+        if (key == null) {
             return;
         }
-        for (let selectable of this.selectables) {
-            if (selectable.id === key) {
-                this.selectedChange.emit(selectable.data);
+        if (this.selectedSet.has(key)) {
+            this.selectedSet.delete(key);
+        } else {
+            if (this.allowedSelections === 1) {
+                this.selectedSet.clear();
+            }
+            if (this.allowedSelections === -1 || this.selectedSet.size < this.allowedSelections) {
+                this.selectedSet.add(key);
             }
         }
-        this.updateMatching('')
-    }
-
-    highlightSelectable(selectable) {
-        if (this.highlighted != selectable.id) {
-            this.highlighted = selectable.id;
-        }
+        this.selectedChange.emit(this.selected);
     }
 
     highlightNext() {
         let searching = true;
-        for (let selectable of (this.selectables as Selectable[])) {
-            if (searching && selectable.id === this.highlighted){
+        for (const key of this.highlightable) {
+            if (searching && key === this.highlighted) {
                 searching = false;
                 continue;
             }
-            if (!searching && this.matching.has(selectable.id)) {
-                this.highlighted = (selectable.id as any);
+            if (!searching) {
+                this.highlighted = key;
                 return;
             }
         }
     }
 
     highlightPrevious() {
-        let previous: any = this.highlighted;
-        for (let selectable of (this.selectables as Selectable[])) {
-            if (selectable.id === this.highlighted){
+        let previous: number = this.highlighted;
+        for (const key of this.highlightable) {
+            if (key === this.highlighted) {
                 this.highlighted = previous;
                 return;
             }
-            if (this.matching.has(selectable.id)) {
-                previous = selectable.id;
-            }
+            previous = key;
         }
     }
 }

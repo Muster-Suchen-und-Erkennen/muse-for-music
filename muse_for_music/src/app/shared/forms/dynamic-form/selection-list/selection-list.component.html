@@ -1,7 +1,7 @@
 <div *ngFor="let selectable of selectables" [hidden]="!matching.has(selectable.id)"
-        class="ph2 pv1" (click)="select(selectable.id)"
-        [ngClass]="{'bg-light-blue': selectable.id === highlighted, 'b': selected != undefined && selectable.id === selected.id}">
-    <a>{{selectable.label}}</a>
+        class="ph2 pv1 hover-bg-black-30 pointer" (click)="select(selectable.id)"
+        [ngClass]="{'bg-light-blue': selectable.id === highlighted, 'b': selectedSet.has(selectable.id)}">
+    <a>{{selectable.name}}</a>
 </div>
 <div [hidden]="matching.size > 0">
     <span [hidden]="createNewIfNoMatch">Keine passenden Einträge vorhanden</span>

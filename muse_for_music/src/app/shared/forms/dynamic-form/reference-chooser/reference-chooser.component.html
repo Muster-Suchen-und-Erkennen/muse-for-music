@@ -2,19 +2,20 @@
     <div class="min-w5 flex-grow bb b--gray flex flex-wrap gray hover-black" content>
         <p class="bg-black-20 pl3 pr2 pv1 ma1 br-pill black" *ngFor="let item of selected">{{item.name}}<i class="ml2 fa fa-close mr2 hover-red pointer" (click)="select.select(item.id)"></i></p>
         <div class="flex-grow flex">
-            <input class="flex-grow input-reset bn pa1 black" type="search" [(ngModel)]="searchTerm" placeholder="suche {{question.valueType}}"
+            <input class="flex-grow input-reset bn pa1 black" type="search" [(ngModel)]="searchTerm" [attr.placeholder]="'suche ' + question?.valueType"
                     (focus)="dropdown.openDropdown(); select.updateMatching('')" (keyup)="dropdown.openDropdown()"
                     (keyup.enter)="select.select()" (keyup.arrowdown)="select.highlightNext()"
                     (keyup.arrowup)="select.highlightPrevious()">
         </div>
         <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem" (click)="dropdown.toggleDropdown(); select.updateMatching('')"><i class="f4 fa fa-angle-down"></i></div>
     </div>
-    <m4m-selection-list [selectables]="choices" [selected]="value"
-            (selectedChange)="selectedChange($event)" [createNewIfNoMatch]="true"
-            [display]="'name'" [key]="'id'" [search]="searchTerm" #select dropdown-content></m4m-selection-list>
+    <m4m-selection-list [selectables]="choices" [selected]="value" [allowedSelections]="question.isArray ? -1 : 1"
+            (selectedChange)="selectedChange($event)" (createNew)="createNew($event)"
+            [createNewIfNoMatch]="true" [display]="'name'" [key]="'id'"
+            [search]="searchTerm" #select dropdown-content></m4m-selection-list>
 </m4m-dropdown>
 
-<m4m-dialog [dialogType]="'save-cancel'" [valid]="valid" [icon]="'save'" [okCallback]="save" #dialog >
+<m4m-dialog [dialogType]="'save-cancel'" [valid]="true" [icon]="'save'" [okCallback]="save" #dialog >
         <h1 class="mv0" title>Neu:</h1>
         <div class="w-100 ph3 pv2" body>
             <dynamic-form [objectModel]="formModel()" [startValues]="formStartData()" (valid)="valid = $event" (data)="newData = $event" #form></dynamic-form>
