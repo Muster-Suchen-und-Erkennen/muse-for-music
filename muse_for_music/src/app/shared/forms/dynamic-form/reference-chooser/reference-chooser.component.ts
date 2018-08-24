@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnInit, ViewChild, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, forwardRef, Input, OnInit, ViewChild, OnDestroy, } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { Subscription, Observable } from 'rxjs/Rx';
@@ -9,7 +9,6 @@ import { ApiService } from '../../../rest/api.service';
 import { QuestionBase } from '../../question-base';
 import { myDropdownComponent } from '../../../dropdown/dropdown.component';
 import { myDialogComponent } from '../../../dialog/dialog.component';
-import { SelectionListComponent } from '../selection-list/slection-list.component';
 
 
 
@@ -22,7 +21,6 @@ import { SelectionListComponent } from '../selection-list/slection-list.componen
     useExisting: forwardRef(() => ReferenceChooserComponent),
     multi: true
   }],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, OnDestroy {
 
@@ -30,16 +28,13 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
 
     @ViewChild(myDialogComponent) dialog: myDialogComponent;
 
-    @ViewChild(SelectionListComponent) selectionList: SelectionListComponent;
-
     selected: any[] = [];
     @Input() question: QuestionBase<any>;
 
     searchTerm: string = '';
 
     choices: ApiObject[];
-
-    private afterChoiceUpdate: () => void;
+    asyncChoices: any;
 
     private subscription: Subscription;
 
@@ -87,7 +82,7 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
         this.onTouched();
     }
 
-    constructor(private api: ApiService, private chref: ChangeDetectorRef) {}
+    constructor(private api: ApiService) {}
 
     ngOnInit(): void {
         this.updateChoices();
@@ -98,17 +93,16 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
             this.subscription.unsubscribe();
         }
         if (this.question.valueType === 'person') {
+            this.asyncChoices = this.api.getPeople();
             this.subscription = this.api.getPeople().subscribe(data => {
                 if (data == undefined) {
                     return;
                 }
                 this.choices = data;
-                if (this.afterChoiceUpdate != null) {
-                    this.afterChoiceUpdate();
-                }
             });
         };
         if (this.question.valueType === 'opus') {
+            this.asyncChoices = this.api.getOpuses();
             this.subscription = this.api.getOpuses().subscribe(data => {
                 if (data == undefined) {
                     return;
@@ -116,15 +110,6 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
                 this.choices = data;
             });
         };
-    }
-    private refreshChoices(): void {
-        if (this.question.valueType === 'person') {
-            this.api.getPeople();
-        };
-        if (this.question.valueType === 'opus') {
-            this.api.getOpuses();
-        };
-
     }
 
     ngOnDestroy(): void {
@@ -141,7 +126,6 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
     selectedChange(selected: ApiObject[]) {
         this.selected = selected;
         this.dropdown.closeDropdown();
-        this.chref.markForCheck();
         this.onChange(this.value);
         this.onTouched();
     }
@@ -180,28 +164,27 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
         }
     }
 
-    private selectNewObject(data) {
-
-        this.afterChoiceUpdate = () => {
-            Observable.timer(150).take(1).subscribe(() => {
-                this.selectionList.select(data.id);
-            });
-            this.afterChoiceUpdate = null;
-        }
-        this.refreshChoices();
-    }
-
-
     save = () => {
+        const updateSelection = (data) => {
+            if (this.question.isArray) {
+                this.selected.push(data);
+            } else {
+                this.selected = [data];
+            }
+        }
         if (this.valid) {
             if (this.question.valueType === 'person') {
                 this.api.postPerson(this.newData).take(1).subscribe(data => {
-                    this.selectNewObject(data);
+                    Observable.timer(150).take(1).subscribe(() => {
+                        updateSelection(data);
+                    });
                 });
             }
             if (this.question.valueType === 'opus') {
                 this.api.postOpus(this.newData).take(1).subscribe(data => {
-                    this.selectNewObject(data);
+                    Observable.timer(150).take(1).subscribe(() => {
+                        updateSelection(data);
+                    });
                 });
             }
         }

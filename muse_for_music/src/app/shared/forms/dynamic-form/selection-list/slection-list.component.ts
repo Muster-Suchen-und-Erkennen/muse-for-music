@@ -3,7 +3,7 @@ import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnIni
 import { ApiObject } from '../../../rest/api-base.service';
 import { ApiService } from '../../../rest/api.service';
 
-class TaxonomyItem {
+class Selectable {
     id: number;
     name: string;
     data: any;
@@ -25,7 +25,7 @@ export class SelectionListComponent implements OnChanges {
 
     filter: boolean = true;
 
-    _selectables: TaxonomyItem[];
+    _selectables: Selectable[] = [];
 
     @Input() display: string = 'id';
     @Input() key: string = 'id';
@@ -43,16 +43,6 @@ export class SelectionListComponent implements OnChanges {
     matching: Set<number> = new Set<number>();
 
     @Input()
-    get selected(): any[] {
-        const selectedList = [];
-        for (const item of this._selectables) {
-            if (this.selectedSet.has(item.id)) {
-                    selectedList.push(item.data);
-            }
-        }
-        return selectedList;
-    }
-
     set selected(selection: any[]) {
         const selected = new Set<number>();
         for (const item of selection) {
@@ -62,7 +52,30 @@ export class SelectionListComponent implements OnChanges {
         this.selectedSet = selected;
     }
 
+    get selected(): any[] {
+        const selectedList = [];
+        const selectables = this._selectables;
+        for (const item of selectables) {
+            if (this.selectedSet.has(item.id)) {
+                selectedList.push(item.data);
+            }
+        }
+        return selectedList;
+    }
+
     @Input()
+    set selectables(selectables: any[]) {
+        if (selectables == null) {
+            selectables = [];
+        }
+        const selectablesList = [];
+        for (const item of selectables) {
+            selectablesList.push(new Selectable(item, this.display, this.key));
+        }
+        this._selectables = selectablesList;
+        this.updateMatching(this.search);
+    }
+
     get selectables(): any[] {
         if (this._selectables != null) {
             const selectables = [];
@@ -74,19 +87,7 @@ export class SelectionListComponent implements OnChanges {
         return [];
     }
 
-    set selectables(selectables: any[]) {
-        if (selectables == null) {
-            selectables = [];
-        }
-        const selectablesList = [];
-        for (const item of selectables) {
-            selectablesList.push(new TaxonomyItem(item, this.display, this.key));
-        }
-        this._selectables = selectablesList;
-        this.updateMatching(this.search);
-    }
-
-    visible(selectable: TaxonomyItem): boolean {
+    visible(selectable: Selectable): boolean {
         if (!this.filter) {
             return true;
         }
@@ -96,7 +97,7 @@ export class SelectionListComponent implements OnChanges {
     constructor(private api: ApiService) { }
 
     ngOnChanges(changes: SimpleChanges): void {
-            this.updateMatching(this.search);
+        this.updateMatching(this.search);
         // https://stackoverflow.com/questions/42819549/angular2-scroll-to-element-that-has-ngif
     }
 
@@ -138,7 +139,7 @@ export class SelectionListComponent implements OnChanges {
         }
     }
 
-    toggleClosed(selectable: TaxonomyItem) {
+    toggleClosed(selectable: Selectable) {
         this.updateHighlightable();
     }
 

@@ -9,15 +9,18 @@
         </div>
         <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem" (click)="dropdown.toggleDropdown(); select.updateMatching('')"><i class="f4 fa fa-angle-down"></i></div>
     </div>
-    <m4m-selection-list [selectables]="choices" [selected]="value" [allowedSelections]="question.isArray ? -1 : 1"
+    <m4m-selection-list [selectables]="choices" [selected]="selected" [allowedSelections]="question.isArray ? -1 : 1"
             (selectedChange)="selectedChange($event)" (createNew)="createNew($event)"
             [createNewIfNoMatch]="true" [display]="'name'" [key]="'id'"
             [search]="searchTerm" #select dropdown-content></m4m-selection-list>
 </m4m-dropdown>
 
-<m4m-dialog [dialogType]="'save-cancel'" [valid]="true" [icon]="'save'" [okCallback]="save" #dialog >
+<m4m-dialog [dialogType]="'save-cancel'" [valid]="valid" [icon]="'save'" [okCallback]="save" #dialog >
         <h1 class="mv0" title>Neu:</h1>
         <div class="w-100 ph3 pv2" body>
             <dynamic-form [objectModel]="formModel()" [startValues]="formStartData()" (valid)="valid = $event" (data)="newData = $event" #form></dynamic-form>
+            <p>
+                {{form.form.value | json}}
+            </p>
         </div>
 </m4m-dialog>
