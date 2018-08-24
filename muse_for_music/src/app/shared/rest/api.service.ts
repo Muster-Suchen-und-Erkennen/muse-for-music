@@ -124,13 +124,20 @@ export class ApiService implements OnInit {
         if (list_stream != null) {
             const list: ApiObject[] = (list_stream.getValue() as ApiObject[]);
             if (list != null) {
-                const index = list.findIndex(value => value.id === data.id);
-                if (index < 0) {
-                    list.push(data);
-                } else {
-                    list[index] = data;
+                const newlist = [];
+                let updated = false;
+                list.forEach((value) => {
+                    if (value.id === data.id) {
+                        updated = true;
+                        newlist.push(data);
+                    } else {
+                        newlist.push(value);
+                    }
+                });
+                if (!updated) {
+                    newlist.push(data);
                 }
-                list_stream.next(list);
+                list_stream.next(newlist);
             }
         }
     }
