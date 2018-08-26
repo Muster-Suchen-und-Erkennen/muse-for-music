@@ -23,7 +23,7 @@ export class PartDetailComponent implements OnInit, OnDestroy {
 
     update(partID: number) {
         this.partID = partID;
-        this.navigation.changeTitle('MUSE4Music – Werkausschnitt');
+        this.navigation.changeTitle('Werkausschnitt');
         this.navigation.changeBreadcrumbs([new Breadcrumb('Werkausschnitte', '/parts'),
         new Breadcrumb('"' + partID.toString() + '"', '/parts/' + partID)]);
 
@@ -55,7 +55,7 @@ export class PartDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.navigation.changeTitle('MUSE4Music – Werkausschnitt');
+        this.navigation.changeTitle('Werkausschnitt');
         this.paramSubscription = this.route.params.subscribe(params => {
             this.update(parseInt(params['id'], 10));
         });

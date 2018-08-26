@@ -12,7 +12,7 @@ export class HomeComponent implements OnInit {
     constructor(private data: NavigationService, private userApi: UserApiService) { }
 
     ngOnInit(): void {
-        this.data.changeTitle('MUSE4Music – Home');
+        this.data.changeTitle('Home');
         this.data.changeBreadcrumbs([]);
     }
 

@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
         if (this.userApi.loggedIn) {
             this.router.navigate(['/']);
         }
-        this.data.changeTitle('MUSE4Music – Anmelden');
+        this.data.changeTitle('Anmelden');
         this.data.changeBreadcrumbs([]);
     }
 

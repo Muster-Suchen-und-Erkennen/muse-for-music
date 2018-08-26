@@ -1,5 +1,6 @@
 <div class="h-100 w-100 pa5 self-stretch flex items-center justify-around">
     <div class="flex flex-column">
+        <img class="h4 mb4" src="static/logo-big.svg" alt="MUSE4Music">
         <input class="input-reset pa2 ba br2 br--top b--gray" type="text" name="username" placeholder="Benutzername" autofocus [(ngModel)]="username">
         <input class="input-reset pa2 ba br2 br--bottom b--gray" type="password" name="password" placeholder="Passwort" [(ngModel)]="password" (keyup.enter)="login()">
         <input class="mt2 pa2 bn br2 bg-light-gray bg-animate" [ngClass]="{'bg-light-green': credentialsValid(), 'hover-bg-green': credentialsValid(), pointer: credentialsValid()}" [disabled]="!credentialsValid()" type="button" name="login" value="Anmelden" (click)="login()">

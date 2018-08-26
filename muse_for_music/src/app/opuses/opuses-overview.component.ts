@@ -24,7 +24,7 @@ export class OpusesOverviewComponent implements OnInit {
     constructor(private data: NavigationService, private api: ApiService, private router: Router, private route: ActivatedRoute) { }
 
     ngOnInit(): void {
-        this.data.changeTitle('MUSE4Music – Werke');
+        this.data.changeTitle('Werke');
         this.data.changeBreadcrumbs([new Breadcrumb('Werke', '/opuses')]);
         this.api.getOpuses().subscribe(data => {
             if (data == undefined) {

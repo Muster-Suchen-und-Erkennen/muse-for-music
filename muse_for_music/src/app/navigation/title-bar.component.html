@@ -1,6 +1,7 @@
 
-<div class="w-100 h3 bg-near-white shadow-1 ph3 flex items-center justify-between">
-    <h1 class="dtc f1 ma0 v-mid truncate">{{title}}</h1>
+<div class="w-100 h3 bg-near-white shadow-1 ph3 flex items-center">
+    <img class="h3 mr2" src="static/logo-medium.svg" alt="MUSE4Music">
+    <h1 class="dtc f1 ma0 v-mid truncate flex-grow-1">{{title}}</h1>
     <div class="flex">
         <div class="br1 pa1 ml2 bg-animate hover-bg-black-20 pointer tooltip tooltip-left" data-tooltip="Benutzereinstellungen" *ngIf="userApi.loggedIn" routerLink="/user">
             <i class="f1 fa fa-user-circle"></i>

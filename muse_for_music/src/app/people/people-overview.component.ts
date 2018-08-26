@@ -25,7 +25,7 @@ export class PeopleOverviewComponent implements OnInit {
     constructor(private data: NavigationService, private api: ApiService, private datePipe: DatePipe) { }
 
     ngOnInit(): void {
-        this.data.changeTitle('MUSE4Music – Personen');
+        this.data.changeTitle('Personen');
         this.data.changeBreadcrumbs([new Breadcrumb('Personen', '/people')]);
         this.api.getPeople().subscribe(data => {
             if (data == undefined) {

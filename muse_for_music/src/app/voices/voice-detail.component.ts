@@ -27,7 +27,7 @@ export class VoiceDetailComponent implements OnInit, OnDestroy {
     update(subPartID: number, voiceID: number) {
         this.subPartID = subPartID;
         this.voiceID = voiceID;
-        this.navigation.changeTitle('MUSE4Music – Voice');
+        this.navigation.changeTitle('Voice');
         this.navigation.changeBreadcrumbs([new Breadcrumb('Teilwerkausschnitte', '/subparts'),
             new Breadcrumb('"' + subPartID.toString() + '"', '/subparts/' + subPartID),
             new Breadcrumb('Stimmen', '/voices'),
@@ -102,7 +102,7 @@ export class VoiceDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.navigation.changeTitle('MUSE4Music – Stimme');
+        this.navigation.changeTitle('Stimme');
         this.paramSubscription = this.route.params.subscribe(params => {
             this.update(parseInt(params['subpartID'], 10), parseInt(params['voiceID'], 10));
         });

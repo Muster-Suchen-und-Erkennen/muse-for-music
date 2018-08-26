@@ -74,7 +74,7 @@ export class TaxonomyEditorComponent implements OnInit, OnDestroy {
     constructor(private api: ApiService, private navigation: NavigationService) {}
 
     ngOnInit(): void {
-        this.navigation.changeTitle('MUSE4Music – Taxonomien')
+        this.navigation.changeTitle('Taxonomien')
         this.navigation.changeBreadcrumbs([new Breadcrumb('Taxonomien', 'taxonomies')])
         this.taxonomyListSubscription = this.api.getTaxonomies().subscribe((taxonomies: ApiObject) => {
             if (taxonomies == null) {

@@ -24,7 +24,7 @@ export class SubPartDetailComponent implements OnInit, OnDestroy {
 
     update(subPartID: number) {
         this.subPartID = subPartID;
-        this.navigation.changeTitle('MUSE4Music – Teilwerkausschnitt');
+        this.navigation.changeTitle('Teilwerkausschnitt');
         this.navigation.changeBreadcrumbs([new Breadcrumb('Teilwerkausschnitte', '/subparts'),
             new Breadcrumb('"' + subPartID.toString() + '"', '/subparts/' + subPartID)]);
 
@@ -73,7 +73,7 @@ export class SubPartDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.navigation.changeTitle('MUSE4Music – Teilwerkausschnitt');
+        this.navigation.changeTitle('Teilwerkausschnitt');
         this.paramSubscription = this.route.params.subscribe(params => {
             this.update(parseInt(params['id'], 10));
         });
