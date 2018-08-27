@@ -19,8 +19,5 @@
         <h1 class="mv0" title>Neu:</h1>
         <div class="w-100 ph3 pv2" body>
             <dynamic-form [objectModel]="formModel" [startValues]="formStartData" (valid)="valid = $event" (data)="newData = $event" #form></dynamic-form>
-            <p>
-                {{form.form.value | json}}
-            </p>
         </div>
 </m4m-dialog>
