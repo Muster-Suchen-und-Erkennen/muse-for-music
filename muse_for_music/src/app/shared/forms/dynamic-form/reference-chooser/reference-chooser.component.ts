@@ -38,6 +38,8 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
 
     private subscription: Subscription;
 
+    formModel: string;
+    formStartData: any;
     valid: boolean;
 
     newData: any;
@@ -86,6 +88,12 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
 
     ngOnInit(): void {
         this.updateChoices();
+        if (this.question.valueType === 'person') {
+            this.formModel = 'PersonPOST';
+        }
+        if (this.question.valueType === 'opus') {
+            this.formModel = 'OpusPOST';
+        }
     }
 
     private updateChoices(): void {
@@ -120,6 +128,13 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
 
     createNew = (data) => {
         this.newData = data;
+        if (this.question.valueType === 'person') {
+            data.gender = 'male';
+        }
+        if (this.question.valueType === 'opus') {
+            data.composer = {id: -1};
+        }
+        this.formStartData = data;
         this.dialog.open();
     }
 
@@ -144,26 +159,6 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
         }
     }
 
-
-    formModel() {
-        if (this.question.valueType === 'person') {
-            return 'PersonPOST';
-        }
-        if (this.question.valueType === 'opus') {
-            return 'OpusPOST';
-        }
-    }
-
-
-    formStartData() {
-        if (this.question.valueType === 'person') {
-            return {'name': this.searchTerm, 'gender': 'male'};
-        }
-        if (this.question.valueType === 'opus') {
-            return {'name': this.searchTerm, composer: {id: -1}};
-        }
-    }
-
     save = () => {
         const updateSelection = (data) => {
             if (this.question.isArray) {
@@ -171,6 +166,8 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
             } else {
                 this.selected = [data];
             }
+            this.onChange(this.value);
+            this.onTouched();
         }
         if (this.valid) {
             if (this.question.valueType === 'person') {
