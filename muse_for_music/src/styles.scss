@@ -90,6 +90,7 @@ body {
     opacity: 0;
     transition: opacity 0.2s ease-in;
     pointer-events: none;
+    white-space: pre-line;
 
 }
 .tooltip:before {
