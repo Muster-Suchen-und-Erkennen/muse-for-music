@@ -36,22 +36,22 @@ taxonomy_item_links = ns.model('TaxonomyItemLinks', {
 taxonomy_item_post = ns.model('TaxonomyItemPOST', OrderedDict([
     ('name', fields.String(default='', required=True, title='Name')),
     ('description', fields.String(default='', required=False, nullable=True, title='Beschreibung', description='Nähere Erläuterung zu dem Taxonomieeintrag.')),
-])
+]))
 
 taxonomy_item_put = ns.inherit('TaxonomyItemPUT', taxonomy_item_post, OrderedDict([
     ('id', fields.Integer(default=-1, required=True, example=1, readonly=True)),
-])
+]))
 
 taxonomy_item_ref = ns.model('TaxonomyItemREF', OrderedDict([
     ('id', fields.Integer(default=-1, required=True, example=1, readonly=True)),
     ('name', fields.String(default='', required=False)),
     ('description', fields.String(default='', required=False, nullable=True)),
-])
+]))
 
 taxonomy_item_get = ns.inherit('TaxonomyItemGET', taxonomy_item_put, OrderedDict([
     ('id', fields.Integer(default=-1, readonly=True, example=1)),
     ('_links', NestedFields(taxonomy_item_links)),
-])
+]))
 
 # Use taxonomy_tree_item_get for marshalling:
 # return marshal(test, taxonomy_tree_item_get), 200
@@ -79,6 +79,8 @@ taxonomy_tree_item_get_json = ns.schema_model('TaxonomyTreeItemGETJSON', {
                     'items': {
                         '$ref': '#/definitions/TaxonomyTreeItemGETJSON'
                     }
+
+test = 1
                 }
             }
         }
