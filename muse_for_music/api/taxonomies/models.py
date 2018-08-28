@@ -34,8 +34,8 @@ taxonomy_item_links = ns.model('TaxonomyItemLinks', {
 
 
 taxonomy_item_post = ns.model('TaxonomyItemPOST', {
-    'name': fields.String(default='', required=True),
-    'description': fields.String(default='', required=False, nullable=True),
+    'name': fields.String(default='', required=True, title='Name'),
+    'description': fields.String(default='', required=False, nullable=True, title='Beschreibung', description='Nähere Erläuterung zu dem Taxonomieeintrag.'),
 })
 
 taxonomy_item_put = ns.inherit('TaxonomyItemPUT', taxonomy_item_post, {
