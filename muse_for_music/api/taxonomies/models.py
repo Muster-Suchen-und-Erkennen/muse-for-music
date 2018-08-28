@@ -79,8 +79,6 @@ taxonomy_tree_item_get_json = ns.schema_model('TaxonomyTreeItemGETJSON', {
                     'items': {
                         '$ref': '#/definitions/TaxonomyTreeItemGETJSON'
                     }
-
-test = 1
                 }
             }
         }
