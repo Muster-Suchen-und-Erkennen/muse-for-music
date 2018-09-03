@@ -3,7 +3,7 @@
 
 from flask import jsonify, url_for, request
 from flask_restplus import Resource, marshal, reqparse, abort
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy import literal
 
@@ -16,6 +16,7 @@ from .models import person_post, person_put, person_get, parse_date
 
 from ... import db
 from ...user_api import has_roles, RoleEnum
+from ...models.users import User
 from ...models.data.people import Person, GenderEnum
 from ...models.data.opus import Opus
 from ...models.data.citations import PersonToCitations
@@ -109,7 +110,12 @@ class PersonResource(Resource):
             person.gender = value
 
         db.session.add(person)
-        hist = History(MethodEnum.update, person)
+        username = get_jwt_identity()
+        user = User.get_user_by_name(username)
+        History.query.filter(History.user_id == user.id,
+                             History.method == MethodEnum.update,
+                             History.resource == History.fingerprint(person)).delete()
+        hist = History(MethodEnum.update, person, user)
         db.session.add(hist)
         db.session.commit()
         return marshal(person, person_get)

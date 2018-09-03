@@ -3,7 +3,7 @@
 
 from flask import jsonify, url_for, request
 from flask_restplus import Resource, marshal, abort
-from flask_jwt_extended import jwt_required, get_jwt_claims
+from flask_jwt_extended import jwt_required, get_jwt_claims, get_jwt_identity
 from sqlalchemy.exc import IntegrityError
 
 from json import dumps
@@ -15,6 +15,7 @@ from .models import opus_post, opus_put, opus_get, parse_date, opus_get, opus_po
 
 from ... import db
 from ...user_api import has_roles, RoleEnum
+from ...models.users import User
 from ...models.data.opus import Opus
 from ...models.data.part import Part
 from ...models.data.history import History, MethodEnum, TypeEnum, Backup
@@ -74,7 +75,12 @@ class OpusResource(Resource):
         new_values = request.get_json()
 
         opus.update(new_values)
-        hist = History(MethodEnum.update, opus)
+        username = get_jwt_identity()
+        user = User.get_user_by_name(username)
+        History.query.filter(History.user_id == user.id,
+                             History.method == MethodEnum.update,
+                             History.resource == History.fingerprint(opus)).delete()
+        hist = History(MethodEnum.update, opus, user)
         db.session.add(hist)
         db.session.commit()
         return marshal(opus, opus_get)

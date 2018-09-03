@@ -26,6 +26,21 @@ class TypeEnum(enum.Enum):
     subpart = 4
     voice = 5
 
+    @staticmethod
+    def fromResource(resource: Union[Person, Opus, Part, SubPart, Voice]):
+        if isinstance(resource, Person):
+            return TypeEnum.person
+        elif isinstance(resource, Opus):
+            return TypeEnum.opus
+        elif isinstance(resource, Part):
+            return TypeEnum.part
+        elif isinstance(resource, SubPart):
+            return TypeEnum.subpart
+        elif isinstance(resource, Voice):
+            return TypeEnum.voice
+        else:
+            raise TypeError('Resource has wrong Type ' + str(type(resource)))
+
 
 class History(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -39,7 +54,9 @@ class History(db.Model):
 
     _full_resource = None
 
-    def __init__(self, method: MethodEnum, resource, user: Union[str, User]=None):
+    def __init__(self, method: MethodEnum,
+                 resource: Union[Person, Opus, Part, SubPart, Voice],
+                 user: Union[str, User]=None):
         if user is None:
             user = get_jwt_identity()
         if isinstance(user, str):
@@ -48,26 +65,24 @@ class History(db.Model):
         self.method = method
         if method == MethodEnum.create:
             db.session.flush((resource,))
-        if isinstance(resource, Person):
-            self.type = TypeEnum.person
-            self.resource = dumps({'id': resource.id}, sort_keys=True)
-        elif isinstance(resource, Opus):
-            self.type = TypeEnum.opus
-            self.resource = dumps({'id': resource.id}, sort_keys=True)
-        elif isinstance(resource, Part):
-            self.type = TypeEnum.part
-            self.resource = dumps({'id': resource.id, 'opus_id': resource.opus_id}, sort_keys=True)
-        elif isinstance(resource, SubPart):
-            self.type = TypeEnum.subpart
-            self.resource = dumps({'id': resource.id, 'part_id': resource.part_id}, sort_keys=True)
-        elif isinstance(resource, Voice):
-            self.type = TypeEnum.voice
-            self.resource = dumps({'id': resource.id, 'subpart_id': resource.subpart_id}, sort_keys=True)
-        else:
-            raise TypeError('Resource has wrong Type ' + str(type(resource)))
-
+        self.type = TypeEnum.fromResource(resource)
+        self.resource = History.fingerprint(resource)
         self._full_resource = None
 
+    @staticmethod
+    def fingerprint(resource: Union[Person, Opus, Part, SubPart, Voice]):
+        if isinstance(resource, Person):
+            return dumps({'id': resource.id}, sort_keys=True)
+        elif isinstance(resource, Opus):
+            return dumps({'id': resource.id}, sort_keys=True)
+        elif isinstance(resource, Part):
+            return dumps({'id': resource.id, 'opus_id': resource.opus_id}, sort_keys=True)
+        elif isinstance(resource, SubPart):
+            return dumps({'id': resource.id, 'part_id': resource.part_id}, sort_keys=True)
+        elif isinstance(resource, Voice):
+            return dumps({'id': resource.id, 'subpart_id': resource.subpart_id}, sort_keys=True)
+        else:
+            raise TypeError('Resource has wrong Type ' + str(type(resource)))
 
     @classmethod
     def isOwner(cls, resource, user: [str, User]=None):
@@ -77,23 +92,8 @@ class History(db.Model):
             user = User.get_user_by_name(user)
         if user is None:
             return False
-        type = None
-        resource_id = None
-        if isinstance(resource, Person):
-            type = TypeEnum.person
-            resource_id = dumps({'id': resource.id}, sort_keys=True)
-        if isinstance(resource, Opus):
-            type = TypeEnum.opus
-            resource_id = dumps({'id': resource.id}, sort_keys=True)
-        if isinstance(resource, Part):
-            type = TypeEnum.part
-            resource_id = dumps({'id': resource.id, 'opus_id': resource.opus_id}, sort_keys=True)
-        if isinstance(resource, SubPart):
-            type = TypeEnum.subpart
-            resource_id = dumps({'id': resource.id, 'part_id': resource.part_id}, sort_keys=True)
-        if isinstance(resource, Voice):
-            type = TypeEnum.voice
-            resource_id = dumps({'id': resource.id, 'subpart_id': resource.subpart_id}, sort_keys=True)
+        type = TypeEnum.fromResource(resource)
+        resource_id = History.fingerprint(resource)
         result = cls.query.filter(cls.user == user, cls.method == MethodEnum.create, cls.type == type, cls.resource == resource_id).first()
         return result is not None
 

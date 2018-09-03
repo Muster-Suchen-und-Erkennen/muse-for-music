@@ -2,7 +2,7 @@
 
 from flask import jsonify, url_for, request
 from flask_restplus import Resource, marshal, abort
-from flask_jwt_extended import jwt_required, get_jwt_claims
+from flask_jwt_extended import jwt_required, get_jwt_claims, get_jwt_identity
 from sqlalchemy.exc import IntegrityError
 
 from json import dumps
@@ -13,6 +13,7 @@ from .models import subpart_get, subpart_put, voice_get, voice_post, voice_put
 
 from ... import db
 from ...user_api import has_roles, RoleEnum
+from ...models.users import User
 from ...models.data.subpart import SubPart
 from ...models.data.voice import Voice
 from ...models.taxonomies import Anteil, InstrumentierungEinbettungQualitaet, \
@@ -59,7 +60,12 @@ class SubPartResource(Resource):
 
         subpart.update(new_values)
 
-        hist = History(MethodEnum.update, subpart)
+        username = get_jwt_identity()
+        user = User.get_user_by_name(username)
+        History.query.filter(History.user_id == user.id,
+                             History.method == MethodEnum.update,
+                             History.resource == History.fingerprint(subpart)).delete()
+        hist = History(MethodEnum.update, subpart, user)
         db.session.add(hist)
 
         db.session.commit()
@@ -137,7 +143,12 @@ class SubPartVoiceResource(Resource):
         new_values = request.get_json()
 
         voice.update(new_values)
-        hist = History(MethodEnum.update, voice)
+        username = get_jwt_identity()
+        user = User.get_user_by_name(username)
+        History.query.filter(History.user_id == user.id,
+                             History.method == MethodEnum.update,
+                             History.resource == History.fingerprint(voice)).delete()
+        hist = History(MethodEnum.update, voice, user)
         db.session.add(hist)
         db.session.commit()
         return marshal(voice, voice_get)
