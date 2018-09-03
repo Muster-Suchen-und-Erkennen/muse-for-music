@@ -23,6 +23,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
 
     private newUsername;
     private newPassword;
+    private newUserPassword;
 
     currentUser: ApiObject;
     role: string;
@@ -62,18 +63,35 @@ export class UserManagementComponent implements OnInit, OnDestroy {
         }
     }
 
-    deleteUser = () => {
+    lockUser = () => {
+        const currentUser = this.currentUser;
         if (this.pendingActionSubscription != null) {
             this.pendingActionSubscription.unsubscribe();
         }
-        alert(this.userApi.tokenIsFresh ? 'fresh' : 'stale');
         if (this.userApi.tokenIsFresh) {
-            this.userApi.deleteUser(this.currentUser);
+            this.userApi.deleteUser(currentUser);
         } else {
             this.loginDialog.open();
             this.pendingActionSubscription = this.freshLogin.subscribe(sucess => {
                 if (sucess) {
-                    this.userApi.deleteUser(this.currentUser);
+                    this.userApi.deleteUser(currentUser);
+                }
+            })
+        }
+    }
+
+    deleteUser = () => {
+        const currentUser = this.currentUser;
+        if (this.pendingActionSubscription != null) {
+            this.pendingActionSubscription.unsubscribe();
+        }
+        if (this.userApi.tokenIsFresh) {
+            this.userApi.deleteUser(currentUser, true);
+        } else {
+            this.loginDialog.open();
+            this.pendingActionSubscription = this.freshLogin.subscribe(sucess => {
+                if (sucess) {
+                    this.userApi.deleteUser(currentUser, true);
                 }
             })
         }
@@ -114,7 +132,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     }
 
     resetPassword = (user, password) => {
-        if (password.length < 3) {
+        if (password != null && password.length < 3) {
             return;
         }
         if (this.pendingActionSubscription != null) {
@@ -137,7 +155,10 @@ export class UserManagementComponent implements OnInit, OnDestroy {
             this.freshLogin.next(true);
         } else {
             this.userApi.freshLogin(this.password).subscribe(success => {
+                this.password = '';
                 this.freshLogin.next(true);
+            }, (err) => {
+                this.password = '';
             });
         }
     }

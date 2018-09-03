@@ -287,11 +287,11 @@ export class UserApiService implements OnInit {
         return stream;
     }
 
-    deleteUser(user: ApiObject): void {
+    deleteUser(user: ApiObject, withHistory: boolean=false): void {
         const baseResource = 'users';
         const resource = baseResource + '/' + user.username;
         const stream = this.getStreamSource(resource);
-        this.rest.delete(user, this.token).take(1).subscribe(data => {
+        this.rest.delete(user, this.token, undefined, {'with-history': withHistory}).take(1).subscribe(data => {
             stream.next(null);
             this.getUsers();
         });
@@ -328,10 +328,15 @@ export class UserApiService implements OnInit {
     }
 
     resetPassword(user: ApiObject, password: string) {
+        const baseResource = 'users';
+        const resource = baseResource + '/' + user.username;
+        const stream = this.getStreamSource(resource);
         const success = new AsyncSubject<boolean>();
         this.rest.post(user, {
             password: password,
         }, this.token).subscribe(data => {
+            stream.next(data);
+            this.getUsers();
             success.next(true);
             success.complete();
         }, error => this.errorHandler(error, 'users/' + user.username + '/password-reset', 'POST'));

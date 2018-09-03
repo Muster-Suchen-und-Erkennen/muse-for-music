@@ -116,11 +116,14 @@ export class BaseApiService {
             });
     }
 
-    delete(url: string|LinkObject|ApiLinksObject|ApiObject, token?: string, data?): Observable<ApiObject> {
+    delete(url: string|LinkObject|ApiLinksObject|ApiObject, token?: string, data?, params?): Observable<ApiObject> {
         url = this.extractUrl(url);
         const options = this.headers(token);
         if (data != null) {
             options.body = data;
+        }
+        if (params != null) {
+            options.params = params;
         }
         return this.http.delete(url, options)
             .map((res: Response) => res.json())

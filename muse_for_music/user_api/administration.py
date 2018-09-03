@@ -8,6 +8,7 @@ from .import auth_logger, has_roles
 from .. import jwt, db
 
 from ..models.users import User, UserRole, RoleEnum
+from ..models.data.history import History
 
 from .authentication import user_auth_model
 from .models import with_curies
@@ -86,6 +87,7 @@ class UserResource(Resource):
             abort()
         return user
 
+    @ns.marshal_with(user_model)
     @ns.expect(password_reset_model)
     @fresh_jwt_required
     @has_roles(roles=[RoleEnum.admin])
@@ -102,8 +104,9 @@ class UserResource(Resource):
         user.deleted = False
         db.session.add(user)
         db.session.commit()
+        return user
 
-
+    @ns.param('with-history', 'Delete user completely including links to history.', type=bool, required=False, default=False)
     @fresh_jwt_required
     @has_roles(roles=[RoleEnum.admin])
     def delete(self, username: str):
@@ -112,10 +115,16 @@ class UserResource(Resource):
         user = User.get_user_by_name(username)
         if user is None:
             abort()
-        user.deleted = True
-        user.username = user.username + '_DEL'
-        db.session.add(user)
-        db.session.commit()
+        if request.args.get('with-history', 'false') == 'true':
+            if not user.deleted:
+                abort(400, 'Can not delete History of active user!')
+            History.query.filter(History.user_id == user.id).update(values={'user_id': None})
+            db.session.delete(user)
+            db.session.commit()
+        else:
+            user.deleted = True
+            db.session.add(user)
+            db.session.commit()
 
 
 @ns.route('/users/<string:username>/roles/')
