@@ -13,7 +13,7 @@ from .models import part_get, part_post, part_put, subpart_get, subpart_post
 
 from ... import db
 from ...user_api import has_roles, RoleEnum
-from ...models.users import Users
+from ...models.users import User
 from ...models.data.part import Part
 from ...models.data.subpart import SubPart
 from ...models.data.measure import Measure
