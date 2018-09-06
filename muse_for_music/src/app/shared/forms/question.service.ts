@@ -141,6 +141,9 @@ export class QuestionService implements OnInit {
         if (prop.enum != null) {
             options.options = prop.enum;
         }
+        if (prop['x-enumTranslation'] != null) {
+            options.optionTranslations = prop['x-enumTranslation'];
+        }
 
         if (prop.minLength != null) {
             options.min = prop.minLength;

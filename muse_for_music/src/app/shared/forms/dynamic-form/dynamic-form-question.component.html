@@ -37,7 +37,7 @@
 
                 <div *ngSwitchCase="'dropdown'" class="min-w5 flex-grow flex bb b--gray gray hover-black">
                     <select [id]="question.key" class="input-reset bn pa1 bg-white black flex-grow" [formControlName]="question.key" #inputSelect>
-                        <option *ngFor="let opt of question.options" [value]="opt">{{opt}}</option>
+                        <option *ngFor="let opt of question.options" [value]="opt">{{question.optionTranslations[opt] ? question.optionTranslations[opt] : opt}}</option>
                     </select>
                     <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem; pointer-events: none" (click)="inputSelect.click($event)"><i class="f4 fa fa-angle-down"></i></div>
                 </div>

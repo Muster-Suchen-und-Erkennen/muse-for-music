@@ -28,6 +28,8 @@ class InstrumentierungEinbettungQualitaet(db.Model, ListTaxonomy):
     """DB Model for choices."""
     __tablename__ = 'instrumentierung_einbettung_qualitaet'
 
+    display_name = 'Instrumentierung, Qualität der Einbettung'
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
@@ -36,6 +38,8 @@ class InstrumentierungEinbettungQualitaet(db.Model, ListTaxonomy):
 class InstrumentierungEinbettungQuantitaet(db.Model, ListTaxonomy):
     """DB Model for choices."""
     __tablename__ = 'instrumentierung_einbettung_quantitaet'
+
+    display_name = 'Instrumentierung, Quantität der Einbettung'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))

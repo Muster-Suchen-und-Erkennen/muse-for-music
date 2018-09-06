@@ -42,6 +42,7 @@ export class TaxonomyEditorComponent implements OnInit, OnDestroy {
     taxonomyList: ApiObject[] = [];
 
     selectedTaxonomy: string;
+    displayName: string;
     isTree: boolean = false;
 
     items: TaxonomyItem[];
@@ -104,6 +105,10 @@ export class TaxonomyEditorComponent implements OnInit, OnDestroy {
         this.taxonomySubscription = this.api.getTaxonomy(this.selectedTaxonomy).subscribe(taxonomy => {
             if (taxonomy == null) {
                 return;
+            }
+            this.displayName = this.selectedTaxonomy;
+            if (taxonomy.display_name) {
+                this.displayName = taxonomy.display_name;
             }
             if (taxonomy.taxonomy_type === 'tree') {
                 this.isTree = true;

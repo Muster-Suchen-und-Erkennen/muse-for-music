@@ -8,6 +8,8 @@ class FormaleFunktion(db.Model, TreeTaxonomy):
     """DB Model for formal function."""
     __tablename__ = 'formale_funktion'
 
+    display_name = 'Formale Funktion'
+
     id = db.Column(db.Integer, primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('formale_funktion.id', ondelete='CASCADE'))
     name = db.Column(db.String(120))

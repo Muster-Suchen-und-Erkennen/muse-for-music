@@ -28,6 +28,8 @@ class TempoEntwicklung(db.Model, ListTaxonomy):
     """DB Model for choices."""
     __tablename__ = 'tempo_entwicklung'
 
+    display_name = 'Tempo-Entwicklung'
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
@@ -36,6 +38,8 @@ class TempoEntwicklung(db.Model, ListTaxonomy):
 class TempoEinbettung(db.Model, ListTaxonomy):
     """DB Model for choices."""
     __tablename__ = 'tempo_einbettung'
+
+    display_name = 'Tempo-Einbettung'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))

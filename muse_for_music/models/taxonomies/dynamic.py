@@ -9,6 +9,8 @@ __all__ = ['Lautstaerke', 'LautstaerkeZusatz', 'LautstaerkeEntwicklung', 'Lautst
 class Lautstaerke(db.Model, ListTaxonomy):
     """DB Model for choices."""
 
+    display_name = 'Lautstärke'
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
@@ -18,6 +20,8 @@ class LautstaerkeZusatz(db.Model, ListTaxonomy):
     """DB Model for choices."""
     __tablename__ = 'lautstaerke_zusatz'
 
+    display_name = 'Lautstärke, Zusatz'
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
@@ -26,6 +30,8 @@ class LautstaerkeZusatz(db.Model, ListTaxonomy):
 class LautstaerkeEntwicklung(db.Model, TreeTaxonomy):
     """DB Model for dynamic evolution."""
     __tablename__ = 'lautstaerke_entwicklung'
+
+    display_name = 'Lautstärke-Entwicklung'
 
     id = db.Column(db.Integer, primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('lautstaerke_entwicklung.id', ondelete='CASCADE'))
@@ -44,6 +50,8 @@ class LautstaerkeEntwicklung(db.Model, TreeTaxonomy):
 class LautstaerkeEinbettung(db.Model, ListTaxonomy):
     """DB Model for choices."""
     __tablename__ = 'lautstaerke_einbettung'
+
+    display_name = 'Lautstärke-Einbettung'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))

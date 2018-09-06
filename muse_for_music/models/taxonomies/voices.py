@@ -10,6 +10,8 @@ class MusikalischeFunktion(db.Model, TreeTaxonomy):
     """DB Model for doc."""
     __tablename__ = 'musikalische_funktion'
 
+    display_name = 'Musikalische Funktion'
+
     id = db.Column(db.Integer, primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('musikalische_funktion.id', ondelete='CASCADE'))
     name = db.Column(db.String(120))
@@ -45,6 +47,8 @@ class Verzierung(db.Model, TreeTaxonomy):
 class VoiceToVoiceRelation(db.Model, ListTaxonomy):
     """DB Model for choices."""
     __tablename__ = 'voice_to_voice_relation'
+
+    display_name = 'Stimmen, Beziehung zueinander'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))

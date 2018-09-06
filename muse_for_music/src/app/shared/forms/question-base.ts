@@ -13,6 +13,7 @@ export interface QuestionOptions {
     max?: number | string,
     pattern?: string,
     options?: Array<any>,
+    optionTranslations?: {[prop: string]: string},
     nullValue?: any,
     isArray?: boolean,
     order?: number,
@@ -33,6 +34,7 @@ export class QuestionBase<T>{
     max: number | string | undefined;
     pattern: string | undefined;
     options: Array<T> | undefined;
+    optionTranslations: {[prop: string]: string} | undefined;
     nullValue: T | undefined;
     isArray: boolean;
     order: number;

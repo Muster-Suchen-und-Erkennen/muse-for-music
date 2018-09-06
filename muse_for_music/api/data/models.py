@@ -64,7 +64,11 @@ person_links = api.model('PersonLinks', OrderedDict([
 
 person_post = api.model('PersonPOST', OrderedDict([
     ('name', fields.String(title='Name', description='Name der Person', max_length=191, default='', required=True, example='admin')),
-    ('gender', EnumField(title='Geschlecht', description='Geschlecht der Person', required=True, example='male', enum=['male', 'female', 'other'])),
+    ('gender', EnumField(title='Geschlecht', description='Geschlecht der Person', required=True, example='male', enum=['male', 'female', 'other'], enumTranslation={
+        'male': 'männlich',
+        'female': 'weiblich',
+        'other': 'etwas anderes',
+    })),
 ]))
 
 person_put = api.inherit('PersonPUT', person_post, OrderedDict([

@@ -44,6 +44,8 @@ class RhythmischesPhaenomen(db.Model, TreeTaxonomy):
     """DB Model for rhythmic phenomenon."""
     __tablename__ = 'rhythmisches_phaenomen'
 
+    display_name = 'Rhythmisches Phänomen'
+
     id = db.Column(db.Integer, primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('rhythmisches_phaenomen.id', ondelete='CASCADE'))
     name = db.Column(db.String(120))

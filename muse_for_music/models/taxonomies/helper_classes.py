@@ -11,16 +11,12 @@ class Taxonomy(GetByID):
 
     taxonomy_type = None  # type: str
     select_multiple = False  # type: bool
+    display_name = None  # type: str
 
     def __init__(self, name: str, description: None) -> None:
         """Create new List Taxonomy object."""
         self.name = name
         self.description = description
-
-    @classmethod
-    def class_name(cls):
-        print(cls, cls.__name__)
-        return cls.__name__
 
     @classmethod
     def clear_all(cls, logger: Logger):

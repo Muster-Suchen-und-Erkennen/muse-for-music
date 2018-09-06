@@ -120,13 +120,14 @@ taxonomy_links = ns.model('TaxonomyLinks', {
 })
 
 taxonomy_model = ns.model('TaxonomyModel', {
-    'name': fields.String(default='', required=True, attribute='__name__'),
+    'name': fields.String(default='', required=True, readonly=True, attribute='__name__'),
     '_links': NestedFields(taxonomy_links),
+    'display_name': fields.String(default='', required=True, readonly=True),
     'taxonomy_type': fields.String(default='list', enum=['list', 'tree'], discriminator=True, readonly=True),
     'select_only_leafs': fields.Boolean(default=False, readonly=True, required=False),
     'select_multiple': fields.Boolean(default=False, readonly=True, required=False),
     'items': TaxonomyItems(required=False),
-}, mask='{name,_links,taxonomy_type,select_only_leafs}')
+}, mask='{name,_links,display_name,taxonomy_type,select_only_leafs}')
 
 
 list_taxonomy_model = ns.inherit('ListTaxonomy', taxonomy_model, {

@@ -84,6 +84,19 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
         this.onTouched();
     }
 
+    get placeholder(): string {
+        if (this.question == null || this.question.valueType == null) {
+            return '';
+        }
+        if (this.question.valueType == 'person') {
+            return 'Person';
+        }
+        if (this.question.valueType == 'opus') {
+            return 'Werk';
+        }
+        return '';
+    }
+
     constructor(private api: ApiService) {}
 
     ngOnInit(): void {

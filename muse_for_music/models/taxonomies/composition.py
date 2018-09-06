@@ -28,6 +28,8 @@ class MusikalischeWendung(db.Model, TreeTaxonomy):
     """DB Model for doc."""
     __tablename__ = 'musikalische_wendung'
 
+    display_name = 'Musikalische Wendung'
+
     id = db.Column(db.Integer, primary_key=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('musikalische_wendung.id', ondelete='CASCADE'))
     name = db.Column(db.String(120))

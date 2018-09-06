@@ -41,6 +41,7 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
     selectables: TaxonomyItem[];
 
     @Input() taxonomy: string;
+    displayName: string;
     @Input() allowedSelections: number = 0;
 
     @Input() search: string;
@@ -109,6 +110,10 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
         this.api.getTaxonomy(this.taxonomy).subscribe(taxonomy => {
             if (taxonomy == undefined) {
                 return;
+            }
+            this.displayName = taxonomy.name;
+            if (taxonomy.display_name) {
+                this.displayName = taxonomy.display_name;
             }
             if (taxonomy.taxonomy_type === 'tree') {
                 this.isTree = true;

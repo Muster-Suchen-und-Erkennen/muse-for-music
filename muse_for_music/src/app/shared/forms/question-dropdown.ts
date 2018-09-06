@@ -6,6 +6,7 @@ export class DropdownQuestion extends QuestionBase<string> {
 
     constructor(options: QuestionOptions = {}) {
         super(options);
-        this.options = options['options'] || [];
+        this.options = options.options || [];
+        this.optionTranslations = options.optionTranslations || {};
     }
 }

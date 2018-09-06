@@ -3,8 +3,8 @@
         <h1 class="mv0" title>Taxonomie Editor:</h1>
         <div class="w-100 ph3 pv2" body>
             <div class="mb3 min-w5 flex-grow flex bb b--gray gray hover-black">
-                <select class="input-reset bn pa1 bg-white black flex-grow" [(ngModel)]="selectedTaxonomy" (ngModelChange)="updateTaxonomy()" #inputSelect>
-                    <option *ngFor="let tax of taxonomyList" [value]="tax.name">{{tax.name}} {{tax.taxonomy_type === 'tree' ? '(Baum)': ''}}</option>
+                <select class="input-reset bn pa1 bg-white black flex-grow" placeholder="Wähle eine Taxonomie aus" [(ngModel)]="selectedTaxonomy" (ngModelChange)="updateTaxonomy()" #inputSelect>
+                    <option *ngFor="let tax of taxonomyList" [value]="tax.name">{{tax.display_name ? tax.display_name : tax.name}} {{tax.taxonomy_type === 'tree' ? '(Baum)': ''}}</option>
                 </select>
                 <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem; pointer-events: none" (click)="inputSelect.click($event)"><i class="f4 fa fa-angle-down"></i></div>
             </div>
@@ -21,7 +21,7 @@
                     <div class="min-w1 mv1">
                         <div class="flex items-center">
                             <p class="min-w1 mv0 pa2 br-pill bg-near-white">
-                                {{item.name === 'root' ? selectedTaxonomy : item.name}}
+                                {{item.name === 'root' ? displayName : item.name}}
                             </p>
                             <span class="tooltip tooltip-bottom link" data-tooltip="bearbeiten" (click)="selectedItem = item.data; editItemDialog.open()">
                                 <i class="ml2 fa fa-pencil dim"></i>

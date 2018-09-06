@@ -1,11 +1,11 @@
-import { Component, forwardRef, Input, ViewChild } from '@angular/core';
+import { Component, forwardRef, Input, ViewChild, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ChangeDetectorRef } from '@angular/core';
 
 import { ApiObject } from '../../../rest/api-base.service';
 
 import { QuestionBase } from '../../question-base';
 import { myDropdownComponent } from '../../../dropdown/dropdown.component';
+import { ApiService } from '../../../rest/api.service';
 
 
 
@@ -19,12 +19,14 @@ import { myDropdownComponent } from '../../../dropdown/dropdown.component';
     multi: true
   }]
 })
-export class TaxonomySelectComponent implements ControlValueAccessor {
+export class TaxonomySelectComponent implements ControlValueAccessor, OnInit {
 
     @ViewChild(myDropdownComponent) dropdown: myDropdownComponent
 
-    @Input('value') _value: any[] = [];
+    _value: any[] = [];
     @Input() question: QuestionBase<any>;
+
+    displayName: string;
 
     searchTerm: string;
 
@@ -32,6 +34,7 @@ export class TaxonomySelectComponent implements ControlValueAccessor {
 
     onTouched: any = () => {};
 
+    @Input()
     get value(): ApiObject|ApiObject[] {
         if (!this.question.isArray) {
             if (this._value == undefined || this._value.length === 0) {
@@ -64,7 +67,19 @@ export class TaxonomySelectComponent implements ControlValueAccessor {
         this.onTouched();
     }
 
-    constructor(private cdRef:ChangeDetectorRef) {}
+    constructor(private api: ApiService) {}
+
+    ngOnInit(): void {
+        this.api.getTaxonomy(this.question.valueType).subscribe(taxonomy => {
+            if (taxonomy == undefined) {
+                return;
+            }
+            this.displayName = taxonomy.name;
+            if (taxonomy.display_name) {
+                this.displayName = taxonomy.display_name;
+            }
+        });
+    }
 
     selectedList() {
         return this._value;

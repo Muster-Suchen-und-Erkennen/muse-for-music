@@ -10,7 +10,9 @@
         <div class="flex flex-column self-stretch" *ngIf="selectable.children.length <= 0">
             <div class="flex-grow-1 ml2 mr1 bl bw1" style=""></div>
         </div>
-        <div class="min-w1 mv0 pv1 ph2 br-pill hover-bg-black-30 pointer" (click)="select(selectable.id)" [ngClass]="{'bg-light-blue': selectable.id === highlighted, 'b': selectedSet.has(selectable.id)}">{{selectable.name === 'root' ? taxonomy : selectable.name}}</div>
+        <div class="min-w1 mv0 pv1 ph2 br-pill hover-bg-black-30 pointer" (click)="select(selectable.id)" [ngClass]="{'bg-light-blue': selectable.id === highlighted, 'b': selectedSet.has(selectable.id)}">
+            {{selectable.name === 'root' ? displayName : selectable.name}}
+        </div>
     </div>
 </ng-container>
 <ng-container *ngIf="!showTree">
