@@ -95,7 +95,7 @@ class PersonResource(Resource):
         if person.name != new_values['name']:
             check_if_person_exists(new_values['name'])
 
-        attrs = ('name', 'canonical_name')
+        attrs = ('name', 'canonical_name', 'nationality')
         for attribute in attrs:
             if attribute in new_values:
                 setattr(person, attribute, new_values[attribute])
