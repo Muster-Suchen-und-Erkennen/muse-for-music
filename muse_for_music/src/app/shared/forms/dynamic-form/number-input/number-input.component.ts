@@ -19,6 +19,7 @@ export class NumberInputComponent implements ControlValueAccessor {
 
     @Input('value') _value: string = undefined;
     @Input() question: QuestionBase<any>;
+    @Input() path: string;
 
     onChange: any = () => {};
 

@@ -25,6 +25,31 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit {
 
     _value: any[] = [];
     @Input() question: QuestionBase<any>;
+    @Input() path: string;
+
+    @Input() specificationsCallback: (path: string, remove: boolean, recursive: boolean, affectsArrayMembers: boolean) => void;
+
+    specification: any;
+    _specifications: Map<number, any> = new Map<number, any>();
+    @Input()
+    set specifications(specifications: any[]) {
+        const newSpecs =  new Map<number, any>();
+        specifications.forEach((spec) => {
+            if (this.question.isArray) {
+                if (spec.path.startsWith(this.path)) {
+                    if (spec.path.length > this.path.length) {
+                        const id = parseInt(spec.path.substring(this.path.length + 1), 10);
+                        newSpecs.set(id, spec);
+                    }
+                }
+            } else {
+                if (spec.path === this.path) {
+                    this.specification = spec;
+                }
+            }
+        });
+        this._specifications = newSpecs;
+    }
 
     displayName: string;
 

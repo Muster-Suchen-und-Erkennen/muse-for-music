@@ -17,6 +17,7 @@ import { QuestionBase } from '../../question-base';
 export class BooleanInputComponent implements ControlValueAccessor {
 
     @Input() question: QuestionBase<any>;
+    @Input() path: string;
     checked: boolean = false;
 
     onChange: any = () => {};

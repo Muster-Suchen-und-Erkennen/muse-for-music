@@ -15,7 +15,20 @@ import { QuestionControlService } from '../../question-control.service';
 export class ArrayInputComponent {
 
     @Input() question: QuestionBase<any>;
+    @Input() path: string;
     @Input() array: FormArray;
+
+    @Input() specificationsCallback: (path: string, remove: boolean, recursive: boolean, affectsArrayMembers: boolean) => void;
+
+    _specifications = [];
+    @Input()
+    set specifications(specifications: any[]) {
+        this._specifications = specifications;
+    }
+
+    get specifications() {
+        return this._specifications;
+    }
 
     constructor (private qcs: QuestionControlService, private qs: QuestionService) {}
 

@@ -30,6 +30,7 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
 
     selected: any[] = [];
     @Input() question: QuestionBase<any>;
+    @Input() path: string;
 
     searchTerm: string = '';
 

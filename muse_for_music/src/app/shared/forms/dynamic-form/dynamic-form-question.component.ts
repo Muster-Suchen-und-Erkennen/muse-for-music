@@ -11,7 +11,26 @@ export class DynamicFormQuestionComponent {
 
     @Input() question: QuestionBase<any>;
     @Input() form: FormGroup;
+    @Input() path: string;
     @Input() nested: boolean = false;
+
+    @Input() specificationsCallback: (path: string, remove: boolean, recursive: boolean, affectsArrayMembers: boolean) => void;
+
+    questionSpec;
+    _specifications = [];
+    @Input()
+    set specifications(specifications: any[]) {
+        this._specifications = specifications;
+        specifications.forEach((spec) => {
+            if (spec.path === this.path) {
+                this.questionSpec = spec;
+            }
+        })
+    }
+
+    get specifications() {
+        return this._specifications;
+    }
 
     @Output() opened = new EventEmitter();
 

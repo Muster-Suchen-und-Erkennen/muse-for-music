@@ -20,6 +20,7 @@ export class DateInputComponent implements ControlValueAccessor {
     inputValue: string = '';
 
     @Input() question: QuestionBase<any>;
+    @Input() path: string;
 
     onChange: any = () => {};
 

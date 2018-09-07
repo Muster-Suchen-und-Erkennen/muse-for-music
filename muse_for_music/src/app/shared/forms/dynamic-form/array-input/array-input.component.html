@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <div class="flex-grow-1">
-                    <df-question *ngFor="let question of question?.nestedQuestions;" [question]="question" [form]="entry"></df-question>
+                    <df-question *ngFor="let question of question?.nestedQuestions;" [question]="question" [path]="path + '.' + i + '.' + question.key" [specificationsCallback]="specificationsCallback" [specifications]="specifications" [form]="entry"></df-question>
                 </div>
             </div>
         </div>

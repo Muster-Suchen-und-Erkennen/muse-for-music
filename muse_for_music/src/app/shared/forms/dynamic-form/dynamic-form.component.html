@@ -2,8 +2,15 @@
     <form *ngIf="form" [formGroup]="form">
 
         <div *ngFor="let question of questions" class="form-row pr2">
-            <df-question [question]="question" [form]="form" (opened)="closeUnrelated($event)" #questions></df-question>
+            <df-question [question]="question" [form]="form" (opened)="closeUnrelated($event)" [path]="question.key" [specificationsCallback]="updateSpecification" [specifications]="specifications" #questions></df-question>
         </div>
     </form>
     <m4m-save-button [formValid]="alwaysAllowSave || (validForSave | async)" (click)="saveForm()" *ngIf="showSaveButton"></m4m-save-button>
 </div>
+
+<m4m-dialog [dialogType]="'ok-cancel'" [valid]="valid" [icon]="'info'" [okCallback]="saveSpec" #dialog >
+        <h1 class="mv0" title>New spec:</h1>
+        <div class="w-100 ph3 pv2" body>
+            {{currentSpec?.path}}
+        </div>
+</m4m-dialog>

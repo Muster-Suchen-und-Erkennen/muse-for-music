@@ -9,6 +9,7 @@ import { QuestionControlService } from '../question-control.service';
 
 import { ApiObject } from '../../rest/api-base.service';
 import { SaveButtonComponent } from './save-button/save-button.component';
+import { myDialogComponent } from '../../dialog/dialog.component';
 
 @Component({
     selector: 'dynamic-form',
@@ -28,6 +29,9 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     form: FormGroup;
     valueChangeSubscription: Subscription;
 
+    specifications: {path: string, share: ApiObject, occurence: ApiObject, instrumentation: ApiObject[]}[] = [];
+    currentSpec: {path: string, share: ApiObject, occurence: ApiObject, instrumentation: ApiObject[]};
+
     private canSave: boolean;
 
     @Output() valid: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -38,6 +42,8 @@ export class DynamicFormComponent implements OnInit, OnChanges {
 
     @ViewChildren('questions') questionDivs;
     @ViewChild(SaveButtonComponent) savebutton: SaveButtonComponent;
+
+    @ViewChild(myDialogComponent) dialog: myDialogComponent;
 
     constructor(private qcs: QuestionControlService, private qs: QuestionService) { }
 
@@ -160,6 +166,66 @@ export class DynamicFormComponent implements OnInit, OnChanges {
                 this.patchFormValues();
             }
         }
+    }
+
+    updateSpecification = (path: string, remove: boolean = false, recursive: boolean = false, affectsArrayMembers: boolean = false) => {
+        if (remove) {
+            const newSpecifications = [];
+            this.specifications.forEach((spec) => {
+                if (recursive) {
+                    if (!spec.path.startsWith(path)) {
+                        newSpecifications.push(spec);
+                    }
+                } else {
+                    if (spec.path !== path) {
+                        newSpecifications.push(spec);
+                    }
+                }
+                if (affectsArrayMembers) {
+                    const splitpath = path.split('.');
+                    const splitpathSpec = spec.path.split('.');
+                    const arrayIndex = parseInt(splitpath[splitpath.length - 1], 10);
+                    const arrayIndexSpec = parseInt(splitpathSpec[splitpath.length - 1], 10);
+                    if (arrayIndex < arrayIndexSpec) {
+                        splitpathSpec[splitpath.length - 1] = '' + (arrayIndexSpec - 1);
+                    }
+                    spec.path = splitpathSpec.join('.');
+                }
+            });
+            this.specifications = newSpecifications;
+        } else {
+            this.currentSpec = null;
+            this.specifications.forEach((spec) => {
+                if (spec.path === path) {
+                    this.currentSpec = spec;
+                }
+            });
+            if (this.currentSpec == null) {
+                this.currentSpec = {
+                    path: path,
+                    share: {id: -1, _links: {self: {href: ''}}},
+                    occurence: {id: -1, _links: {self: {href: ''}}},
+                    instrumentation: [],
+                }
+            }
+            this.dialog.open();
+        }
+    }
+
+    saveSpec = () => {
+        const newSpecifications = [];
+        this.specifications.forEach((spec) => {
+            if (spec.path === this.currentSpec.path) {
+                newSpecifications.push(this.currentSpec);
+                this.currentSpec = null;
+            } else {
+                newSpecifications.push(spec);
+            }
+        });
+        if (this.currentSpec != null) {
+            newSpecifications.push(this.currentSpec);
+        }
+        this.specifications = newSpecifications;
     }
 
     saveForm = () => {
