@@ -20,15 +20,7 @@ export class ArrayInputComponent {
 
     @Input() specificationsCallback: (path: string, remove: boolean, recursive: boolean, affectsArrayMembers: boolean) => void;
 
-    _specifications = [];
-    @Input()
-    set specifications(specifications: any[]) {
-        this._specifications = specifications;
-    }
-
-    get specifications() {
-        return this._specifications;
-    }
+    @Input() specifications = [];
 
     constructor (private qcs: QuestionControlService, private qs: QuestionService) {}
 
@@ -42,6 +34,7 @@ export class ArrayInputComponent {
 
     deleteItem(i) {
         this.array.removeAt(i);
+        this.specificationsCallback(this.path + '.' + i, true, true, true);
     }
 
 }

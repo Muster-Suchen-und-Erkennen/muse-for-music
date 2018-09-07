@@ -8,7 +8,7 @@
     <span class="tooltip tooltip-right" [attr.data-tooltip]="error" [hidden]="isValid"  [ngStyle]="{'order': (question.controlType === 'object' && isCollapsible()) ? '1': '0'}"><i class="w2 tc mr1 f5 red fa fa-exclamation"></i></span>
 
     <div class="flex-grow flex flex-wrap">
-        <label class="f4 min-w4 mr2 ws-normal flex-grow tooltip-bottom" (click)="specificationsCallback(path)" [ngClass]="{'pointer': question.controlType === 'object' && isCollapsible(), 'tooltip': true||question.description}" style="word-wrap: break-word" [attr.for]="question.key" [attr.data-tooltip]="path">
+        <label class="f4 min-w4 mr2 ws-normal flex-grow tooltip-bottom" [ngClass]="{'pointer': question.controlType === 'object' && isCollapsible(), 'tooltip': question.description}" style="word-wrap: break-word" [attr.for]="question.key" [attr.data-tooltip]="question.description">
             {{question.label}}
         </label>
 

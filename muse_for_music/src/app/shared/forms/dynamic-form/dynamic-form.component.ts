@@ -173,7 +173,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
             const newSpecifications = [];
             this.specifications.forEach((spec) => {
                 if (recursive) {
-                    if (!spec.path.startsWith(path)) {
+                    if (spec.path !== path && !spec.path.startsWith(path + '.')) {
                         newSpecifications.push(spec);
                     }
                 } else {

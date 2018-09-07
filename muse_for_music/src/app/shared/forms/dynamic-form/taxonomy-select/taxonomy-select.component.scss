@@ -1,0 +1,12 @@
+.hover-switch .hover-switch-active {
+    display: initial;
+}
+.hover-switch:hover .hover-switch-active {
+    display: none;
+}
+.hover-switch .hover-switch-inactive {
+    display: none;
+}
+.hover-switch:hover .hover-switch-inactive {
+    display: initial;
+}

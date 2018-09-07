@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, ViewChild, OnInit } from '@angular/core';
+import { Component, forwardRef, Input, ViewChild, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { ApiObject } from '../../../rest/api-base.service';
@@ -19,7 +19,7 @@ import { ApiService } from '../../../rest/api.service';
     multi: true
   }]
 })
-export class TaxonomySelectComponent implements ControlValueAccessor, OnInit {
+export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, OnChanges {
 
     @ViewChild(myDropdownComponent) dropdown: myDropdownComponent
 
@@ -27,29 +27,12 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit {
     @Input() question: QuestionBase<any>;
     @Input() path: string;
 
-    @Input() specificationsCallback: (path: string, remove: boolean, recursive: boolean, affectsArrayMembers: boolean) => void;
+    @Input() specificationsCallback: (path: string, remove?: boolean, recursive?: boolean, affectsArrayMembers?: boolean) => void;
 
     specification: any;
-    _specifications: Map<number, any> = new Map<number, any>();
-    @Input()
-    set specifications(specifications: any[]) {
-        const newSpecs =  new Map<number, any>();
-        specifications.forEach((spec) => {
-            if (this.question.isArray) {
-                if (spec.path.startsWith(this.path)) {
-                    if (spec.path.length > this.path.length) {
-                        const id = parseInt(spec.path.substring(this.path.length + 1), 10);
-                        newSpecs.set(id, spec);
-                    }
-                }
-            } else {
-                if (spec.path === this.path) {
-                    this.specification = spec;
-                }
-            }
-        });
-        this._specifications = newSpecs;
-    }
+    specificationMap: Map<number, any> = new Map<number, any>();
+    @Input() specifications: any[] = [];
+
 
     displayName: string;
 
@@ -104,6 +87,44 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit {
                 this.displayName = taxonomy.display_name;
             }
         });
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes.specifications != null || changes.path != null) {
+            this.updateSpecificationMap();
+        }
+    }
+
+    updateSpecificationMap() {
+        const newSpecs =  new Map<number, any>();
+        this.specification = undefined;
+        this.specifications.forEach((spec) => {
+            if (this.question.isArray) {
+                if (spec.path.startsWith(this.path)) {
+                    if (spec.path.length > this.path.length) {
+                        const id = parseInt(spec.path.substring(this.path.length + 1), 10);
+                        newSpecs.set(id, spec);
+                    }
+                }
+            } else {
+                if (spec.path === this.path) {
+                    this.specification = spec;
+                }
+            }
+        });
+        this.specificationMap = newSpecs;
+    }
+
+    editSpecification(id) {
+        if (this.specificationsCallback != null) {
+            this.specificationsCallback(this.path + (this.question.isArray ? '.' + id : ''));
+        }
+    }
+
+    removeSpecification(id) {
+        if (this.specificationsCallback != null) {
+            this.specificationsCallback(this.path + (this.question.isArray ? '.' + id : ''), true);
+        }
     }
 
     selectedList() {
