@@ -3,6 +3,7 @@ import { Component, OnChanges, Input, OnInit } from '@angular/core';
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { UserApiService } from '../shared/rest/user-api.service';
+import { Subscription } from 'rxjs/Rx';
 
 
 @Component({
@@ -15,11 +16,16 @@ export class HistoryComponent implements OnChanges, OnInit {
 
     history: ApiObject[];
 
+    private sub: Subscription;
+
     constructor(private api: ApiService, private userApi: UserApiService) { }
 
     ngOnInit(): void {
-        if (this.userApi.roles.has('admin')) {
-            this.api.getHistory().subscribe(data => {
+        if (this.userApi.roles.has('admin') && !this.user) {
+            if (this.sub != null) {
+                this.sub.unsubscribe();
+            }
+            this.sub = this.api.getHistory().subscribe(data => {
                 if (data == undefined) {
                     return;
                 }
@@ -29,7 +35,10 @@ export class HistoryComponent implements OnChanges, OnInit {
     }
 
     ngOnChanges(): void {
-        this.api.getHistory(this.user).subscribe(data => {
+        if (this.sub != null) {
+            this.sub.unsubscribe();
+        }
+        this.sub = this.api.getHistory(this.user).subscribe(data => {
             if (data == undefined) {
                 return;
             }
