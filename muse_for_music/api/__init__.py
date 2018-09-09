@@ -27,6 +27,7 @@ from . import root, taxonomies, data
 
 @api.errorhandler(ValidationError)
 def handle_validation_erorr(error: ValidationError):
+    """Validation failed."""
     return {
         "errors": error.msg,
         "message": "Input payload validation failed"
@@ -35,6 +36,7 @@ def handle_validation_erorr(error: ValidationError):
 
 @api.errorhandler(NoAuthorizationError)
 def missing_header(error):
+    """User is not authorized for this operation."""
     log_unauthorized(error.message)
     return {'message': error.message}, 401
 

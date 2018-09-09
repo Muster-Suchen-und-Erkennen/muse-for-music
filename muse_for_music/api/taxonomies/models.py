@@ -39,11 +39,11 @@ taxonomy_item_post = ns.model('TaxonomyItemPOST', OrderedDict([
 ]))
 
 taxonomy_item_put = ns.inherit('TaxonomyItemPUT', taxonomy_item_post, OrderedDict([
-    ('id', fields.Integer(default=-1, required=True, example=1, readonly=True)),
+    ('id', fields.Integer(default=-1, example=1, readonly=True)),
 ]))
 
 taxonomy_item_ref = ns.model('TaxonomyItemREF', OrderedDict([
-    ('id', fields.Integer(default=-1, required=True, example=1, readonly=True)),
+    ('id', fields.Integer(default=-1, example=1, readonly=True)),
     ('name', fields.String(default='', required=False)),
     ('description', fields.String(default='', required=False, nullable=True)),
 ]))
@@ -101,7 +101,7 @@ class TaxonomyItems(fields.Raw):
         # does not work with swagger api!
         schema = {}
         listRef = '#/definitions/{0}'.format(taxonomy_item_get.name)
-        treeRef = '#/definitions/{0}'.format(taxonomy_tree_item_get.name)
+        treeRef = '#/definitions/{0}'.format(taxonomy_tree_item_get_json.name)
         schema['oneOf'] = [
             {'type': 'array', 'items': {'$ref': listRef}},
             {'$ref': treeRef},
@@ -120,9 +120,9 @@ taxonomy_links = ns.model('TaxonomyLinks', {
 })
 
 taxonomy_model = ns.model('TaxonomyModel', {
-    'name': fields.String(default='', required=True, readonly=True, attribute='__name__'),
+    'name': fields.String(default='', readonly=True, attribute='__name__'),
     '_links': NestedFields(taxonomy_links),
-    'display_name': fields.String(default='', required=True, readonly=True),
+    'display_name': fields.String(default='', readonly=True),
     'taxonomy_type': fields.String(default='list', enum=['list', 'tree'], discriminator=True, readonly=True),
     'select_only_leafs': fields.Boolean(default=False, readonly=True, required=False),
     'select_multiple': fields.Boolean(default=False, readonly=True, required=False),

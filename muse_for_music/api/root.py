@@ -4,7 +4,7 @@ from flask_restplus import Resource
 from . import api
 from .models import root_model
 
-ns = api.namespace('default', path='/')
+ns = api.namespace('default', path='/', description='Root Resource')
 
 @ns.route('/')
 @ns.doc(security=None)

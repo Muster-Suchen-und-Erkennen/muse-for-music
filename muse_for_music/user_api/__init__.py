@@ -51,7 +51,7 @@ def has_roles(roles: List[RoleEnum]):
     return has_roles_decorator
 
 
-auth_logger = getLogger(app.logger_name + '.auth')  # type: Logger
+auth_logger = getLogger('flask.app.auth')  # type: Logger
 
 formatter = Formatter(fmt=app.config['AUTH_LOG_FORMAT'])
 

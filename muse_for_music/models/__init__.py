@@ -9,7 +9,7 @@ from sqlalchemy import event
 from .. import app, db
 from .users import User, UserRole, RoleEnum
 
-DB_COMMAND_LOGGER = getLogger(app.logger_name + '.db')  # type: Logger
+DB_COMMAND_LOGGER = getLogger('flask.app.db')  # type: Logger
 
 formatter = Formatter(fmt='[%(levelname)s] [%(name)-16s] %(message)s')
 
