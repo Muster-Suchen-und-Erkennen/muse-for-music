@@ -42,6 +42,10 @@ export class SelectionListComponent implements OnChanges {
     selectedSet: Set<number> = new Set<number>();
     matching: Set<number> = new Set<number>();
 
+    selectableId(index, selectable) {
+        return selectable.id;
+    }
+
     @Input()
     set selected(selection: any[]) {
         const selected = new Set<number>();

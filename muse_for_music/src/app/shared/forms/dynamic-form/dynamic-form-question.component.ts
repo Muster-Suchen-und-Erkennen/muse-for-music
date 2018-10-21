@@ -23,6 +23,10 @@ export class DynamicFormQuestionComponent {
 
     open: boolean = false;
 
+    questionId(index, qstn: QuestionBase<any>) {
+        return qstn.key;
+    }
+
     isCollapsible() {
         if (this.question == null || this.question.nestedQuestions == null) {
             return false;

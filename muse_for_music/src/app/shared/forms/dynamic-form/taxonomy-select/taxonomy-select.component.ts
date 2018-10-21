@@ -42,6 +42,10 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
 
     onTouched: any = () => {};
 
+    selectableId(index, selectable) {
+        return selectable.id;
+    }
+
     @Input()
     get value(): ApiObject|ApiObject[] {
         if (!this.question.isArray) {

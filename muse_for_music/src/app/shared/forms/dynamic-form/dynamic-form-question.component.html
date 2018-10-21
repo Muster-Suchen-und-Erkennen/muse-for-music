@@ -58,7 +58,7 @@
 <div class="flex" *ngIf="question.controlType === 'object'" [formGroup]="form">
     <div class="bl bw2 ml2 b--gray flex-grow" *ngIf="open || !(question.controlType === 'object' && isCollapsible())">
         <div class="flex-grow" formGroupName="{{question.key}}">
-            <div *ngFor="let qstn of question?.nestedQuestions" class="flex-grow">
+            <div *ngFor="let qstn of question?.nestedQuestions;trackBy:questionId" class="flex-grow">
                 <df-question [question]="qstn" [form]="form.controls[question.key]" [path]="path + '.' + qstn.key" [specificationsCallback]="specificationsCallback" [specifications]="specifications" [nested]="false"></df-question>
             </div>
         </div>

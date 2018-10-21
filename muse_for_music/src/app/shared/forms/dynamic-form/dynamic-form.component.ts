@@ -47,6 +47,10 @@ export class DynamicFormComponent implements OnInit, OnChanges {
 
     constructor(private qcs: QuestionControlService, private qs: QuestionService) { }
 
+    questionId(index, qstn: QuestionBase<any>) {
+        return qstn.key;
+    }
+
     closeUnrelated(sourceKey) {
         this.questionDivs.forEach(question => question.close(sourceKey));
     }

@@ -49,6 +49,10 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
 
     onTouched: any = () => {};
 
+    selectableId(index, selectable) {
+        return selectable.id;
+    }
+
     @Input('value')
     get value(): ApiObject|ApiObject[] {
         if (this.choices == null || this.selected == null || this.selected.length === 0) {

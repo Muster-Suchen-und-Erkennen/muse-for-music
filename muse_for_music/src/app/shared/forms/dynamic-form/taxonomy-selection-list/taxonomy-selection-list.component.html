@@ -1,7 +1,7 @@
 <ng-container *ngIf="showTree">
     <div class="flex items-center tooltip-bottom tooltip-small tooltip-wo-triangle"
         [ngClass]="{tooltip: !(!selectable?.description)}" [attr.data-tooltip]="selectable?.description"
-        *ngFor="let selectable of selectables inline" [ngStyle]="{'display': visible(selectable) ? 'flex' : 'none'}">
+        *ngFor="let selectable of selectables;trackBy:selectableId" [ngStyle]="{'display': visible(selectable) ? 'flex' : 'none'}">
         <div [ngStyle]="{'min-width': selectable.depth + 'rem'}"></div>
         <div class="h1 pointer" (click)="toggleClosed(selectable)" *ngIf="selectable.children.length > 0" >
             <i class="f6 fa fa-fw fa-plus" [hidden]="!closed.has(selectable.id)"></i>
@@ -16,7 +16,7 @@
     </div>
 </ng-container>
 <ng-container *ngIf="!showTree">
-    <div *ngFor="let selectable of selectables" [hidden]="!visible(selectable)"
+    <div *ngFor="let selectable of selectables;trackBy:selectableId" [hidden]="!visible(selectable)"
             (click)="select(selectable.id)"
             class="hover-bg-black-30"
             [ngClass]="{'bg-light-blue': selectable.id === highlighted, 'b': selectedSet.has(selectable.id)}">

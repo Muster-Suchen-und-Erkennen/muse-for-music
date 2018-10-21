@@ -55,6 +55,10 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
     matching: Set<number> = new Set<number>();
     openNodes: Set<number> = new Set<number>();
 
+    selectableId(index, selectable) {
+        return selectable.id;
+    }
+
     @Input()
     get selected(): any[] {
         let selected = [];

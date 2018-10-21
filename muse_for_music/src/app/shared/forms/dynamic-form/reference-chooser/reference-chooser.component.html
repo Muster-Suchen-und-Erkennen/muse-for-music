@@ -1,6 +1,6 @@
 <m4m-dropdown class="min-w5 flex flex-grow" #dropdown>
     <div class="min-w5 flex-grow bb b--gray flex flex-wrap gray hover-black" content>
-        <p class="bg-black-20 pl3 pr2 pv1 ma1 br-pill black" *ngFor="let item of selected">{{item.name}}<i class="ml2 fa fa-close mr2 hover-red pointer" (click)="select.select(item.id)"></i></p>
+        <p class="bg-black-20 pl3 pr2 pv1 ma1 br-pill black" *ngFor="let item of selected;trackBy:selectableId">{{item.name}}<i class="ml2 fa fa-close mr2 hover-red pointer" (click)="select.select(item.id)"></i></p>
         <div class="flex-grow flex">
             <input class="flex-grow input-reset bn pa1 black" type="search" [(ngModel)]="searchTerm" [attr.placeholder]="'suche ' + placeholder"
                     (focus)="dropdown.openDropdown(); select.updateMatching('')" (keyup)="dropdown.openDropdown()"

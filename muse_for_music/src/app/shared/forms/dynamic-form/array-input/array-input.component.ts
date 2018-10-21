@@ -24,6 +24,14 @@ export class ArrayInputComponent {
 
     constructor (private qcs: QuestionControlService, private qs: QuestionService) {}
 
+    arrayId(index) {
+        return index;
+    }
+
+    questionId(index, qstn: QuestionBase<any>) {
+        return qstn.key;
+    }
+
     newItem() {
         this.qs.getQuestions(this.question.valueType).take(1).subscribe((questions => {
             this.qcs.toFormGroup(questions).take(1).subscribe((group => {
