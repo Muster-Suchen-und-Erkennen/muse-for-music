@@ -48,7 +48,7 @@ class TaktartToRhythm(db.Model):
     rhythm_id = db.Column(db.Integer, db.ForeignKey('rhythm.id'), primary_key=True)
     taktart_id = db.Column(db.Integer, db.ForeignKey('taktart.id'), primary_key=True)
 
-    rhythm = db.relationship(Rhythm, backref=db.backref('_measure_times', lazy='joined'))
+    rhythm = db.relationship(Rhythm, backref=db.backref('_measure_times', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     taktart = db.relationship('Taktart')
 
     def __init__(self, rhythm, taktart, **kwargs):
