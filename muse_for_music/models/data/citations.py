@@ -9,7 +9,6 @@ from typing import Union, Sequence, List
 
 class Citations(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
 
-    _normal_attributes = (('is_foreign', bool), )
     _list_attributes = ('opus_citations', 'instrument_citations',
                         'other_citations', 'epoch_citations',
                         'gattung_citations', 'tonmalerei_citations',
@@ -17,7 +16,6 @@ class Citations(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
 
     __tablename__ = 'citations'
     id = db.Column(db.Integer, primary_key=True)
-    is_foreign = db.Column(db.Boolean, default=False)
 
     @property
     def opus_citations(self):
@@ -101,7 +99,7 @@ class Citations(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
 class OpusCitation(db.Model, GetByID, UpdateableModelMixin):
 
     _normal_attributes = (('citation_type', Zitat), ('opus', Opus))
-    _reference_only_attributes = ('opus')
+    _reference_only_attributes = ('opus', )
 
     id = db.Column(db.Integer, primary_key=True)
     citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'))
@@ -144,6 +142,8 @@ class GattungToCitations(db.Model):
 
 
 class PersonToCitations(db.Model):
+    _reference_only_attributes = ('person', )
+
     citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), primary_key=True)
     person_id = db.Column(db.Integer, db.ForeignKey('person.id'), primary_key=True)
 

@@ -49,11 +49,6 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     has_melody = db.Column(db.Boolean, default=False)
     melody_form_id = db.Column(db.Integer, db.ForeignKey('melodieform.id'), nullable=True)
     intervallik_id = db.Column(db.Integer, db.ForeignKey('intervallik.id'), nullable=True)
-    # Ambitus
-    #highest_pitch_id = db.Column(db.Integer, db.ForeignKey('grundton.id'), nullable=True)
-    #highest_octave_id = db.Column(db.Integer, db.ForeignKey('oktave.id'), nullable=True)
-    #lowest_pitch_id = db.Column(db.Integer, db.ForeignKey('grundton.id'), nullable=True)
-    #lowest_octave_id = db.Column(db.Integer, db.ForeignKey('oktave.id'), nullable=True)
     # Einsatz der Stimme
     share_id = db.Column(db.Integer, db.ForeignKey('anteil.id'), nullable=True)
     occurence_in_part_id = db.Column(db.Integer, db.ForeignKey('auftreten_werkausschnitt.id'), nullable=True)
@@ -68,11 +63,6 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     # stimmverlauf
     melody_form = db.relationship(Melodieform)
     intervallik = db.relationship(Intervallik)
-    # Ambitus
-    #highest_pitch = db.relationship(Grundton, foreign_keys=[highest_pitch_id])
-    #highest_octave = db.relationship(Oktave, foreign_keys=[highest_octave_id])
-    #lowest_pitch = db.relationship(Grundton, foreign_keys=[lowest_pitch_id])
-    #lowest_octave = db.relationship(Oktave, foreign_keys=[lowest_octave_id])
     # Einsatz der Stimme
     share = db.relationship(Anteil)
     occurence_in_part = db.relationship(AuftretenWerkausschnitt)
