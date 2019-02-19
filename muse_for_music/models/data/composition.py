@@ -74,6 +74,7 @@ class MusicialSequence(db.Model, GetByID):
     id = db.Column(db.Integer, primary_key=True)
     composition_id = db.Column(db.Integer, db.ForeignKey('composition.id'))
     tonal_corrected = db.Column(db.Boolean, default=False)
+    exact_repetition = db.Column(db.Boolean, default=False)
     starting_interval_id = db.Column(db.Integer, db.ForeignKey('intervall.id'))
     flow_id = db.Column(db.Integer, db.ForeignKey('bewegung_im_tonraum.id'))
     beats = db.Column(db.Integer)
@@ -82,15 +83,16 @@ class MusicialSequence(db.Model, GetByID):
     flow = db.relationship(BewegungImTonraum, lazy='joined')
     composition = db.relationship(Composition, backref=db.backref('_sequences', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
 
-    def __init__(self, composition, starting_interval, flow, beats: int, tonal_corrected: bool=False, **kwargs):
+    def __init__(self, composition, starting_interval, flow, beats: int, tonal_corrected: bool=False, exact_repetition: bool=False, **kwargs):
         if isinstance(composition, Composition):
             self.composition = composition
         else:
             self.composition = Composition.get_by_id(composition)
-        self.update(starting_interval, flow, beats, tonal_corrected)
+        self.update(starting_interval, flow, beats, tonal_corrected, exact_repetition)
 
-    def update(self, starting_interval, flow, beats: int, tonal_corrected: bool, **kwargs):
+    def update(self, starting_interval, flow, beats: int, tonal_corrected: bool, exact_repetition: bool, **kwargs):
         self.starting_interval = Intervall.get_by_id_or_dict(starting_interval)
         self.flow = BewegungImTonraum.get_by_id_or_dict(flow)
         self.beats = beats
         self.tonal_corrected = tonal_corrected
+        self.exact_repetition = exact_repetition

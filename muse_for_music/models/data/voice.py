@@ -5,76 +5,82 @@ from typing import Union, Sequence, Dict
 
 from .measure import Measure
 from .subpart import SubPart
-from .form import Form
 from .harmonics import Harmonics
 from .satz import Satz
 from .dramaturgic_context import DramaturgicContext
 from .dynamic import Dynamic, DynamicContext
 from .composition import Composition
+from .rendition import Rendition
 from .rhythm import Rhythm
 from .citations import Citations
 from .instrumentation import InstrumentationContext, Instrumentation
 from ..taxonomies import Anteil, MusikalischeFunktion, Melodieform, Verzierung, \
                          Intervallik, Notenwert, Grundton, Oktave, \
-                         AuftretenWerkausschnitt, VoiceToVoiceRelation
+                         AuftretenWerkausschnitt, VoiceToVoiceRelation, \
+                         MusikalischeWendung
 
 
 class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
-    _normal_attributes = (('lowest_pitch', Grundton),
-                          ('occurence_in_part', AuftretenWerkausschnitt),
-                          ('cites_own_melody_later', bool),
-                          ('intervallik', Intervallik),
-                          ('has_melody', bool),
-                          ('highest_octave', Oktave),
-                          ('contains_repetition_from_outside', bool),
+    _normal_attributes = (
                           ('name', str),
-                          ('highest_pitch', Grundton),
+                          ('occurence_in_part', AuftretenWerkausschnitt),
+                          ('share', Anteil),
                           ('satz', Satz),
-                          ('lowest_octave', Oktave),
+                          ('rhythm', Rhythm),
+                          ('composition', Composition),
+                          ('rendition', Rendition),
+                          ('has_melody', bool),
                           ('melody_form', Melodieform),
-                          ('is_repetitive', bool),
-                          ('is_symmetric', bool),
-                          ('share', Anteil))
+                          ('intervallik', Intervallik),
+                          ('citations', Citations),
+                          )
 
-    _list_attributes = ('dominant_note_values', 'instrumentation', 'ornaments')
+    _list_attributes = ('dominant_note_values', 'instrumentation', 'ornaments',
+                        'musicial_figures', 'musicial_function')
 
     id = db.Column(db.Integer, primary_key=True)
     subpart_id = db.Column(db.Integer, db.ForeignKey('sub_part.id'), nullable=False)
     name = db.Column(db.String(191), nullable=True)
     instrumentation_id = db.Column(db.Integer, db.ForeignKey('instrumentation.id', ondelete='CASCADE'), nullable=False)
     satz_id = db.Column(db.Integer, db.ForeignKey('satz.id'), nullable=True)
+    rhythm_id = db.Column(db.Integer, db.ForeignKey('rhythm.id'), nullable=True)
     # stimmverlauf
     has_melody = db.Column(db.Boolean, default=False)
     melody_form_id = db.Column(db.Integer, db.ForeignKey('melodieform.id'), nullable=True)
     intervallik_id = db.Column(db.Integer, db.ForeignKey('intervallik.id'), nullable=True)
-    is_repetitive = db.Column(db.Boolean, default=False)
-    contains_repetition_from_outside = db.Column(db.Boolean, default=False)
-    cites_own_melody_later = db.Column(db.Boolean, default=False)
-    is_symmetric = db.Column(db.Boolean, default=False)
     # Ambitus
-    highest_pitch_id = db.Column(db.Integer, db.ForeignKey('grundton.id'), nullable=True)
-    highest_octave_id = db.Column(db.Integer, db.ForeignKey('oktave.id'), nullable=True)
-    lowest_pitch_id = db.Column(db.Integer, db.ForeignKey('grundton.id'), nullable=True)
-    lowest_octave_id = db.Column(db.Integer, db.ForeignKey('oktave.id'), nullable=True)
+    #highest_pitch_id = db.Column(db.Integer, db.ForeignKey('grundton.id'), nullable=True)
+    #highest_octave_id = db.Column(db.Integer, db.ForeignKey('oktave.id'), nullable=True)
+    #lowest_pitch_id = db.Column(db.Integer, db.ForeignKey('grundton.id'), nullable=True)
+    #lowest_octave_id = db.Column(db.Integer, db.ForeignKey('oktave.id'), nullable=True)
     # Einsatz der Stimme
     share_id = db.Column(db.Integer, db.ForeignKey('anteil.id'), nullable=True)
     occurence_in_part_id = db.Column(db.Integer, db.ForeignKey('auftreten_werkausschnitt.id'), nullable=True)
+    composition_id = db.Column(db.Integer, db.ForeignKey('composition.id'), nullable=True)
+    rendition_id = db.Column(db.Integer, db.ForeignKey('rendition.id'), nullable=True)
+    citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), nullable=True)
 
     subpart = db.relationship(SubPart, lazy='select', backref=db.backref('voices', single_parent=True, cascade="all, delete-orphan"))
     _instrumentation = db.relationship('Instrumentation', lazy='subquery', single_parent=True, cascade="all, delete-orphan")  # type: Instrumentation
     satz = db.relationship(Satz, single_parent=True, cascade="all, delete-orphan")
+    rhythm = db.relationship(Rhythm, single_parent=True, cascade="all, delete-orphan")
     # stimmverlauf
     melody_form = db.relationship(Melodieform)
     intervallik = db.relationship(Intervallik)
     # Ambitus
-    highest_pitch = db.relationship(Grundton, foreign_keys=[highest_pitch_id])
-    highest_octave = db.relationship(Oktave, foreign_keys=[highest_octave_id])
-    lowest_pitch = db.relationship(Grundton, foreign_keys=[lowest_pitch_id])
-    lowest_octave = db.relationship(Oktave, foreign_keys=[lowest_octave_id])
+    #highest_pitch = db.relationship(Grundton, foreign_keys=[highest_pitch_id])
+    #highest_octave = db.relationship(Oktave, foreign_keys=[highest_octave_id])
+    #lowest_pitch = db.relationship(Grundton, foreign_keys=[lowest_pitch_id])
+    #lowest_octave = db.relationship(Oktave, foreign_keys=[lowest_octave_id])
     # Einsatz der Stimme
     share = db.relationship(Anteil)
     occurence_in_part = db.relationship(AuftretenWerkausschnitt)
+    composition = db.relationship(Composition, single_parent=True, cascade="all, delete-orphan")
+    rendition = db.relationship(Rendition, single_parent=True, cascade="all, delete-orphan")
+    citations = db.relationship(Citations, single_parent=True, cascade="all, delete-orphan")
+
+    _subquery_load = ['satz', 'rhythm', 'composition', 'rendition', 'citations']
 
     def __init__(self, subpart: Union[int, SubPart], name: str, **kwargs):
         if isinstance(subpart, SubPart):
@@ -123,12 +129,34 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
         self.update_list(dominant_note_values_list, old_items, NotenwertToVoice,
                          Notenwert, 'notenwert')
 
+    @property
+    def musicial_figures(self):
+        return [mapping.musikalische_wendung for mapping in self._musicial_figures]
+
+    @musicial_figures.setter
+    def musicial_figures(self, musicial_figures_list: Union[Sequence[int], Sequence[dict]]):
+        old_items = {mapping.musikalische_wendung.id: mapping for mapping in self._musicial_figures}
+        self.update_list(musicial_figures_list, old_items, MusikalischeWendungToVoice,
+                         MusikalischeWendung, 'musikalische_wendung')
+
+
+class MusikalischeWendungToVoice(db.Model):
+    voice_id = db.Column(db.Integer, db.ForeignKey('voice.id'), primary_key=True)
+    musikalische_wendung_id = db.Column(db.Integer, db.ForeignKey('musikalische_wendung.id'), primary_key=True)
+
+    voice = db.relationship(Voice, backref=db.backref('_musicial_figures', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
+    musikalische_wendung = db.relationship('MusikalischeWendung')
+
+    def __init__(self, voice, musikalische_wendung, **kwargs):
+        self.voice = voice
+        self.musikalische_wendung = musikalische_wendung
+
 
 class MusikalischeFunktionToVoice(db.Model):
     voice_id = db.Column(db.Integer, db.ForeignKey('voice.id'), primary_key=True)
     musikalische_funktion_id = db.Column(db.Integer, db.ForeignKey('musikalische_funktion.id'), primary_key=True)
 
-    voice = db.relationship(Voice, backref=db.backref('_musicial_funktions', lazy='joined'))
+    voice = db.relationship(Voice, backref=db.backref('_musicial_function', lazy='joined'))
     musikalische_funktion = db.relationship('MusikalischeFunktion')
 
     def __init__(self, voice, musikalische_funktion, **kwargs):

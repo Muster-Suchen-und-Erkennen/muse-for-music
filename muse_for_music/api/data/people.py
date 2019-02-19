@@ -102,8 +102,8 @@ class PersonResource(Resource):
 
         for attribute in ('birth_date', 'death_date'):
             if attribute in new_values:
-                value = parse_date(new_values[attribute])
-                setattr(person, attribute, value)
+                value = new_values[attribute]
+                setattr(person, attribute, value if value > 0 else None)
 
         if 'gender' in new_values:
             value = GenderEnum[new_values['gender']]

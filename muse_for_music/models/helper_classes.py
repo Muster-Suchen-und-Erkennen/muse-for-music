@@ -118,7 +118,7 @@ class UpdateableModelMixin():
     def check_for_required_attr(self, name, new_values, cls, partial: bool=False):
         if name not in new_values and name not in self._optional_attributes:
             if not partial:
-                raise ValidationError("'{}' is a required property".format(name))
+                raise ValidationError("'{}' is a required property for class {}".format(name, self.__class__))
             else:
                 if cls == str:
                     new_values.name = ''

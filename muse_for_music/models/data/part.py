@@ -1,17 +1,18 @@
 from ... import db
-from ..helper_classes import GetByID, UpdateableModelMixin
+from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 
 from .measure import Measure
 from .opus import Opus
 from .instrumentation import InstrumentationContext
 from .dynamic import DynamicContext
 from .tempo import TempoContext
-from .form import Form
 from .dramaturgic_context import DramaturgicContext
-from ..taxonomies import AuftretenSatz
+from ..taxonomies import AuftretenSatz, FormaleFunktion
+
+from typing import Union, Sequence, List
 
 
-class Part(db.Model, GetByID, UpdateableModelMixin):
+class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
     _normal_attributes = (('name', str),
                           ('measure_start', Measure),
@@ -19,11 +20,12 @@ class Part(db.Model, GetByID, UpdateableModelMixin):
                           ('length', int),
                           ('movement', int),
                           ('occurence_in_movement', AuftretenSatz),
-                          ('form', Form),
                           ('dramaturgic_context', DramaturgicContext),
                           ('tempo_context', TempoContext),
                           ('dynamic_context', DynamicContext),
                           ('instrumentation_context', InstrumentationContext))
+
+    _list_attributes = ('formal_functions', )
 
     id = db.Column(db.Integer, primary_key=True)
     opus_id = db.Column(db.Integer, db.ForeignKey('opus.id'), nullable=False)
@@ -36,7 +38,6 @@ class Part(db.Model, GetByID, UpdateableModelMixin):
     instrumentation_context_id = db.Column(db.Integer, db.ForeignKey('instrumentation_context.id'), nullable=True)
     dynamic_context_id = db.Column(db.Integer, db.ForeignKey('dynamic_context.id'), nullable=True)
     tempo_context_id = db.Column(db.Integer, db.ForeignKey('tempo_context.id'), nullable=True)
-    form_id = db.Column(db.Integer, db.ForeignKey('form.id'), nullable=True)
     dramaturgic_context_id = db.Column(db.Integer, db.ForeignKey('dramaturgic_context.id'), nullable=True)
 
     opus = db.relationship(Opus, lazy='select', backref=db.backref('parts', cascade="all, delete-orphan"))
@@ -46,7 +47,6 @@ class Part(db.Model, GetByID, UpdateableModelMixin):
     instrumentation_context = db.relationship(InstrumentationContext, single_parent=True, cascade="all, delete-orphan")
     dynamic_context = db.relationship(DynamicContext, single_parent=True, cascade="all, delete-orphan")
     tempo_context = db.relationship(TempoContext, single_parent=True, cascade="all, delete-orphan")
-    form = db.relationship(Form, lazy='joined', single_parent=True, cascade="all, delete-orphan")
     dramaturgic_context = db.relationship(DramaturgicContext, single_parent=True, cascade="all, delete-orphan")
 
     _subquery_load = ['dramaturgic_context', 'tempo_context', 'dynamic_context',
@@ -72,9 +72,6 @@ class Part(db.Model, GetByID, UpdateableModelMixin):
         db.session.add(self.tempo_context)
         db.session.add(self.dramaturgic_context)
 
-        self.form = Form()
-        db.session.add(self.form)
-
         from .subpart import SubPart
         from .history import History, MethodEnum
 
@@ -83,3 +80,25 @@ class Part(db.Model, GetByID, UpdateableModelMixin):
 
         hist = History(MethodEnum.create, subpart)
         db.session.add(hist)
+
+    @property
+    def formal_functions(self):
+        return [mapping.formale_funktion for mapping in self._formal_functions]
+
+    @formal_functions.setter
+    def formal_functions(self, formal_functions_list: Union[Sequence[int], Sequence[dict]]):
+        old_items = {mapping.formale_funktion.id: mapping for mapping in self._formal_functions}
+        self.update_list(formal_functions_list, old_items, FormaleFunktionToPart,
+                         FormaleFunktion, 'formale_funktion')
+
+
+class FormaleFunktionToPart(db.Model):
+    part_id = db.Column(db.Integer, db.ForeignKey('part.id'), primary_key=True)
+    formale_funktion_id = db.Column(db.Integer, db.ForeignKey('formale_funktion.id'), primary_key=True)
+
+    part = db.relationship(Part, backref=db.backref('_formal_functions', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
+    formale_funktion = db.relationship('FormaleFunktion')
+
+    def __init__(self, part, formale_funktion, **kwargs):
+        self.part = part
+        self.formale_funktion = formale_funktion

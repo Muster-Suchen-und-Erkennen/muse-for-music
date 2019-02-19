@@ -38,12 +38,12 @@ export class PeopleOverviewComponent implements OnInit {
                 if (this.selected == null || this.selected !== selected) {
                     selected = person.id;
                 }
-                let birth = this.formatDate(person.birth_date) + ' *';
-                let death = this.formatDate(person.death_date) + ' ✝';
-                if (person.birth_date === '0001-01-01') {
+                let birth = person.birth_date + ' *';
+                let death = person.death_date + ' ✝';
+                if (person.birth_date < 0) {
                     birth = 'na';
                 }
-                if (person.death_date === '0001-01-01') {
+                if (person.death_date < 0) {
                     death = 'na';
                 }
                 const row = new TableRow(person.id, [person.name, person.gender,
@@ -53,15 +53,6 @@ export class PeopleOverviewComponent implements OnInit {
             this.selected = selected;
             this.tableData = tableData;
         });
-    }
-
-    formatDate(date: string): string {
-        if (date.match(/[0-9]{4}-[0-9]{2}-[0-9]{2}/)) {
-            const parts = date.split('-');
-            return parts[2] + '.' + parts[1] + '.' + parts[0];
-        } else {
-            return date;
-        }
     }
 
     save = () => {
