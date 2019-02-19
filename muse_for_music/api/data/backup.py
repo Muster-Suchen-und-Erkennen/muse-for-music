@@ -36,21 +36,22 @@ def opus_to_backup_json(obj: Person):
 @to_backup_json.register(Opus)
 def opus_to_backup_json(obj: Opus):
     serializable = marshal(obj, opus_get)
-    serializable.parts = [to_backup_json(part) for part in obj.parts]
+    serializable['parts'] = [to_backup_json(part) for part in obj.parts]
     return serializable
 
 
 @to_backup_json.register(Part)
 def part_to_backup_json(obj: Part):
     serializable = marshal(obj, part_get)
-    serializable.subparts = [to_backup_json(subpart) for subpart in obj.subparts]
+    serializable['subparts'] = [to_backup_json(subpart) for subpart in obj.subparts]
     return serializable
 
 
 @to_backup_json.register(SubPart)
 def subpart_to_backup_json(obj: SubPart):
+    print(obj)
     serializable = marshal(obj, subpart_get)
-    serializable.voices = [to_backup_json(voice) for voice in obj.voices]
+    serializable['voices'] = [to_backup_json(voice) for voice in obj.voices]
     return serializable
 
 

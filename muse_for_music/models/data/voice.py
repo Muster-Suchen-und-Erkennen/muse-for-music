@@ -158,7 +158,7 @@ class VerzierungToVoice(db.Model):
     voice_id = db.Column(db.Integer, db.ForeignKey('voice.id'), primary_key=True)
     verzierung_id = db.Column(db.Integer, db.ForeignKey('verzierung.id'), primary_key=True)
 
-    voice = db.relationship(Voice, backref=db.backref('_ornaments', lazy='joined'))
+    voice = db.relationship(Voice, backref=db.backref('_ornaments', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
     verzierung = db.relationship('Verzierung')
 
     def __init__(self, voice, verzierung, **kwargs):

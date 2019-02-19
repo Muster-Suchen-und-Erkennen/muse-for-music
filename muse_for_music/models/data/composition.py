@@ -61,7 +61,7 @@ class CompositionTechniqueToComposition(db.Model):
     composition_id = db.Column(db.Integer, db.ForeignKey('composition.id'), primary_key=True)
     verarbeitungstechnik_id = db.Column(db.Integer, db.ForeignKey('verarbeitungstechnik.id'), primary_key=True)
 
-    composition = db.relationship(Composition, backref=db.backref('_techniques', lazy='joined'))
+    composition = db.relationship(Composition, backref=db.backref('_techniques', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     verarbeitungstechnik = db.relationship('Verarbeitungstechnik')
 
     def __init__(self, composition, verarbeitungstechnik, **kwargs):
