@@ -3,12 +3,12 @@ from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 
 from typing import Union
 
-from .measure import Measure
 from .part import Part
 from .harmonics import Harmonics
 from .satz import Satz
 from .dynamic import Dynamic
 from .tempo import TempoGroup
+from .ambitus import AmbitusGroup
 from .citations import Citations
 from .instrumentation import Instrumentation
 from ..taxonomies import Anteil, AuftretenWerkausschnitt, MusikalischeWendung
@@ -24,7 +24,8 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
                           ('is_tutti', bool),
                           ('dynamic', Dynamic),
                           ('harmonics', Harmonics),
-                          ('tempo', TempoGroup),)
+                          ('tempo', TempoGroup),
+                          ('ambitus', AmbitusGroup),)
 
     _list_attributes = ('instrumentation', )
 
@@ -38,6 +39,7 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     dynamic_id = db.Column(db.Integer, db.ForeignKey('dynamic.id'), nullable=True)
     harmonics_id = db.Column(db.Integer, db.ForeignKey('harmonics.id'), nullable=True)
     tempo_id = db.Column(db.Integer, db.ForeignKey('tempo_group.id'), nullable=True)
+    ambitus_id = db.Column(db.Integer, db.ForeignKey('ambitus_group.id'), nullable=True)
 
     part = db.relationship(Part, lazy='select', backref=db.backref('subparts', single_parent=True, cascade="all, delete-orphan"))
     occurence_in_part = db.relationship(AuftretenWerkausschnitt, lazy='joined', single_parent=True)
@@ -46,6 +48,7 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     dynamic = db.relationship(Dynamic, single_parent=True, cascade="all, delete-orphan")
     harmonics = db.relationship(Harmonics, single_parent=True, cascade="all, delete-orphan")
     tempo = db.relationship(TempoGroup, single_parent=True, cascade="all, delete-orphan")
+    ambitus = db.relationship(AmbitusGroup, single_parent=True, cascade="all, delete-orphan")
 
     _subquery_load = ['dynamic', 'harmonics', 'voices']
 
