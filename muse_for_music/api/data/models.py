@@ -72,9 +72,8 @@ person_post = api.model('PersonPOST', OrderedDict([
 ]))
 
 person_put = api.inherit('PersonPUT', person_post, OrderedDict([
-    ('canonical_name', fields.String(title='Vollständiger Name', max_length=191, default='', example='admin', nullable=True)),
-    ('birth_date', fields.Date(title='Geburtstag', example='1921-2-4', nullable=True)),
-    ('death_date', fields.Date(title='Todestag', example='1921-3-23', nullable=True)),
+    ('birth_date', fields.Integer(title='Geburtjahr', example=1921, default=-1, nullable=True)),
+    ('death_date', fields.Integer(title='Todesjahr', example=1921, default=-1, nullable=True)),
     ('nationality', fields.String(title='Nationalität', max_length=100, default='', nullable=True)),
 ]))
 
@@ -97,7 +96,7 @@ opus_links = api.inherit('OpusLinks', with_curies, OrderedDict([
 ]))
 
 opus_post = api.model('OpusPOST', OrderedDict([
-    ('name', fields.String(max_length=191, default='', required=True, example='duett in g moll', title='Name')),
+    ('name', fields.String(max_length=191, default='', required=True, example='duett in g moll', title='Titel')),
     ('composer', fields.Nested(person_get, description='The composer.', reference='person', title='Komponist', required=True)),
 ]))
 
@@ -106,7 +105,7 @@ opus_get_citation = api.inherit('OpusGETCitation', opus_post, OrderedDict([
     ('_links', NestedFields(opus_links)),
     ('opus_name', fields.String(title='Name', default='', required=True)),
     ('original_name', fields.String(title='Name / Opus Nr.', default='', required=True)),
-    ('score_link', fields.String(title='Partitur (Link)', default='', required=True, description='Ein Link zu einer Partitur.')),
+    ('score_link', fields.String(title='Partiturausgabe', default='', required=True, description='Ein Link zu einer Partitur.')),
     ('composition_year', fields.Integer(title='Kompositionsjahr', default=1, required=True)),
 ]))
 
@@ -129,9 +128,9 @@ instrumentation_context_get = api.model('InstrumentationContextGET', OrderedDict
 dynamic_context_put = api.model('DynamicContextPUT', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('loudness_before', fields.Nested(taxonomy_item_ref, taxonomy='Lautstaerke', title='Lautstärke davor')),
-    ('dynamic_trend_before', fields.Nested(taxonomy_item_ref, taxonomy='LautstaerkeEinbettung', title='Lautstärkeentwicklung davor')),
+    ('dynamic_trend_before', fields.Nested(taxonomy_item_ref, taxonomy='LautstaerkeEinbettung', title='Lautstärke-Entwicklung davor')),
     ('loudness_after', fields.Nested(taxonomy_item_ref, taxonomy='Lautstaerke', title='Lautstärke danach')),
-    ('dynamic_trend_after', fields.Nested(taxonomy_item_ref, taxonomy='LautstaerkeEinbettung', title='Lautstärkeentwicklung danach')),
+    ('dynamic_trend_after', fields.Nested(taxonomy_item_ref, taxonomy='LautstaerkeEinbettung', title='Lautstärke-Entwicklung danach')),
 ]))
 
 dynamic_context_get = api.model('DynamicContextGET', OrderedDict([
@@ -145,17 +144,17 @@ dynamic_context_get = api.model('DynamicContextGET', OrderedDict([
 tempo_context_put = api.model('TempoContextPUT', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('tempo_context_before', fields.Nested(taxonomy_item_ref, taxonomy='TempoEinbettung', title='Tempo Einbettung davor')),
-    ('tempo_trend_before', fields.Nested(taxonomy_item_ref, taxonomy='TempoEntwicklung', title='Tempoentwicklung davor')),
+    ('tempo_trend_before', fields.Nested(taxonomy_item_ref, taxonomy='TempoEntwicklung', title='Tempo-Entwicklung davor')),
     ('tempo_context_after', fields.Nested(taxonomy_item_ref, taxonomy='TempoEinbettung', title='Tempo Einbettung danach')),
-    ('tempo_trend_after', fields.Nested(taxonomy_item_ref, taxonomy='TempoEntwicklung', title='Tempoentwicklung danach')),
+    ('tempo_trend_after', fields.Nested(taxonomy_item_ref, taxonomy='TempoEntwicklung', title='Tempo-Entwicklung danach')),
 ]))
 
 tempo_context_get = api.model('TempoContextGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('tempo_context_before', fields.Nested(taxonomy_item_get, taxonomy='TempoEinbettung', title='Tempo Einbettung davor')),
-    ('tempo_trend_before', fields.Nested(taxonomy_item_get, taxonomy='TempoEntwicklung', title='Tempoentwicklung davor')),
+    ('tempo_trend_before', fields.Nested(taxonomy_item_get, taxonomy='TempoEntwicklung', title='Tempo-Entwicklung davor')),
     ('tempo_context_after', fields.Nested(taxonomy_item_get, taxonomy='TempoEinbettung', title='Tempo Einbettung danach')),
-    ('tempo_trend_after', fields.Nested(taxonomy_item_get, taxonomy='TempoEntwicklung', title='Tempoentwicklung danach')),
+    ('tempo_trend_after', fields.Nested(taxonomy_item_get, taxonomy='TempoEntwicklung', title='Tempo-Entwicklung danach')),
 ]))
 
 form_put = api.model('FormPUT', OrderedDict([
@@ -192,13 +191,9 @@ harmonics_put = api.model('HarmonicsPUT', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('degree_of_dissonance', fields.Nested(taxonomy_item_ref, taxonomy='Dissonanzgrad', title='Dissonanzgrad')),
     ('dissonances', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Dissonanzen', default=[], title='Dissonanzen')),
+    ('chords', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Akkord', default=[], title='Klänge')),
     ('harmonic_complexity', fields.Nested(taxonomy_item_ref, taxonomy='HarmonischeKomplexitaet', title='Harmonische Komplexität')),
     ('harmonic_density', fields.Nested(taxonomy_item_ref, taxonomy='HarmonischeDichte', title='Harmonische Dichte')),
-    ('nr_of_melody_tones_per_harmony', fields.Float(default='-1', title='# Melodietöne in Harmonie')),
-    ('melody_tones_in_melody_one', fields.Nested(taxonomy_item_ref, taxonomy='AnzahlMelodietoene', title='# Melodietöne in Melodie 1')),
-    ('melody_tones_in_melody_two', fields.Nested(taxonomy_item_ref, taxonomy='AnzahlMelodietoene', title='# Melodietöne in Melodie 2')),
-    ('harmonic_rhythm_is_static', fields.Boolean(default=False, title='Statischer Rhythmus')),
-    ('harmonic_rhythm_follows_rule', fields.Boolean(default=False, title='Rhythmus folgt einer Regel')),
     ('harmonic_phenomenons', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='HarmonischePhaenomene', default=[], title='Harmonische Phänomene')),
     ('harmonic_changes', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='HarmonischeEntwicklung', default=[], title='Harmonische Entwicklung')),
     ('harmonische_funktion', fields.Nested(taxonomy_item_ref, taxonomy='HarmonischeFunktionVerwandschaft', title='Zeigt Modulation zu Tonart mit folgender Funktion (bezogen auf Werkausschnitt)')),
@@ -211,13 +206,6 @@ harmonics_get = api.model('HarmonicsGET', OrderedDict([
     ('dissonances', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Dissonanzen', default=[], title='Dissonanzen')),
     ('harmonic_complexity', fields.Nested(taxonomy_item_get, taxonomy='HarmonischeKomplexitaet', title='Harmonische Komplexität')),
     ('harmonic_density', fields.Nested(taxonomy_item_get, taxonomy='HarmonischeDichte', title='Harmonische Dichte')),
-
-    ('nr_of_melody_tones_per_harmony', fields.Float(default='-1', title='# Melodietöne in Harmonie')),
-    ('melody_tones_in_melody_one', fields.Nested(taxonomy_item_get, taxonomy='AnzahlMelodietoene', title='# Melodietöne in Melodie 1')),
-    ('melody_tones_in_melody_two', fields.Nested(taxonomy_item_get, taxonomy='AnzahlMelodietoene', title='# Melodietöne in Melodie 2')),
-    ('harmonic_rhythm_is_static', fields.Boolean(default=False, title='Statischer Harmonischer-Rhythmus')),
-    ('harmonic_rhythm_follows_rule', fields.Boolean(default=False, title='Harmonischer-Rhythmus folgt einer Regel')),
-
     ('harmonic_phenomenons', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='HarmonischePhaenomene', default=[], title='Harmonische Phänomene')),
     ('harmonic_changes', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='HarmonischeEntwicklung', default=[], title='Harmonische Entwicklung')),
     ('harmonische_funktion', fields.Nested(taxonomy_item_get, taxonomy='HarmonischeFunktionVerwandschaft', title='Zeigt Modulation zu Tonart mit folgender Funktion (bezogen auf Werkausschnitt)')),
@@ -227,20 +215,20 @@ harmonics_get = api.model('HarmonicsGET', OrderedDict([
 dramaturgic_context_put = api.model('DramaturgicContextPUT', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('ambitus_context_before', fields.Nested(taxonomy_item_ref, taxonomy='AmbitusEinbettung', title='Ambitus Einbettung davor')),
-    ('ambitus_change_before', fields.Nested(taxonomy_item_ref, taxonomy='AmbitusEntwicklung', title='Ambitusentwicklung davor')),
+    ('ambitus_change_before', fields.Nested(taxonomy_item_ref, taxonomy='AmbitusEntwicklung', title='Ambitus-Entwicklung davor')),
     ('melodic_line_before', fields.Nested(taxonomy_item_ref, taxonomy='Melodiebewegung', title='Melodielinie davor')),
     ('ambitus_context_after', fields.Nested(taxonomy_item_ref, taxonomy='AmbitusEinbettung', title='Ambitus Einbettung danach')),
-    ('ambitus_change_after', fields.Nested(taxonomy_item_ref, taxonomy='AmbitusEntwicklung', title='Ambitusentwicklung danach')),
+    ('ambitus_change_after', fields.Nested(taxonomy_item_ref, taxonomy='AmbitusEntwicklung', title='Ambitus-Entwicklung danach')),
     ('melodic_line_after', fields.Nested(taxonomy_item_ref, taxonomy='Melodiebewegung', title='Melodielinie danach')),
 ]))
 
 dramaturgic_context_get = api.model('DramaturgicContextGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('ambitus_context_before', fields.Nested(taxonomy_item_get, taxonomy='AmbitusEinbettung', title='Ambitus Einbettung davor')),
-    ('ambitus_change_before', fields.Nested(taxonomy_item_get, taxonomy='AmbitusEntwicklung', title='Ambitusentwicklung davor')),
+    ('ambitus_change_before', fields.Nested(taxonomy_item_get, taxonomy='AmbitusEntwicklung', title='Ambitus-Entwicklung davor')),
     ('melodic_line_before', fields.Nested(taxonomy_item_get, taxonomy='Melodiebewegung', title='Melodielinie davor')),
     ('ambitus_context_after', fields.Nested(taxonomy_item_get, taxonomy='AmbitusEinbettung', title='Ambitus Einbettung danach')),
-    ('ambitus_change_after', fields.Nested(taxonomy_item_get, taxonomy='AmbitusEntwicklung', title='Ambitusentwicklung danach')),
+    ('ambitus_change_after', fields.Nested(taxonomy_item_get, taxonomy='AmbitusEntwicklung', title='Ambitus-Entwicklung danach')),
     ('melodic_line_after', fields.Nested(taxonomy_item_get, taxonomy='Melodiebewegung', title='Melodielinie danach')),
 ]))
 
@@ -274,14 +262,14 @@ dynamic_marking_get = api.model('DynamicMarkingGET', OrderedDict([
 
 dynamic_put = api.model('DynamicPUT', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
-    ('dynamic_markings', fields.List(fields.Nested(dynamic_marking_put, description='DynamicMarking'), default=[], title='Dynamik')),
-    ('dynamic_changes', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='LautstaerkeEntwicklung', default=[], title='Lautstärkeentwicklung')),
+    ('dynamic_markings', fields.List(fields.Nested(dynamic_marking_put, description='DynamicMarking'), default=[], title='Lautstärke')),
+    ('dynamic_changes', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='LautstaerkeEntwicklung', default=[], title='Lautstärke-Entwicklung')),
 ]))
 
 dynamic_get = api.model('DynamicGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
-    ('dynamic_markings', fields.List(fields.Nested(dynamic_marking_get, description='DynamicMarking'), default=[], title='Dynamik')),
-    ('dynamic_changes', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='LautstaerkeEntwicklung', default=[], title='Lautstärkeentwicklung')),
+    ('dynamic_markings', fields.List(fields.Nested(dynamic_marking_get, description='DynamicMarking'), default=[], title='Lautstärke')),
+    ('dynamic_changes', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='LautstaerkeEntwicklung', default=[], title='LautstärkeEntwicklung')),
 ]))
 
 satz_put = api.model('SatzPUT', OrderedDict([
@@ -300,6 +288,7 @@ musicial_sequence_put = api.model('MusicialSequencePUT', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('beats', fields.Integer(default=1, title='Zählzeiten')),
     ('flow', fields.Nested(taxonomy_item_ref, taxonomy='BewegungImTonraum', title='Bewegung im Tonraum')),
+    ('exact_repetition', fields.Boolean(default=False, title='Exakt wiederholte Intervalle')),
     ('tonal_corrected', fields.Boolean(default=False, title='Tonal angepasst')),
     ('starting_interval', fields.Nested(taxonomy_item_ref, taxonomy='Intervall', title='Startintervall')),
 ]))
@@ -308,6 +297,7 @@ musicial_sequence_get = api.model('MusicialSequenceGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('beats', fields.Integer(default=1, title='Zählzeiten')),
     ('flow', fields.Nested(taxonomy_item_get, taxonomy='BewegungImTonraum', title='Bewegung im Tonraum')),
+    ('exact_repetition', fields.Boolean(default=False, title='Exakt wiederholte Intervalle')),
     ('tonal_corrected', fields.Boolean(default=False, title='Tonal angepasst')),
     ('starting_interval', fields.Nested(taxonomy_item_get, taxonomy='Intervall', title='Startintervall')),
 ]))
@@ -334,13 +324,13 @@ composition_get = api.model('CompositionGET', OrderedDict([
 
 opus_citation_put = api.model('OpusCitationPUT', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
-    ('opus', fields.Nested(opus_get_citation, reference='opus', title='Zitiertes Werk')),
+    ('opus', fields.Nested(opus_get_citation, reference='opus', title='Werk')),
     ('citation_type', fields.Nested(taxonomy_item_ref, taxonomy='Zitat', title='Art des Zitats')),
 ]))
 
 opus_citation_get = api.model('OpusCitationGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
-    ('opus', fields.Nested(opus_get_citation, reference='opus', title='Zitiertes Werk')),
+    ('opus', fields.Nested(opus_get_citation, reference='opus', title='Werk')),
     ('citation_type', fields.Nested(taxonomy_item_get, taxonomy='Zitat', title='Art des Zitats')),
 ]))
 
@@ -353,13 +343,13 @@ citations_put = api.model('CitationsGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('is_foreign', fields.Boolean(default=False, title='Ist fremd')),
     ('opus_citations', fields.List(fields.Nested(opus_citation_put), isNested=True, isArray=True, default=[], title='Zitiert folgende Werke')),
-    ('other_citations', fields.List(fields.Nested(other_citation), default=[], title='Andere Zitate')),
     ('gattung_citations', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Gattung', default=[], title='Zitiert folgende Gattungen')),
     ('instrument_citations', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Instrument', default=[], title='Zitiert folgende Instrumente')),
+    ('composer_citations', fields.List(fields.Nested(person_get), isArray=True, reference='person', default=[], title='Zitiert Personalstil von')),
     ('program_citations', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Programmgegenstand', default=[], title='Programmgegenstand')),
     ('tonmalerei_citations', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Tonmalerei', default=[], title='Tonmalerei')),
-    ('composer_citations', fields.List(fields.Nested(person_get), isArray=True, reference='person', default=[], title='Zitiert folgenden Komponisten')),
     ('epoch_citations', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Epoche', default=[], title='Zitiert folgende Epochen')),
+    ('other_citations', fields.List(fields.Nested(other_citation), default=[], title='Anderer außermusikalischer Bezug')),
 ]))
 
 citations_get = api.model('CitationsGET', OrderedDict([
@@ -378,13 +368,13 @@ citations_get = api.model('CitationsGET', OrderedDict([
 tempo_put = api.model('TempoPUT', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('tempo_markings', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Tempo', default=[], title='Tempo')),
-    ('tempo_changes', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='TempoEntwicklung', default=[], title='Tempoentwicklung')),
+    ('tempo_changes', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='TempoEntwicklung', default=[], title='Tempo-Entwicklung')),
 ]))
 
 tempo_get = api.model('TempoGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('tempo_markings', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Tempo', default=[], title='Tempo')),
-    ('tempo_changes', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='TempoEntwicklung', default=[], title='Tempoentwicklung')),
+    ('tempo_changes', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='TempoEntwicklung', default=[], title='Tempo-Entwicklung')),
 ]))
 
 rendition_put = api.model('RenditionGET', OrderedDict([
@@ -428,8 +418,8 @@ part_put = api.inherit('PartPUT', part_post, OrderedDict([
     ('instrumentation_context', fields.Nested(instrumentation_context_put, required=True, isNested=True, title='Kontext der Instrumentierung', allowSave=True)),
     ('dynamic_context', fields.Nested(dynamic_context_put, required=True, isNested=True, title='Kontext der Dynamik', allowSave=True)),
     ('tempo_context', fields.Nested(tempo_context_put, required=True, isNested=True, title='Kontext des Tempos', allowSave=True)),
-    ('dramaturgic_context', fields.Nested(dramaturgic_context_put, required=True, isNested=True, title='Kontext der Dramaturgie', allowSave=True)),
-    ('form', fields.Nested(form_put, required=True, isNested=True, title='Form', allowSave=True)),
+    ('dramaturgic_context', fields.Nested(dramaturgic_context_put, required=True, isNested=True, title='Sonstiger Kontext', allowSave=True)),
+    ('formal_functions', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='FormaleFunktion', title='Formale Funktion')),
 ]))
 
 subpart_links = api.inherit('SubPartLinks', with_curies, OrderedDict([
@@ -440,24 +430,18 @@ subpart_links = api.inherit('SubPartLinks', with_curies, OrderedDict([
 ]))
 
 subpart_post = api.model('SubPartPOST', OrderedDict([
-    ('label', fields.String(pattern='^[A-Z]\'{0,4}$', required=True, max_length=5, example='A', default='A', title="Label", description='Erlaubte Werte sind "A", "B", …, "Z" sowie "A\'", …, "A\'\'\'\'".')),
+    ('label', fields.String(required=True, max_length=191, example='A', default='A', title="Name")),
 ]))
 
 subpart_put = api.inherit('SubPartPUT', subpart_post, OrderedDict([
-    ('label', fields.String(required=True, default='A', title='Label')),
     ('occurence_in_part', fields.Nested(taxonomy_item_ref, required=True, taxonomy='AuftretenWerkausschnitt', title='Vorkommen im Werkausschnitt')),
     ('share_of_part', fields.Nested(taxonomy_item_ref, required=True, taxonomy='Anteil', title='Anteil am Werkausschnitt')),
-    ('instrumentation', fields.List(fields.Nested(taxonomy_item_ref, required=True), isArray=True, taxonomy='Instrument', default=[], title='Instrumentierung')),
-    ('composition', fields.Nested(composition_put, required=True, description='Composition', isNested=True, title='Verarbeitung', allowSave=True)),
-    ('rhythm', fields.Nested(rhythm_put, required=True, description='Rhythm', isNested=True, title='Rhythmik', allowSave=True)),
-    ('satz', fields.Nested(satz_put, required=True, description='Satz', isNested=True, title='Satz', allowSave=True)),
+    ('instrumentation', fields.List(fields.Nested(taxonomy_item_ref, required=True), required=True, isArray=True, taxonomy='Instrument', default=[], title='Instrumentierung')),
+    ('is_tutti', fields.Boolean(required=True, default=False, example=False, title='Entspricht "Tutti"')),
+    #('satz', fields.Nested(satz_put, required=True, description='Satz', isNested=True, title='Satz', allowSave=True)),
     ('harmonics', fields.Nested(harmonics_put, required=True, description='Harmonics', isNested=True, title='Harmonik', allowSave=True)),
-    ('form', fields.Nested(form_put, required=True, description='Form', isNested=True, title='Form', allowSave=True)),
     ('dynamic', fields.Nested(dynamic_put, required=True, description='Dynamic', isNested=True, title='Dynamik', allowSave=True)),
     ('tempo', fields.Nested(tempo_put, description='TempoGroup', isNested=True, title='Tempo', allowSave=True)),
-    ('rendition', fields.Nested(rendition_put, description='Rendition', isNested=True, title='Vortrag', allowSave=True)),
-    ('citations', fields.Nested(citations_put, description='Citations', isNested=True, title='Beziehungen/Zitate', allowSave=True)),
-    ('musicial_figures', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='MusikalischeWendung', default=[], title='Musikalische Wendungen')),
 ]))
 
 voice_links = api.inherit('VoiceLinks', with_curies, OrderedDict([
@@ -474,21 +458,27 @@ voice_post = api.model('VoicePOST', OrderedDict([
 voice_put = api.inherit('VoicePUT', voice_post, OrderedDict([
     ('instrumentation', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Instrument', default=[], title='Besetzung')),
     ('has_melody', fields.Boolean(default=False, title='Spielt Melodie')),
-    ('is_symmetric', fields.Boolean(default=False, title='Ist symmetrisch')),
-    ('is_repetitive', fields.Boolean(default=False, title='Ist wiederholend')),
-    ('cites_own_melody_later', fields.Boolean(default=False, title='Enthält selbstzitate')),
-    ('contains_repetition_from_outside', fields.Boolean(default=False, title='Enthält Wiederholungen von Außerhalb')),
+    ('musicial_function', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='MusikalischeFunktion', default=[], title='Musikalische Funktionen')),
+    #('is_symmetric', fields.Boolean(default=False, title='Ist symmetrisch')),
+    #('is_repetitive', fields.Boolean(default=False, title='Ist wiederholend')),
+    #('cites_own_melody_later', fields.Boolean(default=False, title='Enthält selbstzitate')),
+    #('contains_repetition_from_outside', fields.Boolean(default=False, title='Enthält Wiederholungen von Außerhalb')),
     ('share', fields.Nested(taxonomy_item_ref, taxonomy='Anteil', title='Anteil der Stimme')),
     ('occurence_in_part', fields.Nested(taxonomy_item_ref, taxonomy='AuftretenWerkausschnitt', title='Auftreten der Stimme')),
     ('satz', fields.Nested(satz_put, description='Satz', isNested=True, title='Satz')),
-    ('highest_pitch', fields.Nested(taxonomy_item_ref, taxonomy='Grundton', title='Höchster Ton')),
-    ('highest_octave', fields.Nested(taxonomy_item_ref, taxonomy='Oktave', title='Höchste Oktave')),
-    ('lowest_pitch', fields.Nested(taxonomy_item_ref, taxonomy='Grundton', title='Niedrigster Ton')),
-    ('lowest_octave', fields.Nested(taxonomy_item_ref, taxonomy='Oktave', title='Niedrigste Oktave')),
+    ('rhythm', fields.Nested(rhythm_put, required=True, description='Rhythm', isNested=True, title='Rhythmik', allowSave=True)),
+    ('dominant_note_values', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Notenwert', default=[], title='Dominante Notenwerte', description='Es sind bis zu drei dominierende Notenwerte anzugeben. Die Dominanz der Notenwerte bezieht sich auf den Anteil der Zählzeiten, auf denen sie stehen. \nBeispiel: ein Takt mit einer halben Note und zwei Viertelnoten. Hier sind beide Notenwerte gleich dominant, obwohl es mehr Viertel- als halbe Noten gibt. Grund dafür ist, dass sowohl Viertel- als auch halbe Noten je zwei Zählzeiten einnehmen.')),
+    #('highest_pitch', fields.Nested(taxonomy_item_ref, taxonomy='Grundton', title='Höchster Ton')),
+    #('highest_octave', fields.Nested(taxonomy_item_ref, taxonomy='Oktave', title='Höchste Oktave')),
+    #('lowest_pitch', fields.Nested(taxonomy_item_ref, taxonomy='Grundton', title='Niedrigster Ton')),
+    #('lowest_octave', fields.Nested(taxonomy_item_ref, taxonomy='Oktave', title='Niedrigste Oktave')),
+    ('composition', fields.Nested(composition_put, required=True, description='Composition', isNested=True, title='Verarbeitung', allowSave=True)),
+    ('musicial_figures', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='MusikalischeWendung', default=[], title='Musikalische Wendungen')),
+    ('rendition', fields.Nested(rendition_put, description='Rendition', isNested=True, title='Vortrag', allowSave=True)),
     ('ornaments', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Verzierung', default=[], title='Verzierungen')),
-    ('melody_form', fields.Nested(taxonomy_item_ref, taxonomy='Melodieform', title='Melodieform')),
+    ('melody_form', fields.Nested(taxonomy_item_ref, taxonomy='Melodieform', title='Melodik')),
     ('intervallik', fields.Nested(taxonomy_item_ref, taxonomy='Intervallik', title='Intervallik')),
-    ('dominant_note_values', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Notenwert', default=[], title='Dominante Notenwerte')),
+    ('citations', fields.Nested(citations_put, description='Citations', isNested=True, title='Zitate und Allusionen', allowSave=True)),
 ]))
 
 voice_get = api.inherit('VoiceGET', voice_post, OrderedDict([
@@ -528,7 +518,6 @@ subpart_get = api.inherit('SubPartGET', subpart_put, OrderedDict([
     ('satz', fields.Nested(satz_get, description='Satz')),
     ('dynamic_context', fields.Nested(dynamic_context_get, description='DynamicContext')),
     ('harmonics', fields.Nested(harmonics_get, description='Harmonics')),
-    ('form', fields.Nested(form_get, description='Form')),
     ('dynamic', fields.Nested(dynamic_get, description='Dynamic')),
     ('tempo', fields.Nested(tempo_get, description='TempoGroup')),
     ('rendition', fields.Nested(rendition_get, description='Rendition')),
@@ -544,21 +533,21 @@ part_get = api.inherit('PartGET', part_put, OrderedDict([
     ('instrumentation_context', fields.Nested(instrumentation_context_get)),
     ('dynamic_context', fields.Nested(dynamic_context_get)),
     ('tempo_context', fields.Nested(tempo_context_get)),
-    ('dramaturgic_context', fields.Nested(dramaturgic_context_get, description='DramaturgicContext')),
-    ('form', fields.Nested(form_get)),
+    ('dramaturgic_context', fields.Nested(dramaturgic_context_get)),
+    ('formal_functions', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='FormaleFunktion', title='Formale Funktion')),
     ('subparts', fields.List(fields.Nested(subpart_get), default=[])),
 ]))
 
 opus_put = api.inherit('OpusPUT', opus_post, OrderedDict([
-    ('original_name', fields.String(max_length=191, default='', required=True, title='Name / Opus Nr.')),
-    ('movements', fields.Integer(default=1, required=True, title='Anzahl Sätze')),
-    ('genre', fields.Nested(taxonomy_item_ref, taxonomy='GattungNineteenthCentury', required=True, title='Genre')),
+    ('original_name', fields.String(max_length=191, default='', required=True, title='Opus Nr.')),
+    ('movements', fields.Integer(default=1, required=True, title='Anzahl der Sätze')),
+    ('genre', fields.Nested(taxonomy_item_ref, taxonomy='GattungNineteenthCentury', required=True, title='Gattung')),
     ('grundton', fields.Nested(taxonomy_item_ref, taxonomy='Grundton', required=True, title='Grundton')),
     ('tonalitaet', fields.Nested(taxonomy_item_ref, taxonomy='Tonalitaet', required=True, title='Tonalität')),
     ('composition_year', fields.Integer(default=-1, required=True, title='Kompositionsjahr', nullable=True)),
     ('composition_place', fields.String(max_length=191, default='', required=True, title='Kompositionsort', nullable=True)),
     ('notes', fields.String(default='', required=True, title='Notizen', nullable=True)),
-    ('score_link', fields.String(default='', required=True, description='Ein Link zu einer Partitur.', title='Partitur (Link)', nullable=True)),
+    ('score_link', fields.String(default='', required=True, description='Ein Link zu einer Partitur.', title='Partiturausgabe', nullable=True)),
     ('first_printed_at', fields.String(max_length=191, default='', required=True, title='Ort der Partitur', nullable=True)),
     ('first_printed_in', fields.Integer(default=-1, required=True, title='Jahr der Partitur', nullable=True)),
     ('first_played_at', fields.String(max_length=191, default='', required=True, title='Ort der Uraufführung', nullable=True)),

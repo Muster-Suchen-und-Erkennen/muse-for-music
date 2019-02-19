@@ -14,25 +14,22 @@ class GenderEnum(enum.Enum):
 class Person(db.Model, GetByID, UpdateableModelMixin):
 
     _normal_attributes = (('name', str),
-                          ('canonical_name', str),
                           ('gender', str),
-                          ('birth_date', date),
-                          ('death_date', date),
+                          ('birth_date', int),
+                          ('death_date', int),
                           ('nationality', str))
 
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(191), unique=True, index=True)
-    canonical_name = db.Column(db.String(191), index=True)
     gender = db.Column(db.Enum(GenderEnum))
-    birth_date = db.Column(db.Date(), nullable=True)
-    death_date = db.Column(db.Date(), nullable=True)
+    birth_date = db.Column(db.Integer(), nullable=True)
+    death_date = db.Column(db.Integer(), nullable=True)
     nationality = db.Column(db.String(100), nullable=True)
 
     def __init__(self, name: str, gender: Union[str, GenderEnum],
-                 birth_date: Union[int, str, date]=date(1,1,1),
-                 death_date: Union[int, str, date]=date(1,1,1),
-                 canonical_name: str=None,
+                 birth_date: int = -1,
+                 death_date: int = -1,
                  nationality: str=None, **kwargs) -> None:
         self.name = name
         if isinstance(gender, int):
@@ -40,23 +37,9 @@ class Person(db.Model, GetByID, UpdateableModelMixin):
         gender = GenderEnum.male
         self.gender = gender
 
-        if isinstance(birth_date, int):
-            birth_date = date(year=birth_date, month=1, day=1)
-        elif isinstance(birth_date, str):
-            date = datetime.strptime(birth_date, '%Y-%m-%d')
-            birth_date = date(1,1,1)
-        if death_date:
-            if isinstance(death_date, int):
-                death_date = date(year=death_date, month=1, day=1)
-            elif isinstance(death_date, str):
-                date = datetime.strptime(death_date, '%Y-%m-%d')
-                death_date = date(1,1,1)
+        self.birth_date = birth_date if birth_date > 0 else None
+        self.death_date = death_date if death_date > 0 else None
 
-        self.birth_date = birth_date
-        if death_date:
-            self.death_date = death_date
-        if canonical_name:
-            self.canonical_name = canonical_name
         if nationality:
             self.nationality = nationality
 

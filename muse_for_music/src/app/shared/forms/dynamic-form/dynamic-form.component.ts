@@ -127,6 +127,9 @@ export class DynamicFormComponent implements OnInit, OnChanges {
                         if (question.type !== 'taxonomy' && question.type !== 'reference') {
                             const newpath = path.length > 0 ? path + '.' + question.key : question.key
                             const arrayControl: FormArray = this.form.get(newpath) as FormArray;
+                            if (patched[question.key] == null) {
+                                patched[question.key] = [];
+                            }
                             let counter = 0;
                             while (arrayControl.length !== patched[question.key].length) {
                                 counter ++;
