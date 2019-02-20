@@ -379,18 +379,18 @@ tempo_get = api.model('TempoGET', OrderedDict([
 
 ambitus_put = api.model('AmbitusPUT', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
-    ('highest_pitch', fields.Nested(taxonomy_item_ref, taxonomy='Grundton', default=[], title='Höchster Grundton')),
-    ('highest_octave', fields.Nested(taxonomy_item_ref, taxonomy='Oktave', default=[], title='Höchste Oktave')),
-    ('lowest_pitch', fields.Nested(taxonomy_item_ref, taxonomy='Grundton', default=[], title='Niedrigster Grundton')),
-    ('lowest_octave', fields.Nested(taxonomy_item_ref, taxonomy='Oktave', default=[], title='Niedrigste Oktave')),
+    ('highest_pitch', fields.Nested(taxonomy_item_ref, taxonomy='Grundton', title='Höchster Grundton')),
+    ('highest_octave', fields.Nested(taxonomy_item_ref, taxonomy='Oktave', title='Höchste Oktave')),
+    ('lowest_pitch', fields.Nested(taxonomy_item_ref, taxonomy='Grundton', title='Niedrigster Grundton')),
+    ('lowest_octave', fields.Nested(taxonomy_item_ref, taxonomy='Oktave', title='Niedrigste Oktave')),
 ]))
 
 ambitus_get = api.model('AmbitusGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
-    ('highest_pitch', fields.Nested(taxonomy_item_get, taxonomy='Grundton', default=[], title='Höchster Grundton')),
-    ('highest_octave', fields.Nested(taxonomy_item_get, taxonomy='Oktave', default=[], title='Höchste Oktave')),
-    ('lowest_pitch', fields.Nested(taxonomy_item_get, taxonomy='Grundton', default=[], title='Niedrigster Grundton')),
-    ('lowest_octave', fields.Nested(taxonomy_item_get, taxonomy='Oktave', default=[], title='Niedrigste Oktave')),
+    ('highest_pitch', fields.Nested(taxonomy_item_get, taxonomy='Grundton', title='Höchster Grundton')),
+    ('highest_octave', fields.Nested(taxonomy_item_get, taxonomy='Oktave', title='Höchste Oktave')),
+    ('lowest_pitch', fields.Nested(taxonomy_item_get, taxonomy='Grundton', title='Niedrigster Grundton')),
+    ('lowest_octave', fields.Nested(taxonomy_item_get, taxonomy='Oktave', title='Niedrigste Oktave')),
 ]))
 
 rendition_put = api.model('RenditionGET', OrderedDict([
@@ -406,7 +406,6 @@ rendition_get = api.model('RenditionGET', OrderedDict([
     ('technic_markings', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Spielanweisung', default=[], title='Spielanweisungen')),
     ('articulation_markings', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Artikulation', default=[], title='Artikulation')),
 ]))
-
 
 
 measure_model = api.model('Measure', OrderedDict([
@@ -464,12 +463,32 @@ subpart_put = api.inherit('SubPartPUT', subpart_post, OrderedDict([
 voice_links = api.inherit('VoiceLinks', with_curies, OrderedDict([
     ('self', HaLUrl(UrlData('api.subpart_sub_part_voice_resource', absolute=True,
                                url_data={'subpart_id':'subpart_id', 'voice_id':'id'}), rquired=False)),
+    ('voice', HaLUrl(UrlData('api.subpart_sub_part_voice_list_resource', absolute=True,
+                             url_data={'subpart_id':'subpart_id'}), rquired=False)),
     ('subpart', HaLUrl(UrlData('api.subpart_sub_part_resource', absolute=True,
                                url_data={'subpart_id':'subpart_id'}), rquired=False)),
 ]))
 
 voice_post = api.model('VoicePOST', OrderedDict([
     ('name', fields.String(default='', required=True, max_length=191, title='Name')),
+]))
+
+
+voice_ref = api.inherit('VoiceREF', voice_post, OrderedDict([
+    ('_links', NestedFields(voice_links)),
+    ('id', fields.Integer(default=-1, readonly=True, example=1)),
+    ('subpart_id', fields.Integer(default=-1, readonly=True, example=1)),
+]))
+
+related_voice_put = api.model('RelatedVoicePUT', OrderedDict([
+    ('type_of_relationship', fields.Nested(taxonomy_item_ref, required=True, taxonomy='VoiceToVoiceRelation', title='Operator')),
+    ('related_voice', fields.Nested(voice_ref, required=True, reference='voice', title='Stimme')),
+]))
+
+related_voice_get = api.model('RelatedVoiceGET', OrderedDict([
+    ('id', fields.Integer(default=1, readonly=True, example=1)),
+    ('type_of_relationship', fields.Nested(taxonomy_item_ref, required=True, taxonomy='VoiceToVoiceRelation', title='Operator')),
+    ('related_voice', fields.Nested(voice_ref, required=True, reference='voice', title='Stimme')),
 ]))
 
 voice_put = api.inherit('VoicePUT', voice_post, OrderedDict([
@@ -488,6 +507,7 @@ voice_put = api.inherit('VoicePUT', voice_post, OrderedDict([
     ('melody_form', fields.Nested(taxonomy_item_ref, taxonomy='Melodieform', title='Melodik')),
     ('intervallik', fields.Nested(taxonomy_item_ref, taxonomy='Intervallik', title='Intervallik')),
     ('citations', fields.Nested(citations_put, description='Citations', isNested=True, title='Zitate und Allusionen', allowSave=True)),
+    ('related_voices', fields.List(fields.Nested(related_voice_put), isArray=True, default=[], title='Beziehungen zu anderen Stimmen')),
 ]))
 
 voice_get = api.inherit('VoiceGET', voice_post, OrderedDict([
@@ -509,6 +529,7 @@ voice_get = api.inherit('VoiceGET', voice_post, OrderedDict([
     ('melody_form', fields.Nested(taxonomy_item_get, taxonomy='Melodieform')),
     ('intervallik', fields.Nested(taxonomy_item_get, taxonomy='Intervallik')),
     ('citations', fields.Nested(citations_get, description='Citations', isNested=True, title='Zitate und Allusionen', allowSave=True)),
+    ('related_voices', fields.List(fields.Nested(related_voice_get), isArray=True, default=[], title='Beziehungen zu anderen Stimmen')),
 ]))
 
 subpart_get = api.inherit('SubPartGET', subpart_put, OrderedDict([

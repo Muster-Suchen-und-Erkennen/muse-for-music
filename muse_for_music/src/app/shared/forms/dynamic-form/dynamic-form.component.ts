@@ -20,6 +20,7 @@ export class DynamicFormComponent implements OnInit, OnChanges {
 
     @Input() objectModel: string;
     @Input() startValues: ApiObject = {_links:{self:{href:''}}};
+    @Input() context: any;
 
     @Input() showSaveButton: boolean = false;
     @Input() alwaysAllowSave: boolean = false;

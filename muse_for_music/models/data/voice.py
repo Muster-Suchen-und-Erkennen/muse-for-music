@@ -37,7 +37,7 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
                           )
 
     _list_attributes = ('dominant_note_values', 'instrumentation', 'ornaments',
-                        'musicial_figures', 'musicial_function')
+                        'musicial_figures', 'musicial_function', 'related_voices')
 
     id = db.Column(db.Integer, primary_key=True)
     subpart_id = db.Column(db.Integer, db.ForeignKey('sub_part.id'), nullable=False)
@@ -128,6 +128,15 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
         old_items = {mapping.musikalische_wendung.id: mapping for mapping in self._musicial_figures}
         self.update_list(musicial_figures_list, old_items, MusikalischeWendungToVoice,
                          MusikalischeWendung, 'musikalische_wendung')
+
+    @property
+    def related_voices(self):
+        return self._related_voices
+
+    @related_voices.setter
+    def related_voices(self, related_voices_list: Union[Sequence[int], Sequence[dict]]):
+        old_items = {mapping.id: mapping for mapping in self._related_voices}
+        self.update_list(related_voices_list, old_items, RelatedVoices)
 
 
 class MusikalischeWendungToVoice(db.Model):

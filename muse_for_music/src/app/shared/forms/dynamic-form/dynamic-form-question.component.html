@@ -42,7 +42,7 @@
                     <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem; pointer-events: none" (click)="inputSelect.click($event)"><i class="f4 fa fa-angle-down"></i></div>
                 </div>
 
-                <m4m-reference-chooser *ngSwitchCase="'reference'" [formControlName]="question.key" [question]="question" [path]="path"></m4m-reference-chooser>
+                <m4m-reference-chooser *ngSwitchCase="'reference'" [formControlName]="question.key" [question]="question" [path]="path" [context]="context"></m4m-reference-chooser>
 
                 <m4m-taxonomy-select *ngSwitchCase="'taxonomy'" [formControlName]="question.key" [question]="question" [path]="path" [specificationsCallback]="specificationsCallback" [specifications]="specifications"></m4m-taxonomy-select>
 
@@ -53,13 +53,13 @@
     </div>
 </div>
 
-<m4m-array-input [question]="question" [array]="form.controls[question.key]" [path]="path" [specificationsCallback]="specificationsCallback" [specifications]="specifications" *ngIf="question.controlType === 'array'"></m4m-array-input>
+<m4m-array-input [question]="question" [array]="form.controls[question.key]" [path]="path" [specificationsCallback]="specificationsCallback" [specifications]="specifications" *ngIf="question.controlType === 'array'" [context]="context"></m4m-array-input>
 
 <div class="flex" *ngIf="question.controlType === 'object'" [formGroup]="form">
     <div class="bl bw2 ml2 b--gray flex-grow" *ngIf="open || !(question.controlType === 'object' && isCollapsible())">
         <div class="flex-grow" formGroupName="{{question.key}}">
             <div *ngFor="let qstn of question?.nestedQuestions;trackBy:questionId" class="flex-grow">
-                <df-question [question]="qstn" [form]="form.controls[question.key]" [path]="path + '.' + qstn.key" [specificationsCallback]="specificationsCallback" [specifications]="specifications" [nested]="false"></df-question>
+                <df-question [question]="qstn" [form]="form.controls[question.key]" [path]="path + '.' + qstn.key" [specificationsCallback]="specificationsCallback" [specifications]="specifications" [nested]="false" [context]="context"></df-question>
             </div>
         </div>
     </div>
