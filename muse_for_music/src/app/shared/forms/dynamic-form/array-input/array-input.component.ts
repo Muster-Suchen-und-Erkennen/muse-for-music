@@ -16,6 +16,7 @@ export class ArrayInputComponent {
 
     @Input() question: QuestionBase<any>;
     @Input() path: string;
+    @Input() context: any;
     @Input() array: FormArray;
 
     @Input() specificationsCallback: (path: string, remove: boolean, recursive: boolean, affectsArrayMembers: boolean) => void;

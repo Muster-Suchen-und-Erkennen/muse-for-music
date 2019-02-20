@@ -11,6 +11,7 @@ export class DynamicFormQuestionComponent {
 
     @Input() question: QuestionBase<any>;
     @Input() form: FormGroup;
+    @Input() context: any;
     @Input() path: string;
     @Input() nested: boolean = false;
 

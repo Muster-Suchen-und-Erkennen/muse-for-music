@@ -2,7 +2,7 @@
     <form *ngIf="form" [formGroup]="form">
 
         <div *ngFor="let question of questions;trackBy:questionId" class="form-row pr2">
-            <df-question [question]="question" [form]="form" (opened)="closeUnrelated($event)" [path]="question.key" [specificationsCallback]="updateSpecification" [specifications]="specifications" #questions></df-question>
+            <df-question [question]="question" [form]="form" (opened)="closeUnrelated($event)" [path]="question.key" [specificationsCallback]="updateSpecification" [specifications]="specifications" [context]="context" #questions></df-question>
         </div>
     </form>
     <m4m-save-button [formValid]="alwaysAllowSave || (validForSave | async)" (click)="saveForm()" *ngIf="showSaveButton"></m4m-save-button>

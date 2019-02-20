@@ -31,6 +31,7 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
     selected: any[] = [];
     @Input() question: QuestionBase<any>;
     @Input() path: string;
+    @Input() context: any;
 
     searchTerm: string = '';
 
@@ -99,6 +100,9 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
         if (this.question.valueType == 'opus') {
             return 'Werk';
         }
+        if (this.question.valueType == 'voice') {
+            return 'Stimme';
+        }
         return '';
     }
 
@@ -111,6 +115,9 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
         }
         if (this.question.valueType === 'opus') {
             this.formModel = 'OpusPOST';
+        }
+        if (this.question.valueType === 'voice') {
+            this.formModel = 'VoicePOST';
         }
     }
 
@@ -136,6 +143,31 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
                 this.choices = data;
             });
         };
+        if (this.question.valueType === 'voice') {
+            if (this.context.subPart != null) {
+                this.asyncChoices = this.api.getVoices(this.context.subPart);
+            } else if (this.context.voice != null) {
+              this.asyncChoices = this.api.getVoices(this.context.voice);
+            } else {
+                console.log('No context provided for referencechooser!')
+            }
+            this.subscription = this.asyncChoices.subscribe(data => {
+                if (data == undefined) {
+                    return;
+                }
+                const choices = []
+                data.forEach(voice => {
+                    if (this.context.voice != null) {
+                        if (this.context.voice.id === voice.id) {
+                            // filter out own voice
+                            return;
+                        }
+                    }
+                    choices.push(voice);
+                })
+                this.choices = choices;
+            });
+        };
     }
 
     ngOnDestroy(): void {
@@ -151,6 +183,8 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
         }
         if (this.question.valueType === 'opus') {
             data.composer = {id: -1};
+        }
+        if (this.question.valueType === 'voice') {
         }
         this.formStartData = data;
         this.dialog.open();
