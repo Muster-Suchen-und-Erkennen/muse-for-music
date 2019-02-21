@@ -2,6 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { DynamicDataComponent } from './data/dynamic-data/dynamic-data.component';
+import { DataItemComponent } from './data/data-item/data-item.component';
+import { DataReferenceComponent } from './data/data-reference/data-reference.component';
+import { DataArrayComponent } from './data/data-array/data-array.component';
+import { DataTaxonomyComponent } from './data/data-taxonomy/data-taxonomy.component';
+
 import { DynamicFormComponent } from './forms/dynamic-form/dynamic-form.component';
 import { DynamicFormQuestionComponent } from './forms/dynamic-form/dynamic-form-question.component';
 import { SaveButtonComponent } from './forms/dynamic-form/save-button/save-button.component';
@@ -18,6 +24,7 @@ import { QuestionControlService } from './forms/question-control.service';
 import { QuestionService } from './forms/question.service';
 import { BaseApiService } from './rest/api-base.service';
 import { ApiService } from './rest/api.service';
+import { ModelsService } from './rest/models.service';
 import { UserApiService } from './rest/user-api.service';
 import { LoginGuard } from './rest/login.guard';
 import { AdminGuard } from './rest/admin.guard';
@@ -43,6 +50,13 @@ import { ClickOutsideDirective } from './click-outside.directive';
         myDialogComponent,
         myDropdownComponent,
         myTableComponent,
+
+        DynamicDataComponent,
+        DataItemComponent,
+        DataReferenceComponent,
+        DataArrayComponent,
+        DataTaxonomyComponent,
+
         DynamicFormComponent,
         DynamicFormQuestionComponent,
         SaveButtonComponent,
@@ -62,6 +76,7 @@ import { ClickOutsideDirective } from './click-outside.directive';
         QuestionControlService,
         BaseApiService,
         ApiService,
+        ModelsService,
         UserApiService,
         LoginGuard,
         AdminGuard,
@@ -73,6 +88,13 @@ import { ClickOutsideDirective } from './click-outside.directive';
         myDialogComponent,
         myDropdownComponent,
         myTableComponent,
+
+        DynamicDataComponent,
+        DataItemComponent,
+        DataReferenceComponent,
+        DataArrayComponent,
+        DataTaxonomyComponent,
+
         DynamicFormComponent,
         DynamicFormQuestionComponent,
         SaveButtonComponent,

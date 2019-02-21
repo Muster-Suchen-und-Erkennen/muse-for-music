@@ -1,0 +1,25 @@
+<div class="br2 ba b--black-10 mb2">
+    <div class="min-h2 mv0 pv2 ph3 flex items-center justify-between f4 bg-near-white br2 br--top pointer" (click)="open = !open">
+        <div>
+            <i class="f5 fa fa-chevron-right" [hidden]="open"></i>
+            <i class="f5 fa fa-chevron-down" [hidden]="!open"></i>
+            <span *ngIf="reference() == null && property != null && property.title != null">{{property?.title}}</span>
+            <span *ngIf="reference() == null && data != null && data.name != null">{{data?.name}}</span>
+            <span *ngIf="reference() == null && data != null && data.label != null">{{data?.label}}</span>
+            <span *ngIf="reference() === 'person'">{{property?.title}}: {{data?.name}}</span>
+        </div>
+        <div *ngIf="reference() != null">
+            <div class="tooltip tooltip-left button h2 pv1 ph2 br2 ml link bg-animate hover-bg-light-silver pointer" data-tooltip="edit">
+                <i class="fa fa-edit"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="ph2 bt b--black-10" [hidden]="!open">
+        <ng-container *ngIf="properties != null">
+            <div *ngFor="let prop of properties;trackBy:trackByFn" class="">
+                <data-item [property]="prop" [data]="data != null ? data[prop['x-key']] : null" [context]="context"></data-item>
+            </div>
+          </ng-container>
+    </div>
+</div>

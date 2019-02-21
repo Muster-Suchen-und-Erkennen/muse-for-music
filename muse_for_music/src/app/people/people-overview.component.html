@@ -10,7 +10,9 @@
         </div>
     </m4m-box>
 
-    <m4m-person-edit [personID]="selected"></m4m-person-edit>
+    <m4m-person-edit [personID]="selected" [hidden]="!users.isEditing()"></m4m-person-edit>
+
+    <dynamic-data [modelUrl]="'#/definitions/PersonGET'" [data]="selectedPerson" [title]="'Person ' + selectedPerson?.name" [hidden]="users.isEditing()"></dynamic-data>
 
     <m4m-dialog [dialogType]="'save-cancel'" [valid]="form.valid | async" [icon]="'save'" [okCallback]="save" #newPerson >
         <h1 class="mv0" title>Neue Person:</h1>

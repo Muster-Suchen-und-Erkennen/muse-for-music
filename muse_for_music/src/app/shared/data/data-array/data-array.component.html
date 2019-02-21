@@ -1,0 +1,11 @@
+<div class="br2 ba b--black-10 mb2">
+    <div class="min-h2 mv0 pv2 ph3 flex items-center justify-between f4 bg-near-white br2 br--top">
+        <div>
+            <span>{{property?.title}}</span>
+        </div>
+    </div>
+
+    <div class="ph2 bt b--black-10">
+        <data-item [property]="model.items" [data]="item" [context]="context" *ngFor="let item of data;"></data-item>
+    </div>
+</div>
