@@ -4,6 +4,7 @@ import { NavigationService, Breadcrumb } from '../navigation/navigation-service'
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { TableRow } from '../shared/table/table.component';
+import { UserApiService } from 'app/shared/rest/user-api.service';
 
 @Component({
   selector: 'm4m-people-overview',
@@ -19,10 +20,11 @@ export class PeopleOverviewComponent implements OnInit {
     persons: Array<ApiObject>;
     tableData: TableRow[];
     selected: number;
+    selectedPerson: ApiObject;
 
     swagger: any;
 
-    constructor(private data: NavigationService, private api: ApiService, private datePipe: DatePipe) { }
+    constructor(private data: NavigationService, private api: ApiService, private users: UserApiService, private datePipe: DatePipe) { }
 
     ngOnInit(): void {
         this.data.changeTitle('Personen');
@@ -34,9 +36,11 @@ export class PeopleOverviewComponent implements OnInit {
             this.persons = data;
             const tableData = [];
             let selected;
+            let selectedPerson;
             this.persons.forEach(person => {
                 if (this.selected == null || this.selected !== selected) {
                     selected = person.id;
+                    selectedPerson = person;
                 }
                 let birth = person.birth_date + ' *';
                 let death = person.death_date + ' ✝';
@@ -51,6 +55,7 @@ export class PeopleOverviewComponent implements OnInit {
                 tableData.push(row);
             });
             this.selected = selected;
+            this.selectedPerson = selectedPerson;
             this.tableData = tableData;
         });
     }
@@ -59,6 +64,7 @@ export class PeopleOverviewComponent implements OnInit {
         if (this.valid) {
             this.api.postPerson(this.newPersonData).subscribe(person => {
                 this.selected = person.id;
+                this.selectedPerson = person;
             });
         }
     };
@@ -73,6 +79,7 @@ export class PeopleOverviewComponent implements OnInit {
 
     selectPerson(event, person: ApiObject) {
         this.selected = person.id;
+        this.selectedPerson = person;
     }
 
 }

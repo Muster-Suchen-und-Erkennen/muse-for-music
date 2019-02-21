@@ -18,4 +18,8 @@ export class TitleBarComponent implements OnInit {
         this.data.currentTitle.subscribe(title => this.title = title);
     }
 
+    toggleEdit(): void {
+        this.userApi.toggleEditing();
+    }
+
 }

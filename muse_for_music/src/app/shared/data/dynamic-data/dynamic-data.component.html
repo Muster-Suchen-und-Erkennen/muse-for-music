@@ -1,0 +1,11 @@
+<m4m-box>
+    <h1 class="mv0" title>{{title}}</h1>
+    <div class="w-100 ph3 pv2" body>
+        <div *ngIf="properties != null">
+            <div *ngFor="let property of properties;trackBy:trackByFn" class="">
+                <data-item [property]="property" [data]="data != null ? data[property['x-key']] : null" [context]="context"></data-item>
+            </div>
+        </div>
+    </div>
+</m4m-box>
+

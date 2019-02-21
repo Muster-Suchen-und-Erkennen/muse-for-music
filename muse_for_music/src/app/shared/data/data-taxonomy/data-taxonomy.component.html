@@ -1,0 +1,12 @@
+<ng-container *ngIf="model?.type === 'object'">
+    <p class="bg-black-20 pl3 pr2 pv1 ma1 br-pill" *ngIf="data != null && data.id >= 0">
+        {{data.name}}
+    </p>
+</ng-container>
+<ng-container *ngIf="model?.type === 'array'">
+    <div class="flex-grow flex flex-wrap" content>
+        <p class="bg-black-20 pl3 pr2 pv1 ma1 br-pill" *ngFor="let item of data;trackBy:trackByFn">
+            {{item.name}}
+        </p>
+    </div>
+</ng-container>

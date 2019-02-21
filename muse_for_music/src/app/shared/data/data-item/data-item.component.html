@@ -1,0 +1,60 @@
+<div class="pv2 flex items-center" [ngClass]="{'pointer': isCollapsible()}" (click)="toggleOpen()">
+    <div class="mr2 flex items-center justify-center" *ngIf="isCollapsible()">
+        <i class="f5 fa fa-fw fa-chevron-right" [hidden]="open"></i>
+        <i class="f5 fa fa-fw fa-chevron-down" [hidden]="!open"></i>
+    </div>
+
+    <div class="f4 b min-w4 mr2 ws-normal flex-grow tooltip-bottom" [ngClass]="{'pointer': isCollapsible(), 'tooltip': model?.description}"
+        style="word-wrap: break-word" [attr.data-tooltip]="model?.description" *ngIf="type() !== 'reference' && type() !== 'object' && type() !== 'array'">
+        {{model?.title}}
+    </div>
+
+    <div class="pl1 min-w5 flex-grow flex items-center">
+        <ng-container [ngSwitch]="type()">
+
+            <div *ngSwitchCase="'string'" class="flex-grow">
+                {{data}}
+            </div>
+
+            <div *ngSwitchCase="'enum'" class="flex-grow">
+                {{model['x-enumTranslation'] != null ? model['x-enumTranslation'][data] : data}}
+            </div>
+
+            <div *ngSwitchCase="'integer'" class="flex-grow">
+                <span [hidden]="data < 0">{{data}}</span>
+                <span [hidden]="data >= 0">–</span>
+            </div>
+
+            <div *ngSwitchCase="'boolean'" class="flex-grow">
+                <i class="fa fa-times" [hidden]="data"></i>
+                <i class="fa fa-check" [hidden]="!data"></i>
+            </div>
+
+            <div *ngSwitchCase="'reference'" class="flex-grow">
+                <data-reference [property]="property" [model]="model" [data]="data" [context]="context"></data-reference>
+            </div>
+
+            <div *ngSwitchCase="'object'" class="flex-grow">
+                <data-reference [property]="property" [model]="model" [data]="data" [context]="context"></data-reference>
+            </div>
+
+            <div *ngSwitchCase="'array'" class="flex-grow">
+                <data-array [property]="property" [model]="model" [data]="data" [context]="context"></data-array>
+            </div>
+
+            <div *ngSwitchCase="'taxonomy'" class="flex-grow">
+                <data-taxonomy [property]="property" [model]="model" [data]="data" [context]="context"></data-taxonomy>
+            </div>
+
+            <div *ngSwitchDefault class="flex-grow">
+                <p>
+                    {{property|json}}
+                </p>
+                <p>
+                    <span class="b">{{type()}}</span>
+                    <span>{{data|json}}</span>
+                </p>
+            </div>
+        </ng-container>
+    </div>
+</div>

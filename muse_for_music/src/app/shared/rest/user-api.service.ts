@@ -45,6 +45,8 @@ export class UserApiService implements OnInit {
     private sessionExpirySource = new Subject<boolean>();
     readonly sessionExpiry = this.sessionExpirySource.asObservable();
 
+    private editing: boolean = true;
+
     readonly TOKEN = 'm4m-token';
     readonly REFRESH_TOKEN = 'm4m-refresh-token';
 
@@ -131,6 +133,20 @@ export class UserApiService implements OnInit {
         const token = this.token;
         const roleList = this.tokenToJson(token).user_claims;
         return new Set<string>(roleList);
+    }
+
+    isEditing(): boolean {
+        if (!this.loggedIn) {
+            return false;
+        }
+        if (!this.roles.has('user') && !this.roles.has('admin')) {
+            return false;
+        }
+        return this.editing;
+    }
+
+    toggleEditing() {
+        this.editing = !this.editing;
     }
 
     // API Functions ///////////////////////////////////////////////////////////

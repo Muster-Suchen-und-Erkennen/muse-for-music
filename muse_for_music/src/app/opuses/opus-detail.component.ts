@@ -5,6 +5,7 @@ import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
 import { Subscription } from 'rxjs/Rx';
+import { UserApiService } from 'app/shared/rest/user-api.service';
 
 @Component({
   selector: 'm4m-opus-detail',
@@ -17,8 +18,9 @@ export class OpusDetailComponent implements OnInit, OnDestroy {
     private opusSubscription: Subscription;
 
     opusID: number;
+    opus: ApiObject;
 
-    constructor(private navigation: NavigationService, private api: ApiService, private route: ActivatedRoute) { }
+    constructor(private navigation: NavigationService, private api: ApiService, private users: UserApiService, private route: ActivatedRoute) { }
 
     update(opusID: number) {
         if (this.opusSubscription != null) {
@@ -32,6 +34,7 @@ export class OpusDetailComponent implements OnInit, OnDestroy {
             if (data == undefined) {
                 return;
             }
+            this.opus = data;
             this.navigation.changeTitle('Werk: ' + data.name);
             this.navigation.changeBreadcrumbs([new Breadcrumb('Werke', '/opuses'),
             new Breadcrumb('"' + data.name + '"', '/opuses/' + opusID)]);
