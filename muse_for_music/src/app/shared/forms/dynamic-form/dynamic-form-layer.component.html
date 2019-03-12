@@ -1,11 +1,14 @@
 <form class="form-container" *ngIf="form != null" [formGroup]="form">
     <div *ngFor="let property of properties;trackBy: trackBy">
-        <df-item [property]="property" [form]="form" [path]="path != null && path != '' ? path + '.' + property['x-key'] : property['x-key']"></df-item>
+        <df-item [property]="property" [form]="form" [path]="path != null && path != '' ? path + '.' + property['x-key'] : property['x-key']"
+                [specifications]="specifications" (specificationsUpdate)="specificationsUpdate.emit($event)">
+        </df-item>
     </div>
 </form>
 
 <div *ngIf="debug">
-    <p>Valid: {{form?.valid | json}}</p>
+    <p>Valid: {{form?.valid | json}} (Valid for save: {{this.validForSave | async}})</p>
+    <p>Path: {{path}}</p>
     <p>Data:</p>
     <p>{{form?.value | json}}</p>
     <p>model:</p>

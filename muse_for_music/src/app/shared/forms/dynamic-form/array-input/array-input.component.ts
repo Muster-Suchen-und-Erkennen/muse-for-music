@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnInit, ViewChildren, AfterViewInit } from '@angular/core';
+import { Component, forwardRef, Input, OnInit, ViewChildren, AfterViewInit, Output, EventEmitter } from '@angular/core';
 
 import { ApiModel } from 'app/shared/rest/api-model';
 import { ModelsService } from 'app/shared/rest/models.service';
@@ -6,6 +6,8 @@ import { DynamicFormLayerComponent } from '../dynamic-form-layer.component';
 import { Observable, Subscription } from 'rxjs';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { NG_VALUE_ACCESSOR, NG_VALIDATORS, ControlValueAccessor, Validator } from '@angular/forms';
+import { SpecificationUpdateEvent } from '../specification-update-event';
+import { map } from 'rxjs/operator/map';
 
 
 
@@ -34,10 +36,10 @@ export class ArrayInputComponent implements ControlValueAccessor, AfterViewInit,
     @Input() context: any;
 
     @Input() specifications = [];
-    @Input() specificationsCallback: (path: string, remove: boolean, recursive: boolean, affectsArrayMembers: boolean) => void;
+    @Output() specificationsUpdate: EventEmitter<SpecificationUpdateEvent> = new EventEmitter<SpecificationUpdateEvent>();
 
 
-    currentValue: any[];
+    currentValue: any[] = [];
 
     lastValidSub: Subscription;
     valid: boolean = false;
@@ -92,7 +94,7 @@ export class ArrayInputComponent implements ControlValueAccessor, AfterViewInit,
     }
 
     validate() {
-        if (this.valid) {
+        if (this.valid || (this.value != null && this.value.length === 0)) {
             return null;
         } else {
             return {nestedError: 'A nested form has an error.'};
@@ -106,26 +108,38 @@ export class ArrayInputComponent implements ControlValueAccessor, AfterViewInit,
     ngAfterViewInit(): void {
         this.formLayers.changes.subscribe((forms) => {
           const micoForms: DynamicFormLayerComponent[] = forms._results;
-          const validObservables: Observable<boolean>[] = []
+          const validObservables: Observable<boolean>[] = [];
+          let currentlyValid = true;
           micoForms.forEach((form) => {
               validObservables.push(form.valid.asObservable());
+              if (!form.form.valid) {
+                  currentlyValid = false;
+              }
           });
           if (this.lastValidSub != null) {
               this.lastValidSub.unsubscribe();
           }
-          this.lastValidSub = combineLatest(...validObservables).map((values) => {
-              return !values.some(value => !value);
-          }).subscribe((valid) => this.valid = valid);
-      })
+          if (validObservables.length > 0) {
+              this.lastValidSub = combineLatest(...validObservables).map((values) => {
+                  return !values.some(value => !value);
+              }).subscribe((valid) => this.valid = valid);
+          }
+          this.valid = currentlyValid;
+      });
     }
 
     newItem() {
         this.currentValue.push(null);
+        this.valid = false; // heuristic that assumes new item is invalid at first
+        this.onChange(this.value);
+        this.onTouched();
     }
 
     deleteItem(i) {
         this.currentValue.splice(i, 1);
-        this.specificationsCallback(this.path + '.' + i, true, true, true);
+        this.specificationsUpdate.emit({path: this.path + '.' + i, remove: true, recursive: true, affectsArrayMembers: true});
+        this.onChange(this.value);
+        this.onTouched();
     }
 
 }

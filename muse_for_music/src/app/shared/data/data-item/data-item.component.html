@@ -4,12 +4,12 @@
         <i class="f5 fa fa-fw fa-chevron-down" [hidden]="!open"></i>
     </div>
 
-    <div class="f4 b min-w4 mr2 ws-normal flex-grow tooltip-bottom" [ngClass]="{'pointer': isCollapsible(), 'tooltip': model?.description}"
+    <div class="f4 b min-w4 mr2 ws-normal tooltip-bottom" [ngClass]="{'pointer': isCollapsible(), 'tooltip': model?.description}"
         style="word-wrap: break-word" [attr.data-tooltip]="model?.description" *ngIf="type() !== 'reference' && type() !== 'object' && type() !== 'array'">
         {{model?.title}}
     </div>
 
-    <div class="pl1 min-w5 flex-grow flex items-center">
+    <div class="pl1 flex-grow flex items-center">
         <ng-container [ngSwitch]="type()">
 
             <div *ngSwitchCase="'string'" class="flex-grow">

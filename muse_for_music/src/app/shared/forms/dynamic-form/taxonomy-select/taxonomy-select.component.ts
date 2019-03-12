@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, ViewChild, OnInit, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, forwardRef, Input, ViewChild, OnInit, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { ApiObject } from '../../../rest/api-base.service';
@@ -6,6 +6,7 @@ import { ApiObject } from '../../../rest/api-base.service';
 import { QuestionBase } from '../../question-base';
 import { myDropdownComponent } from '../../../dropdown/dropdown.component';
 import { ApiService } from '../../../rest/api.service';
+import { SpecificationUpdateEvent } from '../specification-update-event';
 
 
 
@@ -28,7 +29,7 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
     @Input() question: QuestionBase<any>;
     @Input() path: string;
 
-    @Input() specificationsCallback: (path: string, remove?: boolean, recursive?: boolean, affectsArrayMembers?: boolean) => void;
+    @Output() specificationsUpdate: EventEmitter<SpecificationUpdateEvent> = new EventEmitter<SpecificationUpdateEvent>();
 
     specification: any;
     specificationMap: Map<number, any> = new Map<number, any>();
@@ -134,6 +135,7 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
                     }
                 }
             } else {
+                console.log('path: '+spec.path, 'should: ' + this.path)
                 if (spec.path === this.path) {
                     this.specification = spec;
                 }
@@ -143,15 +145,11 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
     }
 
     editSpecification(id) {
-        if (this.specificationsCallback != null) {
-            this.specificationsCallback(this.path + (this.isArray ? '.' + id : ''));
-        }
+        this.specificationsUpdate.emit({path: this.path + (this.isArray ? '.' + id : '')});
     }
 
     removeSpecification(id) {
-        if (this.specificationsCallback != null) {
-            this.specificationsCallback(this.path + (this.isArray ? '.' + id : ''), true);
-        }
+        this.specificationsUpdate.emit({path: this.path + (this.isArray ? '.' + id : ''), remove: true});
     }
 
     selectedList() {

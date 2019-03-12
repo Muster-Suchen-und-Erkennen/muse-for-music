@@ -1,1 +1,1 @@
-<df-layer class="flex-grow" [modelUrl]="property['$ref']" [startData]="currentValue" [path]="path" (data)="updateValue($event)" [debug]="false"></df-layer>
+<df-layer class="flex-grow" [modelUrl]="property['$ref']" [startData]="currentValue" [path]="path" [context]="context" [specifications]="specifications" (data)="updateValue($event)" (specificationsUpdate)="specificationsUpdate.emit($event)" [debug]="false"></df-layer>
