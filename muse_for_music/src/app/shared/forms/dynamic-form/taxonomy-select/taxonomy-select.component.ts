@@ -3,10 +3,10 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { ApiObject } from '../../../rest/api-base.service';
 
-import { QuestionBase } from '../../question-base';
 import { myDropdownComponent } from '../../../dropdown/dropdown.component';
 import { ApiService } from '../../../rest/api.service';
 import { SpecificationUpdateEvent } from '../specification-update-event';
+import { ApiModel } from 'app/shared/rest/api-model';
 
 
 
@@ -26,7 +26,7 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
     @ViewChild(myDropdownComponent) dropdown: myDropdownComponent
 
     _value: any[] = [];
-    @Input() question: QuestionBase<any>;
+    @Input() question: ApiModel;
     @Input() path: string;
 
     @Output() specificationsUpdate: EventEmitter<SpecificationUpdateEvent> = new EventEmitter<SpecificationUpdateEvent>();
