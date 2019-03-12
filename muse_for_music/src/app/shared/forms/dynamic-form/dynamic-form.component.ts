@@ -3,10 +3,6 @@ import { FormGroup, FormArray } from '@angular/forms';
 
 import { Subscription } from 'rxjs/Rx';
 
-import { QuestionBase } from '../question-base';
-import { QuestionService } from '../question.service';
-import { QuestionControlService } from '../question-control.service';
-
 import { ApiObject } from '../../rest/api-base.service';
 import { SaveButtonComponent } from './save-button/save-button.component';
 import { myDialogComponent } from '../../dialog/dialog.component';
@@ -16,7 +12,6 @@ import { SpecificationUpdateEvent } from './specification-update-event';
 @Component({
     selector: 'dynamic-form',
     templateUrl: './dynamic-form.component.html',
-    providers: [QuestionControlService],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicFormComponent implements OnChanges {
@@ -45,7 +40,7 @@ export class DynamicFormComponent implements OnChanges {
 
     @ViewChild(myDialogComponent) dialog: myDialogComponent;
 
-    constructor(private qcs: QuestionControlService, private qs: QuestionService, private changeDetector: ChangeDetectorRef) { }
+    constructor(private changeDetector: ChangeDetectorRef) { }
 
     private runChangeDetection() {
         this.changeDetector.markForCheck();
