@@ -14,7 +14,7 @@
     </span>
 </div>
 
-<div class="pv2 flex items-center" [formGroup]="form"> <!--*ngIf="!isHidden() && !isCollapsed()"-->
+<div class="pv2 items-center" [ngClass]="{'flex': !isHidden() && !isCollapsed(), 'dn': isHidden() || isCollapsed()}" [formGroup]="form">
 
     <ng-container *ngIf="!isCollapsible()">
         <i [hidden]="!isValid" class="min-w2 tc mr1 f5 fa fa-check"></i>
@@ -61,15 +61,15 @@
             </ng-container>
 
             <ng-container *ngSwitchCase="'object'">
-                <m4m-object-input class="flex flex-grow" [formControlName]="model['x-key']" [property]="property" [path]="path" [context]="context"></m4m-object-input>
+                <m4m-object-input class="flex flex-grow" [formControlName]="model['x-key']" [property]="property" [path]="path" [context]="context" [specifications]="specifications" (specificationsUpdate)="specificationsUpdate.emit($event)"></m4m-object-input>
             </ng-container>
 
             <ng-container *ngSwitchCase="'array'">
-                <m4m-array-input class="flex flex-grow" [formControlName]="model['x-key']" [property]="property" [path]="path" [context]="context"></m4m-array-input>
+                <m4m-array-input class="flex flex-grow" [formControlName]="model['x-key']" [property]="property" [path]="path" [context]="context" [specifications]="specifications" (specificationsUpdate)="specificationsUpdate.emit($event)"></m4m-array-input>
             </ng-container>
 
             <ng-container *ngSwitchCase="'taxonomy'">
-                <m4m-taxonomy-select class="flex-grow" [formControlName]="model['x-key']" [question]="model" [path]="path" [specificationsCallback]="specificationsCallback" [specifications]="specifications"></m4m-taxonomy-select>
+                <m4m-taxonomy-select class="flex-grow" [formControlName]="model['x-key']" [question]="model" [path]="path" [specifications]="specifications" (specificationsUpdate)="specificationsUpdate.emit($event)"></m4m-taxonomy-select>
             </ng-container>
 
             <div *ngSwitchDefault class="flex-grow">

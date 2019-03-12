@@ -1,10 +1,11 @@
-import { Component, forwardRef, Input, OnInit, OnChanges, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, forwardRef, Input, OnInit, OnChanges, AfterViewInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_ASYNC_VALIDATORS, AsyncValidator, Validator, NG_VALIDATORS } from '@angular/forms';
 
 import { ApiModel, ApiModelRef } from 'app/shared/rest/api-model';
 import { DynamicFormLayerComponent } from '../dynamic-form-layer.component';
 import { Subject, BehaviorSubject, Subscription } from 'rxjs';
 import { ModelsService } from 'app/shared/rest/models.service';
+import { SpecificationUpdateEvent } from '../specification-update-event';
 
 
 
@@ -30,7 +31,7 @@ export class ObjectInputComponent implements ControlValueAccessor, OnInit, After
     @Input() context: any;
 
     @Input() specifications = [];
-    @Input() specificationsCallback: (path: string, remove: boolean, recursive: boolean, affectsArrayMembers: boolean) => void;
+    @Output() specificationsUpdate: EventEmitter<SpecificationUpdateEvent> = new EventEmitter<SpecificationUpdateEvent>();
 
     model: ApiModel;
 

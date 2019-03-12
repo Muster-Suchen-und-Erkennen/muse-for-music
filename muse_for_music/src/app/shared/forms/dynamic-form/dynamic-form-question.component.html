@@ -44,7 +44,7 @@
 
                 <m4m-reference-chooser *ngSwitchCase="'reference'" [formControlName]="question.key" [question]="question" [path]="path" [context]="context"></m4m-reference-chooser>
 
-                <m4m-taxonomy-select *ngSwitchCase="'taxonomy'" [formControlName]="question.key" [question]="question" [path]="path" [specificationsCallback]="specificationsCallback" [specifications]="specifications"></m4m-taxonomy-select>
+                <!--m4m-taxonomy-select *ngSwitchCase="'taxonomy'" [formControlName]="question.key" [question]="question" [path]="path" [specificationsCallback]="specificationsCallback" [specifications]="specifications"></m4m-taxonomy-select-->
 
             </div>
 
@@ -59,7 +59,7 @@
     <div class="bl bw2 ml2 b--gray flex-grow" *ngIf="open || !(question.controlType === 'object' && isCollapsible())">
         <div class="flex-grow" formGroupName="{{question.key}}">
             <div *ngFor="let qstn of question?.nestedQuestions;trackBy:questionId" class="flex-grow">
-                <df-question [question]="qstn" [form]="form.controls[question.key]" [path]="path + '.' + qstn.key" [specificationsCallback]="specificationsCallback" [specifications]="specifications" [nested]="false" [context]="context"></df-question>
+                <!--df-question [question]="qstn" [form]="form.controls[question.key]" [path]="path + '.' + qstn.key" [specificationsCallback]="specificationsCallback" [specifications]="specifications" [nested]="false" [context]="context"></df-question-->
             </div>
         </div>
     </div>

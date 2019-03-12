@@ -10,6 +10,8 @@ import { QuestionControlService } from '../question-control.service';
 import { ApiObject } from '../../rest/api-base.service';
 import { SaveButtonComponent } from './save-button/save-button.component';
 import { myDialogComponent } from '../../dialog/dialog.component';
+import { Specification } from './specifications';
+import { SpecificationUpdateEvent } from './specification-update-event';
 
 @Component({
     selector: 'dynamic-form',
@@ -27,17 +29,13 @@ export class DynamicFormComponent implements OnChanges {
     @Input() alwaysAllowSave: boolean = false;
     @Input() saveSuccess: boolean = false;
 
-    questions: QuestionBase<any>[] = [];
-    form: FormGroup;
-    valueChangeSubscription: Subscription;
+    specifications: Specification[] = [];
+    currentSpec: Specification;
 
-    specifications: {path: string, share: ApiObject, occurence: ApiObject, instrumentation: ApiObject[]}[] = [];
-    currentSpec: {path: string, share: ApiObject, occurence: ApiObject, instrumentation: ApiObject[]};
-
-    private canSave: boolean;
+    canSave: boolean;
+    formValue: any;
 
     @Output() valid: EventEmitter<boolean> = new EventEmitter<boolean>();
-    @Output() validForSave: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() data: EventEmitter<any> = new EventEmitter<any>();
 
     @Output() save: EventEmitter<any> = new EventEmitter<any>();
@@ -62,21 +60,27 @@ export class DynamicFormComponent implements OnChanges {
         }
     }
 
-    updateSpecification = (path: string, remove: boolean = false, recursive: boolean = false, affectsArrayMembers: boolean = false) => {
-        if (remove) {
+    updateData(data) {
+        data.specifications = this.specifications;
+        this.formValue = data;
+        this.data.emit(data);
+    }
+
+    updateSpecification(event: SpecificationUpdateEvent) {
+        if (event.remove) {
             const newSpecifications = [];
             this.specifications.forEach((spec) => {
-                if (recursive) {
-                    if (spec.path !== path && !spec.path.startsWith(path + '.')) {
+                if (event.recursive) {
+                    if (spec.path !== event.path && !spec.path.startsWith(event.path + '.')) {
                         newSpecifications.push(spec);
                     }
                 } else {
-                    if (spec.path !== path) {
+                    if (spec.path !== event.path) {
                         newSpecifications.push(spec);
                     }
                 }
-                if (affectsArrayMembers) {
-                    const splitpath = path.split('.');
+                if (event.affectsArrayMembers) {
+                    const splitpath = event.path.split('.');
                     const splitpathSpec = spec.path.split('.');
                     const arrayIndex = parseInt(splitpath[splitpath.length - 1], 10);
                     const arrayIndexSpec = parseInt(splitpathSpec[splitpath.length - 1], 10);
@@ -90,13 +94,13 @@ export class DynamicFormComponent implements OnChanges {
         } else {
             this.currentSpec = null;
             this.specifications.forEach((spec) => {
-                if (spec.path === path) {
+                if (spec.path === event.path) {
                     this.currentSpec = spec;
                 }
             });
             if (this.currentSpec == null) {
                 this.currentSpec = {
-                    path: path,
+                    path: event.path,
                     share: {id: -1, _links: {self: {href: ''}}},
                     occurence: {id: -1, _links: {self: {href: ''}}},
                     instrumentation: [],
@@ -123,8 +127,8 @@ export class DynamicFormComponent implements OnChanges {
     }
 
     saveForm = () => {
-        if (this.form != null && (this.canSave || this.alwaysAllowSave)) {
-            this.save.emit(this.form.value);
+        if (this.canSave || this.alwaysAllowSave) {
+            this.save.emit(this.formValue);
         }
     }
 

@@ -46,6 +46,12 @@ export class FormGroupService {
                 if (itemModel.hasOwnProperty('maximum')) {
                     validators.push(Validators.max((itemModel as ApiModel).maximum));
                 }
+                if (itemModel.hasOwnProperty('minItems')) {
+                    validators.push(Validators.minLength((itemModel as ApiModel).minItems));
+                }
+                if (itemModel.hasOwnProperty('maxItems')) {
+                    validators.push(Validators.maxLength((itemModel as ApiModel).maxItems));
+                }
                 if (itemModel.hasOwnProperty('pattern')) {
                     validators.push(Validators.pattern((itemModel as ApiModel).pattern));
                 }
@@ -59,17 +65,17 @@ export class FormGroupService {
                                 value = '';
                             }
                         } else if (itemModel.type === 'number' || itemModel.type === 'integer') {
-                            validators.push(customNullValidator(-1));
-                            if (value == null) {
+                            if (key !== 'id') {
+                                validators.push(customNullValidator(-1));
+                            }
+                            if (value == null || key === 'id') {
                                 value = -1;
                             }
                         } else if (itemModel.type === 'array') {
-                            validators.push(customNullValidator([]));
                             if (value == null) {
                                 value = [];
                             }
                         } else if (itemModel.type === 'boolean') {
-                            validators.push(customNullValidator(false));
                             if (value == null) {
                                 value = false;
                             }

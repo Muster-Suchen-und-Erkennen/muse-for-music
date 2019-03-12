@@ -1,9 +1,10 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApiModel, ApiModelRef } from 'app/shared/rest/api-model';
 import { ModelsService } from 'app/shared/rest/models.service';
 import { FormGroupService } from '../form-group.service';
 import { Subscription } from 'rxjs';
+import { SpecificationUpdateEvent } from './specification-update-event';
 
 @Component({
     selector: 'df-layer',
@@ -24,11 +25,11 @@ export class DynamicFormLayerComponent implements OnChanges {
     @Output() data: EventEmitter<any> = new EventEmitter<any>();
 
     @Input() specifications = [];
-    @Input() specificationsCallback: (path: string, remove: boolean, recursive: boolean, affectsArrayMembers: boolean) => void;
+    @Output() specificationsUpdate: EventEmitter<SpecificationUpdateEvent> = new EventEmitter<SpecificationUpdateEvent>();
 
     @Input() context: any;
 
-    @Input() debug: boolean = true;
+    @Input() debug: boolean = false;
 
     model: ApiModel;
     properties: (ApiModel | ApiModelRef)[];
@@ -53,6 +54,7 @@ export class DynamicFormLayerComponent implements OnChanges {
 
             this.models.getModel(this.modelUrl)
                 .map(this.models.filterModel(this.filter, this.isBlacklist))
+                .map(this.models.filterModel(['specifications'], true))
                 .first().subscribe(model => {
                     const props = [];
                     if (model.properties != null) {
@@ -77,16 +79,10 @@ export class DynamicFormLayerComponent implements OnChanges {
                         this.formSubscription.unsubscribe();
                     }
                     this.formSubscription = this.form.statusChanges.subscribe(status => {
-                        this.valid.emit(this.form.valid);
                         this.data.emit(this.form.value);
-                        if (this.lastValid !== this.form.valid) {
-                            // only run change detection on this level for changes in valid status
-                            // ignore value changes here
-                            this.runChangeDetection();
-                        }
-                        this.lastValid = this.form.valid;
+                        this.updateValidStatus();
                     });
-                    this.valid.emit(this.form.valid);
+                    this.updateValidStatus();
                     this.runChangeDetection();
                 });
         }
@@ -102,6 +98,24 @@ export class DynamicFormLayerComponent implements OnChanges {
         if (changes.path != null || changes.context != null || changes.debug != null) {
             this.runChangeDetection();
         }
+    }
+
+    private updateValidStatus() {
+        this.valid.emit(this.form.valid);
+        let validForSave = true;
+        this.properties.forEach(prop => {
+            const control = this.form.get(prop['x-key']);
+            if (control == null || (!control.valid && !prop['x-allowSave'])) {
+                validForSave = false;
+            }
+        });
+        this.validForSave.emit(validForSave);
+        if (this.lastValid !== this.form.valid) {
+            // only run change detection on this level for changes in valid status
+            // ignore value changes here
+            this.runChangeDetection();
+        }
+        this.lastValid = this.form.valid;
     }
 
     trackBy(index, model: ApiModel) {

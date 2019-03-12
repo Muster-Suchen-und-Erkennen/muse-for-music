@@ -1,9 +1,9 @@
 <div>
     <df-layer [modelUrl]="objectModel" [startData]="startValues" [context]="context" [path]="''"
-        [specifications]="specifications" [specificationsCallback]="updateSpecification"
-        (data)="data.emit($event)" (valid)="valid.emit($event)">
+        [specifications]="specifications" (specificationsUpdate)="updateSpecification($event)"
+        (data)="updateData($event)" (valid)="valid.emit($event)" (validForSave)="canSave = $event; runChangeDetection()">
     </df-layer>
-    <m4m-save-button [formValid]="alwaysAllowSave || (validForSave | async)" (click)="saveForm()" *ngIf="showSaveButton"></m4m-save-button>
+    <m4m-save-button [formValid]="alwaysAllowSave || canSave" (click)="saveForm()" *ngIf="showSaveButton"></m4m-save-button>
 </div>
 
 <m4m-dialog [dialogType]="'ok-cancel'" [valid]="valid" [icon]="'info'" [okCallback]="saveSpec" #dialog >

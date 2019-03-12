@@ -1,8 +1,9 @@
-import { Component, Input, OnChanges, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnChanges, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { ApiModel, ApiModelRef } from 'app/shared/rest/api-model';
 import { ModelsService } from 'app/shared/rest/models.service';
 import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { SpecificationUpdateEvent } from '../specification-update-event';
 
 @Component({
     selector: 'df-item',
@@ -18,7 +19,7 @@ export class DynamicFormItemComponent implements OnChanges {
     @Input() context: any;
 
     @Input() specifications = [];
-    @Input() specificationsCallback: (path: string, remove: boolean, recursive: boolean, affectsArrayMembers: boolean) => void;
+    @Output() specificationsUpdate: EventEmitter<SpecificationUpdateEvent> = new EventEmitter<SpecificationUpdateEvent>();
 
     model: ApiModel|ApiModelRef;
     open: boolean = false;
