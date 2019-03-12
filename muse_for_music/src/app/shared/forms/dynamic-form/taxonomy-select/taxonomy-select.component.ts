@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, ViewChild, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, forwardRef, Input, ViewChild, OnInit, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { ApiObject } from '../../../rest/api-base.service';
@@ -17,7 +17,8 @@ import { ApiService } from '../../../rest/api.service';
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => TaxonomySelectComponent),
     multi: true
-  }]
+  }],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, OnChanges {
 
@@ -48,14 +49,14 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
 
     @Input()
     get value(): ApiObject|ApiObject[] {
-        if (!this.question.isArray) {
+        if (!this.isArray) {
             if (this._value == undefined || this._value.length === 0) {
-                return this.question.nullValue;
+                return this.nullValue;
             }
             return this._value[0];
         }
         if (this._value == undefined) {
-            this._value = [];
+            this._value = this.nullValue;
         }
         return this._value;
     }
@@ -64,8 +65,8 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
         if (val == undefined) {
             this._value = []
         } else {
-            if (!this.question.isArray) {
-                if ((val as ApiObject).id === -1) {
+            if (!this.isArray) {
+                if ((val as ApiObject).id === this.nullValue.id) {
                     this._value = [];
                     val = null;
                 } else {
@@ -79,10 +80,30 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
         this.onTouched();
     }
 
-    constructor(private api: ApiService) {}
+    get isArray(): boolean {
+        return this.question != null && this.question['x-isArray'];
+    }
+
+    get nullValue(): any {
+        if (this.isArray) {
+            return [];
+        } else {
+            if (this.question != null && this.question.hasOwnProperty('x-nullValue')) {
+                return this.question['x-nullValue'];
+            }
+            return {id: -1};
+        }
+    }
+
+    constructor(private api: ApiService, private changeDetector: ChangeDetectorRef) {}
+
+    private runChangeDetection() {
+        this.changeDetector.markForCheck();
+        //this.changeDetector.checkNoChanges();
+    }
 
     ngOnInit(): void {
-        this.api.getTaxonomy(this.question.valueType).subscribe(taxonomy => {
+        this.api.getTaxonomy(this.question['x-taxonomy']).subscribe(taxonomy => {
             if (taxonomy == undefined) {
                 return;
             }
@@ -90,12 +111,14 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
             if (taxonomy.display_name) {
                 this.displayName = taxonomy.display_name;
             }
+            this.runChangeDetection();
         });
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes.specifications != null || changes.path != null) {
             this.updateSpecificationMap();
+            this.runChangeDetection();
         }
     }
 
@@ -103,7 +126,7 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
         const newSpecs =  new Map<number, any>();
         this.specification = undefined;
         this.specifications.forEach((spec) => {
-            if (this.question.isArray) {
+            if (this.isArray) {
                 if (spec.path.startsWith(this.path)) {
                     if (spec.path.length > this.path.length) {
                         const id = parseInt(spec.path.substring(this.path.length + 1), 10);
@@ -121,13 +144,13 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
 
     editSpecification(id) {
         if (this.specificationsCallback != null) {
-            this.specificationsCallback(this.path + (this.question.isArray ? '.' + id : ''));
+            this.specificationsCallback(this.path + (this.isArray ? '.' + id : ''));
         }
     }
 
     removeSpecification(id) {
         if (this.specificationsCallback != null) {
-            this.specificationsCallback(this.path + (this.question.isArray ? '.' + id : ''), true);
+            this.specificationsCallback(this.path + (this.isArray ? '.' + id : ''), true);
         }
     }
 
@@ -137,9 +160,10 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
 
     selectedChange(selected: ApiObject[]) {
         this._value = selected;
-        if (!this.question.isArray) {
+        if (!this.isArray) {
             this.dropdown.closeDropdown();
         }
+        this.runChangeDetection();
         this.onChange(this.value);
         this.onTouched();
     }

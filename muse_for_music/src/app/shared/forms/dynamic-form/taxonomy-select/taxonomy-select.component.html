@@ -15,7 +15,7 @@
                 (keyup.enter)="select.select()" (keyup.arrowdown)="select.highlightNext()"
                 (keyup.arrowup)="select.highlightPrevious()">
     </div>
-    <m4m-taxonomy-selection-list [taxonomy]="question.valueType" [allowedSelections]="question.isArray ? -1 : 1" [selected]="_value"
+    <m4m-taxonomy-selection-list [taxonomy]="question['x-taxonomy']" [allowedSelections]="isArray ? -1 : 1" [selected]="_value"
             (selectedChange)="selectedChange($event)" [search]="searchTerm" #select dropdown-content></m4m-taxonomy-selection-list>
 </m4m-dropdown>
 

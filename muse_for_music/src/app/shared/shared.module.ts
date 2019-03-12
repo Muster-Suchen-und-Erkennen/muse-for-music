@@ -9,8 +9,11 @@ import { DataArrayComponent } from './data/data-array/data-array.component';
 import { DataTaxonomyComponent } from './data/data-taxonomy/data-taxonomy.component';
 
 import { DynamicFormComponent } from './forms/dynamic-form/dynamic-form.component';
+import { DynamicFormLayerComponent } from './forms/dynamic-form/dynamic-form-layer.component';
+import { DynamicFormItemComponent } from './forms/dynamic-form/form-item/form-item.component';
 import { DynamicFormQuestionComponent } from './forms/dynamic-form/dynamic-form-question.component';
 import { SaveButtonComponent } from './forms/dynamic-form/save-button/save-button.component';
+import { ObjectInputComponent } from './forms/dynamic-form/object-input/object-input.component';
 import { NumberInputComponent } from './forms/dynamic-form/number-input/number-input.component';
 import { BooleanInputComponent } from './forms/dynamic-form/boolean-input/boolean-input.component';
 import { DateInputComponent } from './forms/dynamic-form/date-input/date-input.component';
@@ -22,6 +25,8 @@ import { TaxonomySelectionListComponent } from './forms/dynamic-form/taxonomy-se
 
 import { QuestionControlService } from './forms/question-control.service';
 import { QuestionService } from './forms/question.service';
+import { FormGroupService } from './forms/form-group.service';
+
 import { BaseApiService } from './rest/api-base.service';
 import { ApiService } from './rest/api.service';
 import { ModelsService } from './rest/models.service';
@@ -58,8 +63,11 @@ import { ClickOutsideDirective } from './click-outside.directive';
         DataTaxonomyComponent,
 
         DynamicFormComponent,
+        DynamicFormLayerComponent,
+        DynamicFormItemComponent,
         DynamicFormQuestionComponent,
         SaveButtonComponent,
+        ObjectInputComponent,
         NumberInputComponent,
         BooleanInputComponent,
         DateInputComponent,
@@ -74,6 +82,7 @@ import { ClickOutsideDirective } from './click-outside.directive';
         InfoService,
         QuestionService,
         QuestionControlService,
+        FormGroupService,
         BaseApiService,
         ApiService,
         ModelsService,
@@ -96,8 +105,11 @@ import { ClickOutsideDirective } from './click-outside.directive';
         DataTaxonomyComponent,
 
         DynamicFormComponent,
+        DynamicFormLayerComponent,
+        DynamicFormItemComponent,
         DynamicFormQuestionComponent,
         SaveButtonComponent,
+        ObjectInputComponent,
         NumberInputComponent,
         BooleanInputComponent,
         DateInputComponent,

@@ -1,7 +1,7 @@
 import { Component, forwardRef, Input, OnInit, OnChanges } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { QuestionBase } from '../../question-base';
+import { ApiModel } from 'app/shared/rest/api-model';
 
 
 
@@ -18,7 +18,7 @@ import { QuestionBase } from '../../question-base';
 export class NumberInputComponent implements ControlValueAccessor {
 
     @Input('value') _value: string = undefined;
-    @Input() question: QuestionBase<any>;
+    @Input() question: ApiModel;
     @Input() path: string;
 
     onChange: any = () => {};
@@ -27,7 +27,7 @@ export class NumberInputComponent implements ControlValueAccessor {
 
     get value(): number {
         if (this._value == null || this._value === '') {
-            return this.question.nullValue;
+            return this.nullValue;
         } else {
             if (this.question.valueType === 'integer') {
                 return parseInt(this._value, 10);
@@ -38,13 +38,20 @@ export class NumberInputComponent implements ControlValueAccessor {
     }
 
     set value(val: number) {
-        if (val === this.question.nullValue) {
+        if (val === this.nullValue) {
             this._value = undefined;
         } else {
             this._value = val.toString();
         }
         this.onChange(val);
         this.onTouched();
+    }
+
+    get nullValue() {
+        if (this.question != null && this.question.hasOwnProperty('x-nullValue')) {
+            return this.question['x-nullValue'];
+        }
+        return -1;
     }
 
     updateValue(event) {

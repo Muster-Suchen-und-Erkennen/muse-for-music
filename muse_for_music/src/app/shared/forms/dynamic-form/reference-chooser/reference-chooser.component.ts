@@ -6,9 +6,9 @@ import { Subscription, Observable } from 'rxjs/Rx';
 import { ApiObject } from '../../../rest/api-base.service';
 import { ApiService } from '../../../rest/api.service';
 
-import { QuestionBase } from '../../question-base';
 import { myDropdownComponent } from '../../../dropdown/dropdown.component';
 import { myDialogComponent } from '../../../dialog/dialog.component';
+import { ApiModel } from 'app/shared/rest/api-model';
 
 
 
@@ -29,7 +29,7 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
     @ViewChild(myDialogComponent) dialog: myDialogComponent;
 
     selected: any[] = [];
-    @Input() question: QuestionBase<any>;
+    @Input() question: ApiModel;
     @Input() path: string;
     @Input() context: any;
 
@@ -57,30 +57,26 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
     @Input('value')
     get value(): ApiObject|ApiObject[] {
         if (this.choices == null || this.selected == null || this.selected.length === 0) {
-            if (this.question.isArray) {
-                return [];
-            } else {
-                return this.question.nullValue;
-            }
+            return this.nullValue;
         }
-        if (this.question.isArray) {
+        if (this.question['x-isArray']) {
             return this.selected;
         } else {
             if (this.selected.length > 0) {
                 return this.selected[0];
             } else {
-                return this.question.nullValue;
+                return this.nullValue;
             }
         }
     }
 
     set value(val: ApiObject|ApiObject[]) {
-        if (this.question.isArray) {
+        if (this.question['x-isArray']) {
             this.selected = (val as ApiObject[]);
         } else {
-            if (val != null && this.question.nullValue != null
+            if (val != null && this.nullValue != null
                 && (val as ApiObject).id != null
-                && (val as ApiObject).id === this.question.nullValue.id) {
+                && (val as ApiObject).id === this.nullValue.id) {
                 this.selected = [];
             } else {
                 this.selected = [val];
@@ -90,17 +86,28 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
         this.onTouched();
     }
 
+    get nullValue(): any {
+        if (this.question['x-isArray']) {
+            return [];
+        } else {
+            if (this.question != null && this.question.hasOwnProperty('x-nullValue')) {
+                return this.question['x-nullValue'];
+            }
+            return {id: -1};
+        }
+    }
+
     get placeholder(): string {
-        if (this.question == null || this.question.valueType == null) {
+        if (this.question == null || this.question['x-reference'] == null) {
             return '';
         }
-        if (this.question.valueType == 'person') {
+        if (this.question['x-reference'] === 'person') {
             return 'Person';
         }
-        if (this.question.valueType == 'opus') {
+        if (this.question['x-reference'] === 'opus') {
             return 'Werk';
         }
-        if (this.question.valueType == 'voice') {
+        if (this.question['x-reference'] === 'voice') {
             return 'Stimme';
         }
         return '';
@@ -110,13 +117,13 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
 
     ngOnInit(): void {
         this.updateChoices();
-        if (this.question.valueType === 'person') {
+        if (this.question['x-reference'] === 'person') {
             this.formModel = 'PersonPOST';
         }
-        if (this.question.valueType === 'opus') {
+        if (this.question['x-reference'] === 'opus') {
             this.formModel = 'OpusPOST';
         }
-        if (this.question.valueType === 'voice') {
+        if (this.question['x-reference'] === 'voice') {
             this.formModel = 'VoicePOST';
         }
     }
@@ -125,7 +132,7 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
         if (this.subscription != null) {
             this.subscription.unsubscribe();
         }
-        if (this.question.valueType === 'person') {
+        if (this.question['x-reference'] === 'person') {
             this.asyncChoices = this.api.getPeople();
             this.subscription = this.api.getPeople().subscribe(data => {
                 if (data == undefined) {
@@ -134,7 +141,7 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
                 this.choices = data;
             });
         };
-        if (this.question.valueType === 'opus') {
+        if (this.question['x-reference'] === 'opus') {
             this.asyncChoices = this.api.getOpuses();
             this.subscription = this.api.getOpuses().subscribe(data => {
                 if (data == undefined) {
@@ -143,7 +150,7 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
                 this.choices = data;
             });
         };
-        if (this.question.valueType === 'voice') {
+        if (this.question['x-reference'] === 'voice') {
             if (this.context.subPart != null) {
                 this.asyncChoices = this.api.getVoices(this.context.subPart);
             } else if (this.context.voice != null) {
@@ -178,13 +185,13 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
 
     createNew = (data) => {
         this.newData = data;
-        if (this.question.valueType === 'person') {
+        if (this.question['x-reference'] === 'person') {
             data.gender = 'male';
         }
-        if (this.question.valueType === 'opus') {
+        if (this.question['x-reference'] === 'opus') {
             data.composer = {id: -1};
         }
-        if (this.question.valueType === 'voice') {
+        if (this.question['x-reference'] === 'voice') {
         }
         this.formStartData = data;
         this.dialog.open();
@@ -213,7 +220,7 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
 
     save = () => {
         const updateSelection = (data) => {
-            if (this.question.isArray) {
+            if (this.question['x-isArray']) {
                 this.selected.push(data);
             } else {
                 this.selected = [data];
@@ -222,14 +229,14 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
             this.onTouched();
         }
         if (this.valid) {
-            if (this.question.valueType === 'person') {
+            if (this.question['x-reference'] === 'person') {
                 this.api.postPerson(this.newData).take(1).subscribe(data => {
                     Observable.timer(150).take(1).subscribe(() => {
                         updateSelection(data);
                     });
                 });
             }
-            if (this.question.valueType === 'opus') {
+            if (this.question['x-reference'] === 'opus') {
                 this.api.postOpus(this.newData).take(1).subscribe(data => {
                     Observable.timer(150).take(1).subscribe(() => {
                         updateSelection(data);
