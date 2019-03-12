@@ -39,7 +39,10 @@ export class ModelsService {
      */
     private canonizeModelUri(modelUri: string): string {
         // TODO implement
-        modelUri = modelUri.replace(/^#\/definitions/, 'remote')
+        modelUri = modelUri.replace(/^#\/definitions/, 'remote');
+        if (!modelUri.includes('/')) {
+            modelUri = 'remote/' + modelUri;
+        }
         return modelUri;
     }
 

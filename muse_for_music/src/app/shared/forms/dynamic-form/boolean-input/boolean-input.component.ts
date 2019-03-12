@@ -1,7 +1,7 @@
 import { Component, forwardRef, Input, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { QuestionBase } from '../../question-base';
+import { ApiModel } from 'app/shared/rest/api-model';
 
 
 
@@ -16,7 +16,7 @@ import { QuestionBase } from '../../question-base';
 })
 export class BooleanInputComponent implements ControlValueAccessor {
 
-    @Input() question: QuestionBase<any>;
+    @Input() question: ApiModel;
     @Input() path: string;
     checked: boolean = false;
 

@@ -53,7 +53,7 @@
     </div>
 </div>
 
-<m4m-array-input [question]="question" [array]="form.controls[question.key]" [path]="path" [specificationsCallback]="specificationsCallback" [specifications]="specifications" *ngIf="question.controlType === 'array'" [context]="context"></m4m-array-input>
+<!--m4m-array-input [question]="question" [array]="form.controls[question.key]" [path]="path" [specificationsCallback]="specificationsCallback" [specifications]="specifications" *ngIf="question.controlType === 'array'" [context]="context"></m4m-array-input-->
 
 <div class="flex" *ngIf="question.controlType === 'object'" [formGroup]="form">
     <div class="bl bw2 ml2 b--gray flex-grow" *ngIf="open || !(question.controlType === 'object' && isCollapsible())">

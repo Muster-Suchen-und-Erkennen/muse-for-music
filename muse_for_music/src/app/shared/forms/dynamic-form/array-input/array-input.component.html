@@ -1,26 +1,14 @@
-<!--div formArrayName="question?.key" class="">
-    <!--div *ngFor="let entry of array.controls; let i=index" [formGroupName]="question.key + '_' + i" >
-        i
-      </div>
-      </div-->
-<div class="flex">
-    <div class="bl bw2 mr2 ml2 b--gray">
-    </div>
-    <div class="flex-grow">
-        <div>
-            <div class="flex mb2 hide-child" *ngFor="let entry of array?.controls; let i=index;trackBy:arrayId">
-                <div class="child z-1 w2 bg-red grow pointer flex flex-column items-center justify-around" (click)="deleteItem(i)">
-                    <div class="flex-grow-1 flex items-center">
-                        <i class="fa fa-minus white"></i>
-                    </div>
-                </div>
-                <div class="flex-grow-1">
-                    <df-question *ngFor="let question of question?.nestedQuestions;trackBy:questionId" [question]="question" [path]="path + '.' + i + '.' + question.key" [specificationsCallback]="specificationsCallback" [specifications]="specifications" [form]="entry" [context]="context"></df-question>
-                </div>
+<div class="flex-grow flex flex-column items-stretch">
+    <div class="flex mb2 hide-child" *ngFor="let entry of currentValue; let i=index;trackBy:trackBy">
+        <div class="bl bw2 mh1 b--light-gray self-stretch"></div>
+        <div class="child z-1 w2 bg-red grow pointer flex flex-column items-center justify-around" (click)="deleteItem(i)">
+            <div class="flex-grow-1 flex items-center">
+                <i class="fa fa-minus white"></i>
             </div>
         </div>
-        <div class="w100 h2 br2 bg-light-gray bg-animate hover-bg-light-green pointer flex items-center justify-around" (click)="newItem()">
-            <i class="fa fa-plus"></i>
-        </div>
+        <df-layer class="flex-grow" [modelUrl]="property?.items['$ref']" [startData]="entry" [path]="path" (data)="updateValue(i, $event)" [debug]="false"></df-layer>
+    </div>
+    <div class="ml2 h2 br2 bg-light-gray bg-animate hover-bg-light-green pointer flex items-center justify-around" (click)="newItem()">
+        <i class="fa fa-plus"></i>
     </div>
 </div>

@@ -1,4 +1,4 @@
-import { Component, Input, Output, OnInit, OnChanges, SimpleChanges, EventEmitter, ViewChildren, ViewChild } from '@angular/core';
+import { Component, Input, Output, OnInit, OnChanges, SimpleChanges, EventEmitter, ViewChildren, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormArray } from '@angular/forms';
 
 import { Subscription } from 'rxjs/Rx';
@@ -14,9 +14,10 @@ import { myDialogComponent } from '../../dialog/dialog.component';
 @Component({
     selector: 'dynamic-form',
     templateUrl: './dynamic-form.component.html',
-    providers: [QuestionControlService]
+    providers: [QuestionControlService],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DynamicFormComponent implements OnInit, OnChanges {
+export class DynamicFormComponent implements OnChanges {
 
     @Input() objectModel: string;
     @Input() startValues: ApiObject = {_links:{self:{href:''}}};
@@ -46,133 +47,18 @@ export class DynamicFormComponent implements OnInit, OnChanges {
 
     @ViewChild(myDialogComponent) dialog: myDialogComponent;
 
-    constructor(private qcs: QuestionControlService, private qs: QuestionService) { }
+    constructor(private qcs: QuestionControlService, private qs: QuestionService, private changeDetector: ChangeDetectorRef) { }
 
-    questionId(index, qstn: QuestionBase<any>) {
-        return qstn.key;
-    }
-
-    closeUnrelated(sourceKey) {
-        this.questionDivs.forEach(question => question.close(sourceKey));
-    }
-
-    update() {
-        this.qs.getQuestions(this.objectModel).subscribe(questions => {
-            this.questions = questions;
-
-            this.qcs.toFormGroup(this.questions).subscribe(form => {
-                this.form = form;
-                this.form.statusChanges.subscribe(status => {
-                    this.valid.emit(this.form.valid);
-                    this.data.emit(this.form.value);
-                    if (this.form.valid) {
-                        this.validForSave.emit(true);
-                        this.canSave = true;
-                    } else {
-                        let valid = true;
-                        this.questions.forEach(qstn => {
-                            if (!qstn.allowSave) {
-                                if (!this.form.controls[qstn.key].valid) {
-                                    valid = false;
-                                }
-                            }
-                        });
-                        this.canSave = valid;
-                        this.validForSave.emit(valid);
-                    }
-                });
-                this.patchFormValues();
-            });
-        });
-    }
-
-    patchFormValues = () => {
-        if (this.form != null) {
-            const patched = {};
-            const patchValues = (values, questions, patched) => {
-                questions.forEach((question: QuestionBase<any>) => {
-                    if (question.controlType === 'object') {
-                        const next = {};
-                        patched[question.key] = next;
-                        patchValues(values != null ? values[question.key] : undefined,
-                                    question.nestedQuestions, next);
-                        return;
-                    }
-                    if (values != null && values[question.key] != null) {
-                        patched[question.key] = values[question.key];
-                    } else {
-                        if (question.isArray) {
-                            patched[question.key] = [];
-                        } else {
-                            if (question.value != null) {
-                                patched[question.key] = question.value;
-                            } else {
-                                patched[question.key] = question.nullValue;
-                            }
-                        }
-                    }
-                });
-            }
-            patchValues(this.startValues, this.questions, patched);
-            if (this.valueChangeSubscription != null) {
-                this.valueChangeSubscription.unsubscribe();
-            }
-            const patchArrays = (patched, questions, path) => {
-                questions.forEach(question => {
-                    if (question.controlType === 'object') {
-                        const newpath = path.length > 0 ? path + '.' + question.key : question.key
-                        patchArrays(patched[question.key], question.nestedQuestions, newpath);
-                        return;
-                    }
-                    if (question.isArray || question.controlType === 'array') {
-                        if (question.type !== 'taxonomy' && question.type !== 'reference') {
-                            const newpath = path.length > 0 ? path + '.' + question.key : question.key
-                            const arrayControl: FormArray = this.form.get(newpath) as FormArray;
-                            if (patched[question.key] == null) {
-                                patched[question.key] = [];
-                            }
-                            let counter = 0;
-                            while (arrayControl.length !== patched[question.key].length) {
-                                counter ++;
-                                if (counter > 100000) {
-                                    break; // don't allow infinite loops
-                                }
-                                if (arrayControl.length < patched[question.key].length) {
-                                    this.qs.getQuestions(question.valueType).take(1).subscribe((questions => {
-                                        this.qcs.toFormGroup(questions).take(1).subscribe((group => {
-                                            arrayControl.push(group);
-                                        }));
-                                    }));
-                                }
-                                if (arrayControl.length > patched[question.key].length) {
-                                    arrayControl.removeAt(arrayControl.length - 1);
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-            patchArrays(patched, this.questions, '')
-            this.form.patchValue(patched);
-            this.valueChangeSubscription = this.form.valueChanges.take(1).subscribe(() => {
-                if (this.savebutton != null) {
-                    this.savebutton.resetStatus();
-                }
-            });
-        }
-    }
-
-    ngOnInit() {
-        this.update();
+    private runChangeDetection() {
+        this.changeDetector.markForCheck();
+        //this.changeDetector.checkNoChanges();
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (changes.objectType != null) {
-            this.update();
-        } else {
-            if (this.form != null && changes.startValues != null) {
-                this.patchFormValues();
-            }
+        if (changes.objectModel != null || changes.startValues != null ||
+            changes.context != null || changes.showSaveButton != null ||
+            changes.alwaysAllowSave != null || changes.saveSuccess != null) {
+            this.runChangeDetection();
         }
     }
 

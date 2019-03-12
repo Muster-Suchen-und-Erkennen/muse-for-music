@@ -1,0 +1,86 @@
+<div class="pv2 flex items-center pointer" [ngClass]="{'pointer': isCollapsible()}" (click)="toggleOpen()" *ngIf="isCollapsible()">
+    <div class="mr2 flex items-center justify-center">
+        <i class="f5 fa fa-fw fa-chevron-right" [hidden]="open"></i>
+        <i class="f5 fa fa-fw fa-chevron-down" [hidden]="!open"></i>
+    </div>
+    <label class="f4 min-w4 mr2 ws-normal flex-grow tooltip-bottom pointer"
+        [ngClass]="{'tooltip': model?.description}" style="word-wrap: break-word"
+        [attr.for]="model['x-key']" [attr.data-tooltip]="model.description">
+        {{model.title}}
+    </label>
+    <i [hidden]="!isValid" class="w2 tc mr1 f5 fa fa-check"></i>
+    <span class="tooltip tooltip-right" [attr.data-tooltip]="error" [hidden]="isValid">
+        <i class="w2 tc mr1 f5 red fa fa-exclamation"></i>
+    </span>
+</div>
+
+<div class="pv2 flex items-center" [formGroup]="form"> <!--*ngIf="!isHidden() && !isCollapsed()"-->
+
+    <ng-container *ngIf="!isCollapsible()">
+        <i [hidden]="!isValid" class="min-w2 tc mr1 f5 fa fa-check"></i>
+        <span class="tooltip tooltip-right" [attr.data-tooltip]="error" [hidden]="isValid">
+            <i class="min-w2 tc mr1 f5 red fa fa-exclamation"></i>
+        </span>
+    </ng-container>
+
+    <div class="bl bw2 ml2 b--gray self-stretch" *ngIf="isCollapsible()"></div>
+
+    <div class="flex-grow flex items-center flex-wrap">
+        <label class="f4 min-w4 mr2 ws-normal flex-grow tooltip-bottom"
+            [ngClass]="{'tooltip': model?.description}" style="word-wrap: break-word"
+            [attr.for]="model['x-key']" [attr.data-tooltip]="model.description" *ngIf="!isCollapsible()">
+            {{model.title}}
+        </label>
+
+        <ng-container [ngSwitch]="type()">
+
+            <ng-container *ngSwitchCase="'string'">
+                <input class="min-w5 input-reset bb b--gray pa1 flex-grow" [formControlName]="model['x-key']" [id]="model['x-key']" *ngIf="model?.maxLength != null;else textArea">
+                <ng-template #textArea>
+                    <textarea class="min-w5 flex-grow" [formControlName]="model['x-key']" [id]="model['x-key']"></textarea>
+                </ng-template>
+              </ng-container>
+
+            <div *ngSwitchCase="'enum'" class="min-w5 flex-grow flex gray hover-black">
+                <select [id]="model['x-key']" class="input-reset bb b--gray pa1 bg-white black flex-grow" [formControlName]="model['x-key']" #inputSelect>
+                    <option *ngFor="let opt of model?.enum" [value]="opt">{{translatedEnum(opt)}}</option>
+                </select>
+                <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem; pointer-events: none" (click)="inputSelect.click($event)"><i class="f4 fa fa-angle-down"></i></div>
+            </div>
+
+            <ng-container *ngSwitchCase="'integer'">
+                <m4m-number-input class="flex flex-grow" [formControlName]="model['x-key']" [question]="model" [path]="path"></m4m-number-input>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'boolean'">
+                <m4m-boolean-input class="flex flex-grow" [formControlName]="model['x-key']" [question]="model" [path]="path"></m4m-boolean-input>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'reference'">
+                <m4m-reference-chooser class="flex flex-grow" [formControlName]="model['x-key']" [question]="model" [path]="path" [context]="context"></m4m-reference-chooser>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'object'">
+                <m4m-object-input class="flex flex-grow" [formControlName]="model['x-key']" [property]="property" [path]="path" [context]="context"></m4m-object-input>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'array'">
+                <m4m-array-input class="flex flex-grow" [formControlName]="model['x-key']" [property]="property" [path]="path" [context]="context"></m4m-array-input>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'taxonomy'">
+                <m4m-taxonomy-select class="flex-grow" [formControlName]="model['x-key']" [question]="model" [path]="path" [specificationsCallback]="specificationsCallback" [specifications]="specifications"></m4m-taxonomy-select>
+            </ng-container>
+
+            <div *ngSwitchDefault class="flex-grow">
+                <p>
+                    {{property|json}}
+                </p>
+                <p>
+                    <span class="b">{{type()}}</span>
+                    <span>{{data|json}}</span>
+                </p>
+            </div>
+        </ng-container>
+    </div>
+</div>

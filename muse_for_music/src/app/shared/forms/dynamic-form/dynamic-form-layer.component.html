@@ -1,0 +1,13 @@
+<form class="form-container" *ngIf="form != null" [formGroup]="form">
+    <div *ngFor="let property of properties;trackBy: trackBy">
+        <df-item [property]="property" [form]="form" [path]="path != null && path != '' ? path + '.' + property['x-key'] : property['x-key']"></df-item>
+    </div>
+</form>
+
+<div *ngIf="debug">
+    <p>Valid: {{form?.valid | json}}</p>
+    <p>Data:</p>
+    <p>{{form?.value | json}}</p>
+    <p>model:</p>
+    <p>{{model | json}}</p>
+</div>
