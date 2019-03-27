@@ -94,7 +94,7 @@ class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
 class FormaleFunktionToPart(db.Model):
     part_id = db.Column(db.Integer, db.ForeignKey('part.id'), primary_key=True)
-    formale_funktion_id = db.Column(db.Integer, db.ForeignKey('formale_funktion.id'), primary_key=True)
+    formale_funktion_id = db.Column(db.Integer, db.ForeignKey('formale_funktion.id', name='fk_formale_funktion_to_part_formale_funktion_id'), primary_key=True)
 
     part = db.relationship(Part, backref=db.backref('_formal_functions', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
     formale_funktion = db.relationship('FormaleFunktion')

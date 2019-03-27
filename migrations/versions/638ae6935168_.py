@@ -33,14 +33,14 @@ def upgrade():
     op.create_table('formale_funktion_to_part',
         sa.Column('part_id', sa.Integer(), nullable=False),
         sa.Column('formale_funktion_id', sa.Integer(), nullable=False),
-        sa.ForeignKeyConstraint(['formale_funktion_id'], ['formale_funktion.id'], name=op.f('fk_formale_funktion_to_part_formale_funktion_id_formale_funktion')),
+        sa.ForeignKeyConstraint(['formale_funktion_id'], ['formale_funktion.id'], name=op.f('fk_formale_funktion_to_part_formale_funktion_id')),
         sa.ForeignKeyConstraint(['part_id'], ['part.id'], name=op.f('fk_formale_funktion_to_part_part_id_part')),
         sa.PrimaryKeyConstraint('part_id', 'formale_funktion_id', name=op.f('pk_formale_funktion_to_part'))
     )
     op.create_table('musikalische_wendung_to_voice',
         sa.Column('voice_id', sa.Integer(), nullable=False),
         sa.Column('musikalische_wendung_id', sa.Integer(), nullable=False),
-        sa.ForeignKeyConstraint(['musikalische_wendung_id'], ['musikalische_wendung.id'], name=op.f('fk_musikalische_wendung_to_voice_musikalische_wendung_id_musikalische_wendung')),
+        sa.ForeignKeyConstraint(['musikalische_wendung_id'], ['musikalische_wendung.id'], name=op.f('fk_musikalische_wendung_to_voice_musikalische_wendung_id')),
         sa.ForeignKeyConstraint(['voice_id'], ['voice.id'], name=op.f('fk_musikalische_wendung_to_voice_voice_id_voice')),
         sa.PrimaryKeyConstraint('voice_id', 'musikalische_wendung_id', name=op.f('pk_musikalische_wendung_to_voice'))
     )

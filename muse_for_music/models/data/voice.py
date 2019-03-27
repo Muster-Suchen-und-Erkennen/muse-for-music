@@ -141,7 +141,7 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
 class MusikalischeWendungToVoice(db.Model):
     voice_id = db.Column(db.Integer, db.ForeignKey('voice.id'), primary_key=True)
-    musikalische_wendung_id = db.Column(db.Integer, db.ForeignKey('musikalische_wendung.id'), primary_key=True)
+    musikalische_wendung_id = db.Column(db.Integer, db.ForeignKey('musikalische_wendung.id', name='fk_musikalische_wendung_to_voice_musikalische_wendung_id'), primary_key=True)
 
     voice = db.relationship(Voice, backref=db.backref('_musicial_figures', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
     musikalische_wendung = db.relationship('MusikalischeWendung')
