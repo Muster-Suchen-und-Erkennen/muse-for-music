@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { ApiModel, ApiModelRef } from 'app/shared/rest/api-model';
 import { ModelsService } from 'app/shared/rest/models.service';
 import { FormGroupService } from '../form-group.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { SpecificationUpdateEvent } from './specification-update-event';
 
 @Component({
@@ -35,11 +35,15 @@ export class DynamicFormLayerComponent implements OnChanges {
     properties: (ApiModel | ApiModelRef)[];
     form: FormGroup;
 
-    private lastValid: boolean = false;
+    private changeDetectionBatchSubject: Subject<null> = new Subject<null>();
+
+    private lastValid: boolean = undefined;
 
     private formSubscription: Subscription;
 
-    constructor(private models: ModelsService, private formGroups: FormGroupService, private changeDetector: ChangeDetectorRef) {}
+    constructor(private models: ModelsService, private formGroups: FormGroupService, private changeDetector: ChangeDetectorRef) {
+        this.changeDetectionBatchSubject.asObservable().debounceTime(50).subscribe(() => this.runChangeDetection());
+    }
 
     private runChangeDetection() {
         this.changeDetector.markForCheck();
@@ -82,6 +86,7 @@ export class DynamicFormLayerComponent implements OnChanges {
                         this.data.emit(this.form.value);
                         this.updateValidStatus();
                     });
+                    this.data.emit(this.form.value);
                     this.updateValidStatus();
                     this.runChangeDetection();
                 });
@@ -90,9 +95,10 @@ export class DynamicFormLayerComponent implements OnChanges {
             if (this.startData != null && this.form != null) {
                 this.form.patchValue(this.startData);
 
-                // don't run change detection here as this component can not
+                // debounce all change detection here as this component can not
                 // efficiently decide if changes in start data happened from
                 // outside or from within the form
+                this.changeDetectionBatchSubject.next();
             }
         }
         if (changes.path != null || changes.context != null || changes.debug != null) {

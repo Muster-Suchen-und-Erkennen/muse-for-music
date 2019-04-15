@@ -1,7 +1,7 @@
 <div class="pv2 flex items-center pointer" [ngClass]="{'pointer': isCollapsible()}" (click)="toggleOpen()" *ngIf="isCollapsible()">
     <div class="mr2 flex items-center justify-center">
-        <i class="f5 fa fa-fw fa-chevron-right" [hidden]="open"></i>
-        <i class="f5 fa fa-fw fa-chevron-down" [hidden]="!open"></i>
+        <i class="f5 fa fa-fw fa-chevron-right" [hidden]="!isCollapsed()"></i>
+        <i class="f5 fa fa-fw fa-chevron-down" [hidden]="isCollapsed()"></i>
     </div>
     <label class="f4 min-w4 mr2 ws-normal flex-grow tooltip-bottom pointer"
         [ngClass]="{'tooltip': model?.description}" style="word-wrap: break-word"
@@ -61,11 +61,11 @@
             </ng-container>
 
             <ng-container *ngSwitchCase="'object'">
-                <m4m-object-input class="flex flex-grow" [formControlName]="model['x-key']" [property]="property" [path]="path" [context]="context" [specifications]="specifications" (specificationsUpdate)="specificationsUpdate.emit($event)"></m4m-object-input>
+                <m4m-object-input class="flex flex-grow" [formControlName]="model['x-key']" [property]="property" [path]="path" [context]="context" [specifications]="specifications" [debug]="debug" (specificationsUpdate)="specificationsUpdate.emit($event)"></m4m-object-input>
             </ng-container>
 
             <ng-container *ngSwitchCase="'array'">
-                <m4m-array-input class="flex flex-grow" [formControlName]="model['x-key']" [property]="property" [path]="path" [context]="context" [specifications]="specifications" (specificationsUpdate)="specificationsUpdate.emit($event)"></m4m-array-input>
+                <m4m-array-input class="flex flex-grow" [formControlName]="model['x-key']" [property]="property" [path]="path" [context]="context" [specifications]="specifications" [debug]="debug" (specificationsUpdate)="specificationsUpdate.emit($event)"></m4m-array-input>
             </ng-container>
 
             <ng-container *ngSwitchCase="'taxonomy'">
