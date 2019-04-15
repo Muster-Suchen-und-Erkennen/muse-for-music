@@ -22,13 +22,14 @@ import { SpecificationUpdateEvent } from '../specification-update-event';
     multi: true
   }]
 })
-export class ObjectInputComponent implements ControlValueAccessor, OnInit, AfterViewInit, Validator  {
+export class ObjectInputComponent implements ControlValueAccessor, OnInit, AfterViewInit, Validator {
 
     @ViewChild(DynamicFormLayerComponent) formLayer: DynamicFormLayerComponent;
 
     @Input() property: ApiModel|ApiModelRef;
     @Input() path: string;
     @Input() context: any;
+    @Input() debug: boolean = false;
 
     @Input() specifications = [];
     @Output() specificationsUpdate: EventEmitter<SpecificationUpdateEvent> = new EventEmitter<SpecificationUpdateEvent>();

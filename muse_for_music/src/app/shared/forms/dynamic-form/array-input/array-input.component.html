@@ -6,7 +6,10 @@
                 <i class="fa fa-minus white"></i>
             </div>
         </div>
-        <df-layer class="flex-grow" [modelUrl]="property?.items['$ref']" [startData]="entry" [path]="path + '.' + i" [specifications]="specifications" [context]="context" (data)="updateValue(i, $event)" (specificationsUpdate)="specificationsUpdate.emit($event)" [debug]="false"></df-layer>
+        <df-layer class="flex-grow" [modelUrl]="property?.items['$ref']" [startData]="entry"
+            [path]="path + '.' + i" [specifications]="specifications" [context]="context" [debug]="debug"
+            (data)="updateValue(i, $event)" (specificationsUpdate)="specificationsUpdate.emit($event)">
+        </df-layer>
     </div>
     <div class="ml2 h2 br2 bg-light-gray bg-animate hover-bg-light-green pointer flex items-center justify-around" (click)="newItem()">
         <i class="fa fa-plus"></i>

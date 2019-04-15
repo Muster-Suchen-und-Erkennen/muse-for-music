@@ -27,9 +27,6 @@ export class FormGroupService {
                 }
                 const itemModel = model.properties[key];
                 let value = null;
-                if (itemModel.hasOwnProperty('example')) {
-                    value = (itemModel as ApiModel).example;
-                }
                 const validators = [];
                 if (itemModel.hasOwnProperty('x-required')) {
                     validators.push(Validators.required);
@@ -55,42 +52,41 @@ export class FormGroupService {
                 if (itemModel.hasOwnProperty('pattern')) {
                     validators.push(Validators.pattern((itemModel as ApiModel).pattern));
                 }
-                if (!itemModel.hasOwnProperty('x-nullable') || !itemModel['x-nullable']) {
-                    if (itemModel.hasOwnProperty('x-nullValue')) {
-                        validators.push(customNullValidator(itemModel['x-nullValue']));
-                    } else {
+                // calculate default nullValue and set value
+                if (itemModel.hasOwnProperty('x-nullValue')) {
+                    // use provided value
+                    value = itemModel['x-nullValue'];
+                } else {
+                    if (value == null) {
                         if (itemModel.type === 'string') {
-                            validators.push(customNullValidator(''));
-                            if (value == null) {
-                                value = '';
-                            }
+                            value = '';
                         } else if (itemModel.type === 'number' || itemModel.type === 'integer') {
-                            if (key !== 'id') {
-                                validators.push(customNullValidator(-1));
-                            }
-                            if (value == null || key === 'id') {
-                                value = -1;
-                            }
+                            value = -1;
                         } else if (itemModel.type === 'array') {
-                            if (value == null) {
-                                value = [];
-                            }
+                            value = [];
                         } else if (itemModel.type === 'boolean') {
-                            if (value == null) {
-                                value = false;
-                            }
+                            value = false;
                         } else if (itemModel.hasOwnProperty('x-reference') && itemModel['x-reference'] != null) {
-                            validators.push(customNullValidator({'id': -1}));
-                            if (value == null) {
-                                value = {'id': -1};
-                            }
+                            value = {'id': -1};
                         } else if (itemModel.hasOwnProperty('x-taxonomy') && itemModel['x-taxonomy'] != null) {
-                            validators.push(customNullValidator({'id': -1}));
-                            if (value == null) {
-                                value = {'id': -1};
-                            }
+                            value = {'id': -1};
+                        }
+                        if (key === 'id') {
+                            value = -1;
                         }
                     }
+                }
+                // null value validator
+                if (!itemModel.hasOwnProperty('x-nullable') || !itemModel['x-nullable']) {
+                    if ((key !== 'id' && (itemModel.type === 'number' || itemModel.type === 'integer')) ||
+                        (itemModel.type !== 'array' && itemModel.type !== 'boolean')) {
+                        validators.push(customNullValidator(value));
+                    }
+                }
+
+                // overwrite null value with example value
+                if (itemModel.hasOwnProperty('example')) {
+                    value = (itemModel as ApiModel).example;
                 }
 
                 group[key] = new FormControl(value, validators);

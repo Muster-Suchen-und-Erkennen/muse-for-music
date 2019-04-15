@@ -34,6 +34,7 @@ export class ArrayInputComponent implements ControlValueAccessor, AfterViewInit,
     @Input() property: ApiModel;
     @Input() path: string;
     @Input() context: any;
+    @Input() debug: boolean = false;
 
     @Input() specifications = [];
     @Output() specificationsUpdate: EventEmitter<SpecificationUpdateEvent> = new EventEmitter<SpecificationUpdateEvent>();

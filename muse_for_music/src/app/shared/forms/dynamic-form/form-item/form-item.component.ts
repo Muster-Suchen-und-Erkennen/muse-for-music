@@ -17,6 +17,7 @@ export class DynamicFormItemComponent implements OnChanges {
     @Input() data: any;
     @Input() path: string;
     @Input() context: any;
+    @Input() debug: boolean = false;
 
     @Input() specifications = [];
     @Output() specificationsUpdate: EventEmitter<SpecificationUpdateEvent> = new EventEmitter<SpecificationUpdateEvent>();
@@ -29,7 +30,7 @@ export class DynamicFormItemComponent implements OnChanges {
     constructor(private models: ModelsService, private changeDetector: ChangeDetectorRef) { }
 
 
-    private runChangeDetection() {
+    runChangeDetection() {
         this.changeDetector.markForCheck();
         //this.changeDetector.checkNoChanges();
     }
@@ -102,7 +103,7 @@ export class DynamicFormItemComponent implements OnChanges {
     }
 
     isCollapsed() {
-        return this.isCollapsible() && !this.open;
+        return this.isCollapsible() && !this.open && !(this.property != null && this.property['x-key'].startsWith('measure'));
     }
 
     isHidden() {
@@ -125,7 +126,9 @@ export class DynamicFormItemComponent implements OnChanges {
         return;
     }
 
-    get isValid() { return this.form == null || this.form.controls[this.model['x-key']].valid; }
+    get isValid() {
+        return this.form == null || this.form.controls[this.model['x-key']].valid;
+    }
 
     get error() {
         if (this.form == null || this.form.controls[this.model['x-key']].valid) {
