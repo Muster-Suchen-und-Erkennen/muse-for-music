@@ -64,6 +64,18 @@ def upgrade():
     with op.batch_alter_table('person', schema=None) as batch_op:
         batch_op.drop_index('ix_person_canonical_name')
         batch_op.drop_column('canonical_name')
+        batch_op.alter_column('birth_date',
+               existing_type=sa.DATE(),
+               type_=sa.Integer(),
+               existing_nullable=True)
+        batch_op.alter_column('death_date',
+               existing_type=sa.DATE(),
+               type_=sa.Integer(),
+               existing_nullable=True)
+        batch_op.alter_column('nationality',
+               existing_type=sa.VARCHAR(length=40),
+               type_=sa.String(length=100),
+               existing_nullable=True)
 
     with op.batch_alter_table('sequence', schema=None) as batch_op:
         batch_op.add_column(sa.Column('exact_repetition', sa.Boolean(), nullable=True))
@@ -84,6 +96,10 @@ def upgrade():
         batch_op.drop_column('rendition_id')
         batch_op.drop_column('citations_id')
         batch_op.drop_column('satz_id')
+        batch_op.alter_column('label',
+               existing_type=sa.VARCHAR(length=5),
+               type_=sa.String(length=191),
+               existing_nullable=False)
 
     with op.batch_alter_table('voice', schema=None) as batch_op:
         batch_op.add_column(sa.Column('citations_id', sa.Integer(), nullable=True))
@@ -154,6 +170,10 @@ def downgrade():
         batch_op.create_foreign_key('sub_part_ibfk_2', 'composition', ['composition_id'], ['id'])
         batch_op.drop_column('is_tutti')
         batch_op.drop_column('ambitus_id')
+        batch_op.alter_column('label',
+               existing_type=sa.String(length=191),
+               type_=sa.VARCHAR(length=5),
+               existing_nullable=False)
 
     with op.batch_alter_table('sequence', schema=None) as batch_op:
         batch_op.drop_column('exact_repetition')
@@ -161,6 +181,18 @@ def downgrade():
     with op.batch_alter_table('person', schema=None) as batch_op:
         batch_op.add_column(sa.Column('canonical_name', sa.VARCHAR(length=191), nullable=True))
         batch_op.create_index('ix_person_canonical_name', ['canonical_name'], unique=False)
+        batch_op.alter_column('nationality',
+               existing_type=sa.String(length=100),
+               type_=sa.VARCHAR(length=40),
+               existing_nullable=True)
+        batch_op.alter_column('death_date',
+               existing_type=sa.Integer(),
+               type_=sa.DATE(),
+               existing_nullable=True)
+        batch_op.alter_column('birth_date',
+               existing_type=sa.Integer(),
+               type_=sa.DATE(),
+               existing_nullable=True)
 
     with op.batch_alter_table('part', schema=None) as batch_op:
         batch_op.add_column(sa.Column('form_id', sa.INTEGER(), nullable=True))
