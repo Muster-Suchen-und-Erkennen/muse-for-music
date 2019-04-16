@@ -107,8 +107,8 @@ def upgrade():
         batch_op.drop_column('is_symmetric')
         batch_op.drop_column('is_repetitive')
 
-    op.drop_table('form')
     op.drop_table('formale_funktion_to_form')
+    op.drop_table('form')
     op.drop_table('musikalische_wendung_to_sub_part')
 
     # ### end Alembic commands ###
