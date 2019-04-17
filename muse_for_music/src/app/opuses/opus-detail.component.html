@@ -2,7 +2,7 @@
 <div class="ph3 flex flex-wrap">
     <m4m-opus-edit [opusID]="opusID" [hidden]="!users.isEditing()"></m4m-opus-edit>
 
-    <dynamic-data [modelUrl]="'#/definitions/OpusGET'" [data]="opus" [title]="'Opus ' + opus?.name" [hidden]="users.isEditing()"></dynamic-data>
+    <dynamic-data [modelUrl]="'#/definitions/OpusSmall'" [data]="opus" [title]="'Opus ' + opus?.name" [hidden]="users.isEditing()"></dynamic-data>
 
     <m4m-opus-parts [opusID]="opusID"></m4m-opus-parts>
 </div>

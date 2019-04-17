@@ -10,8 +10,8 @@ from json import dumps
 
 from . import api
 
-from .models import opus_post, opus_put, opus_get, parse_date, opus_get, opus_post, \
-                    part_get, part_post
+from .models import opus_post, opus_put, parse_date, opus_small, opus_small_get, \
+                    opus_post, part_get, part_post
 
 from ... import db
 from ...user_api import has_roles, RoleEnum
@@ -28,12 +28,12 @@ ns = api.namespace('opus', description='Resource for opuses.', path='/opuses')
 @ns.route('/')
 class OpusListResource(Resource):
 
-    @ns.marshal_list_with(opus_get)
+    @ns.marshal_list_with(opus_small)
     @jwt_required
     def get(self):
         return Opus.query.all()
 
-    @ns.doc(model=opus_get, body=opus_post)
+    @ns.doc(model=opus_small_get, body=opus_post)
     @ns.response(409, 'Name is not unique.')
     @jwt_required
     @has_roles([RoleEnum.user, RoleEnum.admin])
@@ -44,7 +44,7 @@ class OpusListResource(Resource):
             hist = History(MethodEnum.create, new_opus)
             db.session.add(hist)
             db.session.commit()
-            return marshal(new_opus, opus_get)
+            return marshal(new_opus, opus_small_get)
         except IntegrityError as err:
             message = str(err)
             if 'UNIQUE constraint failed' in message:
@@ -55,7 +55,7 @@ class OpusListResource(Resource):
 @ns.route('/<int:id>/')
 class OpusResource(Resource):
 
-    @ns.marshal_with(opus_get)
+    @ns.marshal_with(opus_small_get)
     @ns.response(404, 'Opus not found.')
     @jwt_required
     def get(self, id):
@@ -64,7 +64,7 @@ class OpusResource(Resource):
             abort(404, 'Requested opus not found!')
         return opus
 
-    @ns.doc(model=opus_get, body=opus_put)
+    @ns.doc(model=opus_small_get, body=opus_put)
     @ns.response(404, 'Opus not found.')
     @jwt_required
     @has_roles([RoleEnum.user, RoleEnum.admin])
@@ -83,7 +83,7 @@ class OpusResource(Resource):
         hist = History(MethodEnum.update, opus, user)
         db.session.add(hist)
         db.session.commit()
-        return marshal(opus, opus_get)
+        return marshal(opus, opus_small_get)
 
     @ns.response(404, 'Opus not found.')
     @jwt_required

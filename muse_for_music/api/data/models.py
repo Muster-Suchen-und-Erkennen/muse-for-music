@@ -92,7 +92,7 @@ opus_links = api.inherit('OpusLinks', with_curies, OrderedDict([
     ('person', HaLUrl(UrlData('api.person_person_resource', absolute=True,
                               url_data={'id': 'composer.id'}), required=False)),
     ('part', HaLUrl(UrlData('api.opus_opus_parts_resource', absolute=True,
-                             url_data={'id': 'id'}), required=False)),
+                            url_data={'id': 'id'}), required=False)),
 ]))
 
 opus_post = api.model('OpusPOST', OrderedDict([
@@ -341,7 +341,6 @@ other_citation = api.model('OtherCitation', OrderedDict([
 
 citations_put = api.model('CitationsGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
-    #('is_foreign', fields.Boolean(default=False, title='Ist fremd')),
     ('opus_citations', fields.List(fields.Nested(opus_citation_put), isNested=True, isArray=True, default=[], title='Zitiert folgende Werke')),
     ('gattung_citations', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Gattung', default=[], title='Zitiert folgende Gattungen')),
     ('instrument_citations', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Instrument', default=[], title='Zitiert folgende Instrumente')),
@@ -354,7 +353,6 @@ citations_put = api.model('CitationsGET', OrderedDict([
 
 citations_get = api.model('CitationsGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
-    #('is_foreign', fields.Boolean(default=False, title='Ist fremd')),
     ('opus_citations', fields.List(fields.Nested(opus_citation_get, description='OpusCitation'), default=[], title='Zitiert folgende Werke')),
     ('other_citations', fields.List(fields.Nested(other_citation), default=[], title='Andere Zitate')),
     ('gattung_citations', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Gattung', default=[], title='Zitiert folgende Gattungen')),
@@ -453,7 +451,6 @@ subpart_put = api.inherit('SubPartPUT', subpart_post, OrderedDict([
     ('share_of_part', fields.Nested(taxonomy_item_ref, required=True, taxonomy='Anteil', title='Anteil am Werkausschnitt')),
     ('instrumentation', fields.List(fields.Nested(taxonomy_item_ref, required=True), required=True, isArray=True, taxonomy='Instrument', default=[], title='Instrumentierung')),
     ('is_tutti', fields.Boolean(required=True, default=False, example=False, title='Entspricht "Tutti"')),
-    #('satz', fields.Nested(satz_put, required=True, description='Satz', isNested=True, title='Satz', allowSave=True)),
     ('harmonics', fields.Nested(harmonics_put, required=True, description='Harmonics', isNested=True, title='Harmonik', allowSave=True)),
     ('dynamic', fields.Nested(dynamic_put, required=True, description='Dynamic', isNested=True, title='Dynamik', allowSave=True)),
     ('tempo', fields.Nested(tempo_put, isNested=True, title='Tempo', allowSave=True)),
@@ -539,21 +536,13 @@ subpart_get = api.inherit('SubPartGET', subpart_put, OrderedDict([
     ('occurence_in_part', fields.Nested(taxonomy_item_get, taxonomy='AuftretenWerkausschnitt')),
     ('share_of_part', fields.Nested(taxonomy_item_get, taxonomy='Anteil')),
     ('instrumentation', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Instrument', default=[])),
-    #('instrumentation_context', fields.Nested(instrumentation_context_get)),
-    #('composition', fields.Nested(composition_get, description='Composition')),
-    #('rhythm', fields.Nested(rhythm_get, description='Rhythm')),
-    #('satz', fields.Nested(satz_get, description='Satz')),
-    #('dynamic_context', fields.Nested(dynamic_context_get, description='DynamicContext')),
     ('harmonics', fields.Nested(harmonics_get, description='Harmonics')),
     ('dynamic', fields.Nested(dynamic_get, description='Dynamic')),
     ('tempo', fields.Nested(tempo_get, description='TempoGroup')),
     ('ambitus', fields.Nested(ambitus_get, isNested=True, title='Ambitus', allowSave=True)),
-    #('rendition', fields.Nested(rendition_get, description='Rendition')),
-    #('citations', fields.Nested(citations_get, description='Citations')),
-    #('musicial_figures', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='MusikalischeWendung', default=[])),
 ]))
 
-part_get = api.inherit('PartGET', part_put, OrderedDict([
+part_small = api.inherit('PartSmall', part_put, OrderedDict([
     ('id', fields.Integer(default=1, required=False, readonly=True, example=1)),
     ('opus_id', fields.Integer(default=1, readonly=True, example=1)),
     ('_links', NestedFields(part_links)),
@@ -563,6 +552,9 @@ part_get = api.inherit('PartGET', part_put, OrderedDict([
     ('tempo_context', fields.Nested(tempo_context_get)),
     ('dramaturgic_context', fields.Nested(dramaturgic_context_get)),
     ('formal_functions', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='FormaleFunktion', title='Formale Funktion')),
+]))
+
+part_get = api.inherit('PartGET', part_small, OrderedDict([
     ('subparts', fields.List(fields.Nested(subpart_get), default=[])),
 ]))
 
@@ -582,14 +574,21 @@ opus_put = api.inherit('OpusPUT', opus_post, OrderedDict([
     ('first_played_in', fields.Integer(default=-1, required=True, title='Jahr der Uraufführung', nullable=True)),
 ]))
 
-opus_get = api.inherit('OpusGET', opus_put, OrderedDict([
+opus_small = api.inherit('OpusSmall', opus_put, OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('_links', NestedFields(opus_links)),
     ('composer', fields.Nested(person_get)),
-    ('parts', fields.List(fields.Nested(part_get), default=[])),
     ('genre', fields.Nested(taxonomy_item_get)),
     ('grundton', fields.Nested(taxonomy_item_get)),
     ('tonalitaet', fields.Nested(taxonomy_item_get)),
+]))
+
+opus_small_get = api.inherit('OpusSmallGET', opus_small, OrderedDict([
+    ('parts', fields.List(fields.Nested(part_small), default=[])),
+]))
+
+opus_get = api.inherit('OpusGET', opus_small, OrderedDict([
+    ('parts', fields.List(fields.Nested(part_get), default=[])),
 ]))
 
 history_object_get = api.model('HistoryObjectGET', OrderedDict([
