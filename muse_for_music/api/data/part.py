@@ -9,7 +9,7 @@ from json import dumps
 
 from . import api
 
-from .models import part_get, part_post, part_put, subpart_get, subpart_post
+from .models import part_get, part_small, part_post, part_put, subpart_get, subpart_post
 
 from ... import db
 from ...user_api import has_roles, RoleEnum
@@ -32,7 +32,7 @@ ns = api.namespace('part', description='Resource for Parts.', path='/parts')
 @ns.route('/')
 class PartsListResource(Resource):
 
-    @ns.marshal_list_with(part_get)
+    @ns.marshal_list_with(part_small)
     @jwt_required
     def get(self):
         return Part.query.all()
