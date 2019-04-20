@@ -1,4 +1,4 @@
-from csv import DictReader
+from csv import DictReader, DictWriter
 from collections import OrderedDict
 from logging import Logger
 import re
@@ -27,6 +27,10 @@ class Taxonomy(GetByID):
 
     @classmethod
     def load(cls, input_data: DictReader, logger: Logger):
+        NotImplementedError
+
+    @classmethod
+    def save(cls, output_data: DictWriter, logger: Logger):
         NotImplementedError
 
     @classmethod
@@ -71,6 +75,27 @@ class ListTaxonomy(Taxonomy):
             db.session.commit()
             return
         logger.error('Taxonomy "{}" could not be loaded!'.format(cls.__name__))
+
+    @classmethod
+    def save(cls, output_data: DictWriter, logger: Logger):
+        output_data.writeheader()
+        output_data.writerow({
+            'name': 'root',
+            'parent': '',
+            'description': '',
+        })
+        items = cls.get_all()
+        names = set()
+        for item in items:
+            if item.name in names:
+                logger.warning('An item with name "%s" was already exported!', name)
+            names.add(item.name)
+            output_data.writerow({
+                'name': item.name,
+                'parent': 'root',
+                'description': item.description,
+            })
+
 
 
 class TreeTaxonomy(Taxonomy):
@@ -127,3 +152,26 @@ class TreeTaxonomy(Taxonomy):
             db.session.commit()
             return
         logger.error('Taxonomy "{}" could not be loaded!'.format(cls.__name__))
+
+    @classmethod
+    def save(cls, output_data: DictWriter, logger: Logger):
+        output_data.writeheader()
+        stack = []
+        stack.append(cls.get_root())
+        names = {}
+        name_mappings = {}
+        while len(stack) > 0:
+            item = stack.pop()
+            count = names.get(item.name, 0) + 1
+            names[item.name] = count
+            if count == 1:
+                name_mappings[item.id] = item.name
+            else:
+                name_mappings[item.id] = '({count}) {name}'.format(count=count, name=item.name)
+            output_data.writerow({
+                'name': name_mappings.get(item.id, item.name),
+                'parent': '' if item.name.upper() == 'ROOT' else name_mappings.get(item.parent.id, item.parent.name),
+                'description': item.description,
+            })
+            for child in reversed(item.children):
+                stack.append(child)

@@ -3,7 +3,7 @@ import click
 import sys
 import csv
 from glob import glob
-from os import path
+from os import path, makedirs
 from inspect import getmembers, isclass
 from typing import Dict, TypeVar, Type
 
@@ -71,6 +71,27 @@ def init_taxonomies(reload, folder_path: str):
     click.echo('Finished processing all taxonomies.')
     for name in unmatched_csv_files:
         click.echo('No taxonomy table found for name "{}"'.format(name))
+
+@app.cli.command('export_taxonomies')
+@click.argument('folder_path')
+def save_taxonomies(folder_path: str):
+    """Export all taxonomies."""
+    folder_path = path.abspath(folder_path)
+    if path.isfile(folder_path):
+        click.echo('Please provide a path to a folder!')
+        return
+    makedirs(folder_path, exist_ok=True)
+    taxonomies = get_taxonomies()  # type: Dict[str, Type[T]]
+    click.echo('Exporting taxonomies into folder "{}"'.format(folder_path))
+    for name, taxonomy in taxonomies.items():
+        filepath = path.join(folder_path, taxonomy.__name__ + '.csv')
+        click.echo('Preparing taxonomy "{}" for export'.format(name))
+        with open(filepath, mode='w') as csv_file:
+            writer = csv.DictWriter(csv_file, ['name', 'parent', 'description'], dialect=csv.excel)
+            taxonomy.save(writer, DB_COMMAND_LOGGER)
+        click.echo('Finished exporting taxonomy "{}"'.format(name))
+    click.echo('Finished exporting all taxonomies.')
+
 
 
 def get_taxonomies() -> Dict[str, Type[T]]:
