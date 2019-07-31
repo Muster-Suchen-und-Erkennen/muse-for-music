@@ -14,8 +14,8 @@
 # nixos
 default.nix
 
-
-
+# lockfile
+Pipfile.lock
 
 
 

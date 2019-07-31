@@ -111,17 +111,17 @@ opus_get_citation = api.inherit('OpusGETCitation', opus_post, OrderedDict([
 
 instrumentation_context_put = api.model('InstrumentationContextPUT', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
-    ('instrumentation_quantity_before', fields.Nested(taxonomy_item_ref, taxonomy='InstrumentierungEinbettungQuantitaet', title='Instrumentierungsquantät davor')),
+    ('instrumentation_quantity_before', fields.Nested(taxonomy_item_ref, taxonomy='InstrumentierungEinbettungQuantitaet', title='Instrumentierungsquantität davor')),
     ('instrumentation_quality_before', fields.Nested(taxonomy_item_ref, taxonomy='InstrumentierungEinbettungQualitaet', title='Instrumentierungsqualität davor')),
-    ('instrumentation_quantity_after', fields.Nested(taxonomy_item_ref, taxonomy='InstrumentierungEinbettungQuantitaet', title='Instrumentierungsquantät danach')),
+    ('instrumentation_quantity_after', fields.Nested(taxonomy_item_ref, taxonomy='InstrumentierungEinbettungQuantitaet', title='Instrumentierungsquantität danach')),
     ('instrumentation_quality_after', fields.Nested(taxonomy_item_ref, taxonomy='InstrumentierungEinbettungQualitaet', title='Instrumentierungsqualität danach')),
 ]))
 
 instrumentation_context_get = api.model('InstrumentationContextGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
-    ('instrumentation_quantity_before', fields.Nested(taxonomy_item_get, taxonomy='InstrumentierungEinbettungQuantitaet', title='Instrumentierungsquantät davor')),
+    ('instrumentation_quantity_before', fields.Nested(taxonomy_item_get, taxonomy='InstrumentierungEinbettungQuantitaet', title='Instrumentierungsquantität davor')),
     ('instrumentation_quality_before', fields.Nested(taxonomy_item_get, taxonomy='InstrumentierungEinbettungQualitaet', title='Instrumentierungsqualität davor')),
-    ('instrumentation_quantity_after', fields.Nested(taxonomy_item_get, taxonomy='InstrumentierungEinbettungQuantitaet', title='Instrumentierungsquantät danach')),
+    ('instrumentation_quantity_after', fields.Nested(taxonomy_item_get, taxonomy='InstrumentierungEinbettungQuantitaet', title='Instrumentierungsquantität danach')),
     ('instrumentation_quality_after', fields.Nested(taxonomy_item_get, taxonomy='InstrumentierungEinbettungQualitaet', title='Instrumentierungsqualität danach')),
 ]))
 
