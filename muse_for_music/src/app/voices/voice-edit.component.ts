@@ -35,7 +35,7 @@ export class VoiceEditComponent implements OnChanges {
             this.subpart = subpart;
             this.api.getVoice(subpart, this.voiceID).subscribe(voice => {
                 this.voice = voice;
-            })
+            });
         });
     }
 

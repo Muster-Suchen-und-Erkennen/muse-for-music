@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnInit, ViewChild, OnDestroy, } from '@angular/core';
+import { Component, forwardRef, Input, OnInit, ViewChild, OnDestroy, OnChanges, } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { Subscription, Observable } from 'rxjs/Rx';
@@ -22,7 +22,7 @@ import { ApiModel } from 'app/shared/rest/api-model';
     multi: true
   }],
 })
-export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, OnDestroy {
+export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, OnChanges, OnDestroy {
 
     @ViewChild(myDropdownComponent) dropdown: myDropdownComponent;
 
@@ -128,6 +128,12 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
         }
     }
 
+    ngOnChanges(changes) {
+        if (changes.context != null) {
+            this.updateChoices();
+        }
+    }
+
     private updateChoices(): void {
         if (this.subscription != null) {
             this.subscription.unsubscribe();
@@ -151,10 +157,14 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
             });
         };
         if (this.question['x-reference'] === 'voice') {
+            if (this.context == null) {
+                return; // can only load voices if context is properly setup
+            }
+            console.log("Voices", this.context)
             if (this.context.subPart != null) {
                 this.asyncChoices = this.api.getVoices(this.context.subPart);
             } else if (this.context.voice != null) {
-              this.asyncChoices = this.api.getVoices(this.context.voice);
+                this.asyncChoices = this.api.getVoices(this.context.voice);
             } else {
                 console.log('No context provided for referencechooser!')
             }

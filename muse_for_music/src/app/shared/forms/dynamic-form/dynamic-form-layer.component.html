@@ -1,7 +1,7 @@
 <form class="form-container" *ngIf="form != null" [formGroup]="form">
     <div *ngFor="let property of properties;trackBy: trackBy">
         <df-item [property]="property" [form]="form" [path]="path != null && path != '' ? path + '.' + property['x-key'] : property['x-key']"
-                [specifications]="specifications" [debug]="debug" (specificationsUpdate)="specificationsUpdate.emit($event)">
+                [context]="context" [specifications]="specifications" [debug]="debug" (specificationsUpdate)="specificationsUpdate.emit($event)">
         </df-item>
     </div>
 </form>
