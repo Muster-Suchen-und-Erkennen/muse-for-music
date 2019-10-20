@@ -126,7 +126,7 @@ module.exports = env => {
                 },
                 {
                     "test": /\.(jpg|png|gif|otf|ttf|woff|woff2|cur|ani)$/,
-                    "loader": "url-loader?name=[name].[hash:20].[ext]&limit=10000"
+                    "loader": "url-loader?name=[name].[hash:20].[ext]&limit=true,10000"
                 },
                 {
                     "exclude": [
