@@ -37,6 +37,11 @@ class Taxonomy(GetByID):
     def items(cls):
         NotImplementedError
 
+    @classmethod
+    def not_applicable_item(cls):
+        print('XYZ', cls.display_name, cls.taxonomy_type, cls.query.filter_by(name='na').first())
+        return cls.query.filter_by(name='na').first()
+
 
 class ListTaxonomy(Taxonomy):
     """Base class for list taxonomies."""
@@ -50,7 +55,7 @@ class ListTaxonomy(Taxonomy):
     @classmethod
     def get_all(cls: Type[X]) -> List[X]:
         """Get all elements of taxonomy."""
-        return cls.query.all()
+        return cls.query.filter(cls.name != 'na').all()
 
     items = get_all
 

@@ -9,7 +9,8 @@ from typing import Dict, TypeVar, Type
 
 from .helper_classes import Taxonomy
 from .. import DB_COMMAND_LOGGER
-from ... import app
+from .. import app
+from .. import db
 
 
 # Import taxonomy models:
@@ -35,6 +36,16 @@ from .rendition import *
 
 
 T = TypeVar('T', bound=Taxonomy)
+
+
+def generate_na_elements():
+    """Generate all missing "na" elements."""
+    taxonomies = get_taxonomies()  # type: Dict[str, Type[T]]
+    for taxonomy in taxonomies.values():
+        na = taxonomy.not_applicable_item()
+        if na is None:
+            db.session.add(taxonomy(name='na', description=None))
+    db.session.commit()
 
 
 @app.cli.command('init_taxonomies')
@@ -68,9 +79,12 @@ def init_taxonomies(reload, folder_path: str):
             click.echo('Finished processing taxonomy "{}"'.format(name))
         else:
             unmatched_csv_files.append(name)
+    click.echo('Making sure every taxonomy has a "not applicable" element.')
+    generate_na_elements()
     click.echo('Finished processing all taxonomies.')
     for name in unmatched_csv_files:
         click.echo('No taxonomy table found for name "{}"'.format(name))
+
 
 @app.cli.command('export_taxonomies')
 @click.argument('folder_path')
