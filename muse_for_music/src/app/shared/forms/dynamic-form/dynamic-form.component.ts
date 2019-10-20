@@ -23,6 +23,7 @@ export class DynamicFormComponent implements OnChanges {
     @Input() showSaveButton: boolean = false;
     @Input() alwaysAllowSave: boolean = false;
     @Input() saveSuccess: boolean = false;
+    @Input() useSpecifications: boolean = false;
 
     @Input() debug: boolean = false;
 
@@ -58,7 +59,9 @@ export class DynamicFormComponent implements OnChanges {
     }
 
     updateData(data) {
-        data.specifications = this.specifications;
+        if (this.useSpecifications) {
+            data.specifications = this.specifications;
+        }
         this.formValue = data;
         this.data.emit(data);
     }
@@ -103,7 +106,9 @@ export class DynamicFormComponent implements OnChanges {
                     instrumentation: [],
                 }
             }
-            this.dialog.open();
+            if (this.useSpecifications) {
+                this.dialog.open();
+            }
         }
     }
 
