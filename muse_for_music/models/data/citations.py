@@ -9,10 +9,13 @@ from typing import Union, Sequence, List
 
 class Citations(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
 
-    _list_attributes = ('opus_citations', 'instrument_citations',
-                        'other_citations', 'epoch_citations',
-                        'gattung_citations', 'tonmalerei_citations',
-                        'program_citations', 'composer_citations')
+    _list_attributes = ('opus_citations',
+                        'instrument_citations',
+                        'epoch_citations',
+                        'gattung_citations',
+                        'tonmalerei_citations',
+                        'program_citations',
+                        'composer_citations')
 
     __tablename__ = 'citations'
     id = db.Column(db.Integer, primary_key=True)
@@ -85,15 +88,6 @@ class Citations(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
         old_items = {mapping.tonmalerei.id: mapping for mapping in self._tonmalerei_citations}
         self.update_list(tonmalerei_citations_list, old_items, TonmalereiToCitations,
                          Tonmalerei, 'tonmalerei')
-
-    @property
-    def other_citations(self):
-        return self._other_citations
-
-    @other_citations.setter
-    def other_citations(self, other_citations_list: Union[Sequence[int], Sequence[dict]]):
-        old_items = {mapping.id: mapping for mapping in self._other_citations}
-        self.update_list(other_citations_list, old_items, OtherToCitations)
 
 
 class OpusCitation(db.Model, GetByID, UpdateableModelMixin):
@@ -190,18 +184,3 @@ class TonmalereiToCitations(db.Model):
         self.citations = citations
         self.tonmalerei = tonmalerei
 
-
-class OtherToCitations(db.Model, UpdateableModelMixin):
-
-    _normal_attributes = (('citation', str), )
-
-    id = db.Column(db.Integer, primary_key=True)
-    citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'))
-    citation = db.Column(db.Text)
-
-    citations = db.relationship(Citations, backref=db.backref('_other_citations', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
-
-    def __init__(self, citations, **kwargs):
-        self.citations = citations
-        if kwargs:
-            self.update(kwargs)
