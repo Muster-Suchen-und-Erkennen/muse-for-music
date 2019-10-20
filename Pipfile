@@ -9,6 +9,7 @@ webpack-dev = "invoke start-js"
 drop-db = "flask drop_db"
 upgrade-db = "flask db upgrade"
 create-migration = "flask db migrate"
+fill-db = "invoke fill-db"
 create-test-db = "invoke create-test-db"
 start = "invoke start-py"
 

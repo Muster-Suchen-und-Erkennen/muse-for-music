@@ -13,6 +13,7 @@ SHELL = environ.get('SHELL', 'bash')
 BUILD_FOLDER = Path('./{module}/build'.format(module=MODULE_NAME))
 MANIFEST_PATH = BUILD_FOLDER / Path('manifest.json')
 
+
 @task
 def test_for_existing_manifest_file(c):
     """Check if a manifest.json file exists and if not builds it."""
@@ -55,10 +56,17 @@ def build(c):
         c.run('npm run build', shell=SHELL)
 
 
+@task
+def fill_db(c):
+    c.run('flask init_db', shell=SHELL, pty=True)
+    c.run('flask init_taxonomies taxonomies', shell=SHELL, pty=True)
+
+
 @task(test_for_existing_manifest_file)
 def create_test_db(c):
     c.run('flask create_populated_db', shell=SHELL, pty=True)
     c.run('flask init_taxonomies taxonomies', shell=SHELL, pty=True)
+
 
 @task
 def start_js(c):
