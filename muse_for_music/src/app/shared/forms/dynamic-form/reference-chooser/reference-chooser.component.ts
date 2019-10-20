@@ -160,7 +160,6 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
             if (this.context == null) {
                 return; // can only load voices if context is properly setup
             }
-            console.log("Voices", this.context)
             if (this.context.subPart != null) {
                 this.asyncChoices = this.api.getVoices(this.context.subPart);
             } else if (this.context.voice != null) {
