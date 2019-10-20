@@ -174,17 +174,17 @@ form_get = api.model('FormGET', OrderedDict([
 harmonic_center_put = api.model('HarmonicCenterPUT', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('tonalitaet', fields.Nested(taxonomy_item_ref, taxonomy='Tonalitaet', title='Tonalität')),
-    ('harmonische_funktion', fields.Nested(taxonomy_item_ref, taxonomy='HarmonischeFunktion', title='Harmonische Funktion')),
+    ('harmonische_funktion', fields.Nested(taxonomy_item_ref, taxonomy='HarmonischeFunktion', title='Harmonische Funktion', description='In Bezug auf die Satztonart')),
     ('grundton', fields.Nested(taxonomy_item_ref, taxonomy='Grundton', title='Grundton')),
-    ('harmonische_stufe', fields.Nested(taxonomy_item_ref, taxonomy='HarmonischeStufe', title='Harmonische Stufe')),
+    ('harmonische_stufe', fields.Nested(taxonomy_item_ref, taxonomy='HarmonischeStufe', title='Harmonische Stufe', description='In Bezug auf die Satztonart')),
 ]))
 
 harmonic_center_get = api.model('HarmonicCenterGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('tonalitaet', fields.Nested(taxonomy_item_get, taxonomy='Tonalitaet', title='Tonalität')),
-    ('harmonische_funktion', fields.Nested(taxonomy_item_get, taxonomy='HarmonischeFunktion', title='Harmonische Funktion')),
+    ('harmonische_funktion', fields.Nested(taxonomy_item_get, taxonomy='HarmonischeFunktion', title='Harmonische Funktion', description='In Bezug auf die Satztonart')),
     ('grundton', fields.Nested(taxonomy_item_get, taxonomy='Grundton', title='Grundton')),
-    ('harmonische_stufe', fields.Nested(taxonomy_item_get, taxonomy='HarmonischeStufe', title='Harmonische Stufe')),
+    ('harmonische_stufe', fields.Nested(taxonomy_item_get, taxonomy='HarmonischeStufe', title='Harmonische Stufe', description='In Bezug auf die Satztonart')),
 ]))
 
 harmonics_put = api.model('HarmonicsPUT', OrderedDict([
@@ -334,12 +334,7 @@ opus_citation_get = api.model('OpusCitationGET', OrderedDict([
     ('citation_type', fields.Nested(taxonomy_item_get, taxonomy='Zitat', title='Art des Zitats')),
 ]))
 
-other_citation = api.model('OtherCitation', OrderedDict([
-    ('id', fields.Integer(default=1, readonly=True, example=1)),
-    ('citation', fields.String(default='', title='Zitat')),
-]))
-
-citations_put = api.model('CitationsGET', OrderedDict([
+citations_put = api.model('CitationsPUT', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('opus_citations', fields.List(fields.Nested(opus_citation_put), isNested=True, isArray=True, default=[], title='Zitiert folgende Werke')),
     ('gattung_citations', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Gattung', default=[], title='Zitiert folgende Gattungen')),
@@ -348,13 +343,11 @@ citations_put = api.model('CitationsGET', OrderedDict([
     ('program_citations', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Programmgegenstand', default=[], title='Programmgegenstand')),
     ('tonmalerei_citations', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Tonmalerei', default=[], title='Tonmalerei')),
     ('epoch_citations', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Epoche', default=[], title='Zitiert folgende Epochen')),
-    ('other_citations', fields.List(fields.Nested(other_citation), default=[], title='Anderer außermusikalischer Bezug')),
 ]))
 
 citations_get = api.model('CitationsGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('opus_citations', fields.List(fields.Nested(opus_citation_get, description='OpusCitation'), default=[], title='Zitiert folgende Werke')),
-    ('other_citations', fields.List(fields.Nested(other_citation), default=[], title='Andere Zitate')),
     ('gattung_citations', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Gattung', default=[], title='Zitiert folgende Gattungen')),
     ('instrument_citations', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Instrument', default=[], title='Zitiert folgende Instrumente')),
     ('composer_citations', fields.List(fields.Nested(person_get), isArray=True, reference='person', default=[], title='Zitiert Personalstil von')),
