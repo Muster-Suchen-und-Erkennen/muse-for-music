@@ -514,6 +514,7 @@ voice_get = api.inherit('VoiceGET', voice_post, OrderedDict([
     ('name', fields.String(default='', )),
     ('instrumentation', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Instrument', default=[])),
     ('has_melody', fields.Boolean(default=False)),
+    ('musicial_function', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='MusikalischeFunktion', default=[], title='Musikalische Funktionen')),
     ('share', fields.Nested(taxonomy_item_get, taxonomy='Anteil')),
     ('occurence_in_part', fields.Nested(taxonomy_item_get, taxonomy='AuftretenWerkausschnitt')),
     ('satz', fields.Nested(satz_get, description='Satz')),
