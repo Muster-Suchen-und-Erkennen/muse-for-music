@@ -127,6 +127,7 @@ taxonomy_model = ns.model('TaxonomyModel', {
     'select_only_leafs': fields.Boolean(default=False, readonly=True, required=False),
     'select_multiple': fields.Boolean(default=False, readonly=True, required=False),
     'items': TaxonomyItems(required=False),
+    'na_item': fields.Nested(taxonomy_item_get, attribute=lambda x: x.not_applicable_item()),
 }, mask='{name,_links,display_name,taxonomy_type,select_only_leafs}')
 
 

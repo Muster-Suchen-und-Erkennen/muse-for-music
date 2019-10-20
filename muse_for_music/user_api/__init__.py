@@ -85,7 +85,7 @@ def load_user_claims(user: User):
 
 
 @jwt.expired_token_loader
-def expired_token():
+def expired_token(expired_token):
     message = 'Token is expired.'
     log_unauthorized(message)
     abort(401, message)

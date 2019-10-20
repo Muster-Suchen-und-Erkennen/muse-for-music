@@ -1,7 +1,7 @@
 <m4m-dropdown class="min-w5 flex flex-grow" #dropdown>
     <div class="flex-grow flex flex-wrap min-w5 bb b--gray" content>
         <p class="bg-black-20 pl3 pr2 pv1 ma1 br-pill" *ngFor="let item of selectedList();trackBy:selectableId" (dblclick)="editSpecification(item.id)">
-            {{item.name}}
+            {{item.name == 'na' ? 'Nicht Anwendbar' : item.name}}
             <span class="hover-switch grow tooltip tooltip-bottom" (click)="removeSpecification(item.id)" data-tooltip="Spezifikation löschen" *ngIf="specification != null || specificationMap.has(item.id)">
                 <i class="ml2 fa fa-sticky-note hover-switch-active pointer"></i>
                 <i class="ml2 fa fa-times-rectangle hover-switch-inactive pointer"></i>

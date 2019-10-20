@@ -127,6 +127,8 @@ def edit_taxonomy_item(item: T, new_values: Dict):
     if 'name' in new_values:
         if item.name == 'root' and new_values['name'] != 'root':
             abort(400, 'Can not change name of "root"!')
+        if item.name == 'na' and new_values['name'] != 'na':
+            abort(400, 'Can not change name of "na"!')
         item.name = new_values['name']
     if 'description' in new_values:
         item.description = new_values['description']
@@ -143,6 +145,8 @@ def delete_taxonomy_item(taxonomy: Type[T], item_id: int):
     item = get_taxonomy_item(taxonomy, item_id)
     if item.name == 'root':
         abort(400, 'Can not delete "root"!')
+    if item.name == 'na':
+        abort(400, 'Can not delete "na"!')
     db.session.delete(item)
     db.session.commit()
     app.logger.info('Taxonomy item %s deleted.', item)

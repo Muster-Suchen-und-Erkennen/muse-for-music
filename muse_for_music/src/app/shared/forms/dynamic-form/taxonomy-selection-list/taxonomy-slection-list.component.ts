@@ -38,6 +38,7 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
     filter: boolean = true;
     showTree: boolean = false;
 
+    na: TaxonomyItem;
     selectables: TaxonomyItem[];
 
     @Input() taxonomy: string;
@@ -66,6 +67,9 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
             if (this.selectedSet.has(item.id)) {
                 selected.push(item.data);
             }
+        }
+        if (this.selectedSet.has(this.na.id)) {
+            selected.push(this.na);
         }
         return selected;
     }
@@ -128,6 +132,7 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
                 this.showTree = false;
                 this.prepareListTaxonomy(taxonomy.items);
             }
+            this.na = taxonomy.na_item;
             this.closed.clear();
             this.updateMatching(this.search);
         });
