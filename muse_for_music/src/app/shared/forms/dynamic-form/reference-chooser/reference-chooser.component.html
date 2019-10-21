@@ -9,7 +9,7 @@
         </div>
         <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem" (click)="dropdown.toggleDropdown(); select.updateMatching('')"><i class="f4 fa fa-angle-down"></i></div>
     </div>
-    <m4m-selection-list [selectables]="choices" [selected]="selected" [allowedSelections]="question.isArray ? -1 : 1"
+    <m4m-selection-list [selectables]="choices" [selected]="selected" [allowedSelections]="isArray ? -1 : 1"
             (selectedChange)="selectedChange($event)" (createNew)="createNew($event)"
             [createNewIfNoMatch]="true" [display]="'name'" [key]="'id'"
             [search]="searchTerm" #select dropdown-content></m4m-selection-list>

@@ -97,6 +97,10 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
         }
     }
 
+    get isArray() {
+        return this.question != null && this.question['x-isArray'];
+    }
+
     get placeholder(): string {
         if (this.question == null || this.question['x-reference'] == null) {
             return '';
