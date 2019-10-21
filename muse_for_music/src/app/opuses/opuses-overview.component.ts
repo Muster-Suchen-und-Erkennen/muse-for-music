@@ -4,6 +4,7 @@ import { NavigationService, Breadcrumb } from '../navigation/navigation-service'
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { TableRow } from '../shared/table/table.component';
+import { UserApiService } from 'app/shared/rest/user-api.service';
 
 @Component({
   selector: 'm4m-opuses-overview',
@@ -21,7 +22,7 @@ export class OpusesOverviewComponent implements OnInit {
 
     newOpusData: any;
 
-    constructor(private data: NavigationService, private api: ApiService, private router: Router, private route: ActivatedRoute) { }
+    constructor(private data: NavigationService, private api: ApiService, private userApi: UserApiService, private router: Router, private route: ActivatedRoute) { }
 
     ngOnInit(): void {
         this.data.changeTitle('Werke');
@@ -38,6 +39,10 @@ export class OpusesOverviewComponent implements OnInit {
             });
             this.tableData = tableData;
         });
+    }
+
+    showEditButton() {
+        return this.userApi.loggedIn && this.userApi.roles.has('user') && this.userApi.isEditing();
     }
 
     save = () => {

@@ -24,7 +24,7 @@ export class PeopleOverviewComponent implements OnInit {
 
     swagger: any;
 
-    constructor(private data: NavigationService, private api: ApiService, private users: UserApiService, private datePipe: DatePipe) { }
+    constructor(private data: NavigationService, private api: ApiService, private userApi: UserApiService, private datePipe: DatePipe) { }
 
     ngOnInit(): void {
         this.data.changeTitle('Personen');
@@ -68,6 +68,10 @@ export class PeopleOverviewComponent implements OnInit {
             });
         }
     };
+
+    showEditButton() {
+        return this.userApi.loggedIn && this.userApi.roles.has('user') && this.userApi.isEditing();
+    }
 
     onValidChange(valid: boolean) {
         this.valid = valid;

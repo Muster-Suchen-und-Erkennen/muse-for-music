@@ -1,4 +1,4 @@
-<div (click)="select(na.id)" class="hover-bg-black-30 mb2" [ngClass]="{'bg-light-blue': na.id === highlighted, 'b': selectedSet.has(na.id)}">
+<div (click)="select(na?.id)" class="hover-bg-black-30 mb2" [ngClass]="{'bg-light-blue': na?.id === highlighted, 'b': selectedSet.has(na?.id)}">
     <a class="tooltip-bottom tooltip-small" [ngClass]="{tooltip: !(!na?.description)}" [attr.data-tooltip]="na?.description">Nicht Anwendbar</a>
 </div>
 <ng-container *ngIf="showTree">

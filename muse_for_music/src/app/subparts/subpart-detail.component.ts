@@ -5,6 +5,7 @@ import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
 import { Subscription } from 'rxjs/Rx';
+import { UserApiService } from 'app/shared/rest/user-api.service';
 
 @Component({
   selector: 'm4m-subpart-detail',
@@ -19,8 +20,9 @@ export class SubPartDetailComponent implements OnInit, OnDestroy {
     private opusSubscription: Subscription;
 
     subPartID: number;
+    subPart: ApiObject;
 
-    constructor(private navigation: NavigationService, private api: ApiService, private route: ActivatedRoute) { }
+    constructor(private navigation: NavigationService, private api: ApiService, private userApi: UserApiService, private route: ActivatedRoute) { }
 
     update(subPartID: number) {
         this.subPartID = subPartID;
@@ -35,6 +37,7 @@ export class SubPartDetailComponent implements OnInit, OnDestroy {
             if (subpart == undefined) {
                 return;
             }
+            this.subPart = subpart;
 
             this.navigation.changeBreadcrumbs([new Breadcrumb('Werkausschnitte', '/parts'),
                 new Breadcrumb('"' + subpart.part_id.toString() + '"', '/parts/' + subpart.part_id),
@@ -92,5 +95,9 @@ export class SubPartDetailComponent implements OnInit, OnDestroy {
         if (this.subPartSubscription != null) {
             this.subPartSubscription.unsubscribe();
         }
+    }
+
+    showEditButton() {
+        return this.userApi.loggedIn && this.userApi.roles.has('user') && this.userApi.isEditing();
     }
 }

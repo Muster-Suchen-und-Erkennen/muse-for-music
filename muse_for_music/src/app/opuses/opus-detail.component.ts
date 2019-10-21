@@ -20,7 +20,7 @@ export class OpusDetailComponent implements OnInit, OnDestroy {
     opusID: number;
     opus: ApiObject;
 
-    constructor(private navigation: NavigationService, private api: ApiService, private users: UserApiService, private route: ActivatedRoute) { }
+    constructor(private navigation: NavigationService, private api: ApiService, private userApi: UserApiService, private route: ActivatedRoute) { }
 
     update(opusID: number) {
         if (this.opusSubscription != null) {
@@ -55,5 +55,9 @@ export class OpusDetailComponent implements OnInit, OnDestroy {
         if (this.opusSubscription != null) {
             this.opusSubscription.unsubscribe();
         }
+    }
+
+    showEditButton() {
+        return this.userApi.loggedIn && this.userApi.roles.has('user') && this.userApi.isEditing();
     }
 }

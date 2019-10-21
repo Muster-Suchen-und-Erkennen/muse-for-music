@@ -1,4 +1,5 @@
-<div class="br2 ba b--black-10 mb2">
+<data-array [property]="property" [model]="property" [data]="data" [context]="context" *ngIf="property.type === 'array'"></data-array>
+<div class="br2 ba b--black-10 mb2" *ngIf="property.type != 'array'">
     <div class="min-h2 mv0 pv2 ph3 flex items-center justify-between f4 bg-near-white br2 br--top pointer" (click)="open = !open">
         <div>
             <i class="f5 fa fa-chevron-right" [hidden]="open"></i>
@@ -9,8 +10,8 @@
             <span *ngIf="reference() === 'person'">{{property?.title}}: {{data?.name}}</span>
         </div>
         <div *ngIf="reference() != null">
-            <div class="tooltip tooltip-left button h2 pv1 ph2 br2 ml link bg-animate hover-bg-light-silver pointer" data-tooltip="edit">
-                <i class="fa fa-edit"></i>
+            <div class="button h2 pv1 ph2 br2 ml2 link bg-animate hover-bg-light-silver pointer" (click)="navigateToReference()">
+                <i class="fa fa-link"></i>
             </div>
         </div>
     </div>

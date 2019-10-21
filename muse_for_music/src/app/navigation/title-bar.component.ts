@@ -22,4 +22,20 @@ export class TitleBarComponent implements OnInit {
         this.userApi.toggleEditing();
     }
 
+    isLoggedIn() {
+        return this.userApi.loggedIn;
+    }
+
+    canEdit() {
+        return this.userApi.loggedIn && this.userApi.roles.has('user');
+    }
+
+    isEditing() {
+        return this.userApi.isEditing();
+    }
+
+    logout() {
+        this.userApi.logout();
+    }
+
 }

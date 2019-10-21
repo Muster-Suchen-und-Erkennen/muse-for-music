@@ -5,6 +5,7 @@ import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
 import { Subscription } from 'rxjs/Rx';
+import { UserApiService } from 'app/shared/rest/user-api.service';
 
 @Component({
   selector: 'm4m-voice-detail',
@@ -21,8 +22,9 @@ export class VoiceDetailComponent implements OnInit, OnDestroy {
 
     subPartID: number;
     voiceID: number;
+    voice: ApiObject;
 
-    constructor(private navigation: NavigationService, private api: ApiService, private route: ActivatedRoute) { }
+    constructor(private navigation: NavigationService, private api: ApiService, private userApi: UserApiService, private route: ActivatedRoute) { }
 
     update(subPartID: number, voiceID: number) {
         this.subPartID = subPartID;
@@ -56,6 +58,7 @@ export class VoiceDetailComponent implements OnInit, OnDestroy {
                 if (voice == undefined) {
                     return;
                 }
+                this.voice = voice;
 
                 this.navigation.changeBreadcrumbs([new Breadcrumb('Werkausschnitte', '/parts'),
                     new Breadcrumb('"' + subpart.part_id.toString() + '"', '/parts/' + subpart.part_id),
@@ -124,5 +127,9 @@ export class VoiceDetailComponent implements OnInit, OnDestroy {
         if (this.voiceSubscription != null) {
             this.voiceSubscription.unsubscribe();
         }
+    }
+
+    showEditButton() {
+        return this.userApi.loggedIn && this.userApi.roles.has('user') && this.userApi.isEditing();
     }
 }

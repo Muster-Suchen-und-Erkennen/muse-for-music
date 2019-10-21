@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Testability } from '@angular/core';
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { TableRow } from '../shared/table/table.component';
+import { UserApiService } from 'app/shared/rest/user-api.service';
 
 @Component({
   selector: 'm4m-opus-parts',
@@ -22,7 +23,7 @@ export class OpusPartsComponent implements OnInit {
 
     newPartData: any;
 
-    constructor(private api: ApiService) { }
+    constructor(private api: ApiService, private userApi: UserApiService) { }
 
     ngOnInit(): void {
         this.api.getOpus(this.opusID).subscribe(data => {
@@ -45,6 +46,10 @@ export class OpusPartsComponent implements OnInit {
                 this.tableData = tableData;
             });
         });
+    }
+
+    showEditButton() {
+        return this.userApi.loggedIn && this.userApi.roles.has('user') && this.userApi.isEditing();
     }
 
     save = () => {
