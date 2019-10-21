@@ -45,6 +45,7 @@ export class TaxonomyEditorComponent implements OnInit, OnDestroy {
     displayName: string;
     isTree: boolean = false;
 
+    na: ApiObject;
     items: TaxonomyItem[];
 
 
@@ -117,6 +118,7 @@ export class TaxonomyEditorComponent implements OnInit, OnDestroy {
                 this.isTree = false;
                 this.prepareListTaxonomy(taxonomy.items);
             }
+            this.na = taxonomy.na_item;
             this.closed.clear();
         });
     }
@@ -183,6 +185,16 @@ export class TaxonomyEditorComponent implements OnInit, OnDestroy {
             const taxonomy = this.taxonomyList.find(tax => tax.name === this.selectedTaxonomy);
             if (taxonomy != null) {
                 this.api.putTaxonomyItem(taxonomy, this.selectedItem, this.itemData).subscribe(_ => {return});
+            }
+        }
+    };
+
+    editNaItem = () => {
+        if (this.valid) {
+            const taxonomy = this.taxonomyList.find(tax => tax.name === this.selectedTaxonomy);
+            if (taxonomy != null) {
+                const data = {id: this.na.id, name: this.na.name, description: this.itemData.description};
+                this.api.putTaxonomyItem(taxonomy, this.na, data).subscribe(_ => {return});
             }
         }
     };

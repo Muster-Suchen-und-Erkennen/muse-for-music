@@ -8,6 +8,15 @@
                 </select>
                 <div class="w2 flex justify-around items-center pointer link" style="margin-left: -2rem; pointer-events: none" (click)="inputSelect.click($event)"><i class="f4 fa fa-angle-down"></i></div>
             </div>
+            <div class="min-w1 mt1 mb3" [hidden]="na == null">
+                <div class="flex items-center">
+                    <p class="min-w1 mv0 pa2 br-pill bg-near-white">Nicht Anwendbar</p>
+                    <span class="tooltip tooltip-bottom link" data-tooltip="bearbeiten" (click)="editNaItemDialog.open()">
+                        <i class="ml2 fa fa-pencil dim"></i>
+                    </span>
+                </div>
+                <p class="mv0 min-w1">{{na?.description}}</p>
+            </div>
             <div class="">
                 <div class="flex items-center" *ngFor="let item of items"  [ngStyle]="{'display': visible(item) ? 'flex' : 'none'}">
                     <div [ngStyle]="{'min-width': item.depth + 'rem'}" *ngIf="isTree"></div>
@@ -58,6 +67,14 @@
         <h1 class="mv0" title>Eintrag bearbeiten:</h1>
         <div class="w-100 ph3 pv2" body>
             <dynamic-form [objectModel]="'TaxonomyItemPUT'" [startValues]="selectedItem" (valid)="onValidChange($event)" (data)="onDataChange($event)" #form></dynamic-form>
+        </div>
+    </m4m-dialog>
+
+    <m4m-dialog [closable]="true" [dialogType]="'save-cancel'" [icon]="'save'" [okCallback]="editNaItem" #editNaItemDialog>
+        <h1 class="mv0" title>"Nicht Anwendbar" bearbeiten:</h1>
+        <div class="w-100 ph3 pv2" body>
+            <p>Bitte nur die Beschreibung anpassen!</p>
+            <dynamic-form [objectModel]="'TaxonomyItemPUT'" [startValues]="na" (valid)="onValidChange($event)" (data)="onDataChange($event)" #form></dynamic-form>
         </div>
     </m4m-dialog>
 
