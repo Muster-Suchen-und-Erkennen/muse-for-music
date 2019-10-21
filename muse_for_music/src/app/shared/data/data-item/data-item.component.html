@@ -26,8 +26,8 @@
             </div>
 
             <div *ngSwitchCase="'boolean'" class="flex-grow">
-                <i class="fa fa-times" [hidden]="data"></i>
-                <i class="fa fa-check" [hidden]="!data"></i>
+                <span [hidden]="data"><i class="fa fa-times"></i> Nein</span>
+                <span [hidden]="!data"><i class="fa fa-check"></i> Ja</span>
             </div>
 
             <div *ngSwitchCase="'reference'" class="flex-grow">
