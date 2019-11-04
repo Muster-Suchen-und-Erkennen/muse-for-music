@@ -86,6 +86,14 @@ def init_taxonomies(reload, folder_path: str):
         click.echo('No taxonomy table found for name "{}"'.format(name))
 
 
+@app.cli.command('add_na_elements')
+def add_na_elements():
+    """Add all missing "na" elements."""
+    click.echo('Making sure every taxonomy has a "not applicable" element.')
+    generate_na_elements()
+    click.echo('Finished processing all taxonomies.')
+
+
 @app.cli.command('export_taxonomies')
 @click.argument('folder_path')
 def save_taxonomies(folder_path: str):
