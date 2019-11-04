@@ -39,7 +39,6 @@ class Taxonomy(GetByID):
 
     @classmethod
     def not_applicable_item(cls):
-        print('XYZ', cls.display_name, cls.taxonomy_type, cls.query.filter_by(name='na').first())
         return cls.query.filter_by(name='na').first()
 
 
