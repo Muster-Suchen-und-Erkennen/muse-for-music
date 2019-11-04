@@ -82,7 +82,15 @@ export class TaxonomyEditorComponent implements OnInit, OnDestroy {
             if (taxonomies == null) {
                 this.taxonomyList = [] as ApiObject[];
             }
-            this.taxonomyList = taxonomies.taxonomies;
+            const sorted = [];
+            taxonomies.taxonomies.forEach(tax => {
+                sorted.push(tax);
+            });
+            this.taxonomyList = sorted.sort((a, b) => {
+                const nameA: string = a.display_name !== '' ? a.display_name : a.name;
+                const nameB: string = b.display_name !== '' ? b.display_name : b.name;
+                return nameA.localeCompare(nameB);
+            });
         });
         this.updateTaxonomy();
     }
