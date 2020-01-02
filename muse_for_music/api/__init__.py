@@ -1,10 +1,10 @@
 """Root Module for the API."""
 
-from flask import Blueprint
+from flask import Blueprint, Flask
 from flask_restplus import Api, abort
 from flask_restplus.errors import ValidationError
 from flask_jwt_extended.exceptions import NoAuthorizationError
-from .. import app
+
 from ..user_api import log_unauthorized
 
 api_blueprint = Blueprint('api', __name__)
@@ -40,4 +40,6 @@ def missing_header(error):
     log_unauthorized(error.message)
     return {'message': error.message}, 401
 
-app.register_blueprint(api_blueprint, url_prefix='/api')
+
+def register_api(app: Flask):
+    app.register_blueprint(api_blueprint, url_prefix='/api')

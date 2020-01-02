@@ -1,9 +1,10 @@
-from typing import TypeVar, Sequence, Dict, Type, List, Union, cast, Any
 from logging import Logger
-from .. import db, app
-from sqlalchemy.orm import joinedload, subqueryload, Query
 from datetime import datetime, date
+from typing import TypeVar, Sequence, Dict, Type, List, Union, cast, Any
+from flask import current_app
+from sqlalchemy.orm import joinedload, subqueryload, Query
 from flask_restplus.errors import ValidationError
+from .. import db
 
 X = TypeVar('X', bound=db.Model)
 
@@ -146,7 +147,7 @@ class UpdateableModelMixin():
                 attr_to_update.update(value)
             except Exception as e:
                 print(type(e))
-                logger = app.logger  # type: Logger
+                logger = current_app.logger  # type: Logger
                 logger.exception("Failed to auto instantiate class %s on update of %s",
                                  cls.__name__, self.__class__.__name__)
         else:

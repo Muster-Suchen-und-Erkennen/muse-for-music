@@ -11,7 +11,7 @@ with_curies = api.model('WithCuries', {
 root_links = api.inherit('RootLinks', with_curies, {
     'self': HaLUrl(UrlData('api.default_root_resource', absolute=True)),
     'doc': HaLUrl(UrlData('api.doc', absolute=True)),
-    'spec': HaLUrl(UrlData('api.specs', absolute=True)),
+    'spec': HaLUrl(UrlData('api.specs', absolute=True, force_trailing_slash=False)),
     'taxonomy': HaLUrl(UrlData('api.taxonomies_taxonomy_list_resource', absolute=True)),
     'person': HaLUrl(UrlData('api.person_person_list_resource', absolute=True)),
     'opus': HaLUrl(UrlData('api.opus_opus_list_resource', absolute=True)),

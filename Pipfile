@@ -12,15 +12,19 @@ create-migration = "flask db migrate"
 fill-db = "invoke fill-db"
 create-test-db = "invoke create-test-db"
 start = "invoke start-py"
+test = "pytest tests"
 
 [dev-packages]
 jedi = "*"
 mypy = "*"
 nose = "*"
+pytest = "*"
+hypothesis = "*"
 pep8 = "*"
 pylint = "*"
 black = "==19.3b0"
 pycodestyle = "*"
+rope = "*"
 
 [packages]
 python-dotenv = ">=0.10.3"
