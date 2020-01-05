@@ -32,7 +32,7 @@ class AuthActions(object):
         assert result.status_code == 200
 
 
-def api_model_strategy(api, model: str):
+def api_model_strategy(model: str, api = api):
     m = api.models[model]
     return st.one_of(dict_model_example(m), dict_model_default(m), dict_model_strategy(m))
 
@@ -100,9 +100,22 @@ def field_strategy(field: fields.Raw):
     elif isinstance(field, fields.Integer):
         return st.integers()
     elif isinstance(field, fields.Nested):
+        if 'x-reference' in field.extra_attributes:
+            print(field.extra_attributes)
         return(st.deferred(lambda: dict_model_strategy(field.model)))
     return st.nothing()
 
+
+# Model Strategies:
+
+PERSON_POST = api_model_strategy('PersonPOST')
+PERSON_PUT = api_model_strategy('PersonPUT')
+
+OPUS_POST = api_model_strategy('OpusPOST')
+OPUS_PUT = api_model_strategy('OpusPUT')
+
+
+# Test methods
 
 def get_hateoas_ref_from_object(object, rel: str):
     assert '_links' in object

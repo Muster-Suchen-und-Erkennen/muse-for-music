@@ -1,4 +1,3 @@
-from json import loads
 from flask import Flask
 from flask.testing import FlaskClient
 from util import get_hateoas_resource, try_self_link, AuthActions

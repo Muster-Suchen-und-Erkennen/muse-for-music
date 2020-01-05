@@ -12,7 +12,6 @@ from muse_for_music.models.taxonomies import get_taxonomies, generate_na_element
 from muse_for_music.models.taxonomies.helper_classes import TreeTaxonomy, ListTaxonomy
 
 
-@pytest.fixture
 def tempdir():
     tempdir = tempfile.mkdtemp(prefix='muse-for-music-test-')
     yield tempdir
@@ -25,7 +24,11 @@ def tempdir():
     tdir.rmdir()
 
 
-@pytest.fixture
+@pytest.fixture(name='tempdir')
+def tempdir_fixture():
+    return tempdir()
+
+
 def app(tempdir):
     environ['MODE'] = 'test'
     environ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/test.db'.format(tempdir)
@@ -37,10 +40,19 @@ def app(tempdir):
     yield app
 
 
-@pytest.fixture
+@pytest.fixture(name='app')
+def app_fixture(tempdir):
+    return app(tempdir)
+
+
 def client(app: Flask):
     """A test client for the app."""
     return app.test_client()
+
+
+@pytest.fixture(name='client')
+def client_fixture(app: Flask):
+    return client(app)
 
 
 @pytest.fixture
@@ -49,12 +61,15 @@ def runner(app):
     return app.test_cli_runner()
 
 
-@pytest.fixture
 def auth(client):
     return AuthActions(client)
 
 
-@pytest.fixture
+@pytest.fixture(name='auth')
+def auth_fixture(client):
+    return auth(client)
+
+
 def taxonomies(app):
     with app.app_context():
         taxonomies = get_taxonomies()
@@ -77,3 +92,8 @@ def taxonomies(app):
         yield taxonomies
         for tax in taxonomies.values():
             tax.clear_all(DB_COMMAND_LOGGER)
+
+
+@pytest.fixture(name='taxonomies')
+def taxonomies_fixture(app):
+    return taxonomies(app)
