@@ -13,11 +13,13 @@ fill-db = "invoke fill-db"
 create-test-db = "invoke create-test-db"
 start = "invoke start-py"
 test = "pytest tests"
+test-with-coverage = "coverage run --source=muse_for_music --omit='*/debug_routes/*' -m pytest tests"
+coverage = "coverage report -m"
+coverage-html = "coverage html"
 
 [dev-packages]
 jedi = "*"
 mypy = "*"
-nose = "*"
 pytest = "*"
 hypothesis = "*"
 pep8 = "*"
@@ -25,6 +27,7 @@ pylint = "*"
 black = "==19.3b0"
 pycodestyle = "*"
 rope = "*"
+coverage = "*"
 
 [packages]
 python-dotenv = ">=0.10.3"

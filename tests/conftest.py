@@ -1,5 +1,6 @@
 from os import environ
 from pathlib import Path
+from shutil import rmtree
 import tempfile
 from flask import Flask
 import pytest
@@ -16,22 +17,17 @@ def tempdir():
     tempdir = tempfile.mkdtemp(prefix='muse-for-music-test-')
     yield tempdir
     tdir = Path(tempdir)
-    for f in tdir.glob('**/*'):
-        if f.is_dir():
-            f.rmdir()
-        else:
-            f.unlink()
-    tdir.rmdir()
+    rmtree(tdir)
 
 
 @pytest.fixture(name='tempdir')
 def tempdir_fixture():
-    return tempdir()
+    yield from tempdir()
 
 
-def app(tempdir):
+def app():
     environ['MODE'] = 'test'
-    environ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/test.db'.format(tempdir)
+    environ['SQLALCHEMY_DATABASE_URI'] = 'sqlite://' #'sqlite:///{}/test.db'.format(tempdir)
     app = create_app()
     with app.app_context():
         # create db tables and initial values
@@ -41,8 +37,13 @@ def app(tempdir):
 
 
 @pytest.fixture(name='app')
-def app_fixture(tempdir):
-    return app(tempdir)
+def app_fixture():
+    yield from app()
+
+
+@pytest.fixture(name='app_with_temp')
+def app_with_temp_fixture():
+    yield from app()
 
 
 def client(app: Flask):
@@ -96,4 +97,4 @@ def taxonomies(app):
 
 @pytest.fixture(name='taxonomies')
 def taxonomies_fixture(app):
-    return taxonomies(app)
+    yield from taxonomies(app)

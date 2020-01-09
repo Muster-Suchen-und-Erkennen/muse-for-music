@@ -81,6 +81,11 @@ def field_example_strategy(field: fields.Raw):
 def field_default_strategy(field: fields.Raw):
     try:
         if field.default is not None:
+            if isinstance(field, fields.String):
+                if field.min_length is not None and len(field.default) < field.min_length:
+                    return field_strategy(field)
+                if field.max_length is not None and len(field.default) > field.max_length:
+                    return field_strategy(field)
             return st.just(field.default)
     except AttributeError:
         pass
@@ -96,9 +101,13 @@ def field_strategy(field: fields.Raw):
     except AttributeError:
         pass
     if isinstance(field, fields.String):
-        return st.text(max_size=500)
+        min_size = 0 if field.min_length is None else field.min_length
+        max_size = 500 if field.max_length is None else field.max_length
+        return st.text(min_size=min_size, max_size=max_size)
     elif isinstance(field, fields.Integer):
-        return st.integers()
+        minimum = -(2 ** 31) if field.minimum is None else field.minimum
+        maximum = (2 ** 31) - 1 if field.maximum is None else field.maximum
+        return st.integers(min_value=minimum, max_value=maximum)
     elif isinstance(field, fields.Nested):
         if 'x-reference' in field.extra_attributes:
             print(field.extra_attributes)
@@ -136,6 +145,9 @@ def get_hateoas_ref(client, *rels, auth=None, root='api'):
         rels = rels[1:]
     headers = auth_header(auth)
     for rel in rels:
+        if isinstance(rel, int):
+            url = url + '{}/'.format(rel)
+            continue
         result = client.get(url, headers=headers)
         url = result.get_json()['_links'][rel]['href']
     return url
@@ -148,8 +160,27 @@ def get_hateoas_resource(client, *rels, auth=None, root='api'):
 
 
 def try_self_link(object, client, auth=None):
+    headers = auth_header(auth)
     url = object['_links']['self']['href']
-    result = client.get(url)
-    assert result.status_code == 200
+    result = client.get(url, headers=headers)
+    assert result.status_code == 200, result.get_data().decode()
     obj2 = result.get_json()
     assert object == obj2
+
+
+def compareObjects(a, b):
+    if isinstance(a, dict):
+        if not isinstance(b, dict):
+            return False
+        for key, value in a.items():
+            return compareObjects(value, b[key])
+    elif isinstance(a, (list, tuple)):
+        if not isinstance(b, (list, tuple)):
+            return False
+        if len(a) != len(b):
+            return False
+        for val_a, val_b in zip(a, b):
+            if not compareObjects(val_a, val_b):
+                return False
+        return True
+    return a == b

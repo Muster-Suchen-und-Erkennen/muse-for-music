@@ -5,7 +5,7 @@ from util import get_hateoas_resource, try_self_link, AuthActions
 
 def test_api_root(client: FlaskClient, auth: AuthActions, app: Flask):
     result = get_hateoas_resource(client)
-    assert result.status_code == 200
+    assert result.status_code == 200, result.get_data().decode()
     object = result.get_json()
     try_self_link(object, client)
     for rel in object['_links']:
