@@ -189,6 +189,7 @@ class TaxonomyItemResource(Resource):
         try:
             delete_taxonomy_item(tax, item_id)
         except IntegrityError:
+            db.session.rollback()
             abort(400, 'Taxonomy item is still in use!')
 
 
@@ -229,6 +230,7 @@ class ListTaxonomyItemResource(Resource):
         try:
             delete_taxonomy_item(tax, item_id)
         except IntegrityError:
+            db.session.rollback()
             abort(400, 'Taxonomy item is still in use!')
 
 
@@ -285,4 +287,5 @@ class TreeTaxonomyItemResource(Resource):
         try:
             delete_taxonomy_item(tax, item_id)
         except IntegrityError:
+            db.session.rollback()
             abort(400, 'The taxonomy item or one of its children is still in use!')

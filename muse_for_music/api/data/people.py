@@ -64,6 +64,7 @@ class PersonListResource(Resource):
             db.session.commit()
             return marshal(new_person, person_get)
         except IntegrityError as err:
+            db.session.rollback()
             message = str(err)
             if 'UNIQUE constraint failed' in message:
                 abort(409, 'Name is not unique!')

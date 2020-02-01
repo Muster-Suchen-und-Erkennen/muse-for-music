@@ -91,8 +91,10 @@ def taxonomies(app):
         db.session.commit()
         generate_na_elements()
         yield taxonomies
+        db.session.rollback()
         for tax in taxonomies.values():
             tax.clear_all(DB_COMMAND_LOGGER)
+        db.session.commit()
 
 
 @pytest.fixture(name='taxonomies')

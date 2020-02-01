@@ -46,6 +46,9 @@ class OpusListResource(Resource):
             db.session.commit()
             return marshal(new_opus, opus_small_get)
         except IntegrityError as err:
+            db.session.rollback()
+            if hasattr(err, 'orig'):
+                err = err.orig
             message = str(err)
             if 'UNIQUE constraint failed' in message:
                 abort(409, 'Name is not unique!')

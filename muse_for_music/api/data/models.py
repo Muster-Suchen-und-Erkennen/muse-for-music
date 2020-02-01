@@ -96,7 +96,7 @@ opus_links = api.inherit('OpusLinks', with_curies, OrderedDict([
 ]))
 
 opus_post = api.model('OpusPOST', OrderedDict([
-    ('name', fields.String(max_length=191, default='', required=True, example='duett in g moll', title='Titel')),
+    ('name', fields.String(min_length=1, max_length=191, default='', required=True, example='duett in g moll', title='Titel')),
     ('composer', fields.Nested(person_get, description='The composer.', reference='person', title='Komponist', required=True)),
 ]))
 

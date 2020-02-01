@@ -1,7 +1,12 @@
+from collections import namedtuple
 from hypothesis import assume, reject, strategies as st
 from flask_restplus import fields, Model
 
 from muse_for_music.api import api
+from muse_for_music.models.taxonomies import get_taxonomies
+
+
+ReferencePlaceholder = namedtuple('ReferencePlaceholder', ['type', 'nullable'])
 
 
 def auth_header(token: str):
@@ -40,6 +45,26 @@ def api_model_strategy(model: str, api = api):
 SKIP_MODEL_KEYS = {'id', '_links'}
 
 
+def taxonomy_strategy(taxonomy: str, nullable: bool=False):
+    choices = []
+    if nullable:
+        choices.append({
+            'id': -1,
+            'name': 'null',
+            'description': 'null',
+        })
+    taxonomies = get_taxonomies()
+    tax = taxonomies[taxonomy.upper()]
+    items = tax.query.all()
+    for item in items:
+        choices.append({
+            'id': item.id,
+            'name': item.name,
+            'description': item.description,
+        })
+    return st.sampled_from(choices)
+
+
 def dict_model_example(model: Model):
     mapping = {}
     for key, value in model.resolved.items():
@@ -74,6 +99,14 @@ def field_example_strategy(field: fields.Raw):
     except AttributeError:
         pass
     if isinstance(field, fields.Nested):
+        if 'x-reference' in field.extra_attributes:
+            reference_type = field.extra_attributes['x-reference']
+            nullable = field.extra_attributes.get('x-nullable', False)
+            return st.just(ReferencePlaceholder(reference_type, nullable))
+        elif 'x-taxonomy' in field.extra_attributes:
+            taxonomy = field.extra_attributes['x-taxonomy']
+            nullable = field.extra_attributes.get('x-nullable', False)
+            return st.deferred(lambda: taxonomy_strategy(taxonomy, nullable))
         return(st.deferred(lambda: dict_model_example(field.model)))
     return field_default_strategy(field)
 
@@ -90,6 +123,14 @@ def field_default_strategy(field: fields.Raw):
     except AttributeError:
         pass
     if isinstance(field, fields.Nested):
+        if 'x-reference' in field.extra_attributes:
+            reference_type = field.extra_attributes['x-reference']
+            nullable = field.extra_attributes.get('x-nullable', False)
+            return st.just(ReferencePlaceholder(reference_type, nullable))
+        elif 'x-taxonomy' in field.extra_attributes:
+            taxonomy = field.extra_attributes['x-taxonomy']
+            nullable = field.extra_attributes.get('x-nullable', False)
+            return st.deferred(lambda: taxonomy_strategy(taxonomy, nullable))
         return(st.deferred(lambda: dict_model_default(field.model)))
     return field_strategy(field)
 
@@ -110,8 +151,14 @@ def field_strategy(field: fields.Raw):
         return st.integers(min_value=minimum, max_value=maximum)
     elif isinstance(field, fields.Nested):
         if 'x-reference' in field.extra_attributes:
-            print(field.extra_attributes)
-        return(st.deferred(lambda: dict_model_strategy(field.model)))
+            reference_type = field.extra_attributes['x-reference']
+            nullable = field.extra_attributes.get('x-nullable', False)
+            return st.just(ReferencePlaceholder(reference_type, nullable))
+        elif 'x-taxonomy' in field.extra_attributes:
+            taxonomy = field.extra_attributes['x-taxonomy']
+            nullable = field.extra_attributes.get('x-nullable', False)
+            return st.deferred(lambda: taxonomy_strategy(taxonomy, nullable))
+        return st.deferred(lambda: dict_model_strategy(field.model))
     return st.nothing()
 
 
