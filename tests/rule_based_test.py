@@ -5,7 +5,7 @@ from conftest import tempdir, app, auth, client, taxonomies
 from hypothesis import given, strategies as st
 from hypothesis.stateful import Bundle, RuleBasedStateMachine, rule, initialize, precondition, invariant, consumes, multiple
 from util import get_hateoas_resource, get_hateoas_ref, get_hateoas_ref_from_object, try_self_link, compareObjects, AuthActions, auth_header
-from util import PERSON_POST, PERSON_PUT, OPUS_POST, OPUS_PUT
+from util import PERSON_POST, PERSON_PUT, OPUS_POST, OPUS_PUT, PART_POST, PART_PUT
 from typing import Dict
 
 
@@ -13,6 +13,9 @@ ObjectReference = namedtuple('ObjectReference', ['type', 'id'])
 
 PERSON_TYPE = 'person'
 OPUS_TYPE = 'opus'
+PART_TYPE = 'part'
+SUBPART_TYPE = 'subpart'
+VOICE_TYPE = 'voice'
 
 
 class ApiChecker(RuleBasedStateMachine):
@@ -20,6 +23,9 @@ class ApiChecker(RuleBasedStateMachine):
     # api_rels = Bundle('rels')
     persons = Bundle('persons')
     opera = Bundle('opera')
+    parts = Bundle('parts')
+    subparts = Bundle('subparts')
+    voices = Bundle('voices')
 
     def __init__(self):
         super().__init__()
@@ -36,6 +42,9 @@ class ApiChecker(RuleBasedStateMachine):
         self.objects_by_type = {
             PERSON_TYPE: set(),
             OPUS_TYPE: set(),
+            PART_TYPE: set(),
+            SUBPART_TYPE: set(),
+            VOICE_TYPE: set(),
         }
         self.referenced_by_relations = {}
         self.reference_counter = {}
@@ -93,12 +102,39 @@ class ApiChecker(RuleBasedStateMachine):
         self.referenced_by_relations[ref].remove(referenced_object)
         self.reference_counter[referenced_object] -= 1
 
+    def remove_from_bundle(self, ref: ObjectReference):
+        bundle_name = None
+        if ref.type == PERSON_TYPE:
+            bundle_name = 'persons'
+        elif ref.type == OPUS_TYPE:
+            bundle_name = 'opera'
+        elif ref.type == PART_TYPE:
+            bundle_name = 'parts'
+        elif ref.type == SUBPART_TYPE:
+            bundle_name = 'subparts'
+        elif ref.type == VOICE_TYPE:
+            bundle_name = 'voices'
+        else:
+            assert False, 'Tried to delete a Object reference of an unknown type!'
+        bundle = self.bundles.get(bundle_name, [])
+        index_to_remove = None
+        for i, name_ref in enumerate(bundle):
+            value = self.names_to_values[name_ref.name]
+            if value['id'] == ref.id:
+                index_to_remove = i
+                url = get_hateoas_ref_from_object(value, 'self')
+                check_deleted_result = self.client.get(url, headers=auth_header(self.auth_token))
+                assert check_deleted_result.status_code == 404, check_deleted_result.get_data().decode()
+        assert index_to_remove is not None, 'The reference {} was not part of the bundle "{}" ({})!'.format(ref, bundle_name, bundle)
+        bundle.pop(index_to_remove)
+
     def remove_reference(self, ref_to_delete: ObjectReference):
         for ref in self.referenced_by_relations[ref_to_delete]:
             # release reference counts
             self.reference_counter[ref] -= 1
         for ref in self.consists_of_relations[ref_to_delete]:
             # mark all (contained) objects as deleted
+            self.remove_from_bundle(ref)
             self.remove_reference(ref)
         self.objects_by_type[ref_to_delete.type].remove(ref_to_delete)
         del self.consists_of_relations[ref_to_delete]
@@ -121,6 +157,7 @@ class ApiChecker(RuleBasedStateMachine):
         all_people = get_hateoas_resource(self.client, 'person', auth=self.auth_token).get_json()
         assert len(all_people) == len(self.people_names)
         assert len(all_people) == len(self.objects_by_type[PERSON_TYPE])
+        assert len(all_people) == len(self.bundles.get('persons', []))
         for person in all_people:
             assert person['name'] in self.people_names
 
@@ -131,8 +168,17 @@ class ApiChecker(RuleBasedStateMachine):
         all_opera = get_hateoas_resource(self.client, 'opus', auth=self.auth_token).get_json()
         assert len(all_opera) == len(self.opus_names)
         assert len(all_opera) == len(self.objects_by_type[OPUS_TYPE])
+        assert len(all_opera) == len(self.bundles.get('opera', []))
         for opus in all_opera:
             assert opus['name'] in self.opus_names
+
+    @precondition(lambda self: self.is_authenticated())
+    @invariant()
+    @rule()
+    def part_count_invariant(self):
+        all_parts = get_hateoas_resource(self.client, 'part', auth=self.auth_token).get_json()
+        assert len(all_parts) == len(self.objects_by_type[PART_TYPE])
+        assert len(all_parts) == len(self.bundles.get('parts', []))
 
 
     ### Persons: ###############################################################
@@ -211,7 +257,7 @@ class ApiChecker(RuleBasedStateMachine):
             self.remove_reference(ref_to_delete)
             self.people_names.remove(person_to_delete['name'])
             retry_result = self.client.get(url, headers=auth_header(self.auth_token))
-            assert retry_result.status_code == 404, result.get_data().decode()
+            assert retry_result.status_code == 404, retry_result.get_data().decode()
             return multiple()
 
     ### Opera: #################################################################
@@ -256,9 +302,6 @@ class ApiChecker(RuleBasedStateMachine):
         opus['id'] = old_opus['id']
         if opus['composer'].type == 'person':
             opus['composer'] = composer
-        result = self.client.put(url, json=old_opus, headers=auth_header(self.auth_token))
-        assert result.status_code == 200, 'could not put opus with its own current data!\n' + result.get_data().decode()
-        assert compareObjects(old_opus, result.get_json()), 'could not put opus with its own current data!'
         result = self.client.put(url, json=opus, headers=auth_header(self.auth_token))
         assert result.status_code in {200, 409}, result.get_data().decode()
         if result.status_code == 409:
@@ -295,7 +338,54 @@ class ApiChecker(RuleBasedStateMachine):
             self.remove_reference(ref_to_delete)
             self.opus_names.remove(opus_to_delete['name'])
             retry_result = self.client.get(url, headers=auth_header(self.auth_token))
-            assert retry_result.status_code == 404, result.get_data().decode()
+            assert retry_result.status_code == 404, retry_result.get_data().decode()
+            return multiple()
+
+    ### Parts: #################################################################
+
+    def can_post_part(self):
+        can_post = self.is_authenticated() and bool(self.objects_by_type[OPUS_TYPE])
+        return can_post and len(self.objects_by_type[PART_TYPE]) < 50
+
+    def can_put_part(self):
+        can_put = self.is_authenticated()
+        return can_put and bool(self.objects_by_type[PART_TYPE])
+
+    def can_delete_part(self):
+        return self.can_put_part()
+
+    @precondition(lambda self: self.can_post_part())
+    @rule(target=parts, part=PART_POST, opus=opera)
+    def add_part(self, part, opus):
+        url = get_hateoas_ref_from_object(opus, 'part')
+        result = self.client.post(url, json=part, headers=auth_header(self.auth_token))
+        assert result.status_code == 200, result.get_data().decode()
+        new_part = result.get_json()
+        try_self_link(new_part, self.client, self.auth_token)
+        compareObjects(part, new_part)
+        ref = ObjectReference(PART_TYPE, new_part['id'])
+        self.add_reference(ref)
+        opus_ref = ObjectReference(OPUS_TYPE, opus['id'])
+        self.consists_of_relations[opus_ref].add(ref)
+        return result.get_json()
+
+    @precondition(lambda self: self.can_delete_part())
+    @rule(target=parts, part_to_delete=consumes(parts))
+    def delete_part(self, part_to_delete):
+        ref_to_delete = ObjectReference(PART_TYPE, part_to_delete['id'])
+        url = get_hateoas_ref_from_object(part_to_delete, 'self')
+        result = self.client.delete(url, headers=auth_header(self.auth_token))
+        assert result.status_code in {200, 409}, result.get_data().decode()
+        if result.status_code == 409:
+            assert self.reference_counter[ref_to_delete] > 0
+            return part_to_delete
+        else:
+            assert self.reference_counter[ref_to_delete] == 0
+            self.remove_reference(ref_to_delete)
+            opus_ref = ObjectReference(OPUS_TYPE, part_to_delete['opus_id'])
+            self.consists_of_relations[opus_ref].remove(ref_to_delete)
+            retry_result = self.client.get(url, headers=auth_header(self.auth_token))
+            assert retry_result.status_code == 404, retry_result.get_data().decode()
             return multiple()
 
 

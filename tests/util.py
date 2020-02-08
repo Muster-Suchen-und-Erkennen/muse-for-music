@@ -170,6 +170,9 @@ PERSON_PUT = api_model_strategy('PersonPUT')
 OPUS_POST = api_model_strategy('OpusPOST')
 OPUS_PUT = api_model_strategy('OpusPUT')
 
+PART_POST = api_model_strategy('PartPOST')
+PART_PUT = api_model_strategy('PartPUT')
+
 
 # Test methods
 
