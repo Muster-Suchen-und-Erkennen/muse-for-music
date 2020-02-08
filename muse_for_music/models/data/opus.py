@@ -27,7 +27,7 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(191), unique=True, index=True)
-    original_name = db.Column(db.String(191), unique=True, index=True, nullable=True)
+    original_name = db.Column(db.String(191), index=True, nullable=True)
     composer_id = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=True)
     score_link = db.Column(db.Text, nullable=True)
     first_printed_at = db.Column(db.String(191), nullable=True)  # TODO Foreign key

@@ -40,14 +40,16 @@ class ApiChecker(RuleBasedStateMachine):
         self.referenced_by_relations = {}
         self.reference_counter = {}
         self.consists_of_relations = {}
-        self.people_names = {'Unbekannt', }
+        self.people_names = set()
         self.opus_names = set()
+
+        self.has_initialized_persons = False
 
     def teardown(self):
         try:
             next(self.taxonomies_context, 0)
         except Exception as exc:
-            print(exc)
+            pass
         try:
             next(self.app_context, 0)
         except Exception:
@@ -92,10 +94,19 @@ class ApiChecker(RuleBasedStateMachine):
         self.reference_counter[referenced_object] -= 1
 
     def remove_reference(self, ref_to_delete: ObjectReference):
+        for ref in self.referenced_by_relations[ref_to_delete]:
+            # release reference counts
+            self.reference_counter[ref] -= 1
+        for ref in self.consists_of_relations[ref_to_delete]:
+            # mark all (contained) objects as deleted
+            self.remove_reference(ref)
         self.objects_by_type[ref_to_delete.type].remove(ref_to_delete)
         del self.consists_of_relations[ref_to_delete]
         del self.referenced_by_relations[ref_to_delete]
         del self.reference_counter[ref_to_delete]
+
+    def can_test_person_count(self):
+        return self.is_authenticated and self.has_initialized_persons
 
     @invariant()
     @rule()
@@ -103,13 +114,34 @@ class ApiChecker(RuleBasedStateMachine):
         for ref, count in self.reference_counter.items():
             assert count >= 0, 'Invalid rference count for ref {}'.format(ref)
 
+    @precondition(lambda self: self.can_test_person_count())
+    @invariant()
+    @rule()
+    def person_count_invariant(self):
+        all_people = get_hateoas_resource(self.client, 'person', auth=self.auth_token).get_json()
+        assert len(all_people) == len(self.people_names)
+        assert len(all_people) == len(self.objects_by_type[PERSON_TYPE])
+        for person in all_people:
+            assert person['name'] in self.people_names
+
+    @precondition(lambda self: self.is_authenticated())
+    @invariant()
+    @rule()
+    def opus_count_invariant(self):
+        all_opera = get_hateoas_resource(self.client, 'opus', auth=self.auth_token).get_json()
+        assert len(all_opera) == len(self.opus_names)
+        assert len(all_opera) == len(self.objects_by_type[OPUS_TYPE])
+        for opus in all_opera:
+            assert opus['name'] in self.opus_names
+
+
     ### Persons: ###############################################################
 
     def can_post_person(self):
-        return 'POST' in self.known_rels.get('person', {}) and self.is_authenticated()
+        return 'POST' in self.known_rels.get('person', {}) and self.is_authenticated() and len(self.objects_by_type[PERSON_TYPE]) < 10
 
     def can_put_person(self):
-        return self.can_post_person() and self.objects_by_type[PERSON_TYPE]
+        return self.is_authenticated() and self.objects_by_type[PERSON_TYPE]
 
     def can_delete_person(self):
         return self.can_put_person()
@@ -122,6 +154,7 @@ class ApiChecker(RuleBasedStateMachine):
         self.people_names.add(person['name'])
         ref = ObjectReference(PERSON_TYPE, person['id'])
         self.add_reference(ref)
+        self.has_initialized_persons = True
         return person
 
     @precondition(lambda self: self.can_post_person())
@@ -185,10 +218,11 @@ class ApiChecker(RuleBasedStateMachine):
 
     def can_post_opus(self):
         can_post = 'POST' in self.known_rels.get('opus', {}) and self.is_authenticated()
-        return can_post and bool(self.objects_by_type[PERSON_TYPE])
+        return can_post and bool(self.objects_by_type[PERSON_TYPE]) and len(self.objects_by_type[OPUS_TYPE]) < 10
 
     def can_put_opus(self):
-        return self.can_post_opus() and bool(self.objects_by_type[OPUS_TYPE])
+        can_put = self.is_authenticated() and bool(self.objects_by_type[PERSON_TYPE])
+        return can_put and bool(self.objects_by_type[OPUS_TYPE])
 
     def can_delete_opus(self):
         return self.can_put_opus()
@@ -214,6 +248,55 @@ class ApiChecker(RuleBasedStateMachine):
             self.add_reference(ref)
             self.add_referenced_by_reference(ref, ObjectReference(PERSON_TYPE, composer['id']))
             return result.get_json()
+
+    @precondition(lambda self: self.can_put_opus())
+    @rule(target=opera, old_opus=consumes(opera), opus=OPUS_PUT, composer=persons)
+    def update_opus(self, old_opus, opus, composer):
+        url = get_hateoas_ref_from_object(old_opus, 'self')
+        opus['id'] = old_opus['id']
+        if opus['composer'].type == 'person':
+            opus['composer'] = composer
+        result = self.client.put(url, json=old_opus, headers=auth_header(self.auth_token))
+        assert result.status_code == 200, 'could not put opus with its own current data!\n' + result.get_data().decode()
+        assert compareObjects(old_opus, result.get_json()), 'could not put opus with its own current data!'
+        result = self.client.put(url, json=opus, headers=auth_header(self.auth_token))
+        assert result.status_code in {200, 409}, result.get_data().decode()
+        if result.status_code == 409:
+            assert opus['name'] in self.opus_names and opus['name'] != old_opus['name'], result.get_json()
+            return old_opus
+        else:
+            assert opus['name'] not in self.opus_names or opus['name'] == old_opus['name']
+            new_opus = result.get_json()
+            try_self_link(new_opus, self.client, self.auth_token)
+            compareObjects(old_opus, new_opus)
+            if new_opus['name'] != old_opus['name']:
+                self.opus_names.remove(old_opus['name'])
+                self.opus_names.add(new_opus['name'])
+            if new_opus['composer']['id'] != old_opus['composer']['id']:
+                opus_ref = ObjectReference(OPUS_TYPE, old_opus['id'])
+                old_composer_ref = ObjectReference(PERSON_TYPE, old_opus['composer']['id'])
+                composer_ref = ObjectReference(PERSON_TYPE, new_opus['composer']['id'])
+                self.remove_referenced_by_reference(opus_ref, old_composer_ref)
+                self.add_referenced_by_reference(opus_ref, composer_ref)
+            return new_opus
+
+    @precondition(lambda self: self.can_delete_opus())
+    @rule(target=opera, opus_to_delete=consumes(opera))
+    def delete_opus(self, opus_to_delete):
+        ref_to_delete = ObjectReference(OPUS_TYPE, opus_to_delete['id'])
+        url = get_hateoas_ref_from_object(opus_to_delete, 'self')
+        result = self.client.delete(url, headers=auth_header(self.auth_token))
+        assert result.status_code in {200, 409}, result.get_data().decode()
+        if result.status_code == 409:
+            assert self.reference_counter[ref_to_delete] > 0
+            return opus_to_delete
+        else:
+            assert self.reference_counter[ref_to_delete] == 0
+            self.remove_reference(ref_to_delete)
+            self.opus_names.remove(opus_to_delete['name'])
+            retry_result = self.client.get(url, headers=auth_header(self.auth_token))
+            assert retry_result.status_code == 404, result.get_data().decode()
+            return multiple()
 
 
 muse_for_music_api_test = ApiChecker.TestCase

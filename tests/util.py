@@ -59,8 +59,8 @@ def taxonomy_strategy(taxonomy: str, nullable: bool=False):
     for item in items:
         choices.append({
             'id': item.id,
-            'name': item.name,
-            'description': item.description,
+            'name': item.name if item.name is not None else '',
+            'description': item.description if item.description is not None else '',
         })
     return st.sampled_from(choices)
 

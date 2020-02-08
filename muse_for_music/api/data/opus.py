@@ -77,16 +77,25 @@ class OpusResource(Resource):
             abort(404, 'Requested opus not found!')
         new_values = request.get_json()
 
-        opus.update(new_values)
-        username = get_jwt_identity()
-        user = User.get_user_by_name(username)
-        History.query.filter(History.user_id == user.id,
-                             History.method == MethodEnum.update,
-                             History.resource == History.fingerprint(opus)).delete()
-        hist = History(MethodEnum.update, opus, user)
-        db.session.add(hist)
-        db.session.commit()
-        return marshal(opus, opus_small_get)
+        try:
+            opus.update(new_values)
+            username = get_jwt_identity()
+            user = User.get_user_by_name(username)
+            History.query.filter(History.user_id == user.id,
+                                History.method == MethodEnum.update,
+                                History.resource == History.fingerprint(opus)).delete()
+            hist = History(MethodEnum.update, opus, user)
+            db.session.add(hist)
+            db.session.commit()
+            return marshal(opus, opus_small_get)
+        except IntegrityError as err:
+            db.session.rollback()
+            if hasattr(err, 'orig'):
+                err = err.orig
+            message = str(err)
+            if 'UNIQUE constraint failed' in message:
+                abort(409, 'Name is not unique!')
+            abort(500, str(err))
 
     @ns.response(404, 'Opus not found.')
     @jwt_required
