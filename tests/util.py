@@ -7,7 +7,7 @@ from muse_for_music.models.taxonomies import get_taxonomies
 
 
 ReferencePlaceholder = namedtuple('ReferencePlaceholder', ['type', 'nullable'])
-
+ReferenceListPlaceholder = namedtuple('ReferenceListPlaceholder', ['type', ])
 
 def auth_header(token: str):
     if token:
@@ -98,6 +98,11 @@ def field_example_strategy(field: fields.Raw):
             return st.just(field.example)
     except AttributeError:
         pass
+    if field.extra_attributes.get('x-isArray', False):
+        if not isinstance(field, fields.List):
+            # only works for lists...
+            return st.nothing()
+        return st.just([]) # simplification for example and default
     if isinstance(field, fields.Nested):
         if 'x-reference' in field.extra_attributes:
             reference_type = field.extra_attributes['x-reference']
@@ -122,6 +127,11 @@ def field_default_strategy(field: fields.Raw):
             return st.just(field.default)
     except AttributeError:
         pass
+    if field.extra_attributes.get('x-isArray', False):
+        if not isinstance(field, fields.List):
+            # only works for lists...
+            return st.nothing()
+        return st.just([]) # simplification for example and default
     if isinstance(field, fields.Nested):
         if 'x-reference' in field.extra_attributes:
             reference_type = field.extra_attributes['x-reference']
@@ -149,6 +159,18 @@ def field_strategy(field: fields.Raw):
         minimum = -(2 ** 31) if field.minimum is None else field.minimum
         maximum = (2 ** 31) - 1 if field.maximum is None else field.maximum
         return st.integers(min_value=minimum, max_value=maximum)
+    if field.extra_attributes.get('x-isArray', False):
+        if not isinstance(field, fields.List):
+            # only works for lists...
+            return st.nothing()
+        if 'x-taxonomy' in field.extra_attributes:
+            taxonomy = field.extra_attributes['x-taxonomy']
+            return st.lists(st.deferred(lambda: taxonomy_strategy(taxonomy, False)), unique_by=lambda x: x['id'])
+        if 'x-reference' in field.extra_attributes:
+            reference_type = field.extra_attributes['x-reference']
+            return st.just(ReferenceListPlaceholder(reference_type))
+        container_strategy = st.deferred(lambda: field_strategy(field.container))
+        return st.lists(container_strategy)
     elif isinstance(field, fields.Nested):
         if 'x-reference' in field.extra_attributes:
             reference_type = field.extra_attributes['x-reference']

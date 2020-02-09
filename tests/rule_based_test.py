@@ -369,6 +369,18 @@ class ApiChecker(RuleBasedStateMachine):
         self.consists_of_relations[opus_ref].add(ref)
         return result.get_json()
 
+    @precondition(lambda self: self.can_put_part())
+    @rule(target=parts, old_part=consumes(parts), part=PART_PUT)
+    def update_part(self, old_part=None, part=None):
+        url = get_hateoas_ref_from_object(old_part, 'self')
+        part['id'] = old_part['id']
+        result = self.client.put(url, json=part, headers=auth_header(self.auth_token))
+        assert result.status_code == 200, result.get_data().decode()
+        new_part = result.get_json()
+        try_self_link(new_part, self.client, self.auth_token)
+        compareObjects(old_part, new_part)
+        return new_part
+
     @precondition(lambda self: self.can_delete_part())
     @rule(target=parts, part_to_delete=consumes(parts))
     def delete_part(self, part_to_delete):
@@ -389,5 +401,14 @@ class ApiChecker(RuleBasedStateMachine):
             return multiple()
 
 
-muse_for_music_api_test = ApiChecker.TestCase
+test_muse_for_music_api = ApiChecker.TestCase
+
+
+@given(data=st.data())
+def test_debug_test(app, taxonomies, data):
+    """Test case to debug hypothesis strategies with."""
+    with app.app_context():
+        value = data.draw(PART_PUT)
+        assert value is not None
+        print(value)
 
