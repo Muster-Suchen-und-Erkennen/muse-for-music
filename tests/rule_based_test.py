@@ -5,7 +5,7 @@ from conftest import tempdir, app, auth, client, taxonomies
 from hypothesis import given, strategies as st
 from hypothesis.stateful import Bundle, RuleBasedStateMachine, rule, initialize, precondition, invariant, consumes, multiple
 from util import get_hateoas_resource, get_hateoas_ref, get_hateoas_ref_from_object, try_self_link, compareObjects, AuthActions, auth_header
-from util import PERSON_POST, PERSON_PUT, OPUS_POST, OPUS_PUT, PART_POST, PART_PUT
+from util import PERSON_POST, PERSON_PUT, OPUS_POST, OPUS_PUT, PART_POST, PART_PUT, SUB_PART_POST, SUB_PART_PUT
 from typing import Dict
 
 
@@ -400,6 +400,65 @@ class ApiChecker(RuleBasedStateMachine):
             assert retry_result.status_code == 404, retry_result.get_data().decode()
             return multiple()
 
+    ### SubParts: ##############################################################
+
+    def can_post_sub_part(self):
+        can_post = self.is_authenticated() and bool(self.objects_by_type[PART_TYPE])
+        return can_post and len(self.objects_by_type[SUBPART_TYPE]) < 50
+
+    def can_put_sub_part(self):
+        can_put = self.is_authenticated()
+        return can_put and bool(self.objects_by_type[SUBPART_TYPE])
+
+    def can_delete_sub_part(self):
+        return self.can_put_sub_part()
+
+    @precondition(lambda self: self.can_post_sub_part())
+    @rule(target=subparts, subpart=SUB_PART_POST, part=parts)
+    def add_subpart(self, subpart, part):
+        url = get_hateoas_ref_from_object(part, 'subpart')
+        result = self.client.post(url, json=subpart, headers=auth_header(self.auth_token))
+        assert result.status_code == 200, result.get_data().decode()
+        new_subpart = result.get_json()
+        try_self_link(new_subpart, self.client, self.auth_token)
+        compareObjects(subpart, new_subpart)
+        ref = ObjectReference(SUBPART_TYPE, new_subpart['id'])
+        self.add_reference(ref)
+        part_ref = ObjectReference(PART_TYPE, part['id'])
+        self.consists_of_relations[part_ref].add(ref)
+        return result.get_json()
+
+    @precondition(lambda self: self.can_put_sub_part())
+    @rule(target=subparts, old_sub_part=consumes(subparts), sub_part=SUB_PART_PUT)
+    def update_sub_part(self, old_sub_part=None, sub_part=None):
+        url = get_hateoas_ref_from_object(old_sub_part, 'self')
+        sub_part['id'] = old_sub_part['id']
+        result = self.client.put(url, json=sub_part, headers=auth_header(self.auth_token))
+        assert result.status_code == 200, result.get_data().decode()
+        new_sub_part = result.get_json()
+        try_self_link(new_sub_part, self.client, self.auth_token)
+        compareObjects(old_sub_part, new_sub_part)
+        return new_sub_part
+
+    @precondition(lambda self: self.can_delete_sub_part())
+    @rule(target=subparts, sub_part_to_delete=consumes(subparts))
+    def delete_sub_part(self, sub_part_to_delete):
+        ref_to_delete = ObjectReference(SUBPART_TYPE, sub_part_to_delete['id'])
+        url = get_hateoas_ref_from_object(sub_part_to_delete, 'self')
+        result = self.client.delete(url, headers=auth_header(self.auth_token))
+        assert result.status_code in {200, 409}, result.get_data().decode()
+        if result.status_code == 409:
+            assert self.reference_counter[ref_to_delete] > 0
+            return sub_part_to_delete
+        else:
+            assert self.reference_counter[ref_to_delete] == 0
+            self.remove_reference(ref_to_delete)
+            part_ref = ObjectReference(PART_TYPE, sub_part_to_delete['part_id'])
+            self.consists_of_relations[part_ref].remove(ref_to_delete)
+            retry_result = self.client.get(url, headers=auth_header(self.auth_token))
+            assert retry_result.status_code == 404, retry_result.get_data().decode()
+            return multiple()
+
 
 test_muse_for_music_api = ApiChecker.TestCase
 
@@ -408,7 +467,7 @@ test_muse_for_music_api = ApiChecker.TestCase
 def test_debug_test(app, taxonomies, data):
     """Test case to debug hypothesis strategies with."""
     with app.app_context():
-        value = data.draw(PART_PUT)
+        value = data.draw(SUB_PART_PUT)
         assert value is not None
         print(value)
 

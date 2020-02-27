@@ -1,13 +1,18 @@
 from collections import namedtuple
 from hypothesis import assume, reject, strategies as st
+from hypothesis import settings, Phase
 from flask_restplus import fields, Model
 
 from muse_for_music.api import api
 from muse_for_music.models.taxonomies import get_taxonomies
 
+settings.register_profile('fast', max_examples=15, stateful_step_count=30, phases=[Phase.explicit, Phase.reuse, Phase.generate])
+settings.register_profile('medium', max_examples=40, stateful_step_count=40, phases=[Phase.explicit, Phase.reuse, Phase.generate])
+settings.register_profile('full', max_examples=500, stateful_step_count=60)
 
 ReferencePlaceholder = namedtuple('ReferencePlaceholder', ['type', 'nullable'])
 ReferenceListPlaceholder = namedtuple('ReferenceListPlaceholder', ['type', ])
+
 
 def auth_header(token: str):
     if token:
@@ -101,6 +106,7 @@ def field_example_strategy(field: fields.Raw):
     if field.extra_attributes.get('x-isArray', False):
         if not isinstance(field, fields.List):
             # only works for lists...
+            assert False, 'Could not generate strategy for list field!'
             return st.nothing()
         return st.just([]) # simplification for example and default
     if isinstance(field, fields.Nested):
@@ -130,6 +136,7 @@ def field_default_strategy(field: fields.Raw):
     if field.extra_attributes.get('x-isArray', False):
         if not isinstance(field, fields.List):
             # only works for lists...
+            assert False, 'Could not generate strategy for list field!'
             return st.nothing()
         return st.just([]) # simplification for example and default
     if isinstance(field, fields.Nested):
@@ -151,6 +158,8 @@ def field_strategy(field: fields.Raw):
             return st.sampled_from(field.enum)
     except AttributeError:
         pass
+
+    # primitive data types
     if isinstance(field, fields.String):
         min_size = 0 if field.min_length is None else field.min_length
         max_size = 500 if field.max_length is None else field.max_length
@@ -159,9 +168,14 @@ def field_strategy(field: fields.Raw):
         minimum = -(2 ** 31) if field.minimum is None else field.minimum
         maximum = (2 ** 31) - 1 if field.maximum is None else field.maximum
         return st.integers(min_value=minimum, max_value=maximum)
-    if field.extra_attributes.get('x-isArray', False):
+    elif isinstance(field, fields.Boolean):
+        return st.booleans()
+
+    # handle nested cases
+    if field.extra_attributes.get('x-isArray', False) or isinstance(field, fields.List):
         if not isinstance(field, fields.List):
             # only works for lists...
+            assert False, 'Could not generate strategy for list field!'
             return st.nothing()
         if 'x-taxonomy' in field.extra_attributes:
             taxonomy = field.extra_attributes['x-taxonomy']
@@ -181,6 +195,7 @@ def field_strategy(field: fields.Raw):
             nullable = field.extra_attributes.get('x-nullable', False)
             return st.deferred(lambda: taxonomy_strategy(taxonomy, nullable))
         return st.deferred(lambda: dict_model_strategy(field.model))
+    assert False, 'Could not generate strategy for unknown field!'
     return st.nothing()
 
 
@@ -194,6 +209,9 @@ OPUS_PUT = api_model_strategy('OpusPUT')
 
 PART_POST = api_model_strategy('PartPOST')
 PART_PUT = api_model_strategy('PartPUT')
+
+SUB_PART_POST = api_model_strategy('SubPartPOST')
+SUB_PART_PUT = api_model_strategy('SubPartPUT')
 
 
 # Test methods
