@@ -5,7 +5,8 @@ from conftest import tempdir, app, auth, client, taxonomies
 from hypothesis import given, strategies as st
 from hypothesis.stateful import Bundle, RuleBasedStateMachine, rule, initialize, precondition, invariant, consumes, multiple
 from util import get_hateoas_resource, get_hateoas_ref, get_hateoas_ref_from_object, try_self_link, compareObjects, AuthActions, auth_header
-from util import PERSON_POST, PERSON_PUT, OPUS_POST, OPUS_PUT, PART_POST, PART_PUT, SUB_PART_POST, SUB_PART_PUT
+from util import ReferenceListPlaceholder, ReferencePlaceholder
+from util import PERSON_POST, PERSON_PUT, OPUS_POST, OPUS_PUT, PART_POST, PART_PUT, SUB_PART_POST, SUB_PART_PUT, VOICE_POST, VOICE_PUT
 from typing import Dict
 
 
@@ -26,6 +27,9 @@ class ApiChecker(RuleBasedStateMachine):
     parts = Bundle('parts')
     subparts = Bundle('subparts')
     voices = Bundle('voices')
+
+    current_depth = -1
+    DEPTH_TO_CHECK = -1
 
     def __init__(self):
         super().__init__()
@@ -53,6 +57,7 @@ class ApiChecker(RuleBasedStateMachine):
         self.opus_names = set()
 
         self.has_initialized_persons = False
+        self.current_depth = -1
 
     def teardown(self):
         try:
@@ -184,12 +189,18 @@ class ApiChecker(RuleBasedStateMachine):
     ### Persons: ###############################################################
 
     def can_post_person(self):
+        if self.DEPTH_TO_CHECK > 0 and self.current_depth > 0:
+            return False
         return 'POST' in self.known_rels.get('person', {}) and self.is_authenticated() and len(self.objects_by_type[PERSON_TYPE]) < 10
 
     def can_put_person(self):
+        if self.DEPTH_TO_CHECK > 0 and self.current_depth > 0:
+            return False
         return self.is_authenticated() and self.objects_by_type[PERSON_TYPE]
 
     def can_delete_person(self):
+        if self.DEPTH_TO_CHECK > 0 and self.current_depth > 0:
+            return False
         return self.can_put_person()
 
     @initialize(target=persons)
@@ -201,6 +212,7 @@ class ApiChecker(RuleBasedStateMachine):
         ref = ObjectReference(PERSON_TYPE, person['id'])
         self.add_reference(ref)
         self.has_initialized_persons = True
+        self.current_depth = max(self.current_depth, 0)
         return person
 
     @precondition(lambda self: self.can_post_person())
@@ -220,6 +232,7 @@ class ApiChecker(RuleBasedStateMachine):
             self.people_names.add(person['name'])
             ref = ObjectReference(PERSON_TYPE, new_person['id'])
             self.add_reference(ref)
+            self.current_depth = max(self.current_depth, 0)
             return new_person
 
     @precondition(lambda self: self.can_put_person())
@@ -263,14 +276,26 @@ class ApiChecker(RuleBasedStateMachine):
     ### Opera: #################################################################
 
     def can_post_opus(self):
+        if self.DEPTH_TO_CHECK == 0:
+            return False
+        if self.DEPTH_TO_CHECK > 1 and self.current_depth > 1:
+            return False
         can_post = 'POST' in self.known_rels.get('opus', {}) and self.is_authenticated()
         return can_post and bool(self.objects_by_type[PERSON_TYPE]) and len(self.objects_by_type[OPUS_TYPE]) < 10
 
     def can_put_opus(self):
+        if self.DEPTH_TO_CHECK == 0:
+            return False
+        if self.DEPTH_TO_CHECK > 1 and self.current_depth > 1:
+            return False
         can_put = self.is_authenticated() and bool(self.objects_by_type[PERSON_TYPE])
         return can_put and bool(self.objects_by_type[OPUS_TYPE])
 
     def can_delete_opus(self):
+        if self.DEPTH_TO_CHECK == 0:
+            return False
+        if self.DEPTH_TO_CHECK > 1 and self.current_depth > 1:
+            return False
         return self.can_put_opus()
 
     @precondition(lambda self: self.can_post_opus())
@@ -293,6 +318,7 @@ class ApiChecker(RuleBasedStateMachine):
             ref = ObjectReference(OPUS_TYPE, new_opus['id'])
             self.add_reference(ref)
             self.add_referenced_by_reference(ref, ObjectReference(PERSON_TYPE, composer['id']))
+            self.current_depth = max(self.current_depth, 1)
             return result.get_json()
 
     @precondition(lambda self: self.can_put_opus())
@@ -344,14 +370,26 @@ class ApiChecker(RuleBasedStateMachine):
     ### Parts: #################################################################
 
     def can_post_part(self):
+        if self.DEPTH_TO_CHECK == 0 or self.DEPTH_TO_CHECK == 1:
+            return False
+        if self.DEPTH_TO_CHECK > 2 and self.current_depth > 2:
+            return False
         can_post = self.is_authenticated() and bool(self.objects_by_type[OPUS_TYPE])
         return can_post and len(self.objects_by_type[PART_TYPE]) < 50
 
     def can_put_part(self):
+        if self.DEPTH_TO_CHECK == 0 or self.DEPTH_TO_CHECK == 1:
+            return False
+        if self.DEPTH_TO_CHECK > 2 and self.current_depth > 2:
+            return False
         can_put = self.is_authenticated()
         return can_put and bool(self.objects_by_type[PART_TYPE])
 
     def can_delete_part(self):
+        if self.DEPTH_TO_CHECK == 0 or self.DEPTH_TO_CHECK == 1:
+            return False
+        if self.DEPTH_TO_CHECK > 2 and self.current_depth > 2:
+            return False
         return self.can_put_part()
 
     @precondition(lambda self: self.can_post_part())
@@ -367,6 +405,7 @@ class ApiChecker(RuleBasedStateMachine):
         self.add_reference(ref)
         opus_ref = ObjectReference(OPUS_TYPE, opus['id'])
         self.consists_of_relations[opus_ref].add(ref)
+        self.current_depth = max(self.current_depth, 2)
         return result.get_json()
 
     @precondition(lambda self: self.can_put_part())
@@ -403,14 +442,26 @@ class ApiChecker(RuleBasedStateMachine):
     ### SubParts: ##############################################################
 
     def can_post_sub_part(self):
+        if self.DEPTH_TO_CHECK >= 0 or self.DEPTH_TO_CHECK <= 2:
+            return False
+        if self.DEPTH_TO_CHECK > 3 and self.current_depth > 3:
+            return False
         can_post = self.is_authenticated() and bool(self.objects_by_type[PART_TYPE])
         return can_post and len(self.objects_by_type[SUBPART_TYPE]) < 50
 
     def can_put_sub_part(self):
+        if self.DEPTH_TO_CHECK >= 0 or self.DEPTH_TO_CHECK <= 2:
+            return False
+        if self.DEPTH_TO_CHECK > 3 and self.current_depth > 3:
+            return False
         can_put = self.is_authenticated()
         return can_put and bool(self.objects_by_type[SUBPART_TYPE])
 
     def can_delete_sub_part(self):
+        if self.DEPTH_TO_CHECK >= 0 or self.DEPTH_TO_CHECK <= 2:
+            return False
+        if self.DEPTH_TO_CHECK > 3 and self.current_depth > 3:
+            return False
         return self.can_put_sub_part()
 
     @precondition(lambda self: self.can_post_sub_part())
@@ -426,6 +477,7 @@ class ApiChecker(RuleBasedStateMachine):
         self.add_reference(ref)
         part_ref = ObjectReference(PART_TYPE, part['id'])
         self.consists_of_relations[part_ref].add(ref)
+        self.current_depth = max(self.current_depth, 3)
         return result.get_json()
 
     @precondition(lambda self: self.can_put_sub_part())
@@ -459,6 +511,103 @@ class ApiChecker(RuleBasedStateMachine):
             assert retry_result.status_code == 404, retry_result.get_data().decode()
             return multiple()
 
+    ### Voices: ################################################################
+
+    def can_post_voice(self):
+        if self.DEPTH_TO_CHECK >= 0 or self.DEPTH_TO_CHECK <= 3:
+            return False
+        can_post = self.is_authenticated() and bool(self.objects_by_type[SUBPART_TYPE])
+        return can_post and len(self.objects_by_type[VOICE_TYPE]) < 100
+
+    def can_put_voice(self):
+        if self.DEPTH_TO_CHECK >= 0 or self.DEPTH_TO_CHECK <= 3:
+            return False
+        can_put = self.is_authenticated()
+        return can_put and bool(self.objects_by_type[VOICE_TYPE])
+
+    def can_delete_voice(self):
+        if self.DEPTH_TO_CHECK >= 0 or self.DEPTH_TO_CHECK <= 3:
+            return False
+        return self.can_put_voice()
+
+    @precondition(lambda self: self.can_post_voice())
+    @rule(target=voices, voice=VOICE_POST, subpart=subparts)
+    def add_voice(self, voice, subpart):
+        url = get_hateoas_ref_from_object(subpart, 'voice')
+        result = self.client.post(url, json=voice, headers=auth_header(self.auth_token))
+        assert result.status_code == 200, result.get_data().decode()
+        new_voice = result.get_json()
+        try_self_link(new_voice, self.client, self.auth_token)
+        compareObjects(voice, new_voice)
+        ref = ObjectReference(VOICE_TYPE, new_voice['id'])
+        self.add_reference(ref)
+        subpart_ref = ObjectReference(SUBPART_TYPE, subpart['id'])
+        self.consists_of_relations[subpart_ref].add(ref)
+        self.current_depth = max(self.current_depth, 4)
+        return result.get_json()
+
+    @precondition(lambda self: self.can_put_voice())
+    @rule(target=voices, old_voice=consumes(voices), voice=VOICE_PUT, cited_composers=st.lists(persons, unique_by=lambda p: p['id']), data=st.data())
+    def update_voice(self, old_voice=None, voice=None, cited_composers=[], data=None):
+        url = get_hateoas_ref_from_object(old_voice, 'self')
+        voice['id'] = old_voice['id']
+        # remove related voices for now
+        voice['related_voices'] = []
+        # handle citations
+        if isinstance(voice['citations']['composer_citations'], ReferenceListPlaceholder):
+            voice['citations']['composer_citations'] = cited_composers
+        for citation in voice['citations']['opus_citations']:
+            citation['opus'] = data.draw(self.opera)
+        result = self.client.put(url, json=voice, headers=auth_header(self.auth_token))
+        assert result.status_code == 200, result.get_data().decode()
+        new_voice = result.get_json()
+        try_self_link(new_voice, self.client, self.auth_token)
+        compareObjects(old_voice, new_voice)
+
+        # handle references:
+        ref = ObjectReference(VOICE_TYPE, new_voice['id'])
+
+        # composer citation references
+        old_composer_citations = set([ObjectReference(PERSON_TYPE, p['id']) for p in old_voice['citations']['composer_citations']])
+        new_composer_citations = set([ObjectReference(PERSON_TYPE, p['id']) for p in voice['citations']['composer_citations']])
+        for old_citation_ref in old_composer_citations - new_composer_citations:
+            self.remove_referenced_by_reference(ref, old_citation_ref)
+        for new_citation_ref in new_composer_citations - old_composer_citations:
+            self.add_referenced_by_reference(ref, new_citation_ref)
+
+        # opus citation references
+        old_opus_citations = set([
+            ObjectReference(OPUS_TYPE, c['opus']['id']) for c in old_voice['citations']['opus_citations']
+        ])
+        new_opus_citations = set([
+            ObjectReference(OPUS_TYPE, c['opus']['id']) for c in voice['citations']['opus_citations']
+        ])
+        for old_citation_ref in old_opus_citations - new_opus_citations:
+            self.add_referenced_by_reference(ref, old_citation_ref)
+        for new_citation_ref in new_opus_citations - old_opus_citations:
+            self.add_referenced_by_reference(ref, new_citation_ref)
+        return new_voice
+
+
+    @precondition(lambda self: self.can_delete_voice())
+    @rule(target=voices, voice_to_delete=consumes(voices))
+    def delete_voice(self, voice_to_delete):
+        ref_to_delete = ObjectReference(VOICE_TYPE, voice_to_delete['id'])
+        url = get_hateoas_ref_from_object(voice_to_delete, 'self')
+        result = self.client.delete(url, headers=auth_header(self.auth_token))
+        assert result.status_code in {200, 409}, result.get_data().decode()
+        if result.status_code == 409:
+            assert self.reference_counter[ref_to_delete] > 0
+            return voice_to_delete
+        else:
+            assert self.reference_counter[ref_to_delete] == 0
+            self.remove_reference(ref_to_delete)
+            subpart_ref = ObjectReference(SUBPART_TYPE, voice_to_delete['subpart_id'])
+            self.consists_of_relations[subpart_ref].remove(ref_to_delete)
+            retry_result = self.client.get(url, headers=auth_header(self.auth_token))
+            assert retry_result.status_code == 404, retry_result.get_data().decode()
+            return multiple()
+
 
 test_muse_for_music_api = ApiChecker.TestCase
 
@@ -467,7 +616,7 @@ test_muse_for_music_api = ApiChecker.TestCase
 def test_debug_test(app, taxonomies, data):
     """Test case to debug hypothesis strategies with."""
     with app.app_context():
-        value = data.draw(SUB_PART_PUT)
+        value = data.draw(VOICE_PUT)
         assert value is not None
         print(value)
 

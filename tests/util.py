@@ -6,9 +6,11 @@ from flask_restplus import fields, Model
 from muse_for_music.api import api
 from muse_for_music.models.taxonomies import get_taxonomies
 
-settings.register_profile('fast', max_examples=15, stateful_step_count=30, phases=[Phase.explicit, Phase.reuse, Phase.generate])
-settings.register_profile('medium', max_examples=40, stateful_step_count=40, phases=[Phase.explicit, Phase.reuse, Phase.generate])
+settings.register_profile('fast', max_examples=15, stateful_step_count=30, print_blob=True, phases=[Phase.explicit, Phase.reuse, Phase.generate])
+settings.register_profile('medium', max_examples=40, stateful_step_count=40, print_blob=True, phases=[Phase.explicit, Phase.reuse, Phase.generate])
+settings.register_profile('test', max_examples=500, stateful_step_count=60, print_blob=True, phases=[Phase.explicit, Phase.reuse, Phase.generate])
 settings.register_profile('full', max_examples=500, stateful_step_count=60)
+settings.register_profile('extensive', max_examples=1000, stateful_step_count=50)
 
 ReferencePlaceholder = namedtuple('ReferencePlaceholder', ['type', 'nullable'])
 ReferenceListPlaceholder = namedtuple('ReferenceListPlaceholder', ['type', ])
@@ -212,6 +214,9 @@ PART_PUT = api_model_strategy('PartPUT')
 
 SUB_PART_POST = api_model_strategy('SubPartPOST')
 SUB_PART_PUT = api_model_strategy('SubPartPUT')
+
+VOICE_POST = api_model_strategy('VoicePOST')
+VOICE_PUT = api_model_strategy('VoicePUT')
 
 
 # Test methods
