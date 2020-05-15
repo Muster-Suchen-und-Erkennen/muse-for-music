@@ -1,12 +1,14 @@
 from logging import Logger, StreamHandler, Formatter, getLogger, DEBUG
 from sys import stdout
-from flask import Flask
+from flask import Flask, Blueprint
 from flask.cli import with_appcontext
 import click
 
 
 from .. import db
 from .users import User, UserRole, RoleEnum
+
+DB_CLI = Blueprint('db_cli', __name__, cli_group=None)
 
 DB_COMMAND_LOGGER = getLogger('flask.app.db')  # type: Logger
 
@@ -26,7 +28,7 @@ from .data.people import Person
 from .data.history import History, MethodEnum
 
 
-@click.command('create_db')
+@DB_CLI.cli.command('create_db')
 @with_appcontext
 def create_db():
     """Create all db tables."""
@@ -39,7 +41,7 @@ def create_db_function():
     DB_COMMAND_LOGGER.info('Database created.')
 
 
-@click.command('drop_db')
+@DB_CLI.cli.command('drop_db')
 @with_appcontext
 def drop_db():
     """Drop all db tables."""
@@ -52,7 +54,7 @@ def drop_db_function():
     DB_COMMAND_LOGGER.info('Dropped Database.')
 
 
-@click.command('init_db')
+@DB_CLI.cli.command('init_db')
 @with_appcontext
 def init_db():
     """Fill the db with values."""
@@ -76,7 +78,7 @@ def init_db_function():
     DB_COMMAND_LOGGER.info('Database populated.')
 
 
-@click.command('create_populated_db')
+@DB_CLI.cli.command('create_populated_db')
 @with_appcontext
 def create_populated_db():
     create_db_function()

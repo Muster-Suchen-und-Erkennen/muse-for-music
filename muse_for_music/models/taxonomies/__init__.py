@@ -10,7 +10,7 @@ from flask.cli import with_appcontext
 import click
 
 from .helper_classes import Taxonomy
-from .. import DB_COMMAND_LOGGER
+from .. import DB_COMMAND_LOGGER, DB_CLI
 from .. import db
 
 
@@ -49,7 +49,7 @@ def generate_na_elements():
     db.session.commit()
 
 
-@click.command('init_taxonomies')
+@DB_CLI.cli.command('init_taxonomies')
 @click.option('-r', '--reload', default=False, is_flag=True)
 @click.argument('folder_path')
 @with_appcontext
@@ -88,7 +88,7 @@ def init_taxonomies(reload, folder_path: str):
         click.echo('No taxonomy table found for name "{}"'.format(name))
 
 
-@click.command('add_na_elements')
+@DB_CLI.cli.command('add_na_elements')
 @with_appcontext
 def add_na_elements():
     """Add all missing "na" elements."""
@@ -97,7 +97,7 @@ def add_na_elements():
     click.echo('Finished processing all taxonomies.')
 
 
-@click.command('export_taxonomies')
+@DB_CLI.cli.command('export_taxonomies')
 @click.argument('folder_path')
 @with_appcontext
 def save_taxonomies(folder_path: str):

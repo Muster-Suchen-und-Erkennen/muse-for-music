@@ -90,6 +90,7 @@ def create_app():
 
 
     from . import models
+    app.register_blueprint(models.DB_CLI)
 
     from .routes import register_routes
     register_routes(app)
