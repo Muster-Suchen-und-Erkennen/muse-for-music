@@ -155,7 +155,7 @@ class MusikalischeFunktionToVoice(db.Model):
     voice_id = db.Column(db.Integer, db.ForeignKey('voice.id'), primary_key=True)
     musikalische_funktion_id = db.Column(db.Integer, db.ForeignKey('musikalische_funktion.id'), primary_key=True)
 
-    voice = db.relationship(Voice, backref=db.backref('_musicial_function', lazy='joined'))
+    voice = db.relationship(Voice, backref=db.backref('_musicial_function', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
     musikalische_funktion = db.relationship('MusikalischeFunktion')
 
     def __init__(self, voice, musikalische_funktion, **kwargs):
