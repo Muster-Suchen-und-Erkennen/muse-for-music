@@ -1,7 +1,7 @@
 from collections import namedtuple
 from hypothesis import assume, reject, strategies as st
 from hypothesis import settings, Phase
-from flask_restplus import fields, Model
+from flask_restx import fields, Model
 
 from muse_for_music.api import api
 from muse_for_music.models.taxonomies import get_taxonomies

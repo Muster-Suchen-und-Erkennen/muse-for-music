@@ -1,7 +1,7 @@
 """Module containing API Endpoints for Taxonomy Resources."""
 
 from flask import request, current_app
-from flask_restplus import Resource, marshal, abort
+from flask_restx import Resource, marshal, abort
 from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import IntegrityError
 

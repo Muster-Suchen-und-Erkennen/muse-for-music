@@ -2,7 +2,7 @@
 
 from collections import OrderedDict
 
-from flask_restplus import fields
+from flask_restx import fields
 from ...hal_field import HaLUrl, NestedFields, EmbeddedFields, NestedModel, UrlData
 from . import api
 from ..models import with_curies

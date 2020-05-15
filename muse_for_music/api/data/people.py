@@ -2,7 +2,7 @@
 
 
 from flask import jsonify, url_for, request
-from flask_restplus import Resource, marshal, reqparse, abort
+from flask_restx import Resource, marshal, reqparse, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy import literal

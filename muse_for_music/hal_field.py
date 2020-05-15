@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from functools import wraps
-from flask_restplus import marshal
-from flask_restplus.fields import Raw, Nested, StringMixin, MarshallingError, get_value, urlparse, urlunparse
+from flask_restx import marshal
+from flask_restx.fields import Raw, Nested, StringMixin, MarshallingError, get_value, urlparse, urlunparse
 from typing import Dict, List, Union
 from flask import url_for, request, current_app
 
@@ -24,7 +24,7 @@ if True:
         return schema
     Raw.schema = newSchema
 
-    from flask_restplus.model import Model, iteritems, instance, not_none
+    from flask_restx.model import Model, iteritems, instance, not_none
 
     def _schema(self):
         properties = OrderedDict()

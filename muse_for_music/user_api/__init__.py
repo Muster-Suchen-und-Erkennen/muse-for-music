@@ -4,7 +4,7 @@ from os import path
 from functools import wraps
 from typing import List
 from flask import Flask, Blueprint, logging
-from flask_restplus import Api, abort
+from flask_restx import Api, abort
 from flask_jwt_extended import get_jwt_claims
 from flask_jwt_extended.exceptions import NoAuthorizationError
 from .. import jwt

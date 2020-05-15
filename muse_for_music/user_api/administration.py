@@ -1,5 +1,5 @@
 from flask import url_for, request
-from flask_restplus import Resource, fields, abort, marshal
+from flask_restx import Resource, fields, abort, marshal
 from flask_jwt_extended import jwt_required, fresh_jwt_required, get_jwt_identity, get_jwt_claims
 from ..hal_field import HaLUrl, UrlData, NestedFields
 

@@ -1,8 +1,8 @@
 """Root Module for the API."""
 
 from flask import Blueprint, Flask
-from flask_restplus import Api, abort
-from flask_restplus.errors import ValidationError
+from flask_restx import Api, abort
+from flask_restx.errors import ValidationError
 from flask_jwt_extended.exceptions import NoAuthorizationError
 
 from ..user_api import log_unauthorized

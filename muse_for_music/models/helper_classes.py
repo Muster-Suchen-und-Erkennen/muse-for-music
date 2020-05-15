@@ -3,7 +3,7 @@ from datetime import datetime, date
 from typing import TypeVar, Sequence, Dict, Type, List, Union, cast, Any
 from flask import current_app
 from sqlalchemy.orm import joinedload, subqueryload, Query
-from flask_restplus.errors import ValidationError
+from flask_restx.errors import ValidationError
 from .. import db
 
 X = TypeVar('X', bound=db.Model)
