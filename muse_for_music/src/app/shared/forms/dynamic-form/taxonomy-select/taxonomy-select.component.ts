@@ -23,7 +23,7 @@ import { ApiModel } from 'app/shared/rest/api-model';
 })
 export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, OnChanges {
 
-    @ViewChild(myDropdownComponent, {static: false}) dropdown: myDropdownComponent
+    @ViewChild(myDropdownComponent) dropdown: myDropdownComponent
 
     _value: any[] = [];
     @Input() question: ApiModel;

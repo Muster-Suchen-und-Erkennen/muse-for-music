@@ -26,9 +26,9 @@ import { ApiModel } from 'app/shared/rest/api-model';
 })
 export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, OnChanges, OnDestroy {
 
-    @ViewChild(myDropdownComponent, {static: false}) dropdown: myDropdownComponent;
+    @ViewChild(myDropdownComponent) dropdown: myDropdownComponent;
 
-    @ViewChild(myDialogComponent, {static: false}) dialog: myDialogComponent;
+    @ViewChild(myDialogComponent) dialog: myDialogComponent;
 
     selected: any[] = [];
     @Input() question: ApiModel;

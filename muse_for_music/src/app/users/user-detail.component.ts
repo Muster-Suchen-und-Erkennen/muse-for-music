@@ -20,7 +20,11 @@ export class UserDetailComponent {
 
     passwordChangeSuccess: boolean = false;
 
-    @ViewChild('renewLoginDialog', {static: false}) loginDialog: myDialogComponent;
+    @ViewChild('renewLoginDialog') loginDialog: myDialogComponent;
+
+    get username() {
+        return this.userApi.username;
+    }
 
     constructor(private userApi: UserApiService) { }
 
@@ -42,5 +46,13 @@ export class UserDetailComponent {
                 this.loginDialog.open();
             }
         }
-  }
+    }
+
+    hasRole(role: string): boolean {
+        return this.userApi.roles.has(role);
+    }
+
+    refreshLogin() {
+        this.userApi.refreshLogin(this.userApi.refreshToken);
+    }
 }

@@ -25,21 +25,21 @@
                             </span>
                             {{user?.username}}
                             <span class="tooltip tooltip-right link hover-red pointer" data-tooltip="Benutzer sperren"
-                                (click)="currentUser = user; lockUser()" [hidden]="user.username === userApi.username"
+                                (click)="currentUser = user; lockUser()" [hidden]="user.username === username"
                                 *ngIf="!user?.deleted">
                                 <i class="fa fa-lock"></i>
                             </span>
                             <span class="tooltip tooltip-right link hover-red pointer" data-tooltip="Benutzer löschen"
-                                (click)="currentUser = user; removeUser.open()" [hidden]="user.username === userApi.username"
+                                (click)="currentUser = user; removeUser.open()" [hidden]="user.username === username"
                                 *ngIf="user?.deleted">
                                 <i class="fa fa-trash"></i>
                             </span>
                         </th>
                         <th class="ph3 pv2 tl">
-                            <div class="flex bb b--gray" *ngIf="user.username !== userApi.username">
+                            <div class="flex bb b--gray" *ngIf="user.username !== username">
                                 <input class="input-reset bn pa1 w4" type="password" name="password" placeholder="Reset Passwort" [(ngModel)]="newUserPassword">
                             </div>
-                            <span class="pointer dim" (click)="resetPassword(user, newUserPassword)" [hidden]="user.username === userApi.username">
+                            <span class="pointer dim" (click)="resetPassword(user, newUserPassword)" [hidden]="user.username === username">
                                 <i class="fa fa-check"></i>
                                 Passwort setzen.
                             </span>

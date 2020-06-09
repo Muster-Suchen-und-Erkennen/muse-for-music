@@ -15,7 +15,7 @@ import { take } from 'rxjs/operators';
 export class PartEditComponent implements OnChanges {
 
     @Input() partID: number;
-    @ViewChild(DynamicFormComponent, {static: false}) form;
+    @ViewChild(DynamicFormComponent) form;
 
     part: ApiObject = {
         _links: {'self': {'href': ''}},

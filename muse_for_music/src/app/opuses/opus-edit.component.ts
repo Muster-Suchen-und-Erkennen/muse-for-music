@@ -16,7 +16,7 @@ export class OpusEditComponent implements OnChanges {
 
     @Input() opusID: number;
 
-    @ViewChild(DynamicFormComponent, {static: false}) form;
+    @ViewChild(DynamicFormComponent) form;
 
     opus: ApiObject = {
         _links: {'self': {'href': ''}},

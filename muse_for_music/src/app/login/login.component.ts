@@ -11,8 +11,8 @@ import { UserApiService } from '../shared/rest/user-api.service';
 })
 export class LoginComponent implements OnInit {
 
-    private username: string;
-    private password: string = '';
+    username: string;
+    password: string = '';
 
     constructor(private data: NavigationService, private api: ApiService,
         private userApi: UserApiService, private router: Router) { }

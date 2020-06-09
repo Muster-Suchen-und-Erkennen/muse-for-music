@@ -16,4 +16,8 @@ export class HomeComponent implements OnInit {
         this.data.changeBreadcrumbs([]);
     }
 
+    hasRole(role: string): boolean {
+        return this.userApi.roles.has(role);
+    }
+
 }

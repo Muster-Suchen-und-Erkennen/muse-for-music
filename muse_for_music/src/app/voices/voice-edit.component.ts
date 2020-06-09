@@ -17,14 +17,14 @@ export class VoiceEditComponent implements OnChanges {
     @Input() subPartID: number;
     @Input() voiceID: number;
 
-    @ViewChild(DynamicFormComponent, {static: false}) form;
+    @ViewChild(DynamicFormComponent) form;
 
     voice: ApiObject = {
         _links: {'self': {'href': ''}},
         name: 'UNBEKANNT'
     };
 
-    private subpart: ApiObject;
+    subpart: ApiObject;
 
     constructor(private api: ApiService, private router: Router) { }
 

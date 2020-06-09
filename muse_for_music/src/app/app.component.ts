@@ -9,8 +9,8 @@ import { myDialogComponent } from './shared/dialog/dialog.component';
 export class AppComponent {
     title = 'app';
 
-    @ViewChild('renewLoginDialog', {static: false}) loginDialog: myDialogComponent;
-    private password: string;
+    @ViewChild('renewLoginDialog') loginDialog: myDialogComponent;
+    password: string;
 
 
     constructor(private userApi: UserApiService) {

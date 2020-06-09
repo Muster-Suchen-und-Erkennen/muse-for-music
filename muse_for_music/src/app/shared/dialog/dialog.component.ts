@@ -13,7 +13,7 @@ export class myDialogComponent {
     @Input() okCallback: () => void = () => {};
     @Input() cancelCallback: () => void = () => {};
 
-    private isOpen: boolean = false;
+    isOpen: boolean = false;
 
     open() {
         this.isOpen = true;

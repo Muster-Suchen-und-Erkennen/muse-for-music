@@ -16,7 +16,7 @@ export class SubPartEditComponent implements OnChanges {
 
     @Input() subPartID: number;
 
-    @ViewChild(DynamicFormComponent, {static: false}) form;
+    @ViewChild(DynamicFormComponent) form;
 
     subpart: ApiObject = {
         _links: {'self': {'href': ''}},

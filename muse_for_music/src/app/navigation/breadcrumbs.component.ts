@@ -13,8 +13,8 @@ import { NavigationService, Breadcrumb } from './navigation-service';
 })
 export class BreadcrumbsComponent implements OnInit {
 
-    @ViewChild('home', {static: false}) home: ElementRef;
-    @ViewChild('bcContainer', {static: false}) bcContainer: ElementRef;
+    @ViewChild('home') home: ElementRef;
+    @ViewChild('bcContainer') bcContainer: ElementRef;
 
     hovered: boolean = false;
 

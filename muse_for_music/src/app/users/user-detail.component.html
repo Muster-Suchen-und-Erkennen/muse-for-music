@@ -1,21 +1,21 @@
 
 <m4m-box>
-    <h1 class="mv0" title>Benutzer "{{userApi.username}}":</h1>
-    <div class="tooltip tooltip-left button h2 pv1 ph2 ml3 br2 link bg-animate hover-bg-light-silver pointer" data-tooltip="reload" (click)="userApi.refreshLogin(userApi.refreshToken)" title-right>
+    <h1 class="mv0" title>Benutzer "{{username}}":</h1>
+    <div class="tooltip tooltip-left button h2 pv1 ph2 ml3 br2 link bg-animate hover-bg-light-silver pointer" data-tooltip="reload" (click)="refreshLogin()" title-right>
         <i class="fa fa-refresh"></i>
     </div>
     <div class="w-100 ph3 pv2" body>
         <div>
             <p class="f4 b">Rollen:</p>
-            <p *ngIf="userApi.roles.has('user')">
+            <p *ngIf="hasRole('user')">
                 <span class="f5 b">Benutzer:</span>
                 Ein Benutzer kann Daten anlegen verändern und löschen.
             </p>
-            <p *ngIf="userApi.roles.has('taxonomy_editor')">
+            <p *ngIf="hasRole('taxonomy_editor')">
                 <span class="f5 b">Taxonomie-Editor:</span>
                 Ein Taxonomie-Editor kann die Taxonomien bearbeiten.
             </p>
-            <p *ngIf="userApi.roles.has('admin')">
+            <p *ngIf="hasRole('admin')">
                 <span class="f5 b">Administrator:</span>
                 Ein Administrator kann die Benutzer verwalten.
             </p>
@@ -45,7 +45,7 @@
 </m4m-box>
 
 
-<m4m-history [user]="userApi.username"></m4m-history>
+<m4m-history [user]="username"></m4m-history>
 
 
 <m4m-dialog [dialogType]="'ok-cancel'" [icon]="'info'" [okCallback]="changePassword" #renewLoginDialog >

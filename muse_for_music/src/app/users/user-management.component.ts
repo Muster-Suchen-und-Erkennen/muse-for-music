@@ -19,16 +19,20 @@ export class UserManagementComponent implements OnInit, OnDestroy {
 
     users: ApiObject[];
 
-    private password;
+    password;
 
-    private newUsername;
-    private newPassword;
-    private newUserPassword;
+    newUsername;
+    newPassword;
+    newUserPassword;
 
     currentUser: ApiObject;
     role: string;
 
-    @ViewChild('renewLoginDialog', {static: false}) loginDialog: myDialogComponent;
+    @ViewChild('renewLoginDialog') loginDialog: myDialogComponent;
+
+    get username() {
+        return this.userApi.username;
+    }
 
 
     constructor(private navigation: NavigationService, private userApi: UserApiService) { }
