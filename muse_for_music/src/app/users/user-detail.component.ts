@@ -20,7 +20,7 @@ export class UserDetailComponent {
 
     passwordChangeSuccess: boolean = false;
 
-    @ViewChild('renewLoginDialog') loginDialog: myDialogComponent;
+    @ViewChild('renewLoginDialog', {static: false}) loginDialog: myDialogComponent;
 
     constructor(private userApi: UserApiService) { }
 

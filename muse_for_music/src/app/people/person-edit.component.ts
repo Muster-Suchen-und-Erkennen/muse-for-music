@@ -14,7 +14,7 @@ export class PersonEditComponent implements OnInit, OnChanges, OnDestroy {
 
     private subscription: Subscription;
 
-    @ViewChild(DynamicFormComponent) form;
+    @ViewChild(DynamicFormComponent, {static: false}) form;
 
     @Input() personID: number;
     person: ApiObject = {

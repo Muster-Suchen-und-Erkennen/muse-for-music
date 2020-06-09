@@ -9,7 +9,7 @@ import { myDialogComponent } from './shared/dialog/dialog.component';
 export class AppComponent {
     title = 'app';
 
-    @ViewChild('renewLoginDialog') loginDialog: myDialogComponent;
+    @ViewChild('renewLoginDialog', {static: false}) loginDialog: myDialogComponent;
     private password: string;
 
 

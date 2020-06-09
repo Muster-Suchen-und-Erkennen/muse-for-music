@@ -1,6 +1,6 @@
 
 import {first, map} from 'rxjs/operators';
-import { Component, Input, OnChanges, SimpleChanges, EventEmitter, ViewChildren, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 import { Subscription } from 'rxjs';
 

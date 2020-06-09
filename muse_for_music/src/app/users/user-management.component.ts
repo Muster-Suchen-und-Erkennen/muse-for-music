@@ -28,7 +28,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     currentUser: ApiObject;
     role: string;
 
-    @ViewChild('renewLoginDialog') loginDialog: myDialogComponent;
+    @ViewChild('renewLoginDialog', {static: false}) loginDialog: myDialogComponent;
 
 
     constructor(private navigation: NavigationService, private userApi: UserApiService) { }

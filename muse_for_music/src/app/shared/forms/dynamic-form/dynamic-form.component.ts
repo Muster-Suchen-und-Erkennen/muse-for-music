@@ -39,9 +39,9 @@ export class DynamicFormComponent implements OnChanges {
     @Output() save: EventEmitter<any> = new EventEmitter<any>();
 
     @ViewChildren('questions') questionDivs;
-    @ViewChild(SaveButtonComponent) savebutton: SaveButtonComponent;
+    @ViewChild(SaveButtonComponent, {static: false}) savebutton: SaveButtonComponent;
 
-    @ViewChild(myDialogComponent) dialog: myDialogComponent;
+    @ViewChild(myDialogComponent, {static: false}) dialog: myDialogComponent;
 
     constructor(private changeDetector: ChangeDetectorRef) { }
 

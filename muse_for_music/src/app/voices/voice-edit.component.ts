@@ -17,7 +17,7 @@ export class VoiceEditComponent implements OnChanges {
     @Input() subPartID: number;
     @Input() voiceID: number;
 
-    @ViewChild(DynamicFormComponent) form;
+    @ViewChild(DynamicFormComponent, {static: false}) form;
 
     voice: ApiObject = {
         _links: {'self': {'href': ''}},
