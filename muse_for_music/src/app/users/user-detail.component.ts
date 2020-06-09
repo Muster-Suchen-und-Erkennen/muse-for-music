@@ -1,5 +1,8 @@
+
+import {timer as observableTimer,  Observable, Subject, } from 'rxjs';
+
+import {take} from 'rxjs/operators';
 import { Component, ViewChild } from '@angular/core';
-import { Observable, Subject, } from 'rxjs/Rx';
 
 import { UserApiService } from '../shared/rest/user-api.service';
 import { myDialogComponent } from '../shared/dialog/dialog.component';
@@ -25,7 +28,7 @@ export class UserDetailComponent {
         if (this.userApi.tokenIsFresh) {
             this.userApi.changePassword(this.password, this.passwordRepeat).subscribe(_ => {
                 this.passwordChangeSuccess = true;
-                Observable.timer(2000).take(1).subscribe(() => this.passwordChangeSuccess = undefined);
+                observableTimer(2000).pipe(take(1)).subscribe(() => this.passwordChangeSuccess = undefined);
             });
             this.password = '';
             this.passwordRepeat = '';

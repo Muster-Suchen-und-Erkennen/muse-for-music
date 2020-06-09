@@ -1,7 +1,9 @@
+
+import {timer as observableTimer,  Subscription, Observable } from 'rxjs';
+
+import {take} from 'rxjs/operators';
 import { Component, forwardRef, Input, OnInit, ViewChild, OnDestroy, OnChanges, } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
-import { Subscription, Observable } from 'rxjs/Rx';
 
 import { ApiObject } from '../../../rest/api-base.service';
 import { ApiService } from '../../../rest/api.service';
@@ -243,15 +245,15 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
         }
         if (this.valid) {
             if (this.question['x-reference'] === 'person') {
-                this.api.postPerson(this.newData).take(1).subscribe(data => {
-                    Observable.timer(150).take(1).subscribe(() => {
+                this.api.postPerson(this.newData).pipe(take(1)).subscribe(data => {
+                    observableTimer(150).pipe(take(1)).subscribe(() => {
                         updateSelection(data);
                     });
                 });
             }
             if (this.question['x-reference'] === 'opus') {
-                this.api.postOpus(this.newData).take(1).subscribe(data => {
-                    Observable.timer(150).take(1).subscribe(() => {
+                this.api.postOpus(this.newData).pipe(take(1)).subscribe(data => {
+                    observableTimer(150).pipe(take(1)).subscribe(() => {
                         updateSelection(data);
                     });
                 });

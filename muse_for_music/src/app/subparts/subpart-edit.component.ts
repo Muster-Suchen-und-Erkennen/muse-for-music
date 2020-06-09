@@ -5,6 +5,7 @@ import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
 import { DynamicFormComponent } from '../shared/forms/dynamic-form/dynamic-form.component';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'm4m-subpart-edit',
@@ -34,7 +35,7 @@ export class SubPartEditComponent implements OnChanges {
     }
 
     save = (event) => {
-        this.api.putSubPart(this.subpart.id, event).take(1).subscribe(() => {
+        this.api.putSubPart(this.subpart.id, event).pipe(take(1)).subscribe(() => {
             this.form.saveFinished(true);
         }, () => {
             this.form.saveFinished(false);
@@ -42,7 +43,7 @@ export class SubPartEditComponent implements OnChanges {
     }
 
     delete = () => {
-        this.api.deleteSubPart(this.subpart).take(1).subscribe(() => this.router.navigate(['parts', this.subpart.part_id]));
+        this.api.deleteSubPart(this.subpart).pipe(take(1)).subscribe(() => this.router.navigate(['parts', this.subpart.part_id]));
     };
 
 }

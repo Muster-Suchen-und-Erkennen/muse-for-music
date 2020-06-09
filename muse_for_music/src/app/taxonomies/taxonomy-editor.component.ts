@@ -4,7 +4,7 @@ import { NavigationService, Breadcrumb } from '../navigation/navigation-service'
 
 import { ApiObject } from '../shared/rest/api-base.service';
 import { ApiService } from '../shared/rest/api.service';
-import { Subscription } from 'rxjs/Rx';
+import { Subscription } from 'rxjs';
 
 class TaxonomyItem {
     id: number;

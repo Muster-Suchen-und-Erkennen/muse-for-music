@@ -1,6 +1,8 @@
+
+import {first, map} from 'rxjs/operators';
 import { Component, Input, OnChanges, SimpleChanges, EventEmitter, ViewChildren, ViewChild } from '@angular/core';
 
-import { Subscription } from 'rxjs/Rx';
+import { Subscription } from 'rxjs';
 
 import { ApiObject } from '../../rest/api-base.service';
 import { ModelsService } from 'app/shared/rest/models.service';
@@ -28,9 +30,10 @@ export class DynamicDataComponent implements OnChanges {
     ngOnChanges(changes: SimpleChanges): void {
       if (changes.modelUrl != null || changes.filter != null || changes.isBlacklist != null) {
 
-        this.models.getModel(this.modelUrl)
-            .map(this.models.filterModel(this.filter, this.isBlacklist))
-            .first().subscribe(model => {
+        this.models.getModel(this.modelUrl).pipe(
+            map(this.models.filterModel(this.filter, this.isBlacklist)),
+            first(),
+        ).subscribe(model => {
               const props = [];
               if (model.properties != null) {
                   for (const key in model.properties) {

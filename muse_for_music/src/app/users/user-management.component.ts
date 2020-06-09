@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 
 import { UserApiService } from '../shared/rest/user-api.service';
 import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
-import { Subscription, Subject } from 'rxjs/Rx';
+import { Subscription, Subject } from 'rxjs';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { myDialogComponent } from '../shared/dialog/dialog.component';
 

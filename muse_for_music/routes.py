@@ -1,11 +1,11 @@
-from flask import Flask, render_template, url_for, send_from_directory
+from flask import Flask, render_template, url_for, redirect
 from flask_cors import CORS, cross_origin
 
 from .user_api import register_user_api
 from .api import register_api
 
 
-def register_routes(app: Flask):
+def register_routes(app: Flask, flask_static_digest):
 
     register_user_api(app)
     register_api(app)
@@ -15,13 +15,21 @@ def register_routes(app: Flask):
         register_debug_routes(app)
 
 
-    @app.route('/')
-    @app.route('/index')
-    def index():
-        return render_template('index.html',
-                            title='muse4music')
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def index(path):
+        return render_template('index.html', title='muse4music')
 
 
-    @app.route('/assets/<path:file>')
+    @app.route('/<string:file>')
+    def static_resources(file):
+        if '.' in file:
+            return redirect(flask_static_digest.static_url_for('static', filename=file))
+        return render_template('index.html', title='muse4music')
+
+
+    @app.route('/assets/<string:file>')
     def asset(file):
-        return send_from_directory('./build', file)
+        if '.' in file:
+            return redirect(flask_static_digest.static_url_for('static', filename='assets/' + file))
+        return render_template('index.html', title='muse4music')

@@ -5,6 +5,7 @@ import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
 import { DynamicFormComponent } from '../shared/forms/dynamic-form/dynamic-form.component';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'm4m-opus-edit',
@@ -34,7 +35,7 @@ export class OpusEditComponent implements OnChanges {
     }
 
     save = (event) => {
-        this.api.putOpus(this.opus.id, event).take(1).subscribe(() => {
+        this.api.putOpus(this.opus.id, event).pipe(take(1)).subscribe(() => {
             this.form.saveFinished(true);
         }, () => {
             this.form.saveFinished(false);
@@ -42,7 +43,7 @@ export class OpusEditComponent implements OnChanges {
     }
 
     delete = () => {
-        this.api.deleteOpus(this.opusID).take(1).subscribe(() => this.router.navigate(['opuses']));
+        this.api.deleteOpus(this.opusID).pipe(take(1)).subscribe(() => this.router.navigate(['opuses']));
     };
 
 }

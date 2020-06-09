@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
-import { Subscription } from 'rxjs/Rx';
+import { Subscription } from 'rxjs';
 import { UserApiService } from 'app/shared/rest/user-api.service';
 
 @Component({

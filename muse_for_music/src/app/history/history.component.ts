@@ -3,7 +3,7 @@ import { Component, OnChanges, Input, OnInit } from '@angular/core';
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { UserApiService } from '../shared/rest/user-api.service';
-import { Subscription } from 'rxjs/Rx';
+import { Subscription } from 'rxjs';
 
 
 @Component({

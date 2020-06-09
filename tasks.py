@@ -10,9 +10,14 @@ MODULE_NAME = 'muse_for_music'
 
 SHELL = environ.get('SHELL', 'bash')
 
-BUILD_FOLDER = Path('./{module}/build'.format(module=MODULE_NAME))
+BUILD_FOLDER = Path('./{module}/static'.format(module=MODULE_NAME))
 MANIFEST_PATH = BUILD_FOLDER / Path('manifest.json')
 
+@task
+def clean(c):
+    print('Removing ui build output.')
+    if BUILD_FOLDER.exists():
+        rmtree(BUILD_FOLDER)
 
 @task
 def test_for_existing_manifest_file(c):
@@ -48,12 +53,24 @@ def dependencies(c):
     pass
 
 
-@task(dependencies_js)
-def build(c):
+@task(dependencies)
+def build(c, production=False, deploy_url='/static/', base_href='/', clean_build=False):
+    if clean_build:
+        clean(c)
     if not BUILD_FOLDER.exists():
         BUILD_FOLDER.mkdir()
+    c.run('flask digest clean', shell=SHELL)
     with c.cd('./{module}'.format(module=MODULE_NAME)):
-        c.run('npm run build', shell=SHELL)
+        attrs = [
+            '--',
+            '--extract-css',
+            "--deploy-url='{}'".format(deploy_url),
+            "--base-href='{}'".format(base_href),
+        ]
+        if production:
+            attrs.append('--prod')
+        c.run('npm run build ' + ' '.join(attrs), shell=SHELL)
+    c.run('flask digest compile', shell=SHELL)
 
 
 @task
@@ -68,14 +85,23 @@ def create_test_db(c):
     c.run('flask init_taxonomies taxonomies', shell=SHELL, pty=True)
 
 
-@task
-def start_js(c):
+@task(dependencies_js)
+def start_js(c, deploy_url='/static/'):
     with c.cd('./{module}'.format(module=MODULE_NAME)):
-        c.run('npm run start', shell=SHELL, pty=True)
+        attrs = [
+            '--',
+            '--extract-css',
+            "--deploy-url='{}'".format(deploy_url),
+            "--watch",
+        ]
+        c.run('npm run build ' + ' '.join(attrs), shell=SHELL, pty=True)
 
 
 @task(test_for_existing_manifest_file)
-def start_py(c, with_db=False):
+def start_py(c, with_db=False, autoreload=False):
     if with_db:
         create_test_db(c)
-    c.run('flask run', shell=SHELL, pty=True)
+    if autoreload:
+        c.run('FLASK_DEBUG=1 flask run', shell=SHELL, pty=True)
+    else:
+        c.run('flask run', shell=SHELL, pty=True)

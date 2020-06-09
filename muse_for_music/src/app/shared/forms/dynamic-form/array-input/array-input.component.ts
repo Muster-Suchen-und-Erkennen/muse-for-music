@@ -1,13 +1,14 @@
+
+import {map} from 'rxjs/operators';
 import { Component, forwardRef, Input, OnInit, ViewChildren, AfterViewInit, Output, EventEmitter } from '@angular/core';
 
 import { ApiModel } from 'app/shared/rest/api-model';
 import { ModelsService } from 'app/shared/rest/models.service';
 import { DynamicFormLayerComponent } from '../dynamic-form-layer.component';
-import { Observable, Subscription } from 'rxjs';
-import { combineLatest } from 'rxjs/observable/combineLatest';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 import { NG_VALUE_ACCESSOR, NG_VALIDATORS, ControlValueAccessor, Validator } from '@angular/forms';
 import { SpecificationUpdateEvent } from '../specification-update-event';
-import { map } from 'rxjs/operator/map';
+
 
 
 
@@ -121,9 +122,9 @@ export class ArrayInputComponent implements ControlValueAccessor, AfterViewInit,
               this.lastValidSub.unsubscribe();
           }
           if (validObservables.length > 0) {
-              this.lastValidSub = combineLatest(...validObservables).map((values) => {
+              this.lastValidSub = combineLatest(...validObservables).pipe(map((values) => {
                   return !values.some(value => !value);
-              }).subscribe((valid) => this.valid = valid);
+              })).subscribe((valid) => this.valid = valid);
           }
           this.valid = currentlyValid;
       });

@@ -1,3 +1,5 @@
+
+import {take} from 'rxjs/operators';
 import { Component, forwardRef, Input, OnInit, OnChanges, AfterViewInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_ASYNC_VALIDATORS, AsyncValidator, Validator, NG_VALIDATORS } from '@angular/forms';
 
@@ -103,7 +105,7 @@ export class ObjectInputComponent implements ControlValueAccessor, OnInit, After
 
     ngOnInit() {
         const modelUrl = this.property.$ref;
-        this.models.getModel(modelUrl).take(1).subscribe(model => {
+        this.models.getModel(modelUrl).pipe(take(1)).subscribe(model => {
             this.model = model;
         });
     }

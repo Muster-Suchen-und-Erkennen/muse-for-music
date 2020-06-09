@@ -1,6 +1,7 @@
 from os import environ, path, makedirs
 from logging import Formatter
 from logging.handlers import RotatingFileHandler
+from secrets import token_urlsafe
 
 from flask import Flask, logging
 from flask_sqlalchemy import SQLAlchemy
@@ -10,7 +11,7 @@ from sqlalchemy.engine import Engine
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
-from flask_webpack import Webpack
+from flask_static_digest import FlaskStaticDigest
 from flask_cors import CORS, cross_origin
 
 from flask import g
@@ -40,7 +41,7 @@ def apply_additional_db_config(app):
 
 
 def create_app():
-    webpack = Webpack()  # type: Webpack
+    FLASK_STATIC_DIGEST = FlaskStaticDigest()  # type: FlaskStaticDigest
 
     # Setup Config
 
@@ -86,13 +87,23 @@ def create_app():
     # Setup Headers
     CORS(app)
 
-    webpack.init_app(app)
+    # Javascript stuff
+    FLASK_STATIC_DIGEST.init_app(app)
+
+    if app.config['DEBUG']:
+        @app.template_filter('bustcache')
+        def cache_busting_filter(s):
+            return s.replace('-es2015', '') + '?chache-bust={}'.format(token_urlsafe(16))
+    else:
+        @app.template_filter('bustcache')
+        def cache_busting_filter(s):
+            return s
 
 
     from . import models
     app.register_blueprint(models.DB_CLI)
 
     from .routes import register_routes
-    register_routes(app)
+    register_routes(app, FLASK_STATIC_DIGEST)
 
     return app

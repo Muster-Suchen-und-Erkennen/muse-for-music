@@ -1,8 +1,11 @@
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, LOCALE_ID } from '@angular/core';
-import {HttpModule} from '@angular/http';
+import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
+import { registerLocaleData } from '@angular/common';
+import de from '@angular/common/locales/de';
+import localeDeExtra from '@angular/common/locales/extra/de';
 
 
 import {SharedModule} from './shared/shared.module';
@@ -38,6 +41,9 @@ import { VoiceEditComponent } from './voices/voice-edit.component';
 
 import { AppComponent } from './app.component';
 
+// register locales
+registerLocaleData(de, 'de-DE', localeDeExtra);
+
 
 @NgModule({
   declarations: [
@@ -72,14 +78,13 @@ import { AppComponent } from './app.component';
     TitleBarComponent,
   ],
   imports: [
-    HttpModule,
+    HttpClientModule,
     BrowserModule,
     ReactiveFormsModule,
     SharedModule,
     AppRoutingModule
   ],
   providers: [
-    { provide: LOCALE_ID, useValue: 'de-DE' },
     NavigationService,
   ],
   bootstrap: [AppComponent]

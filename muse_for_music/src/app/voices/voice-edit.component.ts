@@ -5,6 +5,7 @@ import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
 import { DynamicFormComponent } from '../shared/forms/dynamic-form/dynamic-form.component';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'm4m-voice-edit',
@@ -40,7 +41,7 @@ export class VoiceEditComponent implements OnChanges {
     }
 
     save(event) {
-        this.api.putVoice(this.subpart, this.voice.id, event).take(1).subscribe(() => {
+        this.api.putVoice(this.subpart, this.voice.id, event).pipe(take(1)).subscribe(() => {
             this.form.saveFinished(true);
         }, () => {
             this.form.saveFinished(false);
@@ -48,7 +49,7 @@ export class VoiceEditComponent implements OnChanges {
     }
 
     delete = () => {
-        this.api.deleteVoice(this.subpart, this.voice).take(1).subscribe(() => this.router.navigate(['subparts', this.subpart.id]));
+        this.api.deleteVoice(this.subpart, this.voice).pipe(take(1)).subscribe(() => this.router.navigate(['subparts', this.subpart.id]));
     };
 
 }

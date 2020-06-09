@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, AsyncSubject, throwError as observableThrowError } from 'rxjs';
 import { ApiService } from './api.service';
+import { catchError } from 'rxjs/operators';
 
 export interface LinkObject {
     readonly href: string;
@@ -33,10 +34,11 @@ function isLinkObject(toTest: any): toTest is LinkObject {
 @Injectable()
 export class BaseApiService {
 
-    private runningRequests: Map<string, Observable<ApiObject | ApiObject[]>> = new Map<string, Observable<ApiObject | ApiObject[]>>();
+    // base
 
-    constructor(private http: Http) {
-    }
+    private runningRequests: Map<string, AsyncSubject<any>> = new Map<string, AsyncSubject<any>>(); // FIXME change any to unknown
+
+    constructor(private http: HttpClient) {}
 
     private extractUrl(url: string|LinkObject|ApiLinksObject|ApiObject): string {
         if (typeof url === 'string' || url instanceof String) {
@@ -54,69 +56,86 @@ export class BaseApiService {
         return url;
     }
 
-    private headers(token?: string): RequestOptions {
-        const headers = new Headers();
-        headers.append('Content-Type', 'application/json');
+    private headers(token?: string): {headers: HttpHeaders, [prop: string]: any} {
+        const headers: {[prop: string]: string} = {};
+        headers['Content-Type'] = 'application/json';
         if (token != null) {
-            headers.append('Authorization', 'Bearer ' + token);
+            headers['Authorization'] = 'Bearer ' + token;
         }
 
-        return new RequestOptions({ headers: headers });
+        return { headers: new HttpHeaders(headers) };
     }
 
-    get(url: string|LinkObject|ApiLinksObject|ApiObject, token?: string, params?): Observable<ApiObject | ApiObject[]> {
+    get<T>(url: string|LinkObject|ApiLinksObject|ApiObject, token?: string, params?): Observable<T> {
         url = this.extractUrl(url);
         if (this.runningRequests.has(url) && params == null) {
-            return this.runningRequests.get(url);
+            return this.runningRequests.get(url).asObservable() as Observable<T>;
         }
         const options = this.headers(token);
         if (params != null) {
             options.params = params;
         }
-        const request = this.http.get(url, options)
-            .map((res: Response) => {
-                this.runningRequests.delete(url as string);
-                return res.json();
-            }).catch((error: any) => {
+
+        const request = new AsyncSubject<T>();
+        this.runningRequests.set(url, request);
+        this.http.get<T>(url, options).pipe(
+            catchError((error: any) => {
                 this.runningRequests.delete(url as string);
                 if (error.status != null) {
-                    return Observable.throw({status: error.status,
-                        message: error._body.startsWith('{') ? JSON.parse(error._body).message : error.status + ' Server error'});
+                    return observableThrowError({status: error.status,
+                        message: (error._body.startsWith != null && error._body.startsWith('{')) ?
+                                JSON.parse(error._body).message : error.status + ' Server error'});
                 }
-                return Observable.throw(error.json().error || 'Server error');
-            }).publishReplay(1);
-        this.runningRequests.set(url, request);
-        request.connect();
+                return observableThrowError(error.json().error || 'Server error');
+            }),
+        ).subscribe((res) => {
+            request.next(res as T);
+            request.complete();
+            this.runningRequests.delete(url as string);
+        }, (error: any) => {
+                if (error.status != null) {
+                    request.error({
+                        status: error.status,
+                        message: (error._body.startsWith != null && error._body.startsWith('{')) ?
+                                JSON.parse(error._body).message : error.status + ' Server error',
+                    });
+                } else {
+                    request.error(error.json().error || 'Server error');
+                }
+                this.runningRequests.delete(url as string);
+            });
         return request;
     }
 
-    put(url: string|LinkObject|ApiLinksObject|ApiObject, data, token?: string): Observable<ApiObject> {
+    put<T>(url: string|LinkObject|ApiLinksObject|ApiObject, data, token?: string): Observable<T> {
         url = this.extractUrl(url);
-        return this.http.put(url, JSON.stringify(data), this.headers(token))
-            .map((res: Response) => res.json())
-            .catch((error: any) => {
+        return this.http.put<T>(url, JSON.stringify(data), this.headers(token)).pipe(
+            catchError((error: any) => {
                 if (error.status != null) {
-                    return Observable.throw({status: error.status,
-                        message: error._body.startsWith('{') ? JSON.parse(error._body).message : error.status + ' Server error'});
+                    return observableThrowError({status: error.status,
+                        message: (error._body.startsWith != null && error._body.startsWith('{')) ?
+                                JSON.parse(error._body).message : error.status + ' Server error'});
                 }
-                return Observable.throw(error.json().error || 'Server error')
-            });
+                return observableThrowError(error.json().error || 'Server error');
+            }),
+        );
     }
 
-    post(url: string|LinkObject|ApiLinksObject|ApiObject, data, token?: string): Observable<ApiObject> {
+    post<T>(url: string|LinkObject|ApiLinksObject|ApiObject, data, token?: string): Observable<T> {
         url = this.extractUrl(url);
-        return this.http.post(url, JSON.stringify(data), this.headers(token))
-            .map((res: Response) => res.json())
-            .catch((error: any) => {
+        return this.http.post<T>(url, JSON.stringify(data), this.headers(token)).pipe(
+            catchError((error: any) => {
                 if (error.status != null) {
-                    return Observable.throw({status: error.status,
-                        message: error._body.startsWith('{') ? JSON.parse(error._body).message : error.status + ' Server error'});
+                    return observableThrowError({status: error.status,
+                        message: (error._body.startsWith != null && error._body.startsWith('{')) ?
+                                JSON.parse(error._body).message : error.status + ' Server error'});
                 }
-                return Observable.throw(error.json().error || 'Server error')
-            });
+                return observableThrowError(error.json().error || 'Server error');
+            }),
+        );
     }
 
-    delete(url: string|LinkObject|ApiLinksObject|ApiObject, token?: string, data?, params?): Observable<ApiObject> {
+    delete<T>(url: string|LinkObject|ApiLinksObject|ApiObject, token?: string, data?, params?): Observable<T> {
         url = this.extractUrl(url);
         const options = this.headers(token);
         if (data != null) {
@@ -125,14 +144,15 @@ export class BaseApiService {
         if (params != null) {
             options.params = params;
         }
-        return this.http.delete(url, options)
-            .map((res: Response) => res.json())
-            .catch((error: any) => {
+        return this.http.delete<T>(url, options).pipe(
+            catchError((error: any) => {
                 if (error.status != null) {
-                    return Observable.throw({status: error.status,
-                        message: error._body.startsWith('{') ? JSON.parse(error._body).message : error.status + ' Server error'});
+                    return observableThrowError({status: error.status,
+                        message: (error._body.startsWith != null && error._body.startsWith('{')) ?
+                                JSON.parse(error._body).message : error.status + ' Server error'});
                 }
-                return Observable.throw(error.json().error || 'Server error')
-            });
+                return observableThrowError(error.json().error || 'Server error');
+            }),
+        );
     }
 }

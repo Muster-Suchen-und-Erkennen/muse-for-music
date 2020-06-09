@@ -1,9 +1,8 @@
+
+import {timeout, first, reduce, mergeMap, concatMap, map} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { InfoService } from '../info/info.service';
-import { Observable, Subject, } from 'rxjs/Rx';
-import { of } from 'rxjs/observable/of';
-import { from } from 'rxjs/observable/from';
-import { AsyncSubject } from 'rxjs/AsyncSubject';
+import { Observable, Subject, of, from, AsyncSubject } from 'rxjs';
 import { ApiService } from './api.service';
 import { ApiModel, ApiModelAllOf, ApiModelRef, ApiModelProperties } from './api-model';
 
@@ -58,9 +57,9 @@ export class ModelsService {
 
             const modelID = modelUrl.substring(7);
 
-            return this.api.getSpec().map(swaggerSpec => {
+            return this.api.getSpec().pipe(map(swaggerSpec => {
                 return JSON.parse(JSON.stringify(swaggerSpec.definitions[modelID]));
-            });
+            }));
         } else if (modelUrl.startsWith('nested/')) {
 
             const modelID = modelUrl.substring(7);
@@ -82,23 +81,23 @@ export class ModelsService {
     private resolveModelLinks = (model: ApiModelAllOf | ApiModelRef | ApiModel): Observable<ApiModel> => {
         if ((model as ApiModelAllOf).allOf != null) {
             const models = (model as ApiModelAllOf).allOf;
-            return from(models).concatMap(this.resolveModelLinks).map(resolvedModel => {
+            return from(models).pipe(concatMap(this.resolveModelLinks),map(resolvedModel => {
                 for (const key in model) { // inject known attributes into resolved models
                     if (key !== 'allOf' && model.hasOwnProperty(key)) {
                         resolvedModel[key] = model[key];
                     }
                 }
                 return resolvedModel;
-            });
+            }),);
         } else if ((model as ApiModelRef).$ref != null) {
-            return this.resolveModel((model as ApiModelRef).$ref).concatMap(this.resolveModelLinks).map(resolvedModel => {
+            return this.resolveModel((model as ApiModelRef).$ref).pipe(concatMap(this.resolveModelLinks),map(resolvedModel => {
                 for (const key in model) { // inject known attributes into resolved models
                     if (key !== '$ref' && model.hasOwnProperty(key)) {
                         resolvedModel[key] = model[key];
                     }
                 }
                 return resolvedModel;
-            });
+            }),);
         } else {
             return of(model as ApiModel);
         }
@@ -117,8 +116,8 @@ export class ModelsService {
                 props.push({ key: key, property: (prop as ApiModel | ApiModelRef) });
             }
         }
-        return of(...props)
-            .flatMap(propRef => {
+        return of(...props).pipe(
+            mergeMap(propRef => {
                 const oldProp: any = {};
                 for (const key in propRef.property) {
                     if (propRef.property.hasOwnProperty(key)) {
@@ -129,27 +128,27 @@ export class ModelsService {
                     }
                 }
                 return this
-                    .resolveModelLinks(propRef.property)
-                    .reduce(this.mergeModels, null)
-                    .map(property => {
+                    .resolveModelLinks(propRef.property).pipe(
+                    reduce(this.mergeModels, null),
+                    map(property => {
                         // merge attributes of top level last
                         this.mergeModels(property, oldProp);
                         propRef.property = property;
                         return propRef;
-                    });
-            })
-            .map(propRef => {
+                    }),);
+            }),
+            map(propRef => {
                 propRef.property['x-key'] = propRef.key;
                 return propRef;
-            })
-            .reduce((properties: ApiModelProperties, propRef: PropertyRef) => {
+            }),
+            reduce((properties: ApiModelProperties, propRef: PropertyRef) => {
                 properties[propRef.key] = propRef.property;
                 return properties;
-            }, {})
-            .map((properties) => {
+            }, {}),
+            map((properties) => {
                 model.properties = properties;
                 return model;
-            });
+            }),);
     }
 
     /**
@@ -332,20 +331,20 @@ export class ModelsService {
                 props.push({ key: key, property: (prop as ApiModel | ApiModelRef) });
             }
         }
-        return of(...props)
-            .flatMap(this.handleObjectProperties)
-            .flatMap(this.handleArrayProperties)
-            .reduce((properties, propRef: PropertyRef) => {
+        return of(...props).pipe(
+            mergeMap(this.handleObjectProperties),
+            mergeMap(this.handleArrayProperties),
+            reduce((properties, propRef: PropertyRef) => {
                 if (propRef.property.title == null) {
                     propRef.property.title = propRef.key;
                 }
                 properties[propRef.key] = propRef.property;
                 return properties;
-            }, {})
-            .map((properties) => {
+            }, {}),
+            map((properties) => {
                 model.properties = properties;
                 return model;
-            });
+            }),);
     }
 
 
@@ -375,12 +374,12 @@ export class ModelsService {
     getModel = (modelUrl): Observable<ApiModel> => {
         const stream = this.getCacheSource(modelUrl);
         if (!stream.closed) {
-            this.resolveModel(modelUrl)
-                .concatMap(this.resolveModelLinks)
-                .flatMap(this.resolveProperties)
-                .reduce(this.mergeModels, null)
-                .flatMap(this.handleComplexProperties)
-                .map(model => {
+            this.resolveModel(modelUrl).pipe(
+                concatMap(this.resolveModelLinks),
+                mergeMap(this.resolveProperties),
+                reduce(this.mergeModels, null),
+                mergeMap(this.handleComplexProperties),
+                map(model => {
                     // inject required information into property
                     if (model.required != null && model.properties != null) {
                         model.required.forEach(key => {
@@ -391,8 +390,8 @@ export class ModelsService {
                         });
                     }
                     return model;
-                })
-                .first()
+                }),
+                first(),)
                 .subscribe((model) => {
                     if (model != null) {
                         stream.next(model);
@@ -400,7 +399,7 @@ export class ModelsService {
                     }
                 });
         }
-        return stream.asObservable().timeout(2000).first();
+        return stream.asObservable().pipe(timeout(2000),first(),);
     }
 
     /**

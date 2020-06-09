@@ -5,6 +5,7 @@ import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
 import { DynamicFormComponent } from '../shared/forms/dynamic-form/dynamic-form.component';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'm4m-part-edit',
@@ -33,7 +34,7 @@ export class PartEditComponent implements OnChanges {
     }
 
     save = (event) => {
-        this.api.putPart(this.part.id, event).take(1).subscribe(() => {
+        this.api.putPart(this.part.id, event).pipe(take(1)).subscribe(() => {
             this.form.saveFinished(true);
         }, () => {
             this.form.saveFinished(false);
@@ -41,7 +42,7 @@ export class PartEditComponent implements OnChanges {
     }
 
     delete = () => {
-        this.api.deletePart(this.part).take(1).subscribe(() => this.router.navigate(['opuses', this.part.opus_id]));
+        this.api.deletePart(this.part).pipe(take(1)).subscribe(() => this.router.navigate(['opuses', this.part.opus_id]));
     };
 
 }

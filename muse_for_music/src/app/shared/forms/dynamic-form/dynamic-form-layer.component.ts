@@ -1,3 +1,5 @@
+
+import {first, map, debounceTime} from 'rxjs/operators';
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ApiModel, ApiModelRef } from 'app/shared/rest/api-model';
@@ -42,7 +44,7 @@ export class DynamicFormLayerComponent implements OnChanges {
     private formSubscription: Subscription;
 
     constructor(private models: ModelsService, private formGroups: FormGroupService, private changeDetector: ChangeDetectorRef) {
-        this.changeDetectionBatchSubject.asObservable().debounceTime(50).subscribe(() => this.runChangeDetection());
+        this.changeDetectionBatchSubject.asObservable().pipe(debounceTime(50)).subscribe(() => this.runChangeDetection());
     }
 
     private runChangeDetection() {
@@ -56,10 +58,10 @@ export class DynamicFormLayerComponent implements OnChanges {
                 return;
             }
 
-            this.models.getModel(this.modelUrl)
-                .map(this.models.filterModel(this.filter, this.isBlacklist))
-                .map(this.models.filterModel(['specifications'], true))
-                .first().subscribe(model => {
+            this.models.getModel(this.modelUrl).pipe(
+                map(this.models.filterModel(this.filter, this.isBlacklist)),
+                map(this.models.filterModel(['specifications'], true)),
+                first(),).subscribe(model => {
                     const props = [];
                     if (model.properties != null) {
                         for (const key in model.properties) {

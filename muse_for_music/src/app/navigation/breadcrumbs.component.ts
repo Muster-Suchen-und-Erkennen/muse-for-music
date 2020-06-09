@@ -1,6 +1,9 @@
+
+import { timer } from 'rxjs';
+
+import {take} from 'rxjs/operators';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NavigationService, Breadcrumb } from './navigation-service';
-import { Observable } from 'rxjs/Rx';
 
 
 @Component({
@@ -31,7 +34,7 @@ export class BreadcrumbsComponent implements OnInit {
     }
 
     scrollToBottom = () => {
-        Observable.timer(50).take(1).subscribe(() => {
+        timer(50).pipe(take(1)).subscribe(() => {
             this.bcContainer.nativeElement.scrollTop = this.bcContainer.nativeElement.scrollHeight;
         });
     }
