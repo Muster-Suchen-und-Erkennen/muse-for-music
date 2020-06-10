@@ -82,11 +82,10 @@ export class BaseApiService {
             catchError((error: any) => {
                 this.runningRequests.delete(url as string);
                 if (error.status != null) {
-                    return observableThrowError({status: error.status,
-                        message: (error._body.startsWith != null && error._body.startsWith('{')) ?
-                                JSON.parse(error._body).message : error.status + ' Server error'});
+                    const message = error.error?.message ?? error.message ?? 'Server error';
+                    return observableThrowError({status: error.status, message: message});
                 }
-                return observableThrowError(error.json().error || 'Server error');
+                return observableThrowError(error.error ?? 'Server error');
             }),
         ).subscribe((res) => {
             request.next(res as T);
@@ -94,13 +93,10 @@ export class BaseApiService {
             this.runningRequests.delete(url as string);
         }, (error: any) => {
                 if (error.status != null) {
-                    request.error({
-                        status: error.status,
-                        message: (error._body.startsWith != null && error._body.startsWith('{')) ?
-                                JSON.parse(error._body).message : error.status + ' Server error',
-                    });
+                    const message = error.error?.message ?? error.message ?? 'Server error';
+                    return observableThrowError({status: error.status, message: message});
                 } else {
-                    request.error(error.json().error || 'Server error');
+                    request.error(error.error ?? 'Server error');
                 }
                 this.runningRequests.delete(url as string);
             });
@@ -112,11 +108,10 @@ export class BaseApiService {
         return this.http.put<T>(url, JSON.stringify(data), this.headers(token)).pipe(
             catchError((error: any) => {
                 if (error.status != null) {
-                    return observableThrowError({status: error.status,
-                        message: (error._body.startsWith != null && error._body.startsWith('{')) ?
-                                JSON.parse(error._body).message : error.status + ' Server error'});
+                    const message = error.error?.message ?? error.message ?? 'Server error';
+                    return observableThrowError({status: error.status, message: message});
                 }
-                return observableThrowError(error.json().error || 'Server error');
+                return observableThrowError(error.error ?? 'Server error');
             }),
         );
     }
@@ -126,11 +121,10 @@ export class BaseApiService {
         return this.http.post<T>(url, JSON.stringify(data), this.headers(token)).pipe(
             catchError((error: any) => {
                 if (error.status != null) {
-                    return observableThrowError({status: error.status,
-                        message: (error._body.startsWith != null && error._body.startsWith('{')) ?
-                                JSON.parse(error._body).message : error.status + ' Server error'});
+                    const message = error.error?.message ?? error.message ?? 'Server error';
+                    return observableThrowError({status: error.status, message: message});
                 }
-                return observableThrowError(error.json().error || 'Server error');
+                return observableThrowError(error.error ?? 'Server error');
             }),
         );
     }
@@ -147,11 +141,10 @@ export class BaseApiService {
         return this.http.delete<T>(url, options).pipe(
             catchError((error: any) => {
                 if (error.status != null) {
-                    return observableThrowError({status: error.status,
-                        message: (error._body.startsWith != null && error._body.startsWith('{')) ?
-                                JSON.parse(error._body).message : error.status + ' Server error'});
+                    const message = error.error?.message ?? error.message ?? 'Server error';
+                    return observableThrowError({status: error.status, message: message});
                 }
-                return observableThrowError(error.json().error || 'Server error');
+                return observableThrowError(error.error ?? 'Server error');
             }),
         );
     }
