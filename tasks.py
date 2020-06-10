@@ -20,13 +20,6 @@ def clean(c):
         rmtree(BUILD_FOLDER)
 
 @task
-def test_for_existing_manifest_file(c):
-    """Check if a manifest.json file exists and if not builds it."""
-    print(MANIFEST_PATH, MANIFEST_PATH.exists())
-    if not (MANIFEST_PATH.exists() and MANIFEST_PATH.is_file()):
-        build(c)
-
-@task
 def clean_js_dependencies(c):
     print('Removing node_modules folder.')
     rmtree(Path('./{module}/node_modules'.format(module=MODULE_NAME)))
@@ -53,12 +46,16 @@ def dependencies(c):
     pass
 
 
-@task(dependencies)
-def build(c, production=False, deploy_url='/static/', base_href='/', clean_build=False):
+@task()
+def before_build(c, clean_build=False):
     if clean_build:
         clean(c)
     if not BUILD_FOLDER.exists():
         BUILD_FOLDER.mkdir()
+
+
+@task(dependencies, before_build)
+def build(c, production=False, deploy_url='/static/', base_href='/'):
     c.run('flask digest clean', shell=SHELL)
     with c.cd('./{module}'.format(module=MODULE_NAME)):
         attrs = [
@@ -79,13 +76,13 @@ def fill_db(c):
     c.run('flask init_taxonomies taxonomies', shell=SHELL, pty=True)
 
 
-@task(test_for_existing_manifest_file)
+@task
 def create_test_db(c):
     c.run('flask create_populated_db', shell=SHELL, pty=True)
     c.run('flask init_taxonomies taxonomies', shell=SHELL, pty=True)
 
 
-@task(dependencies_js)
+@task(dependencies_js, before_build)
 def start_js(c, deploy_url='/static/'):
     with c.cd('./{module}'.format(module=MODULE_NAME)):
         attrs = [
@@ -97,7 +94,7 @@ def start_js(c, deploy_url='/static/'):
         c.run('npm run build ' + ' '.join(attrs), shell=SHELL, pty=True)
 
 
-@task(test_for_existing_manifest_file)
+@task
 def start_py(c, with_db=False, autoreload=False):
     if with_db:
         create_test_db(c)
