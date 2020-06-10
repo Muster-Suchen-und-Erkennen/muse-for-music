@@ -3,7 +3,7 @@
     <div class="button h2 pv1 ph2 br2 bg-light-silver link bg-animate hover-bg-light-green pointer" (click)="newPart.open()" *ngIf="showEditButton()" title-right>
         <i class="fa fa-plus mr2"></i>Neu
     </div>
-    <div class="w6" body>
+    <div body>
         <m4m-table [headings]="['Starttakt', 'Endtakt', 'Länge', 'Name']" [rows]="tableData" [sortByColumn]="0"></m4m-table>
     </div>
 </m4m-box>

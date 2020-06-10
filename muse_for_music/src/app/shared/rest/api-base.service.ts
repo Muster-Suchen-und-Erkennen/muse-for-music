@@ -36,7 +36,7 @@ export class BaseApiService {
 
     // base
 
-    private runningRequests: Map<string, AsyncSubject<any>> = new Map<string, AsyncSubject<any>>(); // FIXME change any to unknown
+    private runningRequests: Map<string, AsyncSubject<unknown>> = new Map<string, AsyncSubject<unknown>>();
 
     constructor(private http: HttpClient) {}
 

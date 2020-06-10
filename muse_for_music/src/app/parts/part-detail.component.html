@@ -1,5 +1,5 @@
 
-<div class="ph3 flex flex-wrap">
+<div class="ph3  box-grid min-column-size-w6">
     <m4m-part-edit [partID]="partID" *ngIf="showEditButton()"></m4m-part-edit>
 
     <dynamic-data [modelUrl]="'#/definitions/PartSmall'" [data]="part" [title]="'Werkausschnitt ' + part?.name" *ngIf="!showEditButton()"></dynamic-data>

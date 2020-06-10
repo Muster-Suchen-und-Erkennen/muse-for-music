@@ -47,7 +47,7 @@ export class UserApiService implements OnInit {
     private managementRootSource = new AsyncSubject<ManagementRootModel>();
     private currentManagementRoot = this.managementRootSource.asObservable();
 
-    private streams: {[propName: string]: Subject<any>} = {}; // FIXME change any to unknown
+    private streams: {[propName: string]: Subject<unknown>} = {};
 
     private sessionExpirySource = new Subject<boolean>();
     readonly sessionExpiry = this.sessionExpirySource.asObservable();
@@ -207,7 +207,6 @@ export class UserApiService implements OnInit {
     login(username: string, password: string): Observable<boolean> {
         const success = new AsyncSubject<boolean>();
         this.getAuthRoot().subscribe(auth => {
-            console.log(auth._links.login)
             this.rest.post<TokenUpdate>(auth._links.login, {username: username, password: password}).subscribe(data => {
                 this.updateTokens(data.access_token, data.refresh_token);
                 success.next(true);

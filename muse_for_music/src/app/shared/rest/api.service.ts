@@ -36,7 +36,7 @@ export class ApiService implements OnInit {
 
     private currentSpec = this.specSource.asObservable();
 
-    private streams: {[propName: string]: BehaviorSubject<any>} = {}; // FIXME change any to unknown
+    private streams: {[propName: string]: BehaviorSubject<unknown>} = {};
 
     constructor(private rest: BaseApiService, private userApi: UserApiService, private info: InfoService) {
         observableTimer(1).pipe(take(1)).subscribe((() => {

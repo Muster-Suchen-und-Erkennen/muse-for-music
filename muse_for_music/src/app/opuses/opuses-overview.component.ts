@@ -18,7 +18,7 @@ export class OpusesOverviewComponent implements OnInit {
 
     swagger: any;
 
-    valid: boolean;
+    valid: boolean = false;
 
     newOpusData: any;
 

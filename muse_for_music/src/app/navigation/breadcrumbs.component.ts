@@ -13,7 +13,7 @@ import { NavigationService, Breadcrumb } from './navigation-service';
 })
 export class BreadcrumbsComponent implements OnInit {
 
-    @ViewChild('home') home: ElementRef;
+    @ViewChild('home', {static: true}) home: ElementRef;
     @ViewChild('bcContainer') bcContainer: ElementRef;
 
     hovered: boolean = false;
@@ -30,12 +30,15 @@ export class BreadcrumbsComponent implements OnInit {
     }
 
     breadcrumbHeight = () => {
-        return this.home.nativeElement.offsetHeight;
+        return this.home?.nativeElement?.offsetHeight ?? 1;
     }
 
     scrollToBottom = () => {
         timer(50).pipe(take(1)).subscribe(() => {
-            this.bcContainer.nativeElement.scrollTop = this.bcContainer.nativeElement.scrollHeight;
+            const element = this.bcContainer?.nativeElement;
+            if (element != null) {
+                element.scrollTop = element.scrollHeight;
+            }
         });
     }
 

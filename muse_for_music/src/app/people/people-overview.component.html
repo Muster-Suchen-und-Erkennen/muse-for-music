@@ -1,16 +1,16 @@
-<div class="ph3 flex flex-wrap-reverse">
+<div class="ph3 box-grid min-column-size-w6">
 
     <m4m-box>
         <h1 class="mv0" title>Personen</h1>
         <div class="button h2 pv1 ph2 br2 bg-light-silver link bg-animate hover-bg-light-green pointer" (click)="newPerson.open()" *ngIf="showEditButton()" title-right>
             <i class="fa fa-plus mr2"></i>Neu
         </div>
-        <div class="w6" body>
+        <div body>
             <m4m-table [headings]="['Name', 'Geschlecht', 'Lebenszeit']" [rows]="tableData" [(selected)]="selected" [sortByColumn]="0"></m4m-table>
         </div>
     </m4m-box>
 
-    <m4m-person-edit [personID]="selected" *ngIf="showEditButton()"></m4m-person-edit>
+    <m4m-person-edit class="grid-row-1" [personID]="selected" *ngIf="showEditButton()"></m4m-person-edit>
 
     <dynamic-data [modelUrl]="'#/definitions/PersonGET'" [data]="selectedPerson" [title]="'Person ' + selectedPerson?.name" *ngIf="!showEditButton()"></dynamic-data>
 

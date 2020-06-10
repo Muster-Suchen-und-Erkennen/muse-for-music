@@ -3,13 +3,13 @@
     <img class="h3 mr2" src="assets/logo-medium.svg" alt="MUSE4Music">
     <h1 class="dtc f1 ma0 v-mid truncate flex-grow-1">{{title}}</h1>
     <div class="flex">
-        <div class="br1 pa1 ml2 bg-animate hover-bg-black-20 pointer tooltip tooltip-left" [ngClass]="{'bg-black-50': isEditing()}" data-tooltip="edit" *ngIf="canEdit()" (click)="toggleEdit()">
+        <div class="br1 pa1 ml2 bg-animate hover-bg-black-20 pointer tooltip tooltip-bottom-right" [ngClass]="{'bg-black-50': isEditing()}" data-tooltip="edit" *ngIf="canEdit()" (click)="toggleEdit()">
             <i class="f1 fa fa-edit" [ngClass]="{'near-white': isEditing()}"></i>
         </div>
-        <div class="br1 pa1 ml2 bg-animate hover-bg-black-20 pointer tooltip tooltip-left" data-tooltip="Benutzereinstellungen" *ngIf="isLoggedIn()" routerLink="/user">
+        <div class="br1 pa1 ml2 bg-animate hover-bg-black-20 pointer tooltip tooltip-bottom-right" data-tooltip="Benutzereinstellungen" *ngIf="isLoggedIn()" routerLink="/user">
             <i class="f1 fa fa-user-circle"></i>
         </div>
-        <div class="br1 pa1 ml2 bg-animate hover-bg-black-20 pointer tooltip tooltip-left" data-tooltip="abmelden" *ngIf="isLoggedIn()" (click)="logout()">
+        <div class="br1 pa1 ml2 bg-animate hover-bg-black-20 pointer tooltip tooltip-bottom-right" data-tooltip="abmelden" *ngIf="isLoggedIn()" (click)="logout()">
             <i class="f1 fa fa-sign-out"></i>
         </div>
     </div>

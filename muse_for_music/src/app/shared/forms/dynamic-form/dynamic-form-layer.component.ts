@@ -39,7 +39,7 @@ export class DynamicFormLayerComponent implements OnChanges {
 
     private changeDetectionBatchSubject: Subject<null> = new Subject<null>();
 
-    private lastValid: boolean = undefined;
+    private lastValid: boolean = false;
 
     private formSubscription: Subscription;
 

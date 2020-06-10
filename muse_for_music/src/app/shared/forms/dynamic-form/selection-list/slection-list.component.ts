@@ -116,7 +116,7 @@ export class SelectionListComponent implements OnChanges {
         const matches = new Set<number>();
 
         for (const item of this._selectables) {
-            if (item.name.toUpperCase().includes(searchString)) {
+            if (item.name.toString().toUpperCase().includes(searchString)) {
                 matches.add(item.id);
             }
         }

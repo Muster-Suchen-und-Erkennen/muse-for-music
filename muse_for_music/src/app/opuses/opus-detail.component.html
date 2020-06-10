@@ -1,5 +1,5 @@
 
-<div class="ph3 flex flex-wrap">
+<div class="ph3  box-grid min-column-size-w6">
     <m4m-opus-edit [opusID]="opusID" *ngIf="showEditButton()"></m4m-opus-edit>
 
     <dynamic-data [modelUrl]="'#/definitions/OpusSmall'" [data]="opus" [title]="'Werk ' + opus?.name" *ngIf="!showEditButton()"></dynamic-data>
