@@ -131,4 +131,4 @@ def register_user_api(app: Flask):
 
     auth_logger.addHandler(fh)
 
-    app.register_blueprint(user_api_blueprint, url_prefix='/users')
+    app.register_blueprint(user_api_blueprint, url_prefix='/user-api')
