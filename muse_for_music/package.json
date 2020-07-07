@@ -26,7 +26,7 @@
     "core-js": "^2.6.10",
     "font-awesome": "^4.7.0",
     "ng2-file-upload": "^1.2.1",
-    "npm": "^6.12.0",
+    "npm": "^6.14.6",
     "rxjs": "^5.5.12",
     "tachyons": "^4.9.0",
     "zone.js": "^0.8.29"
