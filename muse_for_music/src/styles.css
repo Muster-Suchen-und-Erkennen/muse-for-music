@@ -1,9 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-//@import "../node_modules/bootstrap/scss/bootstrap";
-//@import "../node_modules/bootstrap/scss/bootstrap-grid";
-@import "./variables";
-@import '../node_modules/font-awesome/scss/font-awesome';
-@import "../node_modules/tachyons/css/tachyons";
+@import '~font-awesome/css/font-awesome';
+@import '~tachyons/css/tachyons';
 
 body {
     height: 100vh;
@@ -85,7 +82,7 @@ body {
 }
 
 .bg-black-a40 {
-    background-color: rgba($color: #000000, $alpha: 0.4);
+    background-color: rgba(0,0,0,0.4);
 }
 
 .input-reset {
