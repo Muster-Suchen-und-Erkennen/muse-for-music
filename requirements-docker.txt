@@ -1,0 +1,7 @@
+gunicorn
+PyMySQL
+mysqlclient
+mysql-connector-python
+psycopg2
+PyGreSQL
+psycopg2cffi

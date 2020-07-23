@@ -1,38 +1,55 @@
-FROM node:latest as builder
+FROM node:14-buster as builder
 
-COPY . /
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
 
-# build ui
-RUN cd muse_for_music \
-    && npm install \
-    && npm run build-docker
+RUN apt-get update || : && apt-get install python3 python3-pip -y
 
-# cleanup ui source
-RUN rm -rf /muse_for_music/src
-RUN rm -rf /muse_for_music/e2e
-RUN rm -rf /muse_for_music/node_modules
-RUN rm /muse_for_music/.angular-cli.json
-RUN rm /muse_for_music/karma.conf.js
-RUN rm /muse_for_music/protractor.conf.js
-RUN rm /muse_for_music/tsconfig.json
-RUN rm /muse_for_music/tslint.json
-RUN rm /muse_for_music/webpack.config.js
-RUN rm /muse_for_music/package.json
-RUN rm /muse_for_music/package-lock.json
+RUN python3 -m pip install --upgrade pip
+RUN python3 -m pip install pipenv
 
-
-
-FROM tiangolo/uwsgi-nginx-flask:python3.6
-
-COPY --from=builder ./muse_for_music /app/muse_for_music
-COPY --from=builder ./taxonomies /app/taxonomies
-COPY --from=builder ./uwsgi.ini /app/uwsgi.ini
-COPY --from=builder ./requirements.txt /app/requirements.txt
-
-ENV FLASK_APP muse_for_music
-ENV MODE debug
-ENV STATIC_URL /assets
-ENV STATIC_PATH /app/muse_for_music/build
+COPY . /app
 
 WORKDIR /app
-RUN pip install -r requirements.txt
+
+RUN pipenv install
+#RUN python3 -m pip install -r requirements.txt
+#RUN pipenv install --system -v
+
+ENV FLASK_APP muse_for_music
+ENV MODE production
+
+# build ui
+RUN pipenv run build
+
+# switch to stage 2 dockerignore to ignore angular app sources
+RUN ls -lah /app/
+RUN mv /app/stage2.dockerignore /app/.dockerignore
+
+
+FROM python:3.8
+
+RUN python -m pip install --upgrade pip
+RUN python -m pip install pipenv
+
+COPY --from=builder ./app/muse_for_music /app/muse_for_music
+COPY --from=builder ./app/migrations /app/migrations
+COPY --from=builder ./app/taxonomies /app/taxonomies
+COPY --from=builder ./app/Pipfile /app/Pipfile
+COPY --from=builder ./app/setup* /app/
+COPY --from=builder ./app/tasks.py /app/tasks.py
+COPY --from=builder ./app/requirements-docker.txt /app/requirements-docker.txt
+
+WORKDIR /app
+
+RUN pipenv lock
+RUN pipenv install --system --deploy
+RUN python -m pip install -r requirements-docker.txt
+
+ENV FLASK_APP muse_for_music
+ENV MODE production
+
+# TODO add database upgrade and fill empty databases before starting gunicorn server
+# TODO ensure that gunicorn runs with minimal rights in the container
+
+CMD gunicorn -w 4 -b 0.0.0.0:8000 'muse_for_music:create_app()'

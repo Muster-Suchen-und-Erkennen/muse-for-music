@@ -47,6 +47,7 @@ def create_app():
 
     app = Flask(__name__, instance_relative_config=True)  # type: Flask
     makedirs(app.instance_path, exist_ok=True)
+    app.config['LOG_PATH'] = app.instance_path;
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/test.db'.format(app.instance_path)
     app.config['MODE'] = environ['MODE'].upper()
     if app.config['MODE'] == 'PRODUCTION':

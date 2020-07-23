@@ -25,10 +25,11 @@ pytest = "*"
 hypothesis = "*"
 pep8 = "*"
 pylint = "*"
-black = "==19.3b0"
+black = "==19.10b0"
 pycodestyle = "*"
 rope = "*"
 coverage = "*"
+pipenv-setup = "*"
 
 [packages]
 python-dotenv = ">=0.13.0"
