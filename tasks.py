@@ -1,8 +1,9 @@
 from invoke import task, context
 from dotenv import load_dotenv
-from os import environ
+from os import environ, urandom
 from shutil import rmtree
 from pathlib import Path
+from textwrap import dedent
 
 load_dotenv()
 
@@ -10,6 +11,8 @@ MODULE_NAME = 'muse_for_music'
 
 SHELL = environ.get('SHELL', 'bash')
 
+INSTANCE_FOLDER = Path('./instance')
+CONFIG_PATH = INSTANCE_FOLDER / Path('{module}.conf'.format(module=MODULE_NAME))
 BUILD_FOLDER = Path('./{module}/static'.format(module=MODULE_NAME))
 MANIFEST_PATH = BUILD_FOLDER / Path('manifest.json')
 
@@ -68,6 +71,62 @@ def build(c, production=False, deploy_url='/static/', base_href='/'):
             attrs.append('--prod')
         c.run('npm run build ' + ' '.join(attrs), shell=SHELL)
     c.run('flask digest compile', shell=SHELL)
+
+
+@task()
+def create_start_config(c):
+    if not INSTANCE_FOLDER.exists():
+        INSTANCE_FOLDER.mkdir(parents=True)
+
+    if CONFIG_PATH.exists():
+        print('Config already exists. It will not be overwritten.')
+        return
+
+    print('Writing new config to', CONFIG_PATH.absolute())
+
+    secret = repr(urandom(32))
+
+    with CONFIG_PATH.open(mode='w') as conf:
+        conf.write(dedent('''\
+            # Default config for MUSE4Music
+
+            ### Security settings
+            SECRET_KEY = {secret}
+            JWT_SECRET_KEY = {secret}
+            # See https://flask-jwt-extended.readthedocs.io/en/stable/options/
+            # BCRYPT_HANDLE_LONG_PASSWORDS = True # Changing this will BREAK ALL EXISTING PASSWORDS!
+            # BCRYPT_LOG_ROUNDS = 12
+
+            ### SQLAlchemy Settings
+            # SQLALCHEMY_DATABASE_URI = sqlite:////tmp/test.db
+            # SQLALCHEMY_ECHO = True
+            # See https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/
+
+            ### Log settings
+            # LOG_PATH = '/tmp'
+            # LOG_FORMAT = '%(asctime)s [%(levelname)s] [%(name)-20s] %(message)s <%(module)s, %(funcName)s, %(lineno)s; %(pathname)s>'
+            # AUTH_LOG_FORMAT = '%(asctime)s [%(levelname)s] %(message)s'
+        ''').format(secret=secret))
+
+
+@task
+def upgrade_db(c):
+    current = c.run('flask db current', hide=True, warn=True, shell=SHELL)
+    last_line = current.stdout.strip().split('\n')[-1]  # type: str
+    db_exists = last_line.endswith('(head)')
+    if db_exists:
+        print('Upgrading existing db.')
+    else:
+        print('Creating a new db and loading inital data into the database.')
+    c.run('flask db upgrade', shell=SHELL, pty=True)
+    if not db_exists:
+        print('Add standard admin user and load taxonomies.')
+        fill_db(c)
+
+
+@task(create_start_config, upgrade_db)
+def before_docker_start(c):
+    pass
 
 
 @task

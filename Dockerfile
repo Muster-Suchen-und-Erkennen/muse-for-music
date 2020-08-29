@@ -29,9 +29,14 @@ RUN mv /app/stage2.dockerignore /app/.dockerignore
 
 FROM python:3.8
 
+RUN apt-get update || : && apt-get install bash -y
+RUN apt-get upgrade -y
+
 RUN python -m pip install --upgrade pip
 RUN python -m pip install pipenv
 
+
+# TODO speed up copy process (nested dockerignore seems not to work...)
 COPY --from=builder ./app/muse_for_music /app/muse_for_music
 COPY --from=builder ./app/migrations /app/migrations
 COPY --from=builder ./app/taxonomies /app/taxonomies
@@ -48,8 +53,10 @@ RUN python -m pip install -r requirements-docker.txt
 
 ENV FLASK_APP muse_for_music
 ENV MODE production
+ENV SHELL /bin/bash
 
-# TODO add database upgrade and fill empty databases before starting gunicorn server
+EXPOSE 8000
+
 # TODO ensure that gunicorn runs with minimal rights in the container
 
-CMD gunicorn -w 4 -b 0.0.0.0:8000 'muse_for_music:create_app()'
+CMD pipenv run invoke before-docker-start && gunicorn -w 4 -b 0.0.0.0:8000 'muse_for_music:create_app()'
