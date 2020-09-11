@@ -100,6 +100,11 @@ def create_app():
         def cache_busting_filter(s):
             return s
 
+    # Performance monitoring
+    if app.config.get('MONITOR_REQUEST_PERFORMANCE', True):
+        from .performance import register_performance_monitoring
+        register_performance_monitoring(app)
+
 
     from . import models
     app.register_blueprint(models.DB_CLI)
