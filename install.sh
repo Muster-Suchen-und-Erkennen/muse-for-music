@@ -6,10 +6,10 @@ NAME=muse-for-music
 PYTHON=/usr/bin/python3
 PIP="$PYTHON -m pip"
 PIP_VENV="python -m pip"
+PIPENV="python -m pipenv"
 VENV="virtualenv --python=$PYTHON"
 VENV_DIR=/usr/lib/
 VENV_FOLDER=muse-for-music
-NPM_BUILD_SCRIPT=build-docker
 
 CONFIG_FILE=/etc/${PACKAGE}.conf
 LOG_PATH=/var/log/$NAME
@@ -20,7 +20,7 @@ WSGI_FILE=${NAME}.wsgi
 APACHE_CONFIG=/etc/apache2
 
 #Asset deploy url
-DEPLOY_URL=./assets/
+#DEPLOY_URL=./assets/
 
 if [ ! -d $VENV_DIR ]; then
     mkdir $VENV_DIR
@@ -36,7 +36,11 @@ pushd $VENV_FOLDER
 
 chmod a+x bin/activate*
 
+# Activate venv, everything after is happening in venv!
 source bin/activate
+
+# Ensure that pipenv is installed
+$PIP_VENV install --upgrade pipenv
 
 popd
 popd
@@ -44,24 +48,13 @@ popd
 
 pushd $SOURCE
 
-$PIP_VENV install -r requirements.txt
+MODE=production
+FLASK_APP=$PACKAGE
 
-$PIP_VENV install -e .
-MODE=production FLASK_APP=$PACKAGE flask db upgrade
+$PIPENV run build --production --clean-build --unsafe-permissions
 
-pushd $PACKAGE
+$PIPENV run upgrade-db
 
-npm install -g node-gyp
-
-npm install --unsafe-perm
-
-if [ ! -d build ]; then
-    mkdir build
-fi
-
-npm run $NPM_BUILD_SCRIPT
-
-popd
 popd
 
 
@@ -90,7 +83,6 @@ fi
 popd
 
 if [ ! -f $CONFIG_FILE ]; then
-    echo "WEBPACK_MANIFEST_PATH = '$SOURCE/$PACKAGE/build/manifest.json'" >> $CONFIG_FILE
     echo "SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/apache.db'" >> $CONFIG_FILE
     echo "LOG_PATH = '$LOG_PATH'" >> $CONFIG_FILE
 fi

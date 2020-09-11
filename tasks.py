@@ -29,19 +29,23 @@ def clean_js_dependencies(c):
 
 
 @task
-def dependencies_py(c, production=False):
-    if production:
+def dependencies_py(c, from_lockfile=False):
+    if from_lockfile:
         c.run('pipenv install --deploy', shell=SHELL)
     else:
         c.run('pipenv install', shell=SHELL)
 
 
 @task
-def dependencies_js(c, clean_dependencies=False):
+def dependencies_js(c, clean_dependencies=False, from_lockfile=False, unsafe_permissions=False):
     if clean_dependencies:
         clean_js_dependencies(c)
     with c.cd('./{module}'.format(module=MODULE_NAME)):
-        c.run('npm install', shell=SHELL)
+        cmd_flags = ' --unsafe-perm' if unsafe_permissions else ''
+        if from_lockfile:
+            c.run('npm ci' + cmd_flags, shell=SHELL)
+        else:
+            c.run('npm install' + cmd_flags, shell=SHELL)
 
 
 @task(dependencies_py, dependencies_js)

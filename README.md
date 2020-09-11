@@ -3,76 +3,42 @@
 
 ## First start:
 
-Backend:
-```shell
-# setup virtualenv
-virtualenv venv
-. venv/bin/activate
+This project uses pipenv and npm to manage all dependencies. You must install pipenv and npm first before running any script.
 
+Create a `.env` file with the following content:
 
-# install requirements
-pip install -r requirements_developement.txt
-pip install -r requirements.txt
-
-pip install -e .
+```bash
+FLASK_APP=muse_for_music
+FLASK_DEBUG=1  # to enable autoreload
+MODE=debug
 ```
 
-Frontend:
-
+Backend:
 ```shell
-cd muse_for_music
+pipenv install
 
-npm install
+# create the test database
+pipenv run create-test-db
 ```
 
 
 ## start server:
 
-Start the webpack developement server:
+Start the build process for the frontend:
 ```shell
-cd muse_for_music
-npm run start
+pipenv run start-js
 ```
 
-First start:
+Start the flask dev server
 ```shell
-. venv/bin/activate
-export FLASK_APP=muse_for_music
-export FLASK_DEBUG=1  # to enable autoreload
-export MODE=debug
-# export MODE=production
-# export MODE=test
-
-# create and init debug db:
-flask create_populated_db
-
-# load taxonomies:
-flask init_taxonomies taxonomies
-
-# start server
-flask run
-```
-
-Subsequent starts:
-```shell
-flask run
+pipenv run start
 ```
 
 Drop and recreate DB:
 ```shell
-flask drop_db
-flask create_populated_db
-flask init_taxonomies taxonomies
-
-# flask drop_db && flask create_populated_db && flask init_taxonomies taxonomies
+pipenv run drop-db
+pipenv run create-test-db
 ```
-
-
-Reload taxonomies:
-```shell
-flask init_taxonomies -r taxonomies
-```
-
 
 
 ## Sites:
@@ -92,19 +58,18 @@ Only in debug mode:
 
 The migrations use [Flask-Migrate](flask-migrate.readthedocs.io/en/latest/).
 
+The migrations can be run with pipenv.
+
 Commands:
 ```shell
 # create new migration after model changes:
-flask db migrate
+pipenv run create-migration
 
 # update db to newest migration:
-flask db upgrade
-
-# get help for db operations:
-flask db --help
+pipenv run upgrade-db
 ```
 
-After creating a new migration file with `flask db migrate` it is neccessary to manually check the generated upgrade script. Please refer to the [alembic documentation](alembic.zzzcomputing.com/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect).
+After creating a new migration file with `pipenv run create-migration` it is neccessary to manually check the generated upgrade script. Please refer to the [alembic documentation](alembic.zzzcomputing.com/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect).
 
 
 ## Install:
@@ -113,9 +78,9 @@ Prerequisites:
 
  *  Python >3.5, Virtualenv, Pip
  *  npm, node >8
- *  Apache2, mod-wsgi
+ *  Apache2, mod-wsgi or another wsgi compatible server
 
-Installation / Upgrade process:
+Installation / Upgrade process for installations using apache:
 
  1. Install Prerequisites
  2. Download/Clone Repository
@@ -139,5 +104,5 @@ Troubleshooting:
  *  Check AppArmor/Selinux permissions
  *  Check apache logs
  *  Check apache config
- *  Check TTF logs
+ *  Check M4M logs
  *  Check Python version (>3.5!)
