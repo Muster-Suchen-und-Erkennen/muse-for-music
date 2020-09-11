@@ -14,9 +14,11 @@ class Zitat(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('Zitat',
                                passive_deletes='all',
+                               lazy='joined',
+                               join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],
-                                                  lazy='joined',
+                                                  lazy='select',
                                                   join_depth=1
                                                  )
                               )
@@ -32,9 +34,11 @@ class Programmgegenstand(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('Programmgegenstand',
                                passive_deletes='all',
+                               lazy='joined',
+                               join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],
-                                                  lazy='joined',
+                                                  lazy='select',
                                                   join_depth=1
                                                  )
                               )
@@ -52,7 +56,7 @@ class Tonmalerei(db.Model, TreeTaxonomy):
                                passive_deletes='all',
                                backref=db.backref('parent',
                                                   remote_side=[id],
-                                                  lazy='joined',
+                                                  lazy='select',
                                                   join_depth=1
                                                  )
                               )

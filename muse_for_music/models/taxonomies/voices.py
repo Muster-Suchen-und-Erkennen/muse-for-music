@@ -18,9 +18,11 @@ class MusikalischeFunktion(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('MusikalischeFunktion',
                                passive_deletes='all',
+                               lazy='joined',
+                               join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],
-                                                  lazy='joined',
+                                                  lazy='select',
                                                   join_depth=1
                                                  )
                               )
@@ -36,9 +38,11 @@ class Verzierung(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('Verzierung',
                                passive_deletes='all',
+                               lazy='joined',
+                               join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],
-                                                  lazy='joined',
+                                                  lazy='select',
                                                   join_depth=1
                                                  )
                               )

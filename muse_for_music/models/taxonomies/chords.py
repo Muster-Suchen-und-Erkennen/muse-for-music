@@ -15,9 +15,11 @@ class Akkord(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('Akkord',
                                passive_deletes='all',
+                               lazy='joined',
+                               join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],
-                                                  lazy='joined',
+                                                  lazy='select',
                                                   join_depth=1
                                                  )
                               )

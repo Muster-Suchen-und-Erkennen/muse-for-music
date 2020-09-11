@@ -14,9 +14,11 @@ class Taktart(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('Taktart',
                                passive_deletes='all',
+                               lazy='joined',
+                               join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],
-                                                  lazy='joined',
+                                                  lazy='select',
                                                   join_depth=1
                                                  )
                               )
@@ -32,9 +34,11 @@ class Rhythmustyp(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('Rhythmustyp',
                                passive_deletes='all',
+                               lazy='joined',
+                               join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],
-                                                  lazy='joined',
+                                                  lazy='select',
                                                   join_depth=1
                                                  )
                               )
@@ -52,9 +56,11 @@ class RhythmischesPhaenomen(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('RhythmischesPhaenomen',
                                passive_deletes='all',
+                               lazy='joined',
+                               join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],
-                                                  lazy='joined',
+                                                  lazy='select',
                                                   join_depth=1
                                                  )
                               )
