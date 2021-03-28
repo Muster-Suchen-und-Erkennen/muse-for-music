@@ -27,7 +27,7 @@ class AuthActions(object):
         self._client = client
 
     def login(self, username='admin', password='admin'):
-        url = get_hateoas_ref(self._client, 'login', root='users')
+        url = get_hateoas_ref(self._client, 'login', root='user-api')
         return self._client.post(url, json={'username': username, 'password': password})
 
     def logout(self):
@@ -37,7 +37,7 @@ class AuthActions(object):
         assert role in {'user', 'admin', 'taxonomy_editor'}
         if auth is None:
             auth = self.login().get_json()['access_token']
-        users_url = get_hateoas_ref(self._client, 'management', 'user', root='users', auth=auth)
+        users_url = get_hateoas_ref(self._client, 'management', 'user', root='user-api', auth=auth)
         user = self._client.get('{}{}/'.format(users_url, username), headers=auth_header(auth)).get_json()
         roles_url = get_hateoas_ref(self._client, 'roles', root=user)
         result = self._client.post(roles_url, json={'role': role}, headers=auth_header(auth))
@@ -244,7 +244,9 @@ def get_hateoas_ref(client, *rels, auth=None, root='api'):
             url = url + '{}/'.format(rel)
             continue
         result = client.get(url, headers=headers)
-        url = result.get_json()['_links'][rel]['href']
+        json = result.get_json()
+        assert json is not None and '_links' in json, url + ' ' + str(result.data)
+        url = json['_links'][rel]['href']
     return url
 
 

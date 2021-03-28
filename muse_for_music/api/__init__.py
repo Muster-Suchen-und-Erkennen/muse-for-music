@@ -37,8 +37,8 @@ def handle_validation_erorr(error: ValidationError):
 @api.errorhandler(NoAuthorizationError)
 def missing_header(error):
     """User is not authorized for this operation."""
-    log_unauthorized(error.message)
-    return {'message': error.message}, 401
+    log_unauthorized(str(error))
+    return {'message': str(error)}, 401
 
 
 def register_api(app: Flask):

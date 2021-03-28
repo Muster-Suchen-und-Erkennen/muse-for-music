@@ -150,14 +150,12 @@ class ApiChecker(RuleBasedStateMachine):
         return self.is_authenticated and self.has_initialized_persons
 
     @invariant()
-    @rule()
     def reference_invariant(self):
         for ref, count in self.reference_counter.items():
             assert count >= 0, 'Invalid rference count for ref {}'.format(ref)
 
     @precondition(lambda self: self.can_test_person_count())
     @invariant()
-    @rule()
     def person_count_invariant(self):
         all_people = get_hateoas_resource(self.client, 'person', auth=self.auth_token).get_json()
         assert len(all_people) == len(self.people_names)
@@ -168,7 +166,6 @@ class ApiChecker(RuleBasedStateMachine):
 
     @precondition(lambda self: self.is_authenticated())
     @invariant()
-    @rule()
     def opus_count_invariant(self):
         all_opera = get_hateoas_resource(self.client, 'opus', auth=self.auth_token).get_json()
         assert len(all_opera) == len(self.opus_names)
@@ -179,7 +176,6 @@ class ApiChecker(RuleBasedStateMachine):
 
     @precondition(lambda self: self.is_authenticated())
     @invariant()
-    @rule()
     def part_count_invariant(self):
         all_parts = get_hateoas_resource(self.client, 'part', auth=self.auth_token).get_json()
         assert len(all_parts) == len(self.objects_by_type[PART_TYPE])

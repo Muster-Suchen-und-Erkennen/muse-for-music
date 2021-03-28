@@ -36,12 +36,12 @@ def app():
     yield app
 
 
-@pytest.fixture(name='app')
+@pytest.fixture(name='app', scope='session')
 def app_fixture():
     yield from app()
 
 
-@pytest.fixture(name='app_with_temp')
+@pytest.fixture(name='app_with_temp', scope='session')
 def app_with_temp_fixture():
     yield from app()
 
@@ -97,6 +97,6 @@ def taxonomies(app):
         db.session.commit()
 
 
-@pytest.fixture(name='taxonomies')
+@pytest.fixture(name='taxonomies', scope='session')
 def taxonomies_fixture(app):
     yield from taxonomies(app)
