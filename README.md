@@ -3,7 +3,7 @@
 
 ## First start:
 
-This project uses pipenv and npm to manage all dependencies. You must install pipenv and npm first before running any script.
+This project uses poetry and npm to manage all dependencies. You must install poetry and npm first before running any script.
 
 Create a `.env` file with the following content:
 
@@ -15,10 +15,10 @@ MODE=debug
 
 Backend:
 ```shell
-pipenv install
+poetry install
 
 # create the test database
-pipenv run create-test-db
+poetry run #create-test-db
 ```
 
 
@@ -26,18 +26,21 @@ pipenv run create-test-db
 
 Start the build process for the frontend:
 ```shell
-pipenv run start-js
+poetry run invoke start-js
 ```
 
 Start the flask dev server
 ```shell
-pipenv run start
+# create test db before first run!
+
+# start flask server
+poetry run invoke start-py --autoreload
 ```
 
-Drop and recreate DB:
+Drop and recreate DB for local development:
 ```shell
-pipenv run drop-db
-pipenv run create-test-db
+poetry run flask drop_db
+poetry run invoke create-test-db
 ```
 
 
@@ -58,25 +61,44 @@ Only in debug mode:
 
 The migrations use [Flask-Migrate](flask-migrate.readthedocs.io/en/latest/).
 
-The migrations can be run with pipenv.
+The migrations can be run with poetry.
 
 Commands:
 ```shell
 # create new migration after model changes:
-pipenv run create-migration
+poetry run flask db migrate
 
 # update db to newest migration:
-pipenv run upgrade-db
+poetry run flask db upgrade
 ```
 
-After creating a new migration file with `pipenv run create-migration` it is neccessary to manually check the generated upgrade script. Please refer to the [alembic documentation](alembic.zzzcomputing.com/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect).
+After creating a new migration file with `poetry run flask db migrate` it is neccessary to manually check the generated upgrade script. Please refer to the [alembic documentation](alembic.zzzcomputing.com/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect).
 
+## Run Unit Tests:
+
+```shell
+# run all tests (WARNING this takes a long time!)
+poetry run pytest tests
+
+# run rule based hypothesis test
+# the available hypothesis profiles can be found in tests/util.py
+poetry run pytest --hypothesis-profile fast ./tests/rule_based_test.py::test_muse_for_music_api
+
+# run tests with coverage
+poetry run coverage run --source=muse_for_music --omit='*/debug_routes/*' -m pytest tests
+
+# generate overage reports
+poetry run coverage report -m
+poetry run coverage html
+```
 
 ## Install:
 
+WARNING: Install script is currently broken!
+
 Prerequisites:
 
- *  Python >3.5, Virtualenv, Pip
+ *  Python >3.6, Virtualenv, Pip
  *  npm, node >8
  *  Apache2, mod-wsgi or another wsgi compatible server
 
@@ -105,4 +127,4 @@ Troubleshooting:
  *  Check apache logs
  *  Check apache config
  *  Check M4M logs
- *  Check Python version (>3.5!)
+ *  Check Python version (>3.6!)
