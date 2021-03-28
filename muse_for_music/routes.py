@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, render_template, url_for, redirect, abort
 from flask_cors import CORS, cross_origin
 
 from .user_api import register_user_api
@@ -17,7 +17,9 @@ def register_routes(app: Flask, flask_static_digest):
 
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
-    def index(path):
+    def index(path: str):
+        if path.startswith('/api/') or path.startswith('/user-api/'):
+            abort(404)
         return render_template('index.html', title='muse4music')
 
 
