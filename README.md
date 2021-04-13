@@ -5,6 +5,13 @@
 
 This project uses poetry and npm to manage all dependencies. You must install poetry and npm first before running any script.
 
+NOTE: Windows does not support the 'pty' module so `invoke` commandos fail at windows. If you use windows, you need to install WSL2 and set up a Linux distribution. Then you must install python, poetry and npm on your WSL Remote to run the following commandos.
+
+After cloning the repository, you need to check out the remote `dev` branch:
+```shell
+git checkout dev
+```
+
 Create a `.env` file with the following content:
 
 ```bash
@@ -18,7 +25,7 @@ Backend:
 poetry install
 
 # create the test database
-poetry run #create-test-db
+poetry run invoke create-test-db
 ```
 
 
@@ -43,6 +50,12 @@ poetry run flask drop_db
 poetry run invoke create-test-db
 ```
 
+## Docker
+You can also build and run the project in Docker. Under windows you also need WSL2 for that. You need to have a working docker and run the following commandos:
+```shell
+docker build -t m4m .
+docker run -it -p5000:5000 m4m
+```
 
 ## Sites:
 
