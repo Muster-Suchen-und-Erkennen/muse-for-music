@@ -47,7 +47,7 @@ def create_app():
 
     app = Flask(__name__, instance_relative_config=True)  # type: Flask
     makedirs(app.instance_path, exist_ok=True)
-    app.config['LOG_PATH'] = app.instance_path;
+    app.config['LOG_PATH'] = app.instance_path
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/test.db'.format(app.instance_path)
     app.config['MODE'] = environ['MODE'].upper()
     if app.config['MODE'] == 'PRODUCTION':
@@ -60,19 +60,19 @@ def create_app():
     app.config.from_pyfile('/etc/muse_for_music.conf', silent=True)
     app.config.from_pyfile('muse_for_music.conf', silent=True)
 
-    # TODO use nevironment variables
+    # TODO use environment variables
     for env_var in ('SQLALCHEMY_DATABASE_URI', 'JWT_SECRET_KEY', 'LOG_PATH', 'SQLITE_FOREIGN_KEYS'):
         app.config[env_var] = environ.get(env_var, app.config.get(env_var))
 
 
     formatter = Formatter(fmt=app.config['LOG_FORMAT'])
 
-    fh = RotatingFileHandler(path.join(app.config['LOG_PATH'], 'muse4music.log'),
+    fileHandler = RotatingFileHandler(path.join(app.config['LOG_PATH'], 'muse4music.log'),
                             maxBytes=104857600, backupCount=10)
 
-    fh.setFormatter(formatter)
+    fileHandler.setFormatter(formatter)
 
-    app.logger.addHandler(fh)
+    app.logger.addHandler(fileHandler)
 
     app.logger.info('Connecting to database %s.', app.config['SQLALCHEMY_DATABASE_URI'])
 
@@ -93,12 +93,12 @@ def create_app():
 
     if app.config['DEBUG']:
         @app.template_filter('bustcache')
-        def cache_busting_filter(s):
-            return s.replace('-es2015', '') + '?chache-bust={}'.format(token_urlsafe(16))
+        def cache_busting_filter(url):
+            return url + '?cache-bust={}'.format(token_urlsafe(16))
     else:
         @app.template_filter('bustcache')
-        def cache_busting_filter(s):
-            return s
+        def cache_busting_filter(url):
+            return url
 
     # Performance monitoring
     if app.config.get('MONITOR_REQUEST_PERFORMANCE', True):
