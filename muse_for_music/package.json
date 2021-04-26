@@ -22,12 +22,12 @@
     "@angular/platform-browser-dynamic": "^11.2.11",
     "@angular/platform-server": "^11.2.11",
     "@angular/router": "^11.2.11",
-    "core-js": "^2.6.11",
+    "core-js": "^2.6.12",
     "font-awesome": "^4.7.0",
     "rxjs": "^6.6.7",
     "rxjs-tslint": "^0.1.8",
     "tachyons": "^4.12.0",
-    "tslib": "^2.0.0",
+    "tslib": "^2.2.0",
     "zone.js": "~0.10.3"
   },
   "devDependencies": {
@@ -36,10 +36,10 @@
     "@angular/compiler-cli": "^11.2.11",
     "@angular/language-service": "^11.2.11",
     "@types/jasmine": "~3.6.0",
-    "@types/node": "^12.12.57",
+    "@types/node": "^12.20.10",
     "autoprefixer": "^6.7.7",
-    "codelyzer": "^6.0.0",
-    "cssnano": "^4.1.10",
+    "codelyzer": "^6.0.1",
+    "cssnano": "^4.1.11",
     "exports-loader": "^0.6.4",
     "file-loader": "^0.10.1",
     "html-webpack-plugin": "^3.2.0",
@@ -53,7 +53,7 @@
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
-    "less": "^3.12.2",
+    "less": "^3.13.1",
     "less-loader": "^4.1.0",
     "node-sass": "^4.14.1",
     "protractor": "~7.0.0",
@@ -67,7 +67,7 @@
     "tslint": "^6.1.3",
     "typescript": "4.1.5",
     "url-loader": "^2.3.0",
-    "webpack": "^4.44.1",
-    "webpack-dev-server": "^3.11.0"
+    "webpack": "^4.46.0",
+    "webpack-dev-server": "^3.11.2"
   }
 }
