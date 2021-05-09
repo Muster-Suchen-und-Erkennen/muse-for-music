@@ -8,6 +8,7 @@ from textwrap import dedent
 load_dotenv()
 
 MODULE_NAME = 'muse_for_music'
+UI_MODULE_NAME = 'muse_for_music_ui'
 
 SHELL = environ.get('SHELL', 'bash')
 
@@ -25,7 +26,7 @@ def clean(c):
 @task
 def clean_js_dependencies(c):
     print('Removing node_modules folder.')
-    rmtree(Path('./{module}/node_modules'.format(module=MODULE_NAME)))
+    rmtree(Path('./{module}/node_modules'.format(module=UI_MODULE_NAME)))
 
 
 @task
@@ -64,7 +65,7 @@ def before_build(c, clean_build=False):
 @task(dependencies, before_build)
 def build(c, production=False, deploy_url='/static/', base_href='/'):
     c.run('flask digest clean', shell=SHELL)
-    with c.cd('./{module}'.format(module=MODULE_NAME)):
+    with c.cd('./{module}'.format(module=UI_MODULE_NAME)):
         attrs = [
             '--',
             '--extract-css',
@@ -147,7 +148,7 @@ def create_test_db(c):
 
 @task(dependencies_js, before_build)
 def start_js(c, deploy_url='/static/'):
-    with c.cd('./{module}'.format(module=MODULE_NAME)):
+    with c.cd('./{module}'.format(module=UI_MODULE_NAME)):
         attrs = [
             '--',
             '--extract-css',
