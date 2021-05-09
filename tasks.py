@@ -14,7 +14,7 @@ SHELL = environ.get('SHELL', 'bash')
 
 INSTANCE_FOLDER = Path('./instance')
 CONFIG_PATH = INSTANCE_FOLDER / Path('{module}.conf'.format(module=MODULE_NAME))
-BUILD_FOLDER = Path('./{module}/static'.format(module=MODULE_NAME))
+BUILD_FOLDER = Path('./{module}/static'.format(module=UI_MODULE_NAME))
 MANIFEST_PATH = BUILD_FOLDER / Path('manifest.json')
 
 @task
