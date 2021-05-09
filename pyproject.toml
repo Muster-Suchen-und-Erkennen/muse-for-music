@@ -3,7 +3,7 @@ name = "muse_for_music"
 version = "0.1.0"
 description = "A tool for managing data of historical music."
 authors = ["Fabian Bühler"]
-#license = "MIT"
+#license = "Apache 2.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
