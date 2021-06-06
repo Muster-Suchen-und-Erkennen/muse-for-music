@@ -560,7 +560,7 @@ opus_put = api.inherit('OpusPUT', opus_post, OrderedDict([
     ('tonalitaet', fields.Nested(taxonomy_item_ref, taxonomy='Tonalitaet', required=True, title='Tonalität')),
     ('composition_year', fields.Integer(default=-1, required=True, title='Kompositionsjahr', nullable=True)),
     ('composition_place', fields.String(max_length=191, default='', required=True, title='Kompositionsort', nullable=True)),
-    ('notes', fields.String(default='', required=True, title='Notizen', nullable=True)),
+    ('notes', fields.String(default='', title='Notizen', nullable=True)),
     ('score_link', fields.String(default='', required=True, description='Ein Link zu einer Partitur.', title='Partiturausgabe', nullable=True)),
     ('first_printed_at', fields.String(max_length=191, default='', required=True, title='Ort der Partitur', nullable=True)),
     ('first_printed_in', fields.Integer(default=-1, required=True, title='Jahr der Partitur', nullable=True)),

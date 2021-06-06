@@ -41,7 +41,7 @@ def dependencies_py(c, from_lockfile=False):
 def dependencies_js(c, clean_dependencies=False, from_lockfile=False, unsafe_permissions=False):
     if clean_dependencies:
         clean_js_dependencies(c)
-    with c.cd('./{module}'.format(module=MODULE_NAME)):
+    with c.cd('./{module}'.format(module=UI_MODULE_NAME)):
         cmd_flags = ' --unsafe-perm' if unsafe_permissions else ''
         if from_lockfile:
             c.run('npm ci' + cmd_flags, shell=SHELL)
