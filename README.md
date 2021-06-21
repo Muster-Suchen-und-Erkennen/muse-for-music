@@ -54,7 +54,7 @@ poetry run invoke create-test-db
 You can also build and run the project in Docker. Under windows you also need WSL2 for that. You need to have a working docker and run the following commandos:
 ```shell
 docker build -t m4m .
-docker run -it -p5000:5000 m4m
+docker run -it -p8000:8000 m4m
 ```
 
 ## Sites:
