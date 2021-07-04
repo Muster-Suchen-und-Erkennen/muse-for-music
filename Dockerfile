@@ -22,7 +22,7 @@ COPY ./poetry.lock /app/poetry.lock
 COPY ./pyproject.toml /app/pyproject.toml
 COPY ./tasks.py /app/tasks.py
 COPY ./README.md /app/README.md
-COPY --from=builder ./muse_for_music/static /app/muse-for-music/static
+COPY --from=builder ./muse_for_music/static /app/muse_for_music/static
 
 ENV SHELL="/bin/bash"
 
