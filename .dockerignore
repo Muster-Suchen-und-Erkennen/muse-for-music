@@ -1,4 +1,5 @@
 muse_for_music/node_modules
+muse_for_musicui/node_modules
 npm-debug.log
 Dockerfile*
 docker-compose*
