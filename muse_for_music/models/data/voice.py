@@ -24,6 +24,8 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
     _normal_attributes = (
                           ('name', str),
+                          ('measure_start', Measure),
+                          ('measure_end', Measure),
                           ('occurence_in_part', AuftretenWerkausschnitt),
                           ('share', Anteil),
                           ('satz', Satz),
@@ -42,6 +44,8 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     id = db.Column(db.Integer, primary_key=True)
     subpart_id = db.Column(db.Integer, db.ForeignKey('sub_part.id'), nullable=False)
     name = db.Column(db.String(191), nullable=True)
+    measure_start_id = db.Column(db.Integer, db.ForeignKey('measure.id'), nullable=False)
+    measure_end_id = db.Column(db.Integer, db.ForeignKey('measure.id'), nullable=False)
     instrumentation_id = db.Column(db.Integer, db.ForeignKey('instrumentation.id', ondelete='CASCADE'), nullable=False)
     satz_id = db.Column(db.Integer, db.ForeignKey('satz.id'), nullable=True)
     rhythm_id = db.Column(db.Integer, db.ForeignKey('rhythm.id'), nullable=True)
@@ -69,15 +73,22 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     composition = db.relationship(Composition, single_parent=True, cascade="all, delete-orphan")
     rendition = db.relationship(Rendition, single_parent=True, cascade="all, delete-orphan")
     citations = db.relationship(Citations, single_parent=True, cascade="all, delete-orphan")
+    measure_start = db.relationship(Measure, foreign_keys=[measure_start_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
+    measure_end = db.relationship(Measure, foreign_keys=[measure_end_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
 
     _subquery_load = ['satz', 'rhythm', 'composition', 'rendition', 'citations']
 
-    def __init__(self, subpart: Union[int, SubPart], name: str, **kwargs):
+    def __init__(self, subpart: Union[int, SubPart], measure_start: dict, measure_end: dict, name: str, **kwargs):
         if isinstance(subpart, SubPart):
             self.subpart = subpart
         else:
             self.subpart = SubPart.get_by_id(subpart)
         self.name = name
+
+        self.measure_start = Measure(**measure_start)
+        self.measure_end = Measure(**measure_end)
+        db.session.add(self.measure_start)
+        db.session.add(self.measure_end)
 
         self._instrumentation = Instrumentation()
 
