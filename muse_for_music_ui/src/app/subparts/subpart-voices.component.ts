@@ -39,7 +39,7 @@ export class SubPartVoicesComponent implements OnInit {
                 this.voices = data;
                 const tableData = [];
                 this.voices.forEach(voice => {
-                    const row = new TableRow(voice.id, [voice.measure_start.measure, voice.measure_end.measure, voice.length, [voice.name]],
+                    const row = new TableRow(voice.id, [voice.name, voice.measure_start.measure, voice.measure_end.measure, voice.length],
                                              ['subparts', this.subPartID, 'voices', voice.id]);
                     tableData.push(row);
                 });
