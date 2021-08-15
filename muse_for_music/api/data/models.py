@@ -463,7 +463,6 @@ voice_post = api.model('VoicePOST', OrderedDict([
     ('name', fields.String(default='', required=True, min_length=1, max_length=191, title='Name')),
     ('measure_start', fields.Nested(measure_model, required=True, isNested=True, title='Starttakt')),
     ('measure_end', fields.Nested(measure_model, required=True, isNested=True, title='Endtakt')),
-    ('length', fields.Integer(default=1, min=1, required=True, example=1, title='Länge')),
 ]))
 
 
