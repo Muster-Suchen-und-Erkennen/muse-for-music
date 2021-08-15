@@ -198,6 +198,7 @@ harmonics_put = api.model('HarmonicsPUT', OrderedDict([
     ('harmonic_changes', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='HarmonischeEntwicklung', default=[], title='Harmonische Entwicklung')),
     ('harmonische_funktion', fields.Nested(taxonomy_item_ref, taxonomy='HarmonischeFunktionVerwandschaft', title='Zeigt Modulation zu Tonart mit folgender Funktion (bezogen auf Werkausschnitt)')),
     ('harmonic_centers', fields.List(fields.Nested(harmonic_center_put, description='HarmonicCenter'), default=[], title='Harmonische Zentren')),
+    ('harmonic_analyse', fields.String(default='', title='Harmonische Analyse', nullable=True)),
 ]))
 
 harmonics_get = api.model('HarmonicsGET', OrderedDict([
