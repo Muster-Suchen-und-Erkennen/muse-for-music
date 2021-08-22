@@ -448,7 +448,7 @@ subpart_put = api.inherit('SubPartPUT', subpart_post, OrderedDict([
     ('harmonics', fields.Nested(harmonics_put, required=True, description='Harmonics', isNested=True, title='Harmonik', allowSave=True)),
     ('dynamic', fields.Nested(dynamic_put, required=True, description='Dynamic', isNested=True, title='Dynamik', allowSave=True)),
     ('tempo', fields.Nested(tempo_put, isNested=True, title='Tempo', allowSave=True)),
-    ('ambitus', fields.Nested(ambitus_put, isNested=True, title='Ambitus', allowSave=True)),
+    # ('ambitus', fields.Nested(ambitus_put, isNested=True, title='Ambitus', allowSave=True)),
 ]))
 
 voice_links = api.inherit('VoiceLinks', with_curies, OrderedDict([
@@ -486,6 +486,7 @@ related_voice_get = api.model('RelatedVoiceGET', OrderedDict([
 
 voice_put = api.inherit('VoicePUT', voice_post, OrderedDict([
     ('instrumentation', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Instrument', default=[], title='Besetzung')),
+    ('ambitus', fields.Nested(ambitus_put, isNested=True, title='Ambitus', allowSave=True)),
     ('has_melody', fields.Boolean(default=False, title='Spielt Melodie')),
     ('musicial_function', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='MusikalischeFunktion', default=[], title='Musikalische Funktionen')),
     ('share', fields.Nested(taxonomy_item_ref, taxonomy='Anteil', title='Anteil der Stimme')),
@@ -509,6 +510,7 @@ voice_get = api.inherit('VoiceGET', voice_post, OrderedDict([
     ('_links', NestedFields(voice_links)),
     ('name', fields.String(default='', )),
     ('instrumentation', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Instrument', default=[], title='Besetzung')),
+    ('ambitus', fields.Nested(ambitus_get, isNested=True, title='Ambitus', allowSave=True)),
     ('has_melody', fields.Boolean(default=False, title='Spielt Melodie')),
     ('musicial_function', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='MusikalischeFunktion', default=[], title='Musikalische Funktionen')),
     ('share', fields.Nested(taxonomy_item_get, taxonomy='Anteil')),
@@ -536,7 +538,7 @@ subpart_get = api.inherit('SubPartGET', subpart_put, OrderedDict([
     ('harmonics', fields.Nested(harmonics_get, description='Harmonics')),
     ('dynamic', fields.Nested(dynamic_get, description='Dynamic')),
     ('tempo', fields.Nested(tempo_get, description='TempoGroup')),
-    ('ambitus', fields.Nested(ambitus_get, isNested=True, title='Ambitus', allowSave=True)),
+    #('ambitus', fields.Nested(ambitus_get, isNested=True, title='Ambitus', allowSave=True)),
 ]))
 
 part_small = api.inherit('PartSmall', part_put, OrderedDict([

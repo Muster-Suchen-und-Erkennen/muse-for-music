@@ -14,6 +14,7 @@ from .rendition import Rendition
 from .rhythm import Rhythm
 from .citations import Citations
 from .instrumentation import InstrumentationContext, Instrumentation
+from .ambitus import AmbitusGroup
 from ..taxonomies import Anteil, MusikalischeFunktion, Melodieform, Verzierung, \
                          Intervallik, Notenwert, Grundton, Oktave, \
                          AuftretenWerkausschnitt, VoiceToVoiceRelation, \
@@ -36,6 +37,7 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
                           ('melody_form', Melodieform),
                           ('intervallik', Intervallik),
                           ('citations', Citations),
+                          ('ambitus', AmbitusGroup),
                           )
 
     _list_attributes = ('dominant_note_values', 'instrumentation', 'ornaments',
@@ -59,6 +61,7 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     composition_id = db.Column(db.Integer, db.ForeignKey('composition.id'), nullable=True)
     rendition_id = db.Column(db.Integer, db.ForeignKey('rendition.id'), nullable=True)
     citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), nullable=True)
+    ambitus_id = db.Column(db.Integer, db.ForeignKey('ambitus_group.id'), nullable=True)
 
     subpart = db.relationship(SubPart, lazy='select', backref=db.backref('voices', single_parent=True, cascade="all, delete-orphan"))
     _instrumentation = db.relationship('Instrumentation', lazy='subquery', single_parent=True, cascade="all, delete-orphan")  # type: Instrumentation
@@ -75,6 +78,7 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     citations = db.relationship(Citations, single_parent=True, cascade="all, delete-orphan")
     measure_start = db.relationship(Measure, foreign_keys=[measure_start_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
     measure_end = db.relationship(Measure, foreign_keys=[measure_end_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
+    ambitus = db.relationship(AmbitusGroup, single_parent=True, cascade="all, delete-orphan")
 
     _subquery_load = ['satz', 'rhythm', 'composition', 'rendition', 'citations']
 
