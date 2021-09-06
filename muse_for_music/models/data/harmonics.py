@@ -14,7 +14,8 @@ class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
     _normal_attributes = (('degree_of_dissonance', Dissonanzgrad),
                           ('harmonic_density', HarmonischeDichte),
                           ('harmonic_complexity', HarmonischeKomplexitaet),
-                          ('harmonische_funktion', HarmonischeFunktionVerwandschaft))
+                          ('harmonische_funktion', HarmonischeFunktionVerwandschaft),
+                          ('harmonic_analyse', str),)
 
     _list_attributes = ('harmonic_centers', 'harmonic_changes', 'harmonic_phenomenons', 'dissonances', 'chords')
 
@@ -24,6 +25,7 @@ class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
     degree_of_dissonance_id = db.Column(db.Integer, db.ForeignKey('dissonanzgrad.id'))
     harmonic_density_id = db.Column(db.Integer, db.ForeignKey('harmonische_dichte.id'))
     harmonic_complexity_id = db.Column(db.Integer, db.ForeignKey('harmonische_komplexitaet.id'))
+    harmonic_analyse = db.Column(db.Text, nullable=True)
 
     harmonische_funktion = db.relationship('HarmonischeFunktionVerwandschaft', lazy='joined')
     degree_of_dissonance = db.relationship('Dissonanzgrad', lazy='joined')
