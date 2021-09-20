@@ -275,13 +275,13 @@ dynamic_get = api.model('DynamicGET', OrderedDict([
 
 satz_put = api.model('SatzPUT', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
-    ('satzart_allgemein', fields.Nested(taxonomy_item_ref, taxonomy='SatzartAllgemein', title='Satzart allgemein')),
+    ('satzart_allgemein', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='SatzartAllgemein', title='Satzart allgemein')),
     ('satzart_speziell', fields.Nested(taxonomy_item_ref, taxonomy='SatzartSpeziell', title='Satzart speziell')),
 ]))
 
 satz_get = api.model('SatzGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
-    ('satzart_allgemein', fields.Nested(taxonomy_item_get, taxonomy='SatzartAllgemein', title='Satzart allgemein')),
+    ('satzart_allgemein', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='SatzartAllgemein', title='Satzart allgemein')),
     ('satzart_speziell', fields.Nested(taxonomy_item_get, taxonomy='SatzartSpeziell', title='Satzart speziell')),
 ]))
 
@@ -421,7 +421,7 @@ part_post = api.model('PartPOST', OrderedDict([
 ]))
 
 part_put = api.inherit('PartPUT', part_post, OrderedDict([
-    ('occurence_in_movement', fields.Nested(taxonomy_item_ref, required=True, taxonomy='AuftretenSatz', title='Vorkommen im Werk')),
+    ('occurence_in_movement', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='AuftretenSatz', title='Vorkommen im Werk')),
     ('instrumentation_context', fields.Nested(instrumentation_context_put, required=True, isNested=True, title='Kontext der Instrumentierung', allowSave=True)),
     ('dynamic_context', fields.Nested(dynamic_context_put, required=True, isNested=True, title='Kontext der Dynamik', allowSave=True)),
     ('tempo_context', fields.Nested(tempo_context_put, required=True, isNested=True, title='Kontext des Tempos', allowSave=True)),
@@ -545,7 +545,7 @@ part_small = api.inherit('PartSmall', part_put, OrderedDict([
     ('id', fields.Integer(default=1, required=False, readonly=True, example=1)),
     ('opus_id', fields.Integer(default=1, readonly=True, example=1)),
     ('_links', NestedFields(part_links)),
-    ('occurence_in_movement', fields.Nested(taxonomy_item_get)),
+    ('occurence_in_movement', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='AuftretenSatz', title='Vorkommen im Werk')),
     ('instrumentation_context', fields.Nested(instrumentation_context_get)),
     ('dynamic_context', fields.Nested(dynamic_context_get)),
     ('tempo_context', fields.Nested(tempo_context_get)),
