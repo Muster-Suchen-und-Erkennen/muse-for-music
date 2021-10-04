@@ -3,11 +3,12 @@ from muse_for_music.models.taxonomies import satz
 from ... import db
 from ..taxonomies import SatzartAllgemein, SatzartSpeziell
 from ..helper_classes import GetByID, UpdateableModelMixin
+from ..helper_classes import GetByID, UpdateListMixin, UpdateableModelMixin
 
 from typing import Union, Sequence, List
 
 
-class Satz(db.Model, GetByID, UpdateableModelMixin):
+class Satz(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
     #_normal_attributes = (#('satzart_allgemein', SatzartAllgemein), ('satzart_speziell', SatzartSpeziell))
     _list_attributes = ('satzart_allgemein','satzart_speziell')
@@ -27,7 +28,7 @@ class Satz(db.Model, GetByID, UpdateableModelMixin):
     @satzart_allgemein.setter
     def satzart_allgemein(self, satzart_allgemein_list:Union[Sequence[int], Sequence[dict]]):
         old_items = {mapping.satzart_allgemein.id: mapping for mapping in self._satzart_allgemein}
-        self.update_list(satzart_allgemein_list, old_items,SatzartAllgemeinToSatz,
+        self.update_list(satzart_allgemein_list, old_items, SatzartAllgemeinToSatz,
                         SatzartAllgemein, 'SatzartAllgemein')
 
     @property
@@ -37,8 +38,9 @@ class Satz(db.Model, GetByID, UpdateableModelMixin):
     @satzart_speziell.setter
     def satzart_speziell(self, satzart_speziell_list:Union[Sequence[int], Sequence[dict]]):
         old_items = {mapping.satzart_speziell.id: mapping for mapping in self._satzart_speziell}
-        self.update_list(satzart_speziell_list, old_items,SatzartSpeziellToSatz,
+        self.update_list(satzart_speziell_list, old_items, SatzartSpeziellToSatz,
                         SatzartSpeziell, 'SatzartSpeziell')
+
 
 class SatzartAllgemeinToSatz(db.Model):
     satz_id = db.Column(db.Integer, db.ForeignKey('satz.id'), primary_key=True)
@@ -50,6 +52,7 @@ class SatzartAllgemeinToSatz(db.Model):
     def __init__(self, satz, satzart_allgemein, **kwargs):
         self.satz = satz
         self.satzart_allgemein = satzart_allgemein
+
 
 class SatzartSpeziellToSatz(db.Model):
     satz_id = db.Column(db.Integer, db.ForeignKey('satz.id'), primary_key=True)

@@ -196,7 +196,7 @@ harmonics_put = api.model('HarmonicsPUT', OrderedDict([
     ('harmonic_density', fields.Nested(taxonomy_item_ref, taxonomy='HarmonischeDichte', title='Harmonische Dichte')),
     ('harmonic_phenomenons', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='HarmonischePhaenomene', default=[], title='Harmonische Phänomene')),
     ('harmonic_changes', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='HarmonischeEntwicklung', default=[], title='Harmonische Entwicklung')),
-    ('harmonische_funktion', fields.Nested(taxonomy_item_ref, taxonomy='HarmonischeFunktionVerwandschaft', title='Zeigt Modulation zu Tonart mit folgender Funktion (bezogen auf Werkausschnitt)')),
+    ('harmonische_funktion', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='HarmonischeFunktionVerwandschaft', title='Zeigt Modulation zu Tonart mit folgender Funktion (bezogen auf Werkausschnitt)')),
     ('harmonic_centers', fields.List(fields.Nested(harmonic_center_put, description='HarmonicCenter'), default=[], title='Harmonische Zentren')),
     ('harmonic_analyse', fields.String(default='', title='Harmonische Analyse', nullable=True)),
 ]))
@@ -209,7 +209,7 @@ harmonics_get = api.model('HarmonicsGET', OrderedDict([
     ('harmonic_density', fields.Nested(taxonomy_item_get, taxonomy='HarmonischeDichte', title='Harmonische Dichte')),
     ('harmonic_phenomenons', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='HarmonischePhaenomene', default=[], title='Harmonische Phänomene')),
     ('harmonic_changes', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='HarmonischeEntwicklung', default=[], title='Harmonische Entwicklung')),
-    ('harmonische_funktion', fields.Nested(taxonomy_item_get, taxonomy='HarmonischeFunktionVerwandschaft', title='Zeigt Modulation zu Tonart mit folgender Funktion (bezogen auf Werkausschnitt)')),
+    ('harmonische_funktion', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='HarmonischeFunktionVerwandschaft', title='Zeigt Modulation zu Tonart mit folgender Funktion (bezogen auf Werkausschnitt)')),
     ('harmonic_centers', fields.List(fields.Nested(harmonic_center_get, description='HarmonicCenter'), default=[], title='Harmonische Zentren')),
 ]))
 
@@ -276,13 +276,13 @@ dynamic_get = api.model('DynamicGET', OrderedDict([
 satz_put = api.model('SatzPUT', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('satzart_allgemein', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='SatzartAllgemein', title='Satzart allgemein')),
-    ('satzart_speziell', fields.Nested(taxonomy_item_ref, taxonomy='SatzartSpeziell', title='Satzart speziell')),
+    ('satzart_speziell', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='SatzartSpeziell', title='Satzart speziell')),
 ]))
 
 satz_get = api.model('SatzGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('satzart_allgemein', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='SatzartAllgemein', title='Satzart allgemein')),
-    ('satzart_speziell', fields.Nested(taxonomy_item_get, taxonomy='SatzartSpeziell', title='Satzart speziell')),
+    ('satzart_speziell', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='SatzartSpeziell', title='Satzart speziell')),
 ]))
 
 musicial_sequence_put = api.model('MusicialSequencePUT', OrderedDict([
@@ -448,7 +448,6 @@ subpart_put = api.inherit('SubPartPUT', subpart_post, OrderedDict([
     ('harmonics', fields.Nested(harmonics_put, required=True, description='Harmonics', isNested=True, title='Harmonik', allowSave=True)),
     ('dynamic', fields.Nested(dynamic_put, required=True, description='Dynamic', isNested=True, title='Dynamik', allowSave=True)),
     ('tempo', fields.Nested(tempo_put, isNested=True, title='Tempo', allowSave=True)),
-    # ('ambitus', fields.Nested(ambitus_put, isNested=True, title='Ambitus', allowSave=True)),
 ]))
 
 voice_links = api.inherit('VoiceLinks', with_curies, OrderedDict([
@@ -499,7 +498,7 @@ voice_put = api.inherit('VoicePUT', voice_post, OrderedDict([
     ('rendition', fields.Nested(rendition_put, description='Rendition', isNested=True, title='Vortrag', allowSave=True)),
     ('ornaments', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Verzierung', default=[], title='Verzierungen')),
     ('melody_form', fields.Nested(taxonomy_item_ref, taxonomy='Melodieform', title='Melodik')),
-    ('intervallik', fields.Nested(taxonomy_item_ref, taxonomy='Intervallik', title='Intervallik')),
+    ('intervallik', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Intervallik', title='Intervallik')),
     ('citations', fields.Nested(citations_put, description='Citations', isNested=True, title='Zitate und Allusionen', allowSave=True)),
     ('related_voices', fields.List(fields.Nested(related_voice_put), isArray=True, default=[], title='Beziehungen zu anderen Stimmen')),
 ]))
@@ -523,7 +522,7 @@ voice_get = api.inherit('VoiceGET', voice_post, OrderedDict([
     ('rendition', fields.Nested(rendition_get, description='Rendition', isNested=True, title='Vortrag', allowSave=True)),
     ('ornaments', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Verzierung', default=[])),
     ('melody_form', fields.Nested(taxonomy_item_get, taxonomy='Melodieform')),
-    ('intervallik', fields.Nested(taxonomy_item_get, taxonomy='Intervallik')),
+    ('intervallik', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Intervallik')),
     ('citations', fields.Nested(citations_get, description='Citations', isNested=True, title='Zitate und Allusionen', allowSave=True)),
     ('related_voices', fields.List(fields.Nested(related_voice_get), isArray=True, default=[], title='Beziehungen zu anderen Stimmen')),
 ]))
