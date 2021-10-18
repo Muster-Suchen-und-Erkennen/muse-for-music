@@ -161,7 +161,7 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     def intervallik(self, intervallik_list:Union[Sequence[int], Sequence[dict]]):
         old_items = {mapping.intervallik.id: mapping for mapping in self._intervallik}
         self.update_list(intervallik_list, old_items, IntervallikToVoice,
-                        Intervallik, 'Intervallik')
+                        Intervallik, 'intervallik')
 
 
 class MusikalischeWendungToVoice(db.Model):

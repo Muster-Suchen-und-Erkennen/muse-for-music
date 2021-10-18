@@ -89,7 +89,7 @@ class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
     def harmonische_funktion(self, harmonische_funktion_list: Union[Sequence[int], Sequence[dict]]):
         old_items = {mapping.harmonische_funktion_verwandschaft.id: mapping for mapping in self._harmonische_funktion}
         self.update_list(harmonische_funktion_list, old_items, HarmonischeFunktionToHarmonics,
-                         HarmonischeFunktionVerwandschaft, 'harmonische_funktion')
+                         HarmonischeFunktionVerwandschaft, 'harmonische_funktion_verwandschaft')
 
 
 
@@ -169,7 +169,7 @@ class DissonanzenToHarmonics(db.Model):
 
 class HarmonischeFunktionToHarmonics(db.Model):
     harmonics_id = db.Column(db.Integer, db.ForeignKey('harmonics.id'), primary_key=True)
-    harmonic_function_modulation_id = db.Column(db.Integer, db.ForeignKey('harmonische_funktion_verwandschaft.id'))
+    harmonic_function_modulation_id = db.Column(db.Integer, db.ForeignKey('harmonische_funktion_verwandschaft.id'), primary_key=True)
 
     harmonics = db.relationship(Harmonics, backref=db.backref('_harmonische_funktion', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     harmonische_funktion = db.relationship('HarmonischeFunktionVerwandschaft')

@@ -29,7 +29,7 @@ class Satz(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     def satzart_allgemein(self, satzart_allgemein_list:Union[Sequence[int], Sequence[dict]]):
         old_items = {mapping.satzart_allgemein.id: mapping for mapping in self._satzart_allgemein}
         self.update_list(satzart_allgemein_list, old_items, SatzartAllgemeinToSatz,
-                        SatzartAllgemein, 'SatzartAllgemein')
+                        SatzartAllgemein, 'satzart_allgemein')
 
     @property
     def satzart_speziell(self):
@@ -39,7 +39,7 @@ class Satz(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     def satzart_speziell(self, satzart_speziell_list:Union[Sequence[int], Sequence[dict]]):
         old_items = {mapping.satzart_speziell.id: mapping for mapping in self._satzart_speziell}
         self.update_list(satzart_speziell_list, old_items, SatzartSpeziellToSatz,
-                        SatzartSpeziell, 'SatzartSpeziell')
+                        SatzartSpeziell, 'satzart_speziell')
 
 
 class SatzartAllgemeinToSatz(db.Model):

@@ -99,7 +99,7 @@ class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     def occurence_in_movement(self, occurence_in_movement_list: Union[Sequence[int], Sequence[dict]]):
         old_items = {mapping.auftreten_satz.id: mapping for mapping in self._occurence_in_movement}
         self.update_list(occurence_in_movement_list, old_items, AuftretenSatzToPart,
-                        AuftretenSatz, 'occurence_in_movement')
+                        AuftretenSatz, 'auftreten_satz')
 
 
 class FormaleFunktionToPart(db.Model):
