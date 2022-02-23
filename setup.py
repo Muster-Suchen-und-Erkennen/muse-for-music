@@ -8,7 +8,7 @@ setup(
     install_requires=[
         "invoke>=1.4.1",
         "flask~=1.1.2",
-        "flask-restx==0.2.0",
+        "flask-restx==0.5.1",
         "flask-sqlalchemy~=2.4.1",
         "flask-migrate~=2.5.3",
         "flask-webpack==0.1.0",
