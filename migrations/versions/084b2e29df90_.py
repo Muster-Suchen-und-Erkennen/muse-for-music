@@ -73,8 +73,8 @@ def upgrade():
         batch_op.drop_column('ambitus_id')
 
     with op.batch_alter_table('voice', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('measure_start_id', sa.Integer(), nullable=False))
-        batch_op.add_column(sa.Column('measure_end_id', sa.Integer(), nullable=False))
+        batch_op.add_column(sa.Column('measure_start_id', sa.Integer(), nullable=True))
+        batch_op.add_column(sa.Column('measure_end_id', sa.Integer(), nullable=True))
         batch_op.add_column(sa.Column('ambitus_id', sa.Integer(), nullable=True))
         batch_op.drop_constraint('voice_ibfk_4', type_='foreignkey')
         batch_op.create_foreign_key(batch_op.f('fk_voice_measure_start_id_measure'), 'measure', ['measure_start_id'], ['id'])
