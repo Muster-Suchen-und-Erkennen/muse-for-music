@@ -19,7 +19,6 @@ class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
                           ('measure_end', Measure),
                           ('length', int),
                           ('movement', int),
-                          #('occurence_in_movement', AuftretenSatz),
                           ('dramaturgic_context', DramaturgicContext),
                           ('tempo_context', TempoContext),
                           ('dynamic_context', DynamicContext),

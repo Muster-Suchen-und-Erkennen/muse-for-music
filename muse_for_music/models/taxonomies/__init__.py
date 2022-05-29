@@ -34,6 +34,7 @@ from .composition import *
 from .citation import *
 from .voices import *
 from .rendition import *
+from .specifications import *
 
 
 T = TypeVar('T', bound=Taxonomy)

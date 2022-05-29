@@ -23,7 +23,7 @@ export class DynamicFormComponent implements OnChanges {
     @Input() showSaveButton: boolean = false;
     @Input() alwaysAllowSave: boolean = false;
     @Input() saveSuccess: boolean = false;
-    @Input() useSpecifications: boolean = false;
+    @Input() useSpecifications: boolean = true;
 
     @Input() debug: boolean = false;
 
