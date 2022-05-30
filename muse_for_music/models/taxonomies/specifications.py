@@ -16,7 +16,7 @@ class SpecAnteil(db.Model, ListTaxonomy):
 
 class SpecAuftreten(db.Model, ListTaxonomy):
     """DB Model for specification Auftreten."""
-    ___tablename___ = 'spezifikation_auftreten'
+    __tablename__ = 'spezifikation_auftreten'
 
     id=db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
@@ -25,10 +25,10 @@ class SpecAuftreten(db.Model, ListTaxonomy):
 
 class SpecInstrument(db.Model, TreeTaxonomy):
     """DB Model for specification instruments."""
-    ___tablename___ = 'spezifikation_instrument'
+    __tablename__ = 'spezifikation_instrument'
 
     id = db.Column(db.Integer, primary_key=True)
-    parent_id = db.Column(db.Integer, db.ForeignKey('spec_instrument.id', ondelete='CASCADE'))
+    parent_id = db.Column(db.Integer, db.ForeignKey('spezifikation_instrument.id', ondelete='CASCADE'))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('SpecInstrument',

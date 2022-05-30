@@ -35,9 +35,9 @@ class SpecInstrumentToSpecifications(db.Model):
     specifications_id = db.Column(db.Integer, db.ForeignKey('specifications.id'), primary_key=True)
     spezifikation_instrument_id = db.Column(db.Integer, db.ForeignKey('spezifikation_instrument.id'), primary_key=True)
 
-    satz = db.relationship(Specifications, backref=db.backref('_spezifikation_instrument', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
+    specifications = db.relationship(Specifications, backref=db.backref('_spezifikation_instrument', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
     spezifikation_instrument = db.relationship('SpecInstrument')
 
-    def __init__(self, satz, spezifikation_instrument, **kwargs):
-        self.satz = satz
+    def __init__(self, specifications, spezifikation_instrument, **kwargs):
+        self.specifications = specifications
         self.spezifikation_instrument = spezifikation_instrument
