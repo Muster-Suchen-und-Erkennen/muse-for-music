@@ -1,79 +1,61 @@
 # MUSE4Music
-
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## First start:
 
-Backend:
+This project uses poetry and npm to manage all dependencies. You must install poetry and npm first before running any script.
+
+NOTE: Windows does not support the 'pty' module so `invoke` commandos fail at windows. If you use windows, you need to install WSL2 and set up a Linux distribution. Then you must install python, poetry and npm on your WSL Remote to run the following commandos.
+
+After cloning the repository, you need to check out the remote `dev` branch:
 ```shell
-# setup virtualenv
-virtualenv venv
-. venv/bin/activate
-
-
-# install requirements
-pip install -r requirements_developement.txt
-pip install -r requirements.txt
-
-pip install -e .
+git checkout dev
 ```
 
-Frontend:
+Create a `.env` file with the following content:
 
+```bash
+FLASK_APP=muse_for_music
+FLASK_DEBUG=1  # to enable autoreload
+MODE=debug
+```
+
+Backend:
 ```shell
-cd muse_for_music
+poetry install
 
-npm install
+# create the test database
+poetry run invoke create-test-db
 ```
 
 
 ## start server:
 
-Start the webpack developement server:
+Start the build process for the frontend:
 ```shell
-cd muse_for_music
-npm run start
+poetry run invoke start-js
 ```
 
-First start:
+Start the flask dev server
 ```shell
-. venv/bin/activate
-export FLASK_APP=muse_for_music
-export FLASK_DEBUG=1  # to enable autoreload
-export MODE=debug
-# export MODE=production
-# export MODE=test
+# create test db before first run!
 
-# create and init debug db:
-flask create_populated_db
-
-# load taxonomies:
-flask init_taxonomies taxonomies
-
-# start server
-flask run
+# start flask server
+poetry run invoke start-py --autoreload
 ```
 
-Subsequent starts:
+Drop and recreate DB for local development:
 ```shell
-flask run
+poetry run flask drop_db
+poetry run invoke create-test-db
 ```
 
-Drop and recreate DB:
+## Docker
+You can also build and run the project in Docker. Under windows you also need WSL2 for that. You need to have a working docker and run the following commandos:
 ```shell
-flask drop_db
-flask create_populated_db
-flask init_taxonomies taxonomies
-
-# flask drop_db && flask create_populated_db && flask init_taxonomies taxonomies
+docker build -t m4m .
+docker run -it -p8000:8000 m4m
 ```
-
-
-Reload taxonomies:
-```shell
-flask init_taxonomies -r taxonomies
-```
-
-
 
 ## Sites:
 
@@ -92,30 +74,48 @@ Only in debug mode:
 
 The migrations use [Flask-Migrate](flask-migrate.readthedocs.io/en/latest/).
 
+The migrations can be run with poetry.
+
 Commands:
 ```shell
 # create new migration after model changes:
-flask db migrate
+poetry run flask db migrate
 
 # update db to newest migration:
-flask db upgrade
-
-# get help for db operations:
-flask db --help
+poetry run flask db upgrade
 ```
 
-After creating a new migration file with `flask db migrate` it is neccessary to manually check the generated upgrade script. Please refer to the [alembic documentation](alembic.zzzcomputing.com/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect).
+After creating a new migration file with `poetry run flask db migrate` it is neccessary to manually check the generated upgrade script. Please refer to the [alembic documentation](alembic.zzzcomputing.com/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect).
 
+## Run Unit Tests:
+
+```shell
+# run all tests (WARNING this takes a long time!)
+poetry run pytest tests
+
+# run rule based hypothesis test
+# the available hypothesis profiles can be found in tests/util.py
+poetry run pytest --hypothesis-profile fast ./tests/rule_based_test.py::test_muse_for_music_api
+
+# run tests with coverage
+poetry run coverage run --source=muse_for_music --omit='*/debug_routes/*' -m pytest tests
+
+# generate overage reports
+poetry run coverage report -m
+poetry run coverage html
+```
 
 ## Install:
 
+WARNING: Install script is currently broken!
+
 Prerequisites:
 
- *  Python >3.5, Virtualenv, Pip
+ *  Python >3.6, Virtualenv, Pip
  *  npm, node >8
- *  Apache2, mod-wsgi
+ *  Apache2, mod-wsgi or another wsgi compatible server
 
-Installation / Upgrade process:
+Installation / Upgrade process for installations using apache:
 
  1. Install Prerequisites
  2. Download/Clone Repository
@@ -139,5 +139,5 @@ Troubleshooting:
  *  Check AppArmor/Selinux permissions
  *  Check apache logs
  *  Check apache config
- *  Check TTF logs
- *  Check Python version (>3.5!)
+ *  Check M4M logs
+ *  Check Python version (>3.6!)

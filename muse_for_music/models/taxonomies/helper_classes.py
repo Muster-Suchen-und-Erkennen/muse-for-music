@@ -130,7 +130,7 @@ class TreeTaxonomy(Taxonomy):
     @classmethod
     def load(cls, input_data: DictReader, logger: Logger):
         """Load taxonomy from csv file."""
-        pattern = re.compile('^(\d+|\(\d+\)|\[\d+\]|\{\d+\}|<\d+>),?\s+')
+        pattern = re.compile(r'^(\d+|\(\d+\)|\[\d+\]|\{\d+\}|<\d+>),?\s+')
         items = OrderedDict()  # type: Dict[str, TreeTaxonomy]
         for row in input_data:
             name = row['name']  # type: str

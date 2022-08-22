@@ -1,15 +1,16 @@
 
-import click
 import sys
 import csv
 from glob import glob
 from os import path, makedirs
 from inspect import getmembers, isclass
 from typing import Dict, TypeVar, Type
+from flask import current_app
+from flask.cli import with_appcontext
+import click
 
 from .helper_classes import Taxonomy
-from .. import DB_COMMAND_LOGGER
-from .. import app
+from .. import DB_COMMAND_LOGGER, DB_CLI
 from .. import db
 
 
@@ -48,16 +49,17 @@ def generate_na_elements():
     db.session.commit()
 
 
-@app.cli.command('init_taxonomies')
+@DB_CLI.cli.command('init_taxonomies')
 @click.option('-r', '--reload', default=False, is_flag=True)
 @click.argument('folder_path')
+@with_appcontext
 def init_taxonomies(reload, folder_path: str):
     """Init all taxonomies."""
     if not path.isdir(folder_path):
         click.echo('Please provide a path to a folder!')
         return
-    if reload and app.config.get('DEBUG', False):
-        app.config['SQLITE_FOREIGN_KEYS'] = False
+    if reload and current_app.config.get('DEBUG', False):
+        current_app.config['SQLITE_FOREIGN_KEYS'] = False
     folder_path = path.abspath(folder_path)
     click.echo('Scanning folder "{}"'.format(folder_path))
     files = glob(path.join(folder_path, '*.csv'))
@@ -86,7 +88,8 @@ def init_taxonomies(reload, folder_path: str):
         click.echo('No taxonomy table found for name "{}"'.format(name))
 
 
-@app.cli.command('add_na_elements')
+@DB_CLI.cli.command('add_na_elements')
+@with_appcontext
 def add_na_elements():
     """Add all missing "na" elements."""
     click.echo('Making sure every taxonomy has a "not applicable" element.')
@@ -94,8 +97,9 @@ def add_na_elements():
     click.echo('Finished processing all taxonomies.')
 
 
-@app.cli.command('export_taxonomies')
+@DB_CLI.cli.command('export_taxonomies')
 @click.argument('folder_path')
+@with_appcontext
 def save_taxonomies(folder_path: str):
     """Export all taxonomies."""
     folder_path = path.abspath(folder_path)

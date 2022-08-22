@@ -1,13 +1,12 @@
 import urllib
-from flask import render_template, url_for
-from .. import app
+from flask import render_template, url_for, current_app
 from . import debug_blueprint
 """Module containing debug routes index page."""
 
 @debug_blueprint.route('/routes')
 def routes():
     output = []
-    for rule in app.url_map.iter_rules():
+    for rule in current_app.url_map.iter_rules():
 
         line = {
             'endpoint': rule.endpoint,

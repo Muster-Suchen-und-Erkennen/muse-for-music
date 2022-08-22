@@ -5,17 +5,16 @@ services:
     build: ./
     image: muse-for-music:latest
     ports:
-      - "8080:80"
+      - "8000:8000"
     environment:
-      - FLASK_APP=muse_for_music
-      - MODE=debug
-      - SQLALCHEMY_DATABASE_URI=mysql://muse-for-music:muse4music@db/MusicRepo
+      - SQLALCHEMY_DATABASE_URI=mysql+pymysql://muse-for-music:muse4music@db/MusicRepo?charset=utf8mb4
       - JWT_SECRET_KEY=test
       - LOG_PATH=/var/log
+      - "WAIT_HOSTS=db:3306"
     networks:
       - muse-for-music
   db:
-    image: mysql
+    image: mariadb
     environment:
       MYSQL_ROOT_PASSWORD: example
       MYSQL_USER: muse-for-music

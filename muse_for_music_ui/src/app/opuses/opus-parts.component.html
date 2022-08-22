@@ -1,0 +1,16 @@
+<m4m-box>
+    <h1 class="mv0" title>Werkausschnitte</h1>
+    <div class="button h2 pv1 ph2 br2 bg-light-silver link bg-animate hover-bg-light-green pointer" (click)="newPart.open()" *ngIf="showEditButton()" title-right>
+        <i class="fa fa-plus mr2"></i>Neu
+    </div>
+    <div body>
+        <m4m-table [headings]="['Starttakt', 'Endtakt', 'Länge', 'Name']" [rows]="tableData" [sortByColumn]="0"></m4m-table>
+    </div>
+</m4m-box>
+
+<m4m-dialog [dialogType]="'save-cancel'" [valid]="form.valid | async" [icon]="'save'" [okCallback]="save" #newPart >
+    <h1 class="mv0" title>Neuer Werkausschnitt:</h1>
+    <div class="w-100 ph3 pv2" body>
+        <dynamic-form [objectModel]="'PartPOST'" [startValues]="{}" (valid)="onValidChange($event)" (data)="onDataChange($event)" #form></dynamic-form>
+    </div>
+</m4m-dialog>

@@ -4,11 +4,7 @@ Module containing Debug Methods and sites.
 This Module should only be loaded in debug Mode.
 """
 
-from flask import Blueprint, render_template
-from .. import app
-
-if not app.config['DEBUG']:
-    raise ImportWarning("This Module should only be loaded if DEBUG mode is active!")
+from flask import Blueprint, Flask, render_template
 
 debug_blueprint = Blueprint('debug_routes', __name__, template_folder='templates',
                             static_folder='static')
@@ -22,5 +18,7 @@ def index():
     return render_template('debug/index.html',
                            title='muse4music – Debug')
 
-
-app.register_blueprint(debug_blueprint, url_prefix='/debug')
+def register_debug_routes(app: Flask):
+    if not app.config['DEBUG']:
+        raise Warning("This Module should only be loaded if DEBUG mode is active!")
+    app.register_blueprint(debug_blueprint, url_prefix='/debug')

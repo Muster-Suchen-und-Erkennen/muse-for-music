@@ -1,7 +1,7 @@
 """Module for the subparts resource."""
 
 from flask import jsonify, url_for, request
-from flask_restplus import Resource, marshal, abort
+from flask_restx import Resource, marshal, abort
 from flask_jwt_extended import jwt_required, get_jwt_claims, get_jwt_identity
 from sqlalchemy.exc import IntegrityError
 

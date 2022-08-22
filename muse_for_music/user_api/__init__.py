@@ -3,11 +3,11 @@ from logging.handlers import RotatingFileHandler
 from os import path
 from functools import wraps
 from typing import List
-from flask import Blueprint, logging
-from flask_restplus import Api, abort
+from flask import Flask, Blueprint, logging
+from flask_restx import Api, abort
 from flask_jwt_extended import get_jwt_claims
 from flask_jwt_extended.exceptions import NoAuthorizationError
-from .. import app, jwt
+from .. import jwt
 from ..models.users import User, RoleEnum
 
 
@@ -52,19 +52,6 @@ def has_roles(roles: List[RoleEnum]):
 
 
 auth_logger = getLogger('flask.app.auth')  # type: Logger
-
-formatter = Formatter(fmt=app.config['AUTH_LOG_FORMAT'])
-
-fh = RotatingFileHandler(path.join(app.config['LOG_PATH'], 'muse4music_auth.log'),
-                         maxBytes=104857600, backupCount=10)
-
-fh.setFormatter(formatter)
-
-fh.setLevel(DEBUG)
-
-auth_logger.setLevel(DEBUG)
-
-auth_logger.addHandler(fh)
 
 
 user_api_blueprint = Blueprint('user_api', __name__)
@@ -130,6 +117,18 @@ def log_unauthorized(message):
 from . import root, administration, authentication
 
 
-app.register_blueprint(user_api_blueprint, url_prefix='/users')
+def register_user_api(app: Flask):
+    formatter = Formatter(fmt=app.config['AUTH_LOG_FORMAT'])
 
+    fh = RotatingFileHandler(path.join(app.config['LOG_PATH'], 'muse4music_auth.log'),
+                            maxBytes=104857600, backupCount=10)
 
+    fh.setFormatter(formatter)
+
+    fh.setLevel(DEBUG)
+
+    auth_logger.setLevel(DEBUG)
+
+    auth_logger.addHandler(fh)
+
+    app.register_blueprint(user_api_blueprint, url_prefix='/user-api')

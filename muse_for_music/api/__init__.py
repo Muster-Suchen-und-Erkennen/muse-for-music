@@ -1,10 +1,10 @@
 """Root Module for the API."""
 
-from flask import Blueprint
-from flask_restplus import Api, abort
-from flask_restplus.errors import ValidationError
+from flask import Blueprint, Flask
+from flask_restx import Api, abort
+from flask_restx.errors import ValidationError
 from flask_jwt_extended.exceptions import NoAuthorizationError
-from .. import app
+
 from ..user_api import log_unauthorized
 
 api_blueprint = Blueprint('api', __name__)
@@ -37,7 +37,9 @@ def handle_validation_erorr(error: ValidationError):
 @api.errorhandler(NoAuthorizationError)
 def missing_header(error):
     """User is not authorized for this operation."""
-    log_unauthorized(error.message)
-    return {'message': error.message}, 401
+    log_unauthorized(str(error))
+    return {'message': str(error)}, 401
 
-app.register_blueprint(api_blueprint, url_prefix='/api')
+
+def register_api(app: Flask):
+    app.register_blueprint(api_blueprint, url_prefix='/api')

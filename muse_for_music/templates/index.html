@@ -6,7 +6,8 @@
     <title>{{ title }}</title>
     <base href="/">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" type="text/css" href="{{ static_url_for('static', filename='styles.css') | bustcache }}">
+    <link rel="icon" type="image/x-icon" href="{{ static_url_for('static', filename='favicon.ico') | bustcache }}">
 </head>
 
 <body>
@@ -16,11 +17,15 @@
     </script>
     <script>window.__theme = 'bs4';</script>
     <m4m-root class="h-100 flex flex-column"></m4m-root>
-    {{ javascript_tag('inline') | safe }}
-    {{ javascript_tag('polyfills') | safe }}
-    {{ javascript_tag('styles') | safe }}
-    {{ javascript_tag('vendor') | safe }}
-    {{ javascript_tag('main') | safe }}
+
+    <script src="{{ static_url_for('static', filename='runtime-es2015.js') | bustcache }}" type="module"></script>
+    <script src="{{ static_url_for('static', filename='runtime-es5.js') }}" nomodule defer></script>
+    <script src="{{ static_url_for('static', filename='polyfills-es2015.js') | bustcache }}" type="module"></script>
+    <script src="{{ static_url_for('static', filename='polyfills-es5.js') }}" nomodule defer></script>
+    <script src="{{ static_url_for('static', filename='vendor-es2015.js') | bustcache }}" type="module"></script>
+    <script src="{{ static_url_for('static', filename='vendor-es5.js') }}" nomodule defer></script>
+    <script src="{{ static_url_for('static', filename='main-es2015.js') | bustcache }}" type="module"></script>
+    <script src="{{ static_url_for('static', filename='main-es5.js') }}" nomodule defer></script>
 </body>
 
 </html>

@@ -1,0 +1,10 @@
+
+<div class="ph3  box-grid min-column-size-w6">
+
+    <m4m-subpart-edit [subPartID]="subPartID" *ngIf="showEditButton()"></m4m-subpart-edit>
+
+    <dynamic-data [modelUrl]="'#/definitions/SubPartGET'" [data]="subPart" [title]="'Teilwerkausschnitt ' + subPart?.label" *ngIf="!showEditButton()"></dynamic-data>
+
+    <m4m-subpart-voices [subPartID]="subPartID"></m4m-subpart-voices>
+
+</div>

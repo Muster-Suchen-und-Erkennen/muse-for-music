@@ -14,7 +14,7 @@ class User(db.Model):
     username = db.Column(db.String(120), unique=True, index=True)
     password = db.Column(db.String(64))
     deleted = db.Column(db.Boolean(), default=False)
-    roles = db.relationship('UserRole', backref='User', lazy='joined',
+    roles = db.relationship('UserRole', back_populates='user', lazy='joined',
                             cascade="all, delete-orphan",
                             passive_deletes=True)
 
@@ -45,7 +45,7 @@ class User(db.Model):
 class UserRole(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', onupdate='CASCADE', ondelete='CASCADE'))
-    user = db.relationship('User', backref=db.backref('UserRole'))
+    user = db.relationship('User', back_populates='roles')
     role = db.Column(db.Enum(RoleEnum))
 
     def __init__(self, user: User, role: RoleEnum):

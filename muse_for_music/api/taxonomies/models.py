@@ -13,7 +13,7 @@ return marshal(test, taxonomy_tree_item_get), 200
 """
 
 from collections import OrderedDict
-from flask_restplus import fields, marshal
+from flask_restx import fields, marshal
 from . import ns
 from ..models import with_curies
 

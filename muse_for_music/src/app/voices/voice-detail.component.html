@@ -1,8 +1,0 @@
-
-<div class="ph3 flex flex-wrap">
-
-    <m4m-voice-edit [subPartID]="subPartID" [voiceID]="voiceID" *ngIf="showEditButton()"></m4m-voice-edit>
-
-    <dynamic-data [modelUrl]="'#/definitions/VoiceGET'" [data]="voice" [title]="'Stimme ' + voice?.name" *ngIf="!showEditButton()"></dynamic-data>
-
-</div>

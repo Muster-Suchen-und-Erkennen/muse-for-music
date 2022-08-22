@@ -1,38 +1,41 @@
-FROM node:latest as builder
-
-COPY . /
-
-# build ui
-RUN cd muse_for_music \
+FROM node:14-buster as builder
+COPY ./muse_for_music_ui /muse_for_music_ui
+RUN cd muse_for_music_ui \
     && npm install \
-    && npm run build-docker
+    && npm run build
 
-# cleanup ui source
-RUN rm -rf /muse_for_music/src
-RUN rm -rf /muse_for_music/e2e
-RUN rm -rf /muse_for_music/node_modules
-RUN rm /muse_for_music/.angular-cli.json
-RUN rm /muse_for_music/karma.conf.js
-RUN rm /muse_for_music/protractor.conf.js
-RUN rm /muse_for_music/tsconfig.json
-RUN rm /muse_for_music/tslint.json
-RUN rm /muse_for_music/webpack.config.js
-RUN rm /muse_for_music/package.json
-RUN rm /muse_for_music/package-lock.json
+FROM python:3.9
 
+RUN apt-get update || : && apt-get install bash -y
+RUN apt-get upgrade -y
 
+# install poetry
+RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+ENV PATH="${PATH}:/root/.poetry/bin"
 
-FROM tiangolo/uwsgi-nginx-flask:python3.6
+COPY ./migrations /app/migrations
+COPY ./muse_for_music /app/muse_for_music
+COPY ./taxonomies /app/taxonomies
+COPY ./poetry.lock /app/poetry.lock
+COPY ./pyproject.toml /app/pyproject.toml
+COPY ./tasks.py /app/tasks.py
+COPY ./README.md /app/README.md
+COPY --from=builder ./muse_for_music/static /app/muse_for_music/static
 
-COPY --from=builder ./muse_for_music /app/muse_for_music
-COPY --from=builder ./taxonomies /app/taxonomies
-COPY --from=builder ./uwsgi.ini /app/uwsgi.ini
-COPY --from=builder ./requirements.txt /app/requirements.txt
-
-ENV FLASK_APP muse_for_music
-ENV MODE debug
-ENV STATIC_URL /assets
-ENV STATIC_PATH /app/muse_for_music/build
+ENV SHELL="/bin/bash"
 
 WORKDIR /app
-RUN pip install -r requirements.txt
+
+ENV FLASK_APP muse_for_music
+ENV MODE production
+
+RUN poetry install --no-dev
+
+EXPOSE 8000
+
+# Wait for database
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.3/wait /wait
+RUN chmod +x /wait
+
+# TODO ensure that gunicorn runs with minimal rights in the container
+CMD /wait && poetry run invoke before-docker-start && poetry run gunicorn -w 4 -b 0.0.0.0:8000 "muse_for_music:create_app()"

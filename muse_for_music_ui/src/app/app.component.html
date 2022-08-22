@@ -1,0 +1,31 @@
+<m4m-title-bar class="z-1"></m4m-title-bar>
+
+<nav class="z-0">
+    <m4m-breadcrumbs></m4m-breadcrumbs>
+</nav>
+
+
+<div class="z-1 w-100 flex-grow-1 overflow-auto">
+
+    <m4m-info></m4m-info>
+
+    <div class="z-0 w-100">
+        <router-outlet></router-outlet>
+    </div>
+
+    <m4m-dialog [dialogType]="'ok-cancel'" [icon]="'info'" [okCallback]="renewLogin" #renewLoginDialog>
+        <h1 class="mv0" title>Ihre Anmeldung läuft bald ab:</h1>
+        <div class="w-100 ph3 pv2" body>
+            Bitte geben sie ihr Passwort erneut ein:
+            <div class="mt2 flex flex-wrap">
+                <label class="f4 min-w4 mr2 ws-normal flex-grow" style="word-wrap: break-word">
+                    Passwort:
+                </label>
+                <div class="flex bb b--gray">
+                    <input class="input-reset bn pa1 flex-grow" type="password" name="password" placeholder="Passwort" [(ngModel)]="password" (keyup.enter)="renewLoginDialog.ok()">
+                </div>
+            </div>
+        </div>
+    </m4m-dialog>
+
+</div>

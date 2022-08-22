@@ -19,13 +19,13 @@ class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
                           ('measure_end', Measure),
                           ('length', int),
                           ('movement', int),
-                          ('occurence_in_movement', AuftretenSatz),
+                          #('occurence_in_movement', AuftretenSatz),
                           ('dramaturgic_context', DramaturgicContext),
                           ('tempo_context', TempoContext),
                           ('dynamic_context', DynamicContext),
                           ('instrumentation_context', InstrumentationContext))
 
-    _list_attributes = ('formal_functions', )
+    _list_attributes = ('formal_functions', 'occurence_in_movement')
 
     id = db.Column(db.Integer, primary_key=True)
     opus_id = db.Column(db.Integer, db.ForeignKey('opus.id'), nullable=False)
@@ -34,7 +34,7 @@ class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     measure_start_id = db.Column(db.Integer, db.ForeignKey('measure.id'), nullable=False)
     measure_end_id = db.Column(db.Integer, db.ForeignKey('measure.id'), nullable=False)
     length = db.Column(db.Integer, nullable=False)
-    occurence_in_movement_id = db.Column(db.Integer, db.ForeignKey('auftreten_satz.id'), nullable=True)
+    #occurence_in_movement_id = db.Column(db.Integer, db.ForeignKey('auftreten_satz.id'), nullable=True)
     instrumentation_context_id = db.Column(db.Integer, db.ForeignKey('instrumentation_context.id'), nullable=True)
     dynamic_context_id = db.Column(db.Integer, db.ForeignKey('dynamic_context.id'), nullable=True)
     tempo_context_id = db.Column(db.Integer, db.ForeignKey('tempo_context.id'), nullable=True)
@@ -43,7 +43,7 @@ class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     opus = db.relationship(Opus, lazy='select', backref=db.backref('parts', cascade="all, delete-orphan"))
     measure_start = db.relationship(Measure, foreign_keys=[measure_start_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
     measure_end = db.relationship(Measure, foreign_keys=[measure_end_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
-    occurence_in_movement = db.relationship(AuftretenSatz, lazy='joined')
+    #occurence_in_movement = db.relationship(AuftretenSatz, lazy='joined')
     instrumentation_context = db.relationship(InstrumentationContext, single_parent=True, cascade="all, delete-orphan")
     dynamic_context = db.relationship(DynamicContext, single_parent=True, cascade="all, delete-orphan")
     tempo_context = db.relationship(TempoContext, single_parent=True, cascade="all, delete-orphan")
@@ -91,6 +91,16 @@ class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
         self.update_list(formal_functions_list, old_items, FormaleFunktionToPart,
                          FormaleFunktion, 'formale_funktion')
 
+    @property
+    def occurence_in_movement(self):
+        return [mapping.auftreten_satz for mapping in self._occurence_in_movement]
+
+    @occurence_in_movement.setter
+    def occurence_in_movement(self, occurence_in_movement_list: Union[Sequence[int], Sequence[dict]]):
+        old_items = {mapping.auftreten_satz.id: mapping for mapping in self._occurence_in_movement}
+        self.update_list(occurence_in_movement_list, old_items, AuftretenSatzToPart,
+                        AuftretenSatz, 'auftreten_satz')
+
 
 class FormaleFunktionToPart(db.Model):
     part_id = db.Column(db.Integer, db.ForeignKey('part.id'), primary_key=True)
@@ -102,3 +112,14 @@ class FormaleFunktionToPart(db.Model):
     def __init__(self, part, formale_funktion, **kwargs):
         self.part = part
         self.formale_funktion = formale_funktion
+
+class AuftretenSatzToPart(db.Model):
+    part_id = db.Column(db.Integer, db.ForeignKey('part.id'), primary_key=True)
+    auftreten_satz_id = db.Column(db.Integer, db.ForeignKey('auftreten_satz.id', name='fk_auftreten_satz_to_part_auftreten_satz_id'), primary_key=True)
+
+    part = db.relationship(Part, backref=db.backref('_occurence_in_movement', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
+    auftreten_satz = db.relationship('AuftretenSatz')
+
+    def __init__(self, part, auftreten_satz, **kwargs):
+        self.part = part
+        self.auftreten_satz = auftreten_satz

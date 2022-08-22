@@ -23,9 +23,11 @@ class Artikulation(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('Artikulation',
                                passive_deletes='all',
+                               lazy='joined',
+                               join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],
-                                                  lazy='joined',
+                                                  lazy='select',
                                                   join_depth=1
                                                  )
                               )
@@ -41,9 +43,11 @@ class Spielanweisung(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('Spielanweisung',
                                passive_deletes='all',
+                               lazy='joined',
+                               join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],
-                                                  lazy='joined',
+                                                  lazy='select',
                                                   join_depth=1
                                                  )
                               )

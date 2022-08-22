@@ -2,7 +2,7 @@
 
 
 from flask import jsonify, url_for, request
-from flask_restplus import Resource, marshal, reqparse, abort
+from flask_restx import Resource, marshal, reqparse, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy import literal
@@ -64,6 +64,7 @@ class PersonListResource(Resource):
             db.session.commit()
             return marshal(new_person, person_get)
         except IntegrityError as err:
+            db.session.rollback()
             message = str(err)
             if 'UNIQUE constraint failed' in message:
                 abort(409, 'Name is not unique!')

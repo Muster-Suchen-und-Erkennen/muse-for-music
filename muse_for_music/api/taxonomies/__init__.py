@@ -1,13 +1,13 @@
 """Module containing API Endpoints for Taxonomy Resources."""
 
-from flask import request
-from flask_restplus import Resource, marshal, abort
+from flask import request, current_app
+from flask_restx import Resource, marshal, abort
 from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import IntegrityError
 
 from ...models.taxonomies import get_taxonomies, T
 from .. import api
-from ... import app, db
+from ... import db
 from ...user_api import has_roles, RoleEnum
 
 from typing import TypeVar, Dict, Type, cast
@@ -149,7 +149,7 @@ def delete_taxonomy_item(taxonomy: Type[T], item_id: int):
         abort(400, 'Can not delete "na"!')
     db.session.delete(item)
     db.session.commit()
-    app.logger.info('Taxonomy item %s deleted.', item)
+    current_app.logger.info('Taxonomy item %s deleted.', item)
 
 
 @ns.route('/<string:taxonomy_type>/<string:taxonomy>/<int:item_id>/', doc=False)
@@ -189,6 +189,7 @@ class TaxonomyItemResource(Resource):
         try:
             delete_taxonomy_item(tax, item_id)
         except IntegrityError:
+            db.session.rollback()
             abort(400, 'Taxonomy item is still in use!')
 
 
@@ -229,6 +230,7 @@ class ListTaxonomyItemResource(Resource):
         try:
             delete_taxonomy_item(tax, item_id)
         except IntegrityError:
+            db.session.rollback()
             abort(400, 'Taxonomy item is still in use!')
 
 
@@ -285,4 +287,5 @@ class TreeTaxonomyItemResource(Resource):
         try:
             delete_taxonomy_item(tax, item_id)
         except IntegrityError:
+            db.session.rollback()
             abort(400, 'The taxonomy item or one of its children is still in use!')

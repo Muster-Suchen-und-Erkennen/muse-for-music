@@ -1,11 +1,9 @@
 from collections import OrderedDict
 from functools import wraps
-from flask_restplus import marshal
-from flask_restplus.fields import Raw, Nested, StringMixin, MarshallingError, get_value, urlparse, urlunparse
-from flask import url_for, request
+from flask_restx import marshal
+from flask_restx.fields import Raw, Nested, StringMixin, MarshallingError, get_value, urlparse, urlunparse
 from typing import Dict, List, Union
-
-from . import app
+from flask import url_for, request, current_app
 
 # monkeypatch flask restplus to allow custom fields
 if True:
@@ -26,7 +24,7 @@ if True:
         return schema
     Raw.schema = newSchema
 
-    from flask_restplus.model import Model, iteritems, instance, not_none
+    from flask_restx.model import Model, iteritems, instance, not_none
 
     def _schema(self):
         properties = OrderedDict()
@@ -113,7 +111,7 @@ class UrlData():
 
     def __init__(self, endpoint: str, absolute=False, scheme=None, url: str=None,
                  title: str=None, name: str=None, templated: bool=False, url_data: dict={},
-                 path_variables: list=[], hashtag: str=None):
+                 path_variables: list=[], hashtag: str=None, force_trailing_slash: bool=True):
         self.endpoint = endpoint
         self.absolute = absolute
         self.scheme = scheme
@@ -128,6 +126,7 @@ class UrlData():
         self.hashtag = ''
         if hashtag is not None:
             self.hashtag = hashtag
+        self.force_trailing_slash = force_trailing_slash
 
     def url(self, obj):
         if self._url:
@@ -136,7 +135,7 @@ class UrlData():
         for key in self.url_data:
             value = get_value(self.url_data[key], obj)
             if value is None:
-                app.logger.debug('Could not build url because some provided values were none.\n' +
+                current_app.logger.debug('Could not build url because some provided values were none.\n' +
                                  'UrlParam: "%s", ObjectKey: "%s"',
                                  key, self.url_data[key])
                 from flask import request
@@ -147,7 +146,7 @@ class UrlData():
         endpoint = self.endpoint if self.endpoint is not None else request.endpoint
         o = urlparse(url_for(endpoint, _external=self.absolute, **url_data))
         path = ''
-        if o.path.endswith('/'):
+        if o.path.endswith('/') or not self.force_trailing_slash:
             path = o.path + self.path_variables
         else:
             path = o.path + '/' + self.path_variables

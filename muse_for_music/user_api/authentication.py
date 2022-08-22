@@ -1,5 +1,5 @@
 from flask import url_for, request
-from flask_restplus import Resource, fields, abort
+from flask_restx import Resource, fields, abort
 from flask_jwt_extended import jwt_required, create_access_token, \
                                get_jwt_identity, create_refresh_token, \
                                get_jwt_claims, jwt_refresh_token_required, \
