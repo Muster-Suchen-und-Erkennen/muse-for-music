@@ -6,6 +6,8 @@ RUN cd muse_for_music_ui \
 
 FROM python:3.9
 
+LABEL org.opencontainers.image.source="https://github.com/Muster-Suchen-und-Erkennen/muse-for-music"
+
 RUN apt-get update || : && apt-get install bash -y
 RUN apt-get upgrade -y
 
