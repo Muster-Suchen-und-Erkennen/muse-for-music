@@ -4,12 +4,10 @@ RUN cd muse_for_music_ui \
     && npm install \
     && npm run build
 
-FROM python:3.8
+FROM python:3.9
 
 RUN apt-get update || : && apt-get install bash -y
 RUN apt-get upgrade -y
-
-RUN python -m pip install --upgrade pip
 
 # install poetry
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
