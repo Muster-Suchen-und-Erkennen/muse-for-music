@@ -1,7 +1,7 @@
 FROM node:14-buster as builder
 COPY ./muse_for_music_ui /muse_for_music_ui
 RUN cd muse_for_music_ui \
-    && npm install \
+    && npm clean-install \
     && npm run build
 
 FROM python:3.9
