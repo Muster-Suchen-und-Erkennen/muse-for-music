@@ -1,14 +1,15 @@
 name,parent,description
-root,
-anderes harmonisches Phänomen,root
-Mediante,root
+root,,
+Mediante,root,
 in naher Terzverwandschaft,Mediante,"zwei gemeinsame Töne im Akkord; In Dur: Tp, Tg, Sp, Sg, Dp, Dg; In Moll: tP, tG, sP, sG, dP, dG"
 in entfernter Terzverwandschaft,Mediante,"ein gemeinsamer Ton; In Dur: TP, TG, SP, SG, DP, DG; In Moll: tp, tg, sp, sg, dp, dg"
 in naher variativer Terzverwandschaft,Mediante,"ein gemeinsamer Ton; In Dur: tP, tG, sP, sG, dP, dG; In Moll: Tp, Tg, Sp, Sg, Dp, Dg"
 in entfernter variativer Terzverwandschaft,Mediante,"kein gemeinsamer Ton; In Dur: tp, tg, sp, sg, dp, dg; In Moll: TP, TG, SP, SG, DP, DG"
-Tritonussubstitution (der Dominante),root
-abrupter Wechsel von Dur zu Moll,root
-abrupter Wechsel von Moll zu Dur,root
-Fauxbourdon,root
-Vorhalt,root,"Funktionsfremde Nebennote auf einer schweren Taktzeit. Wird einen Ganz- oder Halbton über oder unter seinem Auflösungston gebildet und löst sich in einen konsonanten Ton auf, welcher der Funktion zugehört."
-Vorhaltskette,root
+anderes harmonisches Phänomen,root,
+Tritonussubstitution (der Dominante),root,
+abrupter Wechsel von Dur zu Moll,root,
+abrupter Wechsel von Moll zu Dur,root,
+Fauxbourdon,root,
+Vorhaltskette,root,
+Teufelsmühle,root,
+Mixtur,root,

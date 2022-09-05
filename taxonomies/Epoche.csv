@@ -1,10 +1,13 @@
-name,parent
-root,
-unbestimmte Epoche,root
-andere Epoche,root
-Antike,root
-Mittelalter,root
-Renaissance,root
-Barock,root
-Klassik,root
-Romantik,root
+name,parent,description
+root,,
+unbestimmte Epoche,root,
+andere Epoche,root,
+Antike,root,
+Mittelalter,root,
+Renaissance,root,
+Barock,root,
+Klassik,root,
+Romantik,root,
+Exotismus,root,
+Volksmusik,root,
+anderer Stilbezug,root,

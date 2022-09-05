@@ -1,9 +1,9 @@
 name,parent,description
 root,,
-niedrig,root,"1-2 Punkte"
-niedrig+,root,"3-4 Punkte"
-mittel-,root,"5 Punkte"
-mittel,root,"6 Punkte"
-mittel+,root,"7 Punkte"
-hoch-,root,"8 Punkte"
-hoch,root,"9-12 Punkte"
+niedrig,root,1-2 Punkte
+niedrig+,root,3-4 Punkte
+mittel-,root,5 Punkte
+mittel,root,6 Punkte
+mittel+,root,7 Punkte
+hoch-,root,8 Punkte
+hoch,root,9-12 Punkte

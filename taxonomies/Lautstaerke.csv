@@ -1,10 +1,12 @@
-name,parent
-root,
-ffff und lauter,root
-fff – fortefortissimo,root
-ff – fortissimo,root
-f – forte,root
-mf – mezzoforte,root
-mp – mezzopiano,root
-p – piano,root
-pp – pianopianissimo und leiser,root
+name,parent,description
+root,,
+ffff und lauter,root,
+fff – fortefortissimo,root,
+ff – fortissimo,root,
+f – forte,root,
+mf – mezzoforte,root,
+mp – mezzopiano,root,
+p – piano,root,
+pp – pianissimo,root,
+ppp – pianopianissimo und leiser,root,
+nicht anwendbar,root,

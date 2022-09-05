@@ -1,6 +1,4 @@
-name,parent
-root,
-begleitet,root
-spielt Gegenstimme,root
-imitiert,root
-spielt eine Melodie gemeinsam in durchbrochener Arbeit,root
+name,parent,description
+root,,
+spielt gemeinsam in durchbrochener Arbeit,root,
+Teil eines instrumentalen Wechselgesangs,root,

@@ -1,47 +1,29 @@
 name,parent,description
-root,
-Stillstand,root
-Stillstand auf einer Tonart und ihrer Dominante,Stillstand
-Stillstand auf einer Tonart,Stillstand
+root,,
+Stillstand,root,
+Stillstand auf einer Tonart und ihrer Dominante,Stillstand,
+Stillstand auf einer Tonart,Stillstand,
+harmonsiches Sequenzmuster,root,
+anderes harmonisches Sequenzmuster,harmonsiches Sequenzmuster,
+Quintfallsequenz,harmonsiches Sequenzmuster,
+Quartfallsequenz,harmonsiches Sequenzmuster,= Quintanstiegssequenz
+Kadenz,root,
+andere Kadenz,Kadenz,
+plagale Kadenz (T-S-T),Kadenz,
+plagaler Schluss (S-T),Kadenz,
+Quartvorhalt-Kadenz,Kadenz,
+Vollkadenz (T-S(Sp)-D-T),Kadenz,
+Trugschluss (D-Tp o.ä.),Kadenz,
+authentische Kadenz (T-D-T),Kadenz,
+authentischer Schluss (D-T),Kadenz,
+Rückungen,root,
+andere Rückung,Rückungen,
+Rückung im Halbtonschritt,Rückungen,Bspw. von C-Dur nach H-Dur.
+chromatische Rückung,Rückungen,Bspw. von C-Dur nach Cis-Dur.
+terzverwandte Rückung,Rückungen,nicht Parallel- oder Gegenklang
+Rückung um einen Tritonus,Rückungen,
 Pendeln,root,"Akkordfolge von mindestens fünf Klängen, bei der jeder zweite Klang in seiner Funktion identisch ist, z.B. etwa T–S–T–S–T oder T–S­–T–D–T."
-mehrmaliger schneller Wechsel von Dominante und Tonika (im Stile einer Schlusskadenz),root
+mehrmaliger schneller Wechsel von Dominante und Tonika (im Stile einer Schlusskadenz),root,
 Teufelsmühle / Omnibus,root,"Harmonische Sequenz, bei der sich ein chromatisch steigender oder fallender Bass mit Dominantsept-, verminderten Sept- und Moll-Quartsextakkorden verbindet. Außenstimmen in Gegenbewegung. Vgl. Amon 2015, S. 100."
-harmonsiches Sequenzmuster,root
-anderes harmonisches Sequenzmuster,harmonsiches Sequenzmuster
-Quintfallsequenz,harmonsiches Sequenzmuster
-Quartfallsequenz,harmonsiches Sequenzmuster
-Kadenz,root
-andere Kadenz,Kadenz
-plagale Kadenz (T-S-T),Kadenz
-plagaler Schluss (S-T),Kadenz
-Quartvorhalt-Kadenz,Kadenz
-Vollkadenz (T-S(Sp)-D-T),Kadenz
-Trugschluss (D-Tp o.ä.),Kadenz
-authentische Kadenz (T-D-T),Kadenz
-authentischer Schluss (D-T),Kadenz
-Changieren,root,"Unklare Tonart"
+Changieren,root,Ambivalenz zwischen zwei oder mehr Tonarten / Tongeschlechtern
 Schweifen,root,"Harmonische Bewegung, die kein klares Ziel oder Bezugspunkt besitzt, mithin keine Ausweichung darstellt."
-Rückungen,root
-andere Rückung,Rückungen
-Rückung im Halbtonschritt,Rückungen,"Bspw. von C-Dur nach H-Dur."
-chromatische Rückung,Rückungen,"Bspw. von C-Dur nach Cis-Dur."
-terzverwandte Rückung,Rückungen,"nicht Parallel- oder Gegenklang"
-Rückung um einen Tritonus,Rückungen
-Modulation,root
-entfernte harmonische Funktion,Modulation
-sonstige Tonart,entfernte harmonische Funktion
-andere Mediante,entfernte harmonische Funktion
-mittelweit entfernte harmonische Funktion,Modulation
-Moll-Subdominante in Dur,mittelweit entfernte harmonische Funktion
-Dur-Subdominante in Moll,mittelweit entfernte harmonische Funktion
-Moll-Dominante,mittelweit entfernte harmonische Funktion
-"Variantklang (Moll-Tonika in Dur, Dur-Tonika in Moll)",mittelweit entfernte harmonische Funktion
-Dominantgegenklang,mittelweit entfernte harmonische Funktion
-Dominantparallele bzw. Tonikagegenklang,mittelweit entfernte harmonische Funktion
-nahe harmonische Funktion,Modulation
-Subdominantparallele,nahe harmonische Funktion
-Tonikaparallele,nahe harmonische Funktion
-Subdominante,nahe harmonische Funktion
-Dominante,nahe harmonische Funktion
-andere Funktion,Modulation
-unklare Funktion,Modulation

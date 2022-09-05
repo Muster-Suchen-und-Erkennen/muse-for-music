@@ -1,14 +1,14 @@
-name,parent
-root,
-anderer Notenwert,root
-punktierte Ganze,root
-Ganze,root
-punktierte Halbe,root
-Halbe,root
-punktierte 4-tel,root
-4-tel,root
-punktierte 8-tel,root
-8-tel,root
-16-tel,root
-32-tel,root
-64-tel,root
+name,parent,description
+root,,
+anderer Notenwert,root,
+punktierte Ganze,root,
+Ganze,root,
+punktierte Halbe,root,
+Halbe,root,
+punktierte 4-tel,root,
+4-tel,root,
+punktierte 8-tel,root,
+8-tel,root,
+16-tel,root,
+32-tel,root,
+64-tel,root,

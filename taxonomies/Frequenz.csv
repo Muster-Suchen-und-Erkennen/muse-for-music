@@ -1,5 +1,5 @@
-name,parent
-root,
-nimmt zu,root
-nimmt ab,root
-bleibt gleich,root
+name,parent,description
+root,,
+nimmt zu,root,
+nimmt ab,root,
+bleibt gleich,root,

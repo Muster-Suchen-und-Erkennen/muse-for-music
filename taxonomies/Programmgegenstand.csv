@@ -1,44 +1,45 @@
-name,parent
-root,
-anderer Gegenstand,root
-Kunst,root
-Militär,root
-Nation/Land/Region,root
-andere,Nation/Land/Region
-unbestimmt,Nation/Land/Region
-Dänemark,Nation/Land/Region
-Schweden,Nation/Land/Region
-Norwegen,Nation/Land/Region
-Finnland,Nation/Land/Region
-Russland,Nation/Land/Region
-Ungarn,Nation/Land/Region
-Polen,Nation/Land/Region
-Portugal,Nation/Land/Region
-Spanien,Nation/Land/Region
-Italien,Nation/Land/Region
-Niederlande,Nation/Land/Region
-Belgien,Nation/Land/Region
-Frankreich,Nation/Land/Region
-Schweiz,Nation/Land/Region
-Österreich,Nation/Land/Region
-Deutschland,Nation/Land/Region
-Schottland,Nation/Land/Region
-Irland,Nation/Land/Region
-England,Nation/Land/Region
-Mythos/Sage,root
-Natur,root
-Historisches Ereignis,root
-Religion,root
-unbestimmte Religion,Religion
-andere Religion,Religion
-Hellenischer Polytheismus,Religion
-Islam,Religion
-Judentum,Religion
-christlicher Glaube,Religion
-anders bestimmtes Christentum,christlicher Glaube
-griechisch-orthodoxes Christentum,christlicher Glaube
-russisch-orthodoxes Christentum,christlicher Glaube
-anglikanisches Christentum,christlicher Glaube
-Protestantismus,christlicher Glaube
-Katholizismus,christlicher Glaube
-Christentum im Allgemeinen,christlicher Glaube
+name,parent,description
+root,,
+Religion,root,
+christlicher Glaube,Religion,
+anders bestimmtes Christentum,christlicher Glaube,
+griechisch-orthodoxes Christentum,christlicher Glaube,
+russisch-orthodoxes Christentum,christlicher Glaube,
+anglikanisches Christentum,christlicher Glaube,
+Protestantismus,christlicher Glaube,
+Katholizismus,christlicher Glaube,
+Christentum im Allgemeinen,christlicher Glaube,
+unbestimmte Religion,Religion,
+andere Religion,Religion,
+Hellenischer Polytheismus,Religion,
+Islam,Religion,
+Judentum,Religion,
+Nation/Land/Region,root,
+andere,Nation/Land/Region,
+unbestimmt,Nation/Land/Region,
+Dänemark,Nation/Land/Region,
+Schweden,Nation/Land/Region,
+Norwegen,Nation/Land/Region,
+Finnland,Nation/Land/Region,
+Russland,Nation/Land/Region,
+Ungarn,Nation/Land/Region,
+Polen,Nation/Land/Region,
+Portugal,Nation/Land/Region,
+Spanien,Nation/Land/Region,
+Italien,Nation/Land/Region,
+Niederlande,Nation/Land/Region,
+Belgien,Nation/Land/Region,
+Frankreich,Nation/Land/Region,
+Schweiz,Nation/Land/Region,
+Österreich,Nation/Land/Region,
+Deutschland,Nation/Land/Region,
+Schottland,Nation/Land/Region,
+Irland,Nation/Land/Region,
+England,Nation/Land/Region,
+anderer Gegenstand,root,
+Kunst,root,
+Militär,root,
+Mythos / Sage,root,
+Natur,root,
+Historisches Ereignis,root,
+Heroismus,root,

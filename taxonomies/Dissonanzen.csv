@@ -1,15 +1,8 @@
-name,parent
-root,
-anderer dissonanter Klang,root
-Tritonus,root
-kleiner Dominantseptnonakkord,root
-großer Dominantseptnonakkord,root
-verminderter Septakkord,root
-halbverminderter Septakkord,root
-verminderter Dreiklang,root
-kleine None,root
-große None,root
-zwei oder mehr kleine Sekunden gleichzeitig,root
-kleine Sekunde,root
-zwei oder mehr große Sekunden gleichzeitig,root
-große Sekunde,root
+name,parent,description
+root,,
+anderer dissonanter Klang,root,
+Tritonus,root,
+zwei oder mehr kleine Sekunden gleichzeitig,root,bzw. Komplementärintervalle / Oktaverweiterungen
+kleine Sekunde,root,bzw. Komplementärintervalle / Oktaverweiterungen
+zwei oder mehr große Sekunden gleichzeitig,root,bzw. Komplementärintervalle / Oktaverweiterungen
+große Sekunde,root,bzw. Komplementärintervalle / Oktaverweiterungen

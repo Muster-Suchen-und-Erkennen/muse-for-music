@@ -1,12 +1,12 @@
 name,parent,description
 root,,
-Melodie und Begleitung,root,"(Begleitfiguren: siehe „Funktion der Einzelstimme“)"
+Melodie und Begleitung,root,(Begleitfiguren: siehe „Funktion der Einzelstimme“)
 Einstimmiges Spiel,root,
 sonstige Hauptstimme(n) und Begleitung,root,
-nur Begleitung,root,"bzw. Begleitfigur"
+nur Begleitung,root,bzw. Begleitfigur
 Choralsatz / Kantionalsatz,root,
 anderer Akkordsatz,root,"Homophoner Satz, bei dem der Melodierhythmus gleich dem Akkordrhythmus ist (Blockakkorde)."
-Durchbrochene Arbeit,root,"Motivische Elemente werden in mehreren Instrumenten/Instrumentengruppen im Wechsel aufgegriffen. "
+Durchbrochene Arbeit,root,Motivische Elemente werden in mehreren Instrumenten/Instrumentengruppen im Wechsel aufgegriffen. 
 Kontrapunkt,root,
 fugiert,root,
 Enthält signifikante Pausen einzelner Instrumente / Instrumentengruppen,root,
