@@ -22,3 +22,4 @@ __pycache__
 muse_for_music.egg-info
 Pipfile.lock
 .env
+.flaskenv
