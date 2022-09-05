@@ -13,6 +13,8 @@ from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 from flask_static_digest import FlaskStaticDigest
 from flask_cors import CORS, cross_origin
+from .reverse_proxy_fix import apply_reverse_proxy_fix
+from pathlib import Path
 
 from flask import g
 
@@ -43,9 +45,14 @@ def apply_additional_db_config(app):
 def create_app():
     FLASK_STATIC_DIGEST = FlaskStaticDigest()  # type: FlaskStaticDigest
 
+    instance_path: str | None = environ.get("INSTANCE_PATH", None)
+    if instance_path:
+        if Path(instance_path).is_file():
+            instance_path = None
+
     # Setup Config
 
-    app = Flask(__name__, instance_relative_config=True)  # type: Flask
+    app = Flask(__name__, instance_relative_config=True, instance_path=instance_path)  # type: Flask
     makedirs(app.instance_path, exist_ok=True)
     app.config['LOG_PATH'] = app.instance_path
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}/test.db'.format(app.instance_path)
@@ -64,6 +71,10 @@ def create_app():
     for env_var in ('SQLALCHEMY_DATABASE_URI', 'JWT_SECRET_KEY', 'LOG_PATH', 'SQLITE_FOREIGN_KEYS'):
         app.config[env_var] = environ.get(env_var, app.config.get(env_var))
 
+    reverse_proxy_count = environ.get('REVERSE_PROXY_COUNT', None)
+    if reverse_proxy_count and reverse_proxy_count.isdigit():
+        app.config['REVERSE_PROXY_COUNT'] = int(reverse_proxy_count)
+
 
     formatter = Formatter(fmt=app.config['LOG_FORMAT'])
 
@@ -75,6 +86,9 @@ def create_app():
     app.logger.addHandler(fileHandler)
 
     app.logger.info('Connecting to database %s.', app.config['SQLALCHEMY_DATABASE_URI'])
+
+    # apply reverse proxy fix
+    apply_reverse_proxy_fix(app)
 
     # Setup DB and bcrypt
     db.init_app(app)

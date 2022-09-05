@@ -12,8 +12,8 @@ RUN apt-get update || : && apt-get install bash -y
 RUN apt-get upgrade -y
 
 # install poetry
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
-ENV PATH="${PATH}:/root/.poetry/bin"
+RUN curl -sSL https://install.python-poetry.org | python -
+ENV PATH="${PATH}:/root/.local/bin"
 
 COPY ./migrations /app/migrations
 COPY ./muse_for_music /app/muse_for_music
@@ -32,6 +32,13 @@ ENV FLASK_APP muse_for_music
 ENV MODE production
 
 RUN poetry install --no-dev
+
+# add instance folder and make it read/write
+RUN mkdir --parents /app/instance 
+# && chown gunicorn /app/instance && chmod u+rw /app/instance
+VOLUME ["/app/instance"]
+
+ENV INSTANCE_PATH="/app/instance"
 
 EXPOSE 8000
 
