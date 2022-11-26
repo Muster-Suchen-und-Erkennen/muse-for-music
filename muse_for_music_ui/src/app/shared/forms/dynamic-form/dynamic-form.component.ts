@@ -63,7 +63,11 @@ export class DynamicFormComponent implements OnChanges {
             data.specifications = this.specifications;
         }
         this.formValue = data;
-        this.data.emit(data);
+        Promise.resolve().then(() => this.data.emit(data));
+    }
+
+    updateValid(valid: boolean|null) {
+        Promise.resolve().then(() => this.valid.emit(valid));
     }
 
     updateSpecification(event: SpecificationUpdateEvent) {

@@ -1,7 +1,7 @@
 <div>
     <df-layer [modelUrl]="objectModel" [startData]="startValues" [context]="context" [path]="''"
         [specifications]="specifications" [debug]="debug" (specificationsUpdate)="updateSpecification($event)"
-        (data)="updateData($event)" (valid)="valid.emit($event)" (validForSave)="canSave = $event; runChangeDetection()">
+        (data)="updateData($event)" (valid)="updateValid($event)" (validForSave)="canSave = $event; runChangeDetection()">
     </df-layer>
     <m4m-save-button [formValid]="alwaysAllowSave || canSave" (click)="saveForm()" *ngIf="showSaveButton"></m4m-save-button>
 </div>
