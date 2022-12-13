@@ -44,10 +44,10 @@ RUN ls -lah && python -m poetry export --without-hashes --format=requirements.tx
 VOLUME ["/app/instance"]
 
 ENV INSTANCE_PATH="/app/instance"
+ENV WORKERS=4
 
 EXPOSE 8000
 
 USER gunicorn
 
-# TODO ensure that gunicorn runs with minimal rights in the container
-CMD /wait && cd /app && python -m invoke before-docker-start && python -m gunicorn -w 4 -b 0.0.0.0:8000 "muse_for_music:create_app()"
+CMD /wait && cd /app && python -m invoke before-docker-start && python -m gunicorn -w $WORKERS -b 0.0.0.0:8000 "muse_for_music:create_app()"
