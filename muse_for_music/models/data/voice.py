@@ -255,7 +255,7 @@ class RelatedVoices(db.Model, GetByID, UpdateableModelMixin):
             self.update(kwargs)
 
 
-class SpecificationsToVoice (db.Model, GetByID, UpdateableModelMixin):
+class SpecificationsToVoice (db.Model):
     voice_id = db.Column(db.Integer, db.ForeignKey('voice.id'), primary_key=True)
     specifications_id = db.Column(db.Integer, db.ForeignKey('specifications.id'), primary_key=True)
 

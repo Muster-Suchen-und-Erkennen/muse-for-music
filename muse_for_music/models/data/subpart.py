@@ -11,6 +11,7 @@ from .tempo import TempoGroup
 from .ambitus import AmbitusGroup
 from .citations import Citations
 from .instrumentation import Instrumentation
+from .specifications import Specifications
 from ..taxonomies import Anteil, AuftretenWerkausschnitt, MusikalischeWendung
 
 from typing import Union, Sequence, Dict
@@ -26,7 +27,7 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
                           ('harmonics', Harmonics),
                           ('tempo', TempoGroup),)
 
-    _list_attributes = ('instrumentation', )
+    _list_attributes = ('instrumentation', 'specifications')
 
     id = db.Column(db.Integer, primary_key=True)
     part_id = db.Column(db.Integer, db.ForeignKey('part.id'), nullable=False)
@@ -71,3 +72,25 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     @instrumentation.setter
     def instrumentation(self, data: list):
         self._instrumentation.instruments = data
+
+    @property
+    def specifications(self):
+        return [mapping.specifications for mapping in self._specification]
+
+    @specifications.setter
+    def specifications(self, specifications_list:Union[Sequence[int], Sequence[dict]]):
+        old_items = {mapping.specifications.id: mapping for mapping in self._specifications}
+        self.update_list(specifications_list, old_items, SpecificationsToSubpart,
+                        Specifications, 'specifications')
+
+
+class SpecificationsToSubpart(db.Model):
+    subpart_id = db.Column(db.Integer, db.ForeignKey('sub_part.id'), primary_key=True)
+    specifications_id = db.Column(db.Integer, db.ForeignKey('specifications.id'), primary_key=True)
+
+    subpart = db.relationship(SubPart, backref=db.backref('_specifications', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
+    specifications = db.relationship('Specifications')
+
+    def __init__(self, subpart, specifications, **kwargs):
+        self.subpart = subpart
+        self.specifications = specifications
