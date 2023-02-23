@@ -285,6 +285,18 @@ satz_get = api.model('SatzGET', OrderedDict([
     ('satzart_speziell', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='SatzartSpeziell', title='Satzart speziell')),
 ]))
 
+specifications_put = api.model('SpecificationsGET', OrderedDict([
+    ('id', fields.Integer(default=1, readonly=True, example=1)),
+    ('spezifikation_anteil', fields.Nested(taxonomy_item_ref, taxonomy='SpecAnteil', title='Anteil')),
+    ('spezifikation_auftreten', fields.Nested(taxonomy_item_ref, taxonomy='SpecAuftreten', title='Auftreten')),
+]))
+
+specifications_get = api.model('SpecificationsGET', OrderedDict([
+    ('id', fields.Integer(default=1, readonly=True, example=1)),
+    ('spezifikation_anteil', fields.Nested(taxonomy_item_get, taxonomy='SpecAnteil', title='Anteil')),
+    ('spezifikation_auftreten', fields.Nested(taxonomy_item_get, taxonomy='SpecAuftreten', title='Auftreten')),
+]))
+
 musicial_sequence_put = api.model('MusicialSequencePUT', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('beats', fields.Integer(default=1, title='Zählzeiten')),
@@ -501,6 +513,7 @@ voice_put = api.inherit('VoicePUT', voice_post, OrderedDict([
     ('intervallik', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Intervallik', title='Intervallik')),
     ('citations', fields.Nested(citations_put, description='Citations', isNested=True, title='Zitate und Allusionen', allowSave=True)),
     ('related_voices', fields.List(fields.Nested(related_voice_put), isArray=True, default=[], title='Beziehungen zu anderen Stimmen')),
+    ('specifications', fields.Nested(specifications_put, description='Specifications')),
 ]))
 
 voice_get = api.inherit('VoiceGET', voice_post, OrderedDict([
@@ -525,6 +538,7 @@ voice_get = api.inherit('VoiceGET', voice_post, OrderedDict([
     ('intervallik', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Intervallik')),
     ('citations', fields.Nested(citations_get, description='Citations', isNested=True, title='Zitate und Allusionen', allowSave=True)),
     ('related_voices', fields.List(fields.Nested(related_voice_get), isArray=True, default=[], title='Beziehungen zu anderen Stimmen')),
+    ('specifications', fields.Nested(specifications_get, description='Specifications')),
 ]))
 
 subpart_get = api.inherit('SubPartGET', subpart_put, OrderedDict([
