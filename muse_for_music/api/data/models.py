@@ -287,15 +287,25 @@ satz_get = api.model('SatzGET', OrderedDict([
 
 specifications_put = api.model('SpecificationsGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
-    ('spezifikation_anteil', fields.Nested(taxonomy_item_ref, taxonomy='SpecAnteil', title='Anteil')),
-    ('spezifikation_auftreten', fields.Nested(taxonomy_item_ref, taxonomy='SpecAuftreten', title='Auftreten')),
+    ('path', fields.String(required=True)),
+    ('share', fields.Nested(taxonomy_item_ref, taxonomy='SpecAnteil', title='Anteil')),
+    ('occurence', fields.Nested(taxonomy_item_ref, taxonomy='SpecAuftreten', title='Auftreten')),
 ]))
 
 specifications_get = api.model('SpecificationsGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
-    ('spezifikation_anteil', fields.Nested(taxonomy_item_get, taxonomy='SpecAnteil', title='Anteil')),
-    ('spezifikation_auftreten', fields.Nested(taxonomy_item_get, taxonomy='SpecAuftreten', title='Auftreten')),
+    ('path', fields.String(required=True)),
+    ('share', fields.Nested(taxonomy_item_get, taxonomy='SpecAnteil', title='Anteil')),
+    ('occurence', fields.Nested(taxonomy_item_get, taxonomy='SpecAuftreten', title='Auftreten')),
 ]))
+
+specification_provider_put = [
+    ('specifications', fields.List(fields.Nested(specifications_put, description='Specifications'), isArray=True, default=[])),
+]
+
+specification_provider_get = [
+    ('specifications', fields.List(fields.Nested(specifications_get, description='Specifications'), isArray=True, default=[])),
+]
 
 musicial_sequence_put = api.model('MusicialSequencePUT', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
@@ -439,6 +449,7 @@ part_put = api.inherit('PartPUT', part_post, OrderedDict([
     ('tempo_context', fields.Nested(tempo_context_put, required=True, isNested=True, title='Kontext des Tempos', allowSave=True)),
     ('dramaturgic_context', fields.Nested(dramaturgic_context_put, required=True, isNested=True, title='Sonstiger Kontext', allowSave=True)),
     ('formal_functions', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='FormaleFunktion', title='Formale Funktion')),
+    *specification_provider_put
 ]))
 
 subpart_links = api.inherit('SubPartLinks', with_curies, OrderedDict([
@@ -513,7 +524,7 @@ voice_put = api.inherit('VoicePUT', voice_post, OrderedDict([
     ('intervallik', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Intervallik', title='Intervallik')),
     ('citations', fields.Nested(citations_put, description='Citations', isNested=True, title='Zitate und Allusionen', allowSave=True)),
     ('related_voices', fields.List(fields.Nested(related_voice_put), isArray=True, default=[], title='Beziehungen zu anderen Stimmen')),
-    ('specifications', fields.Nested(specifications_put, description='Specifications')),
+    *specification_provider_put
 ]))
 
 voice_get = api.inherit('VoiceGET', voice_post, OrderedDict([
@@ -538,7 +549,7 @@ voice_get = api.inherit('VoiceGET', voice_post, OrderedDict([
     ('intervallik', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Intervallik')),
     ('citations', fields.Nested(citations_get, description='Citations', isNested=True, title='Zitate und Allusionen', allowSave=True)),
     ('related_voices', fields.List(fields.Nested(related_voice_get), isArray=True, default=[], title='Beziehungen zu anderen Stimmen')),
-    ('specifications', fields.Nested(specifications_get, description='Specifications')),
+    *specification_provider_get
 ]))
 
 subpart_get = api.inherit('SubPartGET', subpart_put, OrderedDict([
@@ -551,6 +562,7 @@ subpart_get = api.inherit('SubPartGET', subpart_put, OrderedDict([
     ('harmonics', fields.Nested(harmonics_get, description='Harmonics')),
     ('dynamic', fields.Nested(dynamic_get, description='Dynamic')),
     ('tempo', fields.Nested(tempo_get, description='TempoGroup')),
+    *specification_provider_get
     #('ambitus', fields.Nested(ambitus_get, isNested=True, title='Ambitus', allowSave=True)),
 ]))
 
@@ -568,6 +580,7 @@ part_small = api.inherit('PartSmall', part_put, OrderedDict([
 
 part_get = api.inherit('PartGET', part_small, OrderedDict([
     ('subparts', fields.List(fields.Nested(subpart_get), default=[])),
+    *specification_provider_get
 ]))
 
 opus_put = api.inherit('OpusPUT', opus_post, OrderedDict([

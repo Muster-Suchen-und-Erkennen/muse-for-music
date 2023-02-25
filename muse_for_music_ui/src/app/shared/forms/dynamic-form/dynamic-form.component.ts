@@ -51,6 +51,12 @@ export class DynamicFormComponent implements OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
+        if (changes.startValues != null) {
+            const newSpecifications = changes.startValues.currentValue?.specifications;
+            if (newSpecifications != null) {
+                this.specifications = newSpecifications;
+            }
+        }
         if (changes.objectModel != null || changes.startValues != null ||
             changes.context != null || changes.showSaveButton != null ||
             changes.alwaysAllowSave != null || changes.saveSuccess != null) {

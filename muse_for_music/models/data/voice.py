@@ -16,14 +16,14 @@ from .rhythm import Rhythm
 from .citations import Citations
 from .instrumentation import InstrumentationContext, Instrumentation
 from .ambitus import AmbitusGroup
-from .specifications import Specifications
+from .specification_provider import SpecificationProviderMixin
 from ..taxonomies import Anteil, MusikalischeFunktion, Melodieform, Verzierung, \
                          Intervallik, Notenwert, Grundton, Oktave, \
                          AuftretenWerkausschnitt, VoiceToVoiceRelation, \
                          MusikalischeWendung
 
 
-class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
+class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, SpecificationProviderMixin):
 
     _normal_attributes = (
                           ('name', str),
@@ -42,7 +42,9 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
                           )
 
     _list_attributes = ('dominant_note_values', 'instrumentation', 'ornaments',
-                        'musicial_figures', 'musicial_function', 'related_voices', 'intervallik','specifications')
+                        'musicial_figures', 'musicial_function', 'related_voices', 'intervallik', 'specifications')
+
+    __tablename__ = "voice"
 
     id = db.Column(db.Integer, primary_key=True)
     subpart_id = db.Column(db.Integer, db.ForeignKey('sub_part.id'), nullable=False)
@@ -162,15 +164,6 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
         self.update_list(intervallik_list, old_items, IntervallikToVoice,
                         Intervallik, 'intervallik')
 
-    @property
-    def specifications(self):
-        return [mapping.specifications for mapping in self._specification]
-
-    @specifications.setter
-    def specifications(self, specifications_list:Union[Sequence[int], Sequence[dict]]):
-        old_items = {mapping.specifications.id: mapping for mapping in self._specifications}
-        self.update_list(specifications_list, old_items, SpecificationsToVoice,
-                        Specifications, 'specifications')
 
 
 class MusikalischeWendungToVoice(db.Model):
@@ -253,15 +246,4 @@ class RelatedVoices(db.Model, GetByID, UpdateableModelMixin):
         self.voice = voice
         if kwargs:
             self.update(kwargs)
-
-
-class SpecificationsToVoice (db.Model):
-    voice_id = db.Column(db.Integer, db.ForeignKey('voice.id'), primary_key=True)
-    specifications_id = db.Column(db.Integer, db.ForeignKey('specifications.id'), primary_key=True)
-
-    voice = db.relationship(Voice, backref=db.backref('_specifications', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
-    specifications = db.relationship('Specifications')
-
-    def __init__(self, voice, specifications, **kwargs):
-        self.voice = voice
-        self.specifications = specifications
+            

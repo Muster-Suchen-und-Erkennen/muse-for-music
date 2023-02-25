@@ -8,12 +8,12 @@ from .dynamic import DynamicContext
 from .tempo import TempoContext
 from .dramaturgic_context import DramaturgicContext
 from ..taxonomies import AuftretenSatz, FormaleFunktion
-from .specifications import Specifications
+from .specification_provider import SpecificationProviderMixin
 
 from typing import Union, Sequence, List
 
 
-class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
+class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, SpecificationProviderMixin):
 
     _normal_attributes = (('name', str),
                           ('measure_start', Measure),
@@ -26,6 +26,8 @@ class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
                           ('instrumentation_context', InstrumentationContext))
 
     _list_attributes = ('formal_functions', 'occurence_in_movement', 'specifications')
+
+    __tablename__ = "part"
 
     id = db.Column(db.Integer, primary_key=True)
     opus_id = db.Column(db.Integer, db.ForeignKey('opus.id'), nullable=False)
@@ -101,15 +103,6 @@ class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
         self.update_list(occurence_in_movement_list, old_items, AuftretenSatzToPart,
                         AuftretenSatz, 'auftreten_satz')
 
-    @property
-    def specifications(self):
-        return [mapping.specifications for mapping in self._specification]
-
-    @specifications.setter
-    def specifications(self, specifications_list:Union[Sequence[int], Sequence[dict]]):
-        old_items = {mapping.specifications.id: mapping for mapping in self._specifications}
-        self.update_list(specifications_list, old_items, SpecificationsToPart,
-                        Specifications, 'specifications')
 
 
 class FormaleFunktionToPart(db.Model):
@@ -133,14 +126,3 @@ class AuftretenSatzToPart(db.Model):
     def __init__(self, part, auftreten_satz, **kwargs):
         self.part = part
         self.auftreten_satz = auftreten_satz
-
-class SpecificationsToPart(db.Model):
-    part_id = db.Column(db.Integer, db.ForeignKey('part.id'), primary_key=True)
-    specifications_id = db.Column(db.Integer, db.ForeignKey('specifications.id'), primary_key=True)
-
-    part = db.relationship(Part, backref=db.backref('_specifications', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
-    specifications = db.relationship('Specifications')
-
-    def __init__(self, part, specifications, **kwargs):
-        self.part = part
-        self.specifications = specifications
