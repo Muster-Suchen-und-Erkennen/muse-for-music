@@ -145,4 +145,10 @@ export class DynamicFormComponent implements OnChanges {
             this.savebutton.saveFinished(success);
         }
     }
+
+    updateSpecData(data) {
+        if (data !== this.currentSpec) {
+            this.currentSpec = data
+        }
+    }
 }
