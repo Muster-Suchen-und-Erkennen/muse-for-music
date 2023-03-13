@@ -285,18 +285,25 @@ satz_get = api.model('SatzGET', OrderedDict([
     ('satzart_speziell', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='SatzartSpeziell', title='Satzart speziell')),
 ]))
 
-specification_put = api.model('SpecificationPUT', OrderedDict([
+specification_aa = api.model('SpecificationAA', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('path', fields.String(required=True, readonly=True)),
     ('share', fields.Nested(taxonomy_item_ref, taxonomy='SpecAnteil', title='Anteil')),
     ('occurence', fields.Nested(taxonomy_item_ref, taxonomy='SpecAuftreten', title='Auftreten')),
 ]))
 
+specification_aai = api.inherit('SpecificationAAI', specification_aa, OrderedDict([
+    ('instrumentation', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='SpecInstrument', default=[], title='Instrumente')),
+]))
+
+specification_put = api.inherit('SpecificationPUT', specification_aai, OrderedDict([]))
+
 specification_get = api.model('SpecificationGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('path', fields.String(required=True, readonly=True)),
     ('share', fields.Nested(taxonomy_item_get, taxonomy='SpecAnteil', title='Anteil')),
     ('occurence', fields.Nested(taxonomy_item_get, taxonomy='SpecAuftreten', title='Auftreten')),
+    ('instrumentation', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='SpecInstrument', default=[], title='Instrumente')),
 ]))
 
 specification_provider_put = [
@@ -304,7 +311,7 @@ specification_provider_put = [
 ]
 
 specification_provider_get = [
-   ('specifications', fields.List(fields.Nested(specification_get, description='Specifications'), isArray=True, default=[])),
+    ('specifications', fields.List(fields.Nested(specification_get, description='Specifications'), isArray=True, default=[])),
 ]
 
 musicial_sequence_put = api.model('MusicialSequencePUT', OrderedDict([

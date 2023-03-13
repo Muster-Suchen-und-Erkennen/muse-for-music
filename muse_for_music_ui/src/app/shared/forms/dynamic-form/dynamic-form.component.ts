@@ -29,6 +29,17 @@ export class DynamicFormComponent implements OnChanges {
 
     specifications: Specification[] = [];
     currentSpec: Specification;
+    currentSpecType: SpecificationUpdateEvent["type"];
+
+    get specModelUrl(): string {
+        if (this.currentSpecType === "aa") {
+            return "SpecificationAA";
+        } else if (this.currentSpecType === "aai") {
+            return "SpecificationAAI";
+        } else {
+            return "";
+        }
+    }
 
     canSave: boolean;
     formValue: any;
@@ -66,7 +77,10 @@ export class DynamicFormComponent implements OnChanges {
 
     updateData(data) {
         if (this.useSpecifications) {
-            data.specifications = this.specifications;
+            data.specifications = this.specifications.map(spec => ({
+                instrumentation: [],
+                ...spec
+            }));
         }
         this.formValue = data;
         this.data.emit(data);
@@ -99,6 +113,7 @@ export class DynamicFormComponent implements OnChanges {
             this.specifications = newSpecifications;
         } else {
             this.currentSpec = null;
+            this.currentSpecType = event.type;
             this.specifications.forEach((spec) => {
                 if (spec.path === event.path) {
                     this.currentSpec = spec;

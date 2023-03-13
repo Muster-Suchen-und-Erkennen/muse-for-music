@@ -10,6 +10,7 @@ class Lautstaerke(db.Model, ListTaxonomy):
     """DB Model for choices."""
 
     display_name = 'Lautstärke'
+    specification = 'aai'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))

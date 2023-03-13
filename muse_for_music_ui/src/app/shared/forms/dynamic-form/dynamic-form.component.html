@@ -7,11 +7,9 @@
 </div>
 
 <m4m-dialog [dialogType]="'ok-cancel'" [valid]="valid" [icon]="'info'" [okCallback]="saveSpec" #dialog >
-    <h1 class="mv0" title>Spezifikation</h1>
-    <div class="w-100 ph3 pv2" body *ngIf="currentSpec">
-        <df-layer [modelUrl]="'SpecificationPUT'" [startData]="currentSpec" [path]="''"
-            [specifications]="[]" [debug]="debug"
-            (data)="updateSpecData($event)">
-        </df-layer>
-    </div>
+        <h1 class="mv0" title>Spezifikation</h1>
+        <div class="w-100 ph3 pv2" body *ngIf="currentSpec">
+            <dynamic-form [objectModel]="specModelUrl" [startValues]="currentSpec" [showSaveButton]="false" [useSpecifications]="false" [debug]="debug" (data)="updateSpecData($event)">
+            </dynamic-form>
+        </div>
 </m4m-dialog>

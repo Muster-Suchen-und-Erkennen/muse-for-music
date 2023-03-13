@@ -1,5 +1,5 @@
 from ... import db
-from ..taxonomies import SpecAnteil, SpecAuftreten
+from ..taxonomies import SpecAnteil, SpecAuftreten, SpecInstrument
 from ..helper_classes import GetByID, UpdateListMixin, UpdateableModelMixin
 
 from typing import Union, Sequence
@@ -14,7 +14,7 @@ class SpecificationProviderMixin():
                                 ('occurence', SpecAuftreten),
                                 ('path', str))
             
-            # _list_attributes = (('spezifikation_instrument'))
+            _list_attributes = ('instrumentation',)
 
             __tablename__ = tablename + '_specification'
 
@@ -36,30 +36,30 @@ class SpecificationProviderMixin():
                 if kwargs:
                     self.update(kwargs)
 
-            # @property
-            # def spezifikation_instrument(self):
-            #     return [mapping.spezifikation_instrument for mapping in self._spezifikation_instrument]
+            @property
+            def instrumentation(self):
+                return [mapping.spezifikation_instrument for mapping in self._spezifikation_instrument]
 
-            # @spezifikation_instrument.setter
-            # def spezifikation_instrument(self, spezifikation_instrument_list:Union[Sequence[int], Sequence[dict]]):
-            #     old_items = {mapping.spezifikation_instrument.id: mapping for mapping in self._spezifikation_instrument}
-            #     self.update_list(spezifikation_instrument_list, old_items, SpecInstrumentToSpecification,
-            #                     SpecInstrument, 'spezifikation_instrument')
+            @instrumentation.setter
+            def instrumentation(self, spezifikation_instrument_list:Union[Sequence[int], Sequence[dict]]):
+                old_items = {mapping.spezifikation_instrument.id: mapping for mapping in self._spezifikation_instrument}
+                self.update_list(spezifikation_instrument_list, old_items, SpecInstrumentToSpecification,
+                                SpecInstrument, 'spezifikation_instrument')
 
 
-        # class SpecInstrumentToSpecification(db.Model):
+        class SpecInstrumentToSpecification(db.Model):
 
-        #     __tablename__ = tablename + '_spec_instrument_to_specification'
+            __tablename__ = tablename + '_spec_instrument_to_specification'
 
-        #     specifications_id = db.Column(db.Integer, db.ForeignKey('specifications.id'), primary_key=True)
-        #     spezifikation_instrument_id = db.Column(db.Integer, db.ForeignKey('spezifikation_instrument.id'), primary_key=True)
+            specifications_id = db.Column(db.Integer, db.ForeignKey(Specification.__tablename__ + '.id'), primary_key=True)
+            spezifikation_instrument_id = db.Column(db.Integer, db.ForeignKey('spezifikation_instrument.id'), primary_key=True)
 
-        #     specifications = db.relationship(Specification, backref=db.backref('_spezifikation_instrument', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
-        #     spezifikation_instrument = db.relationship('SpecInstrument')
+            specifications = db.relationship(Specification, backref=db.backref('_spezifikation_instrument', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
+            spezifikation_instrument = db.relationship('SpecInstrument')
 
-        #     def __init__(self, specifications, spezifikation_instrument, **kwargs):
-        #         self.specifications = specifications
-        #         self.spezifikation_instrument = spezifikation_instrument
+            def __init__(self, specifications, spezifikation_instrument, **kwargs):
+                self.specifications = specifications
+                self.spezifikation_instrument = spezifikation_instrument
 
         cls._Specification = Specification
 

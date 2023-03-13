@@ -32,6 +32,7 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
     @Output() specificationsUpdate: EventEmitter<SpecificationUpdateEvent> = new EventEmitter<SpecificationUpdateEvent>();
 
     specification: any;
+    specificationType: SpecificationUpdateEvent["type"];
     specificationMap: Map<number, any> = new Map<number, any>();
     @Input() specifications: any[] = [];
 
@@ -109,6 +110,7 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
                 return;
             }
             this.displayName = taxonomy.name;
+            this.specificationType = taxonomy.specification;
             if (taxonomy.display_name) {
                 this.displayName = taxonomy.display_name;
             }
@@ -145,7 +147,9 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
     }
 
     editSpecification(id) {
-        this.specificationsUpdate.emit({path: this.path + (this.isArray ? '.' + id : '')});
+        if (this.specificationType) {
+            this.specificationsUpdate.emit({path: this.path + (this.isArray ? '.' + id : ''), type: this.specificationType});
+        }
     }
 
     removeSpecification(id) {
