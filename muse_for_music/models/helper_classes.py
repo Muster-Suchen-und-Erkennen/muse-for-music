@@ -225,9 +225,13 @@ class UpdateListMixin():
         if to_delete:
             db.session.expire(self)
 
-    def update_list(self, item_list: Union[Sequence[int], Sequence[dict]],
+    def update_list(self, item_list: Union[Sequence[int], Sequence[dict], None],
                     old_items: Union[Dict[int, K], Dict[int, W]], mapping_cls: Any,
                     item_cls: Type[V] = None, mapping_cls_attribute: str = None):
+
+        # consider None an empty list
+        if item_list is None:
+            item_list = tuple()
 
         if issubclass(mapping_cls, UpdateableModelMixin):
             self._update_updateable_model_list(item_list, old_items, mapping_cls)
