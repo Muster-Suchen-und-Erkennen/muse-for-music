@@ -38,7 +38,6 @@ def register_routes(app: Flask, flask_static_digest):
     def index(path: str):
         if path.startswith('/api/') or path.startswith('/user-api/'):
             abort(404)
-        print(g.nonce)
         return render_template('index.html', title='muse4music', nonce=getattr(g, 'nonce', ''))
 
 
