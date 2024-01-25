@@ -1,43 +1,46 @@
 name,parent,description
-root,
-unbestimmte funktionale Rolle,root
-andere funktionale Rolle,root
-spielt Melodie,root
-anderweitig melodisch tätig,spielt Melodie
-spielt Melodieführung,spielt Melodie
-spielt Gegenstimme zur führenden Melodie,spielt Melodie
-gleichberechtigt in melodischem Geflecht,spielt Melodie
-spielt Begleitung,root
-spielt folgende Begleitfigur,spielt Begleitung
-"speilt Begleitung, aber keine Begleitfigur",spielt folgende Begleitfigur
-andere Begleitfigur,spielt folgende Begleitfigur
-"Dreinklangs-brechungen",spielt folgende Begleitfigur
-andere Dreiklangsbrechungen,"Dreinklangs-brechungen"
-Arpeggio,"Dreinklangs-brechungen"
-Haltetöne,spielt folgende Begleitfigur
-Blockakkorde,spielt folgende Begleitfigur,"bzw. ist Teil von Blockakkorden"
-Tremolo,spielt folgende Begleitfigur
-Tonrepetitionen,spielt folgende Begleitfigur
-"Basslinie, Walking Bass",spielt folgende Begleitfigur
-Alberti-Bass,spielt folgende Begleitfigur
+root,,
+spielt Begleitung,root,
+spielt folgende Begleitfigur,spielt Begleitung,
+Akkordbrechungen,spielt folgende Begleitfigur,
+andere Akkordbrechungen,Akkordbrechungen,"ggf. unter ""Musikalische Wendungen"" konkretisieren"
+Arpeggio,Akkordbrechungen,
+Orgelpunkt,spielt folgende Begleitfigur,Im Vergleich zum Halteton tendenziell unter der Melodie.
+anderer Orgelpunkt,Orgelpunkt,
+Bordun,Orgelpunkt,
+"spielt Begleitung, aber keine Begleitfigur",spielt folgende Begleitfigur,
+andere Begleitfigur,spielt folgende Begleitfigur,
+Haltetöne,spielt folgende Begleitfigur,Im Vergleich zum Orgelpunkt tendenziell über der Melodie.
+Blockakkorde,spielt folgende Begleitfigur,bzw. ist Teil von Blockakkorden
+Tremolo,spielt folgende Begleitfigur,
+Tonrepetitionen,spielt folgende Begleitfigur,
+Basslinie,spielt folgende Begleitfigur,"ggf. Walking Bass unter ""Musikalische Wendungen"" konkretisieren"
+Alberti-Bass,spielt folgende Begleitfigur,
 Murky-Bass,spielt folgende Begleitfigur,"„Fortlaufende gebrochene Oktavbässe im Sinne eines Bass-Ostinato.“ Amon 2011, S. 248. Geht bei höherer Geschwindigkeit in ein Tremolo über."
-Trommelbass,spielt folgende Begleitfigur
-Viertelpause und drei Viertelnoten,spielt folgende Begleitfigur,"𝄚𝄽𝄚𝅘𝅥𝄚𝅘𝅥𝄚𝅘𝅥𝄚"
-Walzer,spielt folgende Begleitfigur
-Parallelführung,spielt folgende Begleitfigur
-Melodie-Ergänzung,spielt folgende Begleitfigur
-Orgelpunkt,spielt folgende Begleitfigur
-anderer Orgelpunkt,Orgelpunkt
-Bordun,Orgelpunkt
-Ostinato,spielt folgende Begleitfigur
-Akkord-Akzent,spielt folgende Begleitfigur
-akzentuiert,root
-akzentuiert andere Zählzeit,akzentuiert
-akzentuiert die Zählzeit 1,akzentuiert
-akzentuiert die Zählzeit 2,akzentuiert
-akzentuiert die Zählzeit 3,akzentuiert
-akzentuiert die Zählzeit 4,akzentuiert
-akzentuiert die Zählzeit 5,akzentuiert
-akzentuiert die Zählzeit 6,akzentuiert
-akzentuiert die Zählzeit 7,akzentuiert
-akzentuiert die Zählzeit 8,akzentuiert
+Trommelbass,spielt folgende Begleitfigur,
+Muster aus Pause auf akzentuierter Zählzeit mit anschließender kurzer Intervall- oder Schrittfolge,spielt folgende Begleitfigur,"z.B. 𝄚𝄽𝄚𝅘𝅥𝄚𝅘𝅥𝄚𝅘𝅥𝄚"
+Walzerrhythmus,spielt folgende Begleitfigur,
+Parallelführung,spielt folgende Begleitfigur,
+Melodie-Ergänzung,spielt folgende Begleitfigur,
+Ostinato,spielt folgende Begleitfigur,
+Akkord-Akzent,spielt folgende Begleitfigur,
+Synkopen (kontinuierlich),spielt folgende Begleitfigur,
+Umspielung,spielt folgende Begleitfigur,
+spielt Melodie,root,
+anderweitig melodisch tätig,spielt Melodie,
+hat Melodieführung,spielt Melodie,
+spielt Gegenstimme zur führenden Melodie,spielt Melodie,
+gleichberechtigt in melodischem Geflecht,spielt Melodie,
+akzentuiert,root,
+akzentuiert andere Zählzeit,akzentuiert,
+akzentuiert die Zählzeit 1,akzentuiert,
+akzentuiert die Zählzeit 2,akzentuiert,
+akzentuiert die Zählzeit 3,akzentuiert,
+akzentuiert die Zählzeit 4,akzentuiert,
+akzentuiert die Zählzeit 5,akzentuiert,
+akzentuiert die Zählzeit 6,akzentuiert,
+akzentuiert die Zählzeit 7,akzentuiert,
+akzentuiert die Zählzeit 8,akzentuiert,
+unbestimmte funktionale Rolle,root,
+andere funktionale Rolle,root,
+Dient mehr oder weniger ausschließlich der harmonischen Füllung.,root,

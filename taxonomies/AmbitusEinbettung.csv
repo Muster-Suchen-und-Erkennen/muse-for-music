@@ -1,6 +1,6 @@
 name,parent,description
-root,
-größerer Ambitus,root
-gleich großer Ambitus,root
-kleinerer Ambitus,root
-nicht anwendbar,root,"Am Anfang oder am Ende ohne Kontext"
+root,,
+größerer Ambitus,root,
+gleich großer Ambitus (ungefähr),root,
+kleinerer Ambitus,root,
+nicht anwendbar,root,Am Anfang oder am Ende ohne Kontext

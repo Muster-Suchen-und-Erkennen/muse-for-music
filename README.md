@@ -1,6 +1,10 @@
 # MUSE4Music
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
+## Docker
+
+A docker image is built automatically. Docker images can be found under [Packages](https://github.com/orgs/Muster-Suchen-und-Erkennen/packages?repo_name=muse-for-music).
+
 ## First start:
 
 This project uses poetry and npm to manage all dependencies. You must install poetry and npm first before running any script.

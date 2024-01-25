@@ -1,28 +1,20 @@
-FROM node:14-buster as builder
+FROM node:16-buster as builder
 COPY ./muse_for_music_ui /muse_for_music_ui
 RUN cd muse_for_music_ui \
-    && npm install \
-    && npm run build
+    && npm clean-install \
+    && npm run build -- --configuration production --output-hashing=none --extract-licenses
 
-FROM python:3.8
+FROM python:3.9
 
-RUN apt-get update || : && apt-get install bash -y
-RUN apt-get upgrade -y
+LABEL org.opencontainers.image.source="https://github.com/Muster-Suchen-und-Erkennen/muse-for-music"
 
-RUN python -m pip install --upgrade pip
+# install bash and remove caches again in same layer
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends bash && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# install poetry
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
-ENV PATH="${PATH}:/root/.poetry/bin"
+WORKDIR /app
 
-COPY ./migrations /app/migrations
-COPY ./muse_for_music /app/muse_for_music
-COPY ./taxonomies /app/taxonomies
-COPY ./poetry.lock /app/poetry.lock
-COPY ./pyproject.toml /app/pyproject.toml
-COPY ./tasks.py /app/tasks.py
-COPY ./README.md /app/README.md
-COPY --from=builder ./muse_for_music/static /app/muse_for_music/static
+RUN useradd gunicorn
 
 ENV SHELL="/bin/bash"
 
@@ -31,13 +23,31 @@ WORKDIR /app
 ENV FLASK_APP muse_for_music
 ENV MODE production
 
-RUN poetry install --no-dev
+# make directories and set user rights
+RUN mkdir --parents /app/instance \
+    && chown --recursive gunicorn /app && chmod --recursive u+rw /app/instance
+
+# Wait for database
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
+RUN chmod +x /wait
+
+RUN python -m pip install poetry gunicorn
+
+COPY --chown=gunicorn ./migrations /app/migrations
+COPY --chown=gunicorn ./muse_for_music /app/muse_for_music
+COPY --chown=gunicorn ./taxonomies /app/taxonomies
+COPY --chown=gunicorn ./poetry.lock ./pyproject.toml ./tasks.py ./README.md /app/
+COPY --chown=gunicorn --from=builder ./muse_for_music/static /app/muse_for_music/static
+
+RUN ls -lah && python -m poetry export --without-hashes --format=requirements.txt -o requirements.txt && echo ".\n" >> requirements.txt && python -m pip install -r requirements.txt
+
+VOLUME ["/app/instance"]
+
+ENV INSTANCE_PATH="/app/instance"
+ENV WORKERS=4
 
 EXPOSE 8000
 
-# Wait for database
-ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.3/wait /wait
-RUN chmod +x /wait
+USER gunicorn
 
-# TODO ensure that gunicorn runs with minimal rights in the container
-CMD /wait && poetry run invoke before-docker-start && poetry run gunicorn -w 4 -b 0.0.0.0:8000 "muse_for_music:create_app()"
+CMD /wait && cd /app && python -m invoke before-docker-start && python -m gunicorn -w $WORKERS -b 0.0.0.0:8000 "muse_for_music:create_app()"

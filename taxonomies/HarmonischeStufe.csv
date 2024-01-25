@@ -1,48 +1,49 @@
-name,parent
-root,
-andere Stufe,root
-unklare Stufe,root
-Dur-Stufe,root
-Ib ,Dur-Stufe
-I,Dur-Stufe
-I#,Dur-Stufe
-IIb,Dur-Stufe
-II,Dur-Stufe
-II# ,Dur-Stufe
-IIIb,Dur-Stufe
-III,Dur-Stufe
-III#,Dur-Stufe
-IVb,Dur-Stufe
-IV,Dur-Stufe
-IV#,Dur-Stufe
-Vb,Dur-Stufe
-V,Dur-Stufe
-VIb,Dur-Stufe
-VI,Dur-Stufe
-V#,Dur-Stufe
-VIIb,Dur-Stufe
-VII,Dur-Stufe
-VII#,Dur-Stufe
-VI#,Dur-Stufe
-Moll-Stufe,root
-ib ,Moll-Stufe
-i,Moll-Stufe
-i#,Moll-Stufe
-iib,Moll-Stufe
-ii,Moll-Stufe
-ii# ,Moll-Stufe
-iiib,Moll-Stufe
-iii,Moll-Stufe
-iii#,Moll-Stufe
-ivb,Moll-Stufe
-iv,Moll-Stufe
-iv#,Moll-Stufe
-vb,Moll-Stufe
-v,Moll-Stufe
-v#,Moll-Stufe
-vib,Moll-Stufe
-vi,Moll-Stufe
-vi#,Moll-Stufe
-viib,Moll-Stufe
-vii,Moll-Stufe
-vii#,Moll-Stufe
+name,parent,description
+root,,Bei Modulation sind mehrere Zentren anzukreuzen.
+Dur-Stufe,root,
+Ib ,Dur-Stufe,
+I,Dur-Stufe,
+I#,Dur-Stufe,
+IIb,Dur-Stufe,
+II,Dur-Stufe,
+II# ,Dur-Stufe,
+IIIb,Dur-Stufe,
+III,Dur-Stufe,
+III#,Dur-Stufe,
+IVb,Dur-Stufe,
+IV,Dur-Stufe,
+IV#,Dur-Stufe,
+Vb,Dur-Stufe,
+V,Dur-Stufe,
+VIb,Dur-Stufe,
+VI,Dur-Stufe,
+V#,Dur-Stufe,
+VIIb,Dur-Stufe,
+VII,Dur-Stufe,
+VII#,Dur-Stufe,
+VI#,Dur-Stufe,
+Moll-Stufe,root,
+ib ,Moll-Stufe,
+i,Moll-Stufe,
+i#,Moll-Stufe,
+iib,Moll-Stufe,
+ii,Moll-Stufe,
+ii# ,Moll-Stufe,
+iiib,Moll-Stufe,
+iii,Moll-Stufe,
+iii#,Moll-Stufe,
+ivb,Moll-Stufe,
+iv,Moll-Stufe,
+iv#,Moll-Stufe,
+vb,Moll-Stufe,
+v,Moll-Stufe,
+v#,Moll-Stufe,
+vib,Moll-Stufe,
+vi,Moll-Stufe,
+vi#,Moll-Stufe,
+viib,Moll-Stufe,
+vii,Moll-Stufe,
+vii#,Moll-Stufe,
+andere Stufe,root,
+unklare Stufe,root,
+bitonal,root,

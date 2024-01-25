@@ -1,6 +1,6 @@
 name,parent,description
-root,
-gleich reiche Instrumentierung,root
-sparsamere Instrumentierung,root
-reichere Instrumentierung,root
-nicht anwendbar,root,"Am Anfang oder am Ende ohne Kontext"
+root,,
+gleich reiche Instrumentierung,root,
+sparsamere Instrumentierung,root,
+reichere Instrumentierung,root,
+nicht anwendbar,root,Am Anfang oder am Ende ohne Kontext

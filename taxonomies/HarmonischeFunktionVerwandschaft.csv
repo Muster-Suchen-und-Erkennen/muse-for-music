@@ -1,17 +1,17 @@
-name,parent
-root,
-nah verwandt,root
-Subdominante,nah verwandt
-Dominante,nah verwandt
-Tonikaparallele,nah verwandt
-Subdominantparallele,nah verwandt
-mittelweit verwandt,root
-Dominantparallele bzw. Tonikagegenklang,mittelweit verwandt
-Dominantgegenklang,mittelweit verwandt
-Varianttonika,mittelweit verwandt
-Moll-Dominante,mittelweit verwandt
-Dur-Subdominante,mittelweit verwandt
-Moll-Subdominante,mittelweit verwandt
-entfernt verwandt,root
-andere Mediante,entfernt verwandt
-sonstige Tonarten,entfernt verwandt
+name,parent,description
+root,,
+nah verwandt,root,
+Subdominante,nah verwandt,
+Dominante,nah verwandt,
+Tonikaparallele,nah verwandt,
+Subdominantparallele,nah verwandt,
+mittelweit verwandt,root,
+Dominantparallele bzw. Tonikagegenklang,mittelweit verwandt,
+Dominantgegenklang,mittelweit verwandt,
+Varianttonika,mittelweit verwandt,
+Moll-Dominante,mittelweit verwandt,
+Dur-Subdominante,mittelweit verwandt,
+Moll-Subdominante,mittelweit verwandt,
+entfernt verwandt,root,
+andere Mediante,entfernt verwandt,
+sonstige Tonarten,entfernt verwandt,

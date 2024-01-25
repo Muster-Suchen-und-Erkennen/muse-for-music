@@ -1,6 +1,6 @@
 name,parent,description
-root,
-Hoch,root,"80 bis 100 % der Melodietöne weisen einen Harmoniewechsel auf."
-Mittel+,root,"66 bis 79 % der Melodietöne weisen einen Harmoniewechsel auf."
-Mittel-,root,"51 bis 65 % der Melodietöne weisen einen Harmoniewechsel auf."
-Niedrig,root,"bis zu 50% der Melodietöne weisen einen Harmoniewechsel auf."
+root,,
+Hoch,root,80 bis 100 % der Melodietöne weisen einen Harmoniewechsel auf.
+Mittel+,root,66 bis 79 % der Melodietöne weisen einen Harmoniewechsel auf.
+Mittel-,root,51 bis 65 % der Melodietöne weisen einen Harmoniewechsel auf.
+Niedrig,root,bis zu 50% der Melodietöne weisen einen Harmoniewechsel auf.

@@ -1,21 +1,22 @@
 name,parent,description
-root,
-Wiederholung als motivische Arbeit,root,"Nur eintragen, wenn nicht unter „Wiederholung“ eingetragen."
-Ableitung,root,"„Gewinn von neuem motivischen Material durch motivische oder thematische Verwandlung bzw. Umwandlung des Ausgangsmaterials unter Beibehaltung (zumindest in erkennbaren Ansätzen) der melodischen oder rhythmischen Struktur“ (Amon 2011, S. 245-246. Statt melodisch lies: diastematisch*)."
-Erweiterung,root
+root,,
+Erweiterung,root,
 äußere Erweiterung (Anfügen von neuem Material),Erweiterung,"Ein Motiv wird erweitert, indem neues Material angefügt wird, das Motiv aber in seiner Form bestehen bleibt. Vgl. Amon 2011, S. 247."
 innere Erweiterung (Einarbeiten von neuem Material),Erweiterung,"Ein Motiv wird erweitert, indem neues Material in die Motivstruktur eingearbeitet wird. Vgl. Amon 2011, S. 247."
+Diminution,root,Verkleinerung entweder des Intervalls (diastematisch) oder der Notenlänge (rhythmisch).
+diastematische Diminution durch Intervallverengung,Diminution,
+rhythmische Diminution durch Verkürzung von Notendauern,Diminution,
+Augmentation,root,"Erweiterung, Vergrößerung, entweder des Intervalls (diastematisch) oder der Notenlänge (rhythmisch). Vgl. Amon 2011, S. 246."
+diastematische Augmentation durch Intervallweitung,Augmentation,
+rhythmische Augmentation durch Verlängerung von Notendauern,Augmentation,
+Wiederholung als motivische Arbeit,root,"Nur eintragen, wenn nicht unter „Wiederholung“ eingetragen."
+Ableitung,root,"„Gewinn von neuem motivischen Material durch motivische oder thematische Verwandlung bzw. Umwandlung des Ausgangsmaterials unter Beibehaltung (zumindest in erkennbaren Ansätzen) der melodischen oder rhythmischen Struktur“ (Amon 2011, S. 245-246. Statt melodisch lies: diastematisch*)."
 Auflösung / Dekonstruktion,root,"Reduktion eines Motivs, indem Material aus seinem Kontext herausgenommen wird."
-Fortspinnung,root,"Eine Melodik kann man fortspinnend nennen, wenn ein Motiv, das eher linear orientiert und nicht klar abgegrenzt ist, als Ganzes oder in Teilen wiederholt und sequenziert wird, sowie im Verlauf seiner Weiterführung ständig umgeformt und dann von einem anderen Motiv abgelöst wird. Vgl. Amon 2011, S. 242."
-Imitation,root,"Wörtliche oder leicht veränderte Wiederholung eines Motivs in einer anderen Stimme."
+Imitation,root,Wörtliche oder leicht veränderte Wiederholung eines Motivs in einer anderen Stimme.
 Krebs,root,"Spiegelung eines Motivs an einer vertikalen Achse. Vgl. Amon 2011, S. 246."
 Umkehrung,root,"Geschieht, wenn ein Motiv so abgewandelt wird, dass seine Intervalle in die entgegengesetzte Richtung gesetzt sind. (Bspw. wird aus einer steigenden Tonleiter eine fallende). vgl. Amon 2011, S. 247."
-Spiegelkrebs,root,"Gleichzeitige Kombination von Krebs und Umkehrung."
-Diminution,root,"Verkleinerung entweder des Intervalls (diastematisch) oder der Notenlänge (rhythmisch)."
-diastematische Diminution durch Intervallverengung,Diminution
-rhythmische Diminution durch Verkürzung von Notendauern,Diminution
-Augmentation,root,"Erweiterung, Vergrößerung, entweder des Intervalls (diastematisch) oder der Notenlänge (rhythmisch). Vgl. Amon 2011, S. 246."
-diastematische Augmentation durch Intervallweitung,Augmentation
-rhythmische Augmentation durch Verlängerung von Notendauern,Augmentation
-Verzierung,root
-sonstige Variantenbildung,root
+Spiegelkrebs,root,Gleichzeitige Kombination von Krebs und Umkehrung.
+sonstige Variantenbildung,root,
+Verkürzung von Motiven,root,
+Abspaltung,root,
+Ornamentierung,root,

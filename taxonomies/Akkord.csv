@@ -1,28 +1,29 @@
-name,parent
-root,
-Sechs- oder Siebenklang,root
-Tredezimakkord,Sechs- oder Siebenklang
-alterierter Undezimakkord,Sechs- oder Siebenklang
-Undezimakkord,Sechs- oder Siebenklang
-Fünfklang,root
-anderer Fünfklang,Fünfklang
-Dominantseptnonakkord,Fünfklang
-Vierklang,root
-Sixte ajoutée,Vierklang
-Septakkord,Vierklang
-übermäßiger Quintsextakkord,Septakkord
-großer übermäßiger Septakkord,Septakkord
-verminderter Septakkord,Septakkord
-verminderter Septakkord (nicht als verkürzter Dominantseptnonakkord),verminderter Septakkord
-verminderter Septakkord als verkürzter Dominantseptnonakkord,verminderter Septakkord
-kleiner Septakkord (halbverminderter Septakkord),Septakkord
-(kleiner) Moll-Septakkord (Moll-Sieben),Septakkord
-großer Moll-Septakkord (Moll-Major-Sieben),Septakkord
-kleiner Dur-Septakkord (Dominantseptakkord),Septakkord
-großer Dur-Septakkord (Dur-Major-Sieben),Septakkord
-Dreiklang,root
-verselbstständigter Neapolitaner,Dreiklang
-verkürzter Sixte-ajoutée-Akkord,Dreiklang
-Neapolitanischer Sextakkord,Dreiklang
-Moll-Dreiklang,Dreiklang
-Dur-Dreiklang,Dreiklang
+name,parent,description
+root,,
+Sechs- oder Siebenklang,root,
+Tredezimakkord,Sechs- oder Siebenklang,
+alterierter Undezimakkord,Sechs- oder Siebenklang,mit hochalterierter Undezime
+Undezimakkord,Sechs- oder Siebenklang,
+Fünfklang,root,
+anderer Fünfklang,Fünfklang,
+Dominantseptnonakkord,Fünfklang,
+Vierklang,root,
+Sixte ajoutée,Vierklang,
+Septakkord,Vierklang,
+übermäßiger Quintsextakkord,Septakkord,z. B. as-c-es-fis (in C-Dur mit Doppeldominantfunktion)
+großer übermäßiger Septakkord,Septakkord,z. B. g-h-dis-f (in C-Dur)
+verminderter Septakkord,Septakkord,
+verminderter Septakkord (nicht als verkürzter Dominantseptnonakkord),verminderter Septakkord,z. B.: h-d-f-as (in C-Dur)
+verminderter Septakkord als verkürzter Dominantseptnonakkord,verminderter Septakkord,z. B.: a-c-es-ges (in C-Dur)
+kleiner Septakkord (halbverminderter Septakkord),Septakkord,z. B.: h-d-f-a
+(kleiner) Moll-Septakkord (Moll-Sieben),Septakkord,
+großer Moll-Septakkord (Moll-Major-Sieben),Septakkord,
+kleiner Dur-Septakkord (Dominantseptakkord),Septakkord,
+großer Dur-Septakkord (Dur-Major-Sieben),Septakkord,
+Dreiklang,root,
+verselbstständigter Neapolitaner,Dreiklang,
+verkürzter Sixte-ajoutée-Akkord,Dreiklang,Sixte-ajoutée-Akkord ohne Quint
+Neapolitanischer Sextakkord,Dreiklang,
+verminderter Dreiklang,Dreiklang,
+übermäßiger Dreiklang,Dreiklang,
+anderer besonderer Akkord,root,

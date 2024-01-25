@@ -1,81 +1,83 @@
-name,parent
-root,
-keine Ausdrucksbezeichnung,root
-andere Ausdrucksbezeichnung,root
-affetuoso / leidenschaftlich,root
-agile / beweglich,root
-agitato / erregt,root
-alla marcia / nach Art des Marsches,root
-alla polacca / nach Art der Polonaise,root
-alla tedesca / nach Art des Walzers,root
-alla turca,root
-alla zingarese,root
-amabile / lieblich,root
-"amoroso, con amore / liebevoll, zärtlich",root
-"animato, con anima / beseelt, belebt",root
-a piacere / frei im Vortrag,root
-appassionato / leidenschaftlich,root
-arioso / singend,root
-"brillante / glänzend, virtuos",root
-burlesco / scherzhaft,root
-calando / in Tonstärke und Tempo zurückgehend,root
-"cantabile / ausdrucksvoll, singend",root
-"capriccioso / eigenwillig, launenhaft, kapriziös",root
-"comodo / gemütlich, gemächlich",root
-"con brio, con fuoco / mit Feuer, feurig",root
-con calore / mit Wärme,root
-con fermezza / mit Festigkeit,root
-con forza / mit Kraft,root
-con moto / mit Bewegung,root
-consitato / erregt,root
-"deciso / bestimmt, entschieden",root
-"delicato / zart, geschmackvoll",root
-"determinato / bestimmt, entschlossen",root
-"divoto / andächtig, ergeben",root
-"dolce / zart, sanft, lieblich",root
-"dolendo, con dolore / klagend, schmerzerfüllt",root
-"elegante / geschmackvoll, fein",root
-"energico / energisch, entschlossen",root
-eroico / heldenhaft,root
-facile / leicht,root
-fantastico / fantastisch,root
-festivo / festlich,root
-flautando / flötenartig,root
-"flebile / wehmütig, klagend",root
-"fresco / frisch, lebhaft",root
-frivolo / leichtfertig,root
-funebre / traurig,root
-fuocoso / feurig,root
-"furioso, con furore / wild rasend",root
-"giocoso / lustig, fröhlich, ausgelassen",root
-"grandioso, con grandezza / großartig, erhaben",root
-"grave / schwer, ernst",root
-"grazioso, con grazia / anmutig, liebenswürdig",root
-"impetuoso / heftig, ungestüm",root
-indeciso / unbestimmt,root
-"infernale / teuflisch, höllisch",root
-"innocente / schlicht, naiv, ungekünstelt",root
-"lacrimoso, lamentoso / klagend, traurig",root
-"leggiero / leicht, locker",root
-"maestoso / erhaben, festlich",root
-"marciale, alla marcia / marschmäßig",root
-martellato / gehämmert,root
-misterioso / geheimnisvoll,root
-parlando / sprechend,root
-"patetico, pathétique / leidenschaftlich",root
-pensieroso / nachdenklich,root
-"pesante / schwer, wuchtig",root
-piacevole / angenehm,root
-"placido / still, ruhig",root
-portato / getragen,root
-quito / ruhig,root
-religioso / andachtsvoll,root
-risoluto / entschlossen,root
-"rustico / ländlich, bäuerlich",root
-scherzando / scherzend,root
-semplice / einfach,root
-sereno / heiter,root
-"spirituoso, con spirito / feurig",root
-"tempestoso / stürmisch, ungestüm",root
-triste / traurig,root
-"vigoroso / lebhaft, kraftvoll",root
+name,parent,description
+root,,
+keine Ausdrucksbezeichnung,root,
+andere Ausdrucksbezeichnung,root,
+affetuoso / leidenschaftlich,root,
+agile / beweglich,root,
+agitato / erregt,root,
+alla marcia / nach Art des Marsches,root,
+alla polacca / nach Art der Polonaise,root,
+alla tedesca / nach Art des Walzers,root,
+alla turca,root,
+alla zingarese,root,
+amabile / lieblich,root,
+"amoroso, con amore / liebevoll, zärtlich",root,
+"animato, con anima / beseelt, belebt",root,
+a piacere / frei im Vortrag,root,
+appassionato / leidenschaftlich,root,
+arioso / singend,root,
+"brillante / glänzend, virtuos",root,
+burlesco / scherzhaft,root,
+calando / in Tonstärke und Tempo zurückgehend,root,
+"cantabile / ausdrucksvoll, singend",root,
+"capriccioso / eigenwillig, launenhaft, kapriziös",root,
+"comodo / gemütlich, gemächlich",root,
+"con brio, con fuoco / mit Feuer, feurig",root,
+con calore / mit Wärme,root,
+con fermezza / mit Festigkeit,root,
+con forza / mit Kraft,root,
+con moto / mit Bewegung,root,
+consitato / erregt,root,
+"deciso / bestimmt, entschieden",root,
+"delicato / zart, geschmackvoll",root,
+"determinato / bestimmt, entschlossen",root,
+"divoto / andächtig, ergeben",root,
+"dolce / zart, sanft, lieblich",root,
+"dolendo, con dolore / klagend, schmerzerfüllt",root,
+"elegante / geschmackvoll, fein",root,
+"energico / energisch, entschlossen",root,
+eroico / heldenhaft,root,
+facile / leicht,root,
+fantastico / fantastisch,root,
+festivo / festlich,root,
+flautando / flötenartig,root,
+"flebile / wehmütig, klagend",root,
+"fresco / frisch, lebhaft",root,
+frivolo / leichtfertig,root,
+funebre / traurig,root,
+fuocoso / feurig,root,
+"furioso, con furore / wild rasend",root,
+"giocoso / lustig, fröhlich, ausgelassen",root,
+"grandioso, con grandezza / großartig, erhaben",root,
+"grave / schwer, ernst",root,
+"grazioso, con grazia / anmutig, liebenswürdig",root,
+"impetuoso / heftig, ungestüm",root,
+indeciso / unbestimmt,root,
+"infernale / teuflisch, höllisch",root,
+"innocente / schlicht, naiv, ungekünstelt",root,
+"lacrimoso, lamentoso / klagend, traurig",root,
+"leggiero / leicht, locker",root,
+"maestoso / erhaben, festlich",root,
+"marciale, alla marcia / marschmäßig",root,
+martellato / gehämmert,root,
+misterioso / geheimnisvoll,root,
+parlando / sprechend,root,
+"patetico, pathétique / leidenschaftlich",root,
+pensieroso / nachdenklich,root,
+"pesante / schwer, wuchtig",root,
+piacevole / angenehm,root,
+"placido / still, ruhig",root,
+portato / getragen,root,
+quito / ruhig,root,
+religioso / andachtsvoll,root,
+risoluto / entschlossen,root,
+"rustico / ländlich, bäuerlich",root,
+scherzando / scherzend,root,
+semplice / einfach,root,
+sereno / heiter,root,
+"spirituoso, con spirito / feurig",root,
+"tempestoso / stürmisch, ungestüm",root,
+triste / traurig,root,
+"vigoroso / lebhaft, kraftvoll",root,
+assai animato,root,
+espressivo / con espressione,root,

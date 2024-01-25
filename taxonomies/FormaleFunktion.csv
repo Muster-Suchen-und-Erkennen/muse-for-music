@@ -1,9 +1,9 @@
-name,parent
-root,
-Eröffnung,root
-Überleitung,root
-Höhepunkt,root
-Zwischenspiel,root
-Einleitung eines Schlussabschnitts,root
-Schluss,root
-Andere Funktion,root
+name,parent,description
+root,,
+Eröffnung,root,
+Überleitung,root,
+Höhepunkt,root,
+Zwischenspiel,root,
+Einleitung eines Schlussabschnitts,root,
+Schluss,root,
+Andere Funktion,root,

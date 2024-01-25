@@ -1,6 +1,6 @@
-name,parent
-root,
-Dissonanzgrad gleich null,root
-niedriger Dissonanzgrad,root
-mittlerer Dissonanzgrad,root
-hoher Dissonanzgrad,root
+name,parent,description
+root,,
+Dissonanzgrad gleich null,root,Auch keine große Sekunde / Dominantseptakkorde.
+niedriger Dissonanzgrad,root,
+mittlerer Dissonanzgrad,root,"Zwischen 20% und 50% der Klänge (unter Berücksichtigung der Klangdauer) enthalten kleine Sekunde, Tritonus oder mindestens zwei große Sekunden. Relevant ist außerdem eine Häufung von großen Sekunden, die nicht Teil eines Dominantseptakkords sind."
+hoher Dissonanzgrad,root,"Mehr als 50% der Klänge (unter Berücksichtigung der Klangdauer) enthalten kleine Sekunde, Tritonus oder mindestens zwei große Sekunden. Relevant ist außerdem eine Häufung von großen Sekunden, die nicht Teil eines Dominantseptakkords sind."

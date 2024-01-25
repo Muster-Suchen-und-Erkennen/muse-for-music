@@ -1,20 +1,20 @@
 name,parent,description
-root,
-andere Tonschritte ,root
-sprungbasierte Intervallik,root
-große Sprünge (ab gr. Sexte),sprungbasierte Intervallik
-"mittlere Sprünge (Quarte, Quinte, kl. Sexte)",sprungbasierte Intervallik
-"Terzsprünge, aber keine Akkordbrechungen",sprungbasierte Intervallik
-Akkordbrechung,root
-Siginifikatnte Tonrepetitionen,root
-Haltetöne,root
-Wirbel,root
-skalare Tonschritte,root,"mindestens drei Schritte nacheinander"
-Pentatonik,skalare Tonschritte
-Chromatik,skalare Tonschritte
-Dur,skalare Tonschritte
-Moll,skalare Tonschritte
-Kirchentonart / Modus ,skalare Tonschritte
-Ganztonleiter,skalare Tonschritte
-„Zigeuner“- / ungarisch Moll,skalare Tonschritte
-„Zigeuner“- / arabisch Dur,skalare Tonschritte
+root,,
+sprungbasierte Intervallik,root,
+große Sprünge (ab gr. Sexte),sprungbasierte Intervallik,
+"mittlere Sprünge (Quarte, Quinte, kl. Sexte)",sprungbasierte Intervallik,
+"Terzsprünge, aber keine Akkordbrechungen",sprungbasierte Intervallik,
+skalare Tonschritte,root,mindestens drei Schritte nacheinander
+Pentatonik,skalare Tonschritte,
+Chromatik,skalare Tonschritte,
+Dur,skalare Tonschritte,
+Moll,skalare Tonschritte,
+Kirchentonart / Modus ,skalare Tonschritte,
+Ganztonleiter,skalare Tonschritte,
+„Zigeuner“- / ungarisch Moll,skalare Tonschritte,
+„Zigeuner“- / arabisch Dur,skalare Tonschritte,
+andere Intervallik,root,
+Akkordbrechung,root,Mindestens drei Akkordtöne müssen beteiligt sein. Ein Terz- oder Quintsprung bspw. reicht nicht aus.
+Siginifikante Tonrepetitionen,root,"Meint nicht jegliche Tonwiederholungen innerhalb einer Stimme, sondern nur solche, die entweder lang genug sind oder an exponierter Stelle stehen."
+Haltetöne,root,Ab einer Länge von ca. zwei aufeinanderfolgenden ganzen Noten bei mittlerem Tempo.
+Signifikante Intervallrepetitionen,root,z. B. Tremolo

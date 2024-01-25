@@ -85,3 +85,34 @@ def create_populated_db():
     click.echo('Database created.')
     init_db_function()
     click.echo('Database populated.')
+
+
+def list_users_function():
+    return [u.username for u in User.query.all()]
+
+
+@DB_CLI.cli.command('list-users')
+@with_appcontext
+def list_users():
+    users = list_users_function()
+    click.echo('Registered users: ' + ', '.join(users))
+
+
+def reset_password_function(username, password):
+    user = User.query.filter(User.username == username).first()
+    if user is None:
+        DB_COMMAND_LOGGER.info('User %s was not found.', username)
+        return
+    user.set_password(password)
+    DB_COMMAND_LOGGER.info('Setting new Password for user %s!', username)
+    db.session.add(user)
+    db.session.commit()
+
+
+@DB_CLI.cli.command('set-user-password')
+@click.option("--username", required=True)
+@click.password_option("--password")
+@with_appcontext
+def reset_password(username, password):
+    click.echo('Resetting password for user ' + username)
+    reset_password_function(username, password)

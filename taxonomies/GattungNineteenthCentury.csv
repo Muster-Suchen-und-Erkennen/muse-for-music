@@ -1,17 +1,25 @@
-name,parent
-root,
-unbestimmte Gattung,root
-andere Gattung,root
-Symphonie,root
-Sinfonietta,root
-Sinfonia,root
-Instrumentalkonzert,root
-Symphonische Dichtung,root
-Ouvertüre,root
-symphonischer Tanz,root
-symphonischer Marsch,root
-Konzertstück,root
-Ballett,root
-Reverie,root
-Serenade,root
-Capriccio,root
+name,parent,description
+root,,
+unbestimmte Gattung,root,
+andere Gattung,root,
+Symphonie,root,
+Sinfonietta,root,
+Sinfonia,root,
+Instrumentalkonzert,root,
+Symphonische Dichtung,root,
+Ouvertüre,root,
+symphonischer Tanz,root,
+symphonischer Marsch,root,
+Konzertstück,root,
+Ballett,root,
+Reverie,root,
+Serenade,root,
+Capriccio,root,
+Variationen,root,
+Suite,root,
+Rhapsodie,root,
+Fantasie,root,
+Schauspielmusik,root,
+Szenen,root,
+Nocturne,root,
+Ballade,root,

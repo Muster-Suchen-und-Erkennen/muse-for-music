@@ -1,7 +1,11 @@
 name,parent,description
-root,
-wechselndes Tempo,root
-gleichbleibendes Tempo,root
-Accelerando,root,"Beschleunigung: Bezeichnet mit Accelerando (accel.) oder Stringendo (string.)."
+root,,
+wechselndes Tempo,root,
+gleichbleibendes Tempo,root,
+Accelerando,root,Beschleunigung: Bezeichnet mit Accelerando (accel.) oder Stringendo (string.).
 Ritardando,root,"Verzögerung: Bezeichnet mit Ritardando (rit./ritard.) oder Rallentando (rall.), auch Ritenuto (riten.)."
-a Tempo,root,"Wiederaufnahme des Tempos"
+a Tempo,root,Wiederaufnahme des Tempos
+auskomponierte Beschleunigung,root,
+auskomponierte Verlangsamung,root,
+andere Tempoveränderung,root,
+nicht anwendbar,root,

@@ -22,6 +22,8 @@ services:
       MYSQL_DATABASE: MusicRepo
     networks:
       - muse-for-music
+    # ports:
+    #   - "3306:3306"
 networks:
   muse-for-music:
     driver: bridge

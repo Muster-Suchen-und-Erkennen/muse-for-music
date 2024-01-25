@@ -1,15 +1,15 @@
-name,parent
-root,
-"Subsubkontra-Oktave (,,,C - ,,,H)",root
-"Subkontra-Oktave (,,C - ,,H)",root
-"Kontra-Oktave (,C - ,H)",root
-Große Oktave (C - H),root
-Kleine Oktave (c - h),root
-Eingestrichene Oktave (c' - h'),root
-Zweigestrichene Oktave (c'' - h''),root
-Dreigestrichene Oktave (c''' - h'''),root
-Viergestrichene Oktave (c'''' - h''''),root
-Fünfgestrichene Oktave (c''''' - h''''',root
-Sechsgestrichene Oktave (c'''''' - h''''''),root
-Siebengestrichene Oktave (c''''''' - h'''''''),root
-Achtgestrichene Oktave (c'''''''' - h''''''''),root
+name,parent,description
+root,,
+"Subsubkontra-Oktave (,,,C - ,,,H)",root,
+"Subkontra-Oktave (,,C - ,,H)",root,
+"Kontra-Oktave (,C - ,H)",root,
+Große Oktave (C - H),root,
+Kleine Oktave (c - h),root,
+Eingestrichene Oktave (c' - h'),root,
+Zweigestrichene Oktave (c'' - h''),root,
+Dreigestrichene Oktave (c''' - h'''),root,
+Viergestrichene Oktave (c'''' - h''''),root,
+Fünfgestrichene Oktave (c''''' - h''''',root,
+Sechsgestrichene Oktave (c'''''' - h''''''),root,
+Siebengestrichene Oktave (c''''''' - h'''''''),root,
+Achtgestrichene Oktave (c'''''''' - h''''''''),root,

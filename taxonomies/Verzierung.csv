@@ -1,14 +1,9 @@
 name,parent,description
-root,
-andere Verzierung,root
+root,,
+andere Verzierung,root,
 Vorschlag,root,"𝆕𝅘𝅥 "
-Doppelvorschlag,Vorschlag
-langer Vorschlag,Vorschlag
-kurzer Vorschlag,Vorschlag
-Nachschlag,root,""
-einfacher Nachschlag,root
-doppelter Nachschlag,root
-Pralltriller oder Mordent,root
-Doppelschlag,root,"Mögliche Darstellung: 𝆗"
-Triller,root,"Mögliche Darstellung: 𝆖"
-Schleifer,root
+Nachschlag,root,
+Pralltriller oder Mordent,root,
+Doppelschlag,root,Mögliche Darstellung: 𝆗
+Triller,root,Mögliche Darstellung: 𝆖
+Schleifer,root,

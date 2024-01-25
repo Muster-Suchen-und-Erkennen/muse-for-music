@@ -1,7 +1,8 @@
-name,parent
-root,
-Aufstiegsbewegung,root
-Abstiegsbewegung,root
-Wellenbewegung,root
-Bogenbewegung,root
-keine ausgeprägte Melodiestruktur,root
+name,parent,description
+root,,
+Aufstiegsbewegung,root,
+Abstiegsbewegung,root,
+Wellenbewegung,root,
+Bogenbewegung,root,
+keine ausgeprägte Melodiestruktur,root,
+nicht anwendbar,root,

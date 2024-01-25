@@ -1,19 +1,19 @@
 name,parent,description
-root,
-anderer Rhythmustyp,root
-kein erkennbarer Rhythmustyp,root
-Marsch,root
-anderer Marsch,Marsch
-Trauermarsch,Marsch
-Tanz,root
-anderer Tanzrhythmus,Tanz
+root,,
+Marsch,root,
+anderer Marsch,Marsch,"Achtung: nicht notwendigerweise 4er-Takt! Siehe Beethoven, 5. Symphonie, 3. Satz!"
+Trauermarsch,Marsch,
+Tanz,root,
+anderer Tanzrhythmus,Tanz,
 Menuett,Tanz,"3/4 Takt, wenn schneller dann auch 3/8 oder 6/8. Ständige Aufrechterhaltung des wahrnehmbaren Viertelflusses."
 Walzer,Tanz,"3/4 Takt. Bass auf Hauptzählzeiten (oft mit Wechsel zwischen I und V der jeweiligen Harmonie), Nachschläge auf übrigen leichten Zählzeiten."
-Polka,Tanz,"2/4 Takt"
-Polonaise (ruhig),Tanz,"3/4 Takt. Stark akzentuierter und wiederholter Rhythmus (1) mit kadenzierender Schlussformel (2)."
-Polonaise (schwungvoll),Tanz
+Polka,Tanz,2/4 Takt
+Polonaise (ruhig),Tanz,3/4 Takt. Stark akzentuierter und wiederholter Rhythmus (1) mit kadenzierender Schlussformel (2).
+Polonaise (schwungvoll),Tanz,
 Mazurka,Tanz,"3/4 Takt. Punktierungen, Betonung der leichten Zählzeiten."
-Fandango,Tanz
-Ländler,Tanz,"3/4 Takt."
+Fandango,Tanz,
+Ländler,Tanz,3/4 Takt.
 Tarantella,Tanz,"Schnell, 3/8 oder 6/8 Takt. Laufende Achtel und Viertel-Achtel bzw. Reiterrhythmus."
-Csárdás,Tanz
+Csárdás,Tanz,
+anderer Rhythmustyp,root,
+kein erkennbarer Rhythmustyp,root,

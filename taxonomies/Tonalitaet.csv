@@ -1,13 +1,13 @@
 name,parent,description
-root,
-unbestimmt,root
-Dur-Moll-Tonalität,root
-Dur,Dur-Moll-Tonalität
-Moll,Dur-Moll-Tonalität
+root,,
+Dur-Moll-Tonalität,root,
+Dur,Dur-Moll-Tonalität,
+Moll,Dur-Moll-Tonalität,
 wechselndes Tongeschlecht,Dur-Moll-Tonalität,"Zwischen Dur und Moll wechselnd, allerdings so, dass jeweils meist klar ist, welches der beiden vorliegt."
 changierendes Tongeschlecht,Dur-Moll-Tonalität,"Zwischen Dur und Moll wechselnd, allerdings so, dass oft unklar ist, welches der beiden vorliegt."
-unbestimmtes Tongeschlecht,Dur-Moll-Tonalität
-modale Tonalität,root
-Kirchentonleiter,modale Tonalität
-Ganztonleiter,modale Tonalität
-Atonalität,root
+unbestimmtes Tongeschlecht,Dur-Moll-Tonalität,
+modale Tonalität,root,
+Kirchentonleiter,modale Tonalität,
+Ganztonleiter,modale Tonalität,
+unbestimmt,root,
+Atonalität,root,

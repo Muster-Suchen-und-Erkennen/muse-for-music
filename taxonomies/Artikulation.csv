@@ -1,19 +1,18 @@
 name,parent,description
-root,
-andere Artikulation,root
-non legato,root,"Liegt immer dann vor, wenn keine spezielle Artikulationsanweisung geben ist."
-legato,root,""
-portato,root,""
+root,,
+Tremolo,root,
+Einzelnoten,Tremolo,
+rhythmisch gebunden,Einzelnoten,
+frei,Einzelnoten,
+Wechselnoten,Tremolo,
+(2) rhythmisch gebunden,Wechselnoten,
+(2) frei,Wechselnoten,
+andere Artikulation,root,
+legato,root,
+portato,root,
 tenuto,root,"𝅘𝅥𝅽𝄚"
 staccato,root,"𝅘𝅥𝅼𝄚"
 staccatissimo,root,"𝅘𝅥𝅾𝄚"
 marcato,root,"𝅘𝅥𝅿𝄚 oder 𝆜 über der Note"
-sotto voce,root
-Tremolo,root
-Einzelnoten,Tremolo
-(1) rhythmisch gebunden,Einzelnoten
-(1) frei,Einzelnoten
-Wechselnoten,Tremolo
-(2) rhythmisch gebunden,Wechselnoten
-(2) frei,Wechselnoten
-sostenuto,root
+sotto voce,root,
+sostenuto,root,

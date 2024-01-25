@@ -1,11 +1,7 @@
-name,parent
-root,
-gegen Ende des Werkausschnitts,root
-kontinuierlich gegen Ende des Werkausschnitts,gegen Ende des Werkausschnitts
-diskontinuierlich gegen Ende des Werkausschnitts,gegen Ende des Werkausschnitts
-in der Mitte des Werkausschnitts,root
-kontinuierlich in der Mitte des Werkausschnitts,in der Mitte des Werkausschnitts
-diskontinuierlich in der Mitte des Werkausschnitts,in der Mitte des Werkausschnitts
-zu Beginn des Werkausschnitts,root
-kontinuierlich zu Beginn des Werkausschnitts,zu Beginn des Werkausschnitts
-diskontinuierlich zu Beginn des Werkausschnitts,zu Beginn des Werkausschnitts
+name,parent,description
+root,,
+gegen Anfang,root,
+gegen Mitte,root,
+gegen Ende,root,
+identisch mit ganzem Werkausschnitt,root,
+mehrfach im Werkausschnitt,root,

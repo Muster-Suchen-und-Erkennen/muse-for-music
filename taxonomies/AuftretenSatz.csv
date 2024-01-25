@@ -1,10 +1,10 @@
-name,parent
-root,
-unmittelbar zum Schluss des Satzes,root
-kurz vor Schluss des Satzes,root
-im vierten Viertel des Satzes,root
-im dritten Viertel des Satzes,root
-im zweiten Viertel des Satzes,root
-im ersten Viertel des Satzes,root
-kurz nach Beginn des Satzes,root
-unmittelbar zu Beginn des Satzes,root
+name,parent,description
+root,,
+unmittelbar zu Beginn des Satzes,root,
+kurz nach Beginn des Satzes,root,
+im ersten Viertel des Satzes,root,
+im zweiten Viertel des Satzes,root,
+im dritten Viertel des Satzes,root,
+im vierten Viertel des Satzes,root,
+kurz vor Schluss des Satzes,root,
+unmittelbar zum Schluss des Satzes,root,

@@ -1,4 +1,5 @@
-name,parent
-root,
-fallende Bewegung im Tonraum,root
-steigende Bewegung im Tonraum,root
+name,parent,description
+root,,
+fallende Bewegung im Tonraum,root,
+steigende Bewegung im Tonraum,root,
+Auf-und-Abbewegung,root,
