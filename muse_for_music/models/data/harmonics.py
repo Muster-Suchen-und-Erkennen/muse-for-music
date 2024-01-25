@@ -87,9 +87,9 @@ class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
 
     @harmonische_funktion.setter
     def harmonische_funktion(self, harmonische_funktion_list: Union[Sequence[int], Sequence[dict]]):
-        old_items = {mapping.harmonische_funktion_verwandschaft.id: mapping for mapping in self._harmonische_funktion}
+        old_items = {mapping.harmonische_funktion.id: mapping for mapping in self._harmonische_funktion}
         self.update_list(harmonische_funktion_list, old_items, HarmonischeFunktionToHarmonics,
-                         HarmonischeFunktionVerwandschaft, 'harmonische_funktion_verwandschaft')
+                         HarmonischeFunktionVerwandschaft, 'harmonische_funktion')
 
 
 
