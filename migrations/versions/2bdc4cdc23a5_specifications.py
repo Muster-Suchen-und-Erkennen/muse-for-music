@@ -146,6 +146,7 @@ def upgrade():
             {"id": 1, "name": "durchgehend", "description": ""},
             {"id": 2, "name": "teilweise", "description": ""},
             {"id": 3, "name": "selten", "description": ""},
+            {"id": 4, "name": "na", "description": ""},
         ]
     )
 
@@ -155,6 +156,7 @@ def upgrade():
             {"id": 1, "name": "gegen Anfang", "description": ""},
             {"id": 2, "name": "in der Mitte", "description": ""},
             {"id": 3, "name": "gegen Ende", "description": ""},
+            {"id": 4, "name": "na", "description": ""},
         ]
     )
 
