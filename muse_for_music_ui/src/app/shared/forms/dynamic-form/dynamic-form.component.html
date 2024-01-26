@@ -6,7 +6,7 @@
     <m4m-save-button [formValid]="alwaysAllowSave || canSave" (click)="saveForm()" *ngIf="showSaveButton"></m4m-save-button>
 </div>
 
-<m4m-dialog [dialogType]="'ok-cancel'" [valid]="valid" [icon]="'info'" [okCallback]="saveSpec" #dialog >
+<m4m-dialog [dialogType]="'ok-cancel'" [valid]="valid" [icon]="'info'" [okCallback]="saveSpec" [cancelCallback]="cancelSpecUpdate" #dialog >
         <h1 class="mv0" title>Spezifikation</h1>
         <div class="w-100 ph3 pv2" body *ngIf="currentSpec">
             <dynamic-form [objectModel]="specModelUrl" [startValues]="currentSpec" [showSaveButton]="false" [useSpecifications]="false" [debug]="debug" (data)="updateSpecData($event)">

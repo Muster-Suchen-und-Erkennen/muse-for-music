@@ -29,6 +29,7 @@ export class DynamicFormComponent implements OnChanges {
 
     specifications: Specification[] = [];
     currentSpec: Specification;
+    currentSpecUpdated: Specification;
     currentSpecType: SpecificationUpdateEvent["type"];
 
     get specModelUrl(): string {
@@ -117,6 +118,7 @@ export class DynamicFormComponent implements OnChanges {
             this.specifications = newSpecifications;
         } else {
             this.currentSpec = null;
+            this.currentSpecUpdated = null;
             this.currentSpecType = event.type;
             this.specifications.forEach((spec) => {
                 if (spec.path === event.path) {
@@ -132,25 +134,32 @@ export class DynamicFormComponent implements OnChanges {
                 }
             }
             if (this.useSpecifications) {
-                this.dialog.open();
+                Promise.resolve().then(() => this.dialog.open());
             }
         }
     }
 
     saveSpec = () => {
+        const currentSpec = this.currentSpecUpdated ?? this.currentSpec;
         const newSpecifications = [];
         this.specifications.forEach((spec) => {
-            if (spec.path === this.currentSpec.path) {
-                newSpecifications.push(this.currentSpec);
+            if (spec.path === currentSpec.path) {
+                newSpecifications.push(currentSpec);
                 this.currentSpec = null;
+                this.currentSpecUpdated = null;
             } else {
                 newSpecifications.push(spec);
             }
         });
-        if (this.currentSpec != null) {
-            newSpecifications.push(this.currentSpec);
+        if (currentSpec != null) {
+            newSpecifications.push(currentSpec);
         }
         this.specifications = newSpecifications;
+    }
+
+    cancelSpecUpdate = () => {
+        this.currentSpec = null;
+        this.currentSpecUpdated = null;
     }
 
     saveForm = () => {
@@ -166,8 +175,8 @@ export class DynamicFormComponent implements OnChanges {
     }
 
     updateSpecData(data) {
-        if (data !== this.currentSpec) {
-            this.currentSpec = data
+        if (data !== this.currentSpecUpdated) {
+            this.currentSpecUpdated = data
         }
     }
 }
