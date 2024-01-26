@@ -1,4 +1,4 @@
-"""empty message
+"""Add backup table
 
 Revision ID: 6332c52bf469
 Revises: 5d1b25e05af8

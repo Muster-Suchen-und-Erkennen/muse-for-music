@@ -1,4 +1,4 @@
-"""empty message
+"""Refactor formal function into separate table
 
 Revision ID: 88a8835f8310
 Revises: bb0693433148

@@ -1,4 +1,4 @@
-"""empty message
+"""Remove unique constraint for original opus name
 
 Revision ID: 494a304bb471
 Revises: 08b69a172bb7
