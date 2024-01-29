@@ -8,24 +8,26 @@ from .dynamic import DynamicContext
 from .tempo import TempoContext
 from .dramaturgic_context import DramaturgicContext
 from ..taxonomies import AuftretenSatz, FormaleFunktion
+from .specification_provider import SpecificationProviderMixin
 
 from typing import Union, Sequence, List
 
 
-class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
+class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, SpecificationProviderMixin):
 
     _normal_attributes = (('name', str),
                           ('measure_start', Measure),
                           ('measure_end', Measure),
                           ('length', int),
                           ('movement', int),
-                          #('occurence_in_movement', AuftretenSatz),
                           ('dramaturgic_context', DramaturgicContext),
                           ('tempo_context', TempoContext),
                           ('dynamic_context', DynamicContext),
                           ('instrumentation_context', InstrumentationContext))
 
-    _list_attributes = ('formal_functions', 'occurence_in_movement')
+    _list_attributes = ('formal_functions', 'occurence_in_movement', 'specifications')
+
+    __tablename__ = "part"
 
     id = db.Column(db.Integer, primary_key=True)
     opus_id = db.Column(db.Integer, db.ForeignKey('opus.id'), nullable=False)
@@ -100,6 +102,7 @@ class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
         old_items = {mapping.auftreten_satz.id: mapping for mapping in self._occurence_in_movement}
         self.update_list(occurence_in_movement_list, old_items, AuftretenSatzToPart,
                         AuftretenSatz, 'auftreten_satz')
+
 
 
 class FormaleFunktionToPart(db.Model):

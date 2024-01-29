@@ -11,12 +11,13 @@ from .tempo import TempoGroup
 from .ambitus import AmbitusGroup
 from .citations import Citations
 from .instrumentation import Instrumentation
+from .specification_provider import SpecificationProviderMixin
 from ..taxonomies import Anteil, AuftretenWerkausschnitt, MusikalischeWendung
 
 from typing import Union, Sequence, Dict
 
 
-class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
+class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, SpecificationProviderMixin):
 
     _normal_attributes = (('label', str),
                           ('occurence_in_part', AuftretenWerkausschnitt),
@@ -26,7 +27,9 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
                           ('harmonics', Harmonics),
                           ('tempo', TempoGroup),)
 
-    _list_attributes = ('instrumentation', )
+    _list_attributes = ('instrumentation', 'specifications')
+
+    __tablename__ = "sub_part"
 
     id = db.Column(db.Integer, primary_key=True)
     part_id = db.Column(db.Integer, db.ForeignKey('part.id'), nullable=False)

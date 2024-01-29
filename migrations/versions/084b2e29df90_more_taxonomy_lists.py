@@ -1,4 +1,4 @@
-"""empty message
+"""Convert taxonomy entries to lists of entries
 
 Revision ID: 084b2e29df90
 Revises: 494a304bb471

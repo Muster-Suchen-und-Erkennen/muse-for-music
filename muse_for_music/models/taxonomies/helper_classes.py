@@ -12,6 +12,7 @@ class Taxonomy(GetByID):
     taxonomy_type = None  # type: str
     select_multiple = False  # type: bool
     display_name = None  # type: str
+    specification = None # type: str
 
     def __init__(self, name: str, description: None) -> None:
         """Create new List Taxonomy object."""
@@ -92,7 +93,7 @@ class ListTaxonomy(Taxonomy):
         names = set()
         for item in items:
             if item.name in names:
-                logger.warning('An item with name "%s" was already exported!', name)
+                logger.warning('An item with name "%s" was already exported!', item.name)
             names.add(item.name)
             output_data.writerow({
                 'name': item.name,

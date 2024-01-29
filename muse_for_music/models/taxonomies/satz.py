@@ -9,6 +9,7 @@ class SatzartAllgemein(db.Model, ListTaxonomy):
     __tablename__ = 'satzart_allgemein'
 
     display_name = 'Satzart allgemein'
+    specification = 'aa'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
@@ -20,6 +21,7 @@ class SatzartSpeziell(db.Model, ListTaxonomy):
     __tablename__ = 'satzart_speziell'
 
     display_name = 'Satzart Speziell'
+    specification = 'aa'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))

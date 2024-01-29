@@ -1,4 +1,4 @@
-"""empty message
+"""Add repetition counts to composition and more taxonomy entries to opus
 
 Revision ID: 38ed909ec074
 Revises: 6332c52bf469

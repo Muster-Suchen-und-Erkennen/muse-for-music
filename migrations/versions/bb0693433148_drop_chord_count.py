@@ -1,4 +1,4 @@
-"""empty message
+"""Remove chord count from harmonics
 
 Revision ID: bb0693433148
 Revises: 38ed909ec074

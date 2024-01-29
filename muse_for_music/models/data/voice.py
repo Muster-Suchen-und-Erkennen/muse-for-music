@@ -1,3 +1,4 @@
+from muse_for_music.models.taxonomies import specifications
 from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 
@@ -15,13 +16,14 @@ from .rhythm import Rhythm
 from .citations import Citations
 from .instrumentation import InstrumentationContext, Instrumentation
 from .ambitus import AmbitusGroup
+from .specification_provider import SpecificationProviderMixin
 from ..taxonomies import Anteil, MusikalischeFunktion, Melodieform, Verzierung, \
                          Intervallik, Notenwert, Grundton, Oktave, \
                          AuftretenWerkausschnitt, VoiceToVoiceRelation, \
                          MusikalischeWendung
 
 
-class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
+class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, SpecificationProviderMixin):
 
     _normal_attributes = (
                           ('name', str),
@@ -35,13 +37,14 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
                           ('rendition', Rendition),
                           ('has_melody', bool),
                           ('melody_form', Melodieform),
-                          #('intervallik', Intervallik),
                           ('citations', Citations),
                           ('ambitus', AmbitusGroup),
                           )
 
     _list_attributes = ('dominant_note_values', 'instrumentation', 'ornaments',
-                        'musicial_figures', 'musicial_function', 'related_voices', 'intervallik')
+                        'musicial_figures', 'musicial_function', 'related_voices', 'intervallik', 'specifications')
+
+    __tablename__ = "voice"
 
     id = db.Column(db.Integer, primary_key=True)
     subpart_id = db.Column(db.Integer, db.ForeignKey('sub_part.id'), nullable=False)
@@ -54,7 +57,6 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     # stimmverlauf
     has_melody = db.Column(db.Boolean, default=False)
     melody_form_id = db.Column(db.Integer, db.ForeignKey('melodieform.id'), nullable=True)
-    #intervallik_id = db.Column(db.Integer, db.ForeignKey('intervallik.id'), nullable=True)
     # Einsatz der Stimme
     share_id = db.Column(db.Integer, db.ForeignKey('anteil.id'), nullable=True)
     occurence_in_part_id = db.Column(db.Integer, db.ForeignKey('auftreten_werkausschnitt.id'), nullable=True)
@@ -69,7 +71,6 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     rhythm = db.relationship(Rhythm, single_parent=True, cascade="all, delete-orphan")
     # stimmverlauf
     melody_form = db.relationship(Melodieform)
-    #intervallik = db.relationship(Intervallik)
     # Einsatz der Stimme
     share = db.relationship(Anteil)
     occurence_in_part = db.relationship(AuftretenWerkausschnitt)
@@ -164,6 +165,7 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
                         Intervallik, 'intervallik')
 
 
+
 class MusikalischeWendungToVoice(db.Model):
     voice_id = db.Column(db.Integer, db.ForeignKey('voice.id'), primary_key=True)
     musikalische_wendung_id = db.Column(db.Integer, db.ForeignKey('musikalische_wendung.id', name='fk_musikalische_wendung_to_voice_musikalische_wendung_id'), primary_key=True)
@@ -244,3 +246,4 @@ class RelatedVoices(db.Model, GetByID, UpdateableModelMixin):
         self.voice = voice
         if kwargs:
             self.update(kwargs)
+            

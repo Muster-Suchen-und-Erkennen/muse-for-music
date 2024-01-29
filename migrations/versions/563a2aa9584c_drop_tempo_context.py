@@ -1,4 +1,4 @@
-"""empty message
+"""Drop tempo context
 
 Revision ID: 563a2aa9584c
 Revises: 88a8835f8310

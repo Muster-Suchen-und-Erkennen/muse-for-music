@@ -34,6 +34,7 @@ from .composition import *
 from .citation import *
 from .voices import *
 from .rendition import *
+from .specifications import *
 
 
 T = TypeVar('T', bound=Taxonomy)
@@ -43,6 +44,12 @@ def generate_na_elements():
     """Generate all missing "na" elements."""
     taxonomies = get_taxonomies()  # type: Dict[str, Type[T]]
     for taxonomy in taxonomies.values():
+        try:
+            count = taxonomy.query.count()
+            if count == 0:
+                continue  # skip taxonomies without any entry
+        except:
+            continue  # skip non existing taxonomies
         na = taxonomy.not_applicable_item()
         if na is None:
             db.session.add(taxonomy(name='na', description=None))

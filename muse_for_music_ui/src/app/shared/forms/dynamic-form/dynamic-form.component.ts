@@ -23,12 +23,24 @@ export class DynamicFormComponent implements OnChanges {
     @Input() showSaveButton: boolean = false;
     @Input() alwaysAllowSave: boolean = false;
     @Input() saveSuccess: boolean = false;
-    @Input() useSpecifications: boolean = false;
+    @Input() useSpecifications: boolean = true;
 
     @Input() debug: boolean = false;
 
     specifications: Specification[] = [];
     currentSpec: Specification;
+    currentSpecUpdated: Specification;
+    currentSpecType: SpecificationUpdateEvent["type"];
+
+    get specModelUrl(): string {
+        if (this.currentSpecType === "aa") {
+            return "SpecificationAA";
+        } else if (this.currentSpecType === "aai") {
+            return "SpecificationAAI";
+        } else {
+            return "";
+        }
+    }
 
     canSave: boolean;
     formValue: any;
@@ -51,6 +63,12 @@ export class DynamicFormComponent implements OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
+        if (changes.startValues != null) {
+            const newSpecifications = changes.startValues.currentValue?.specifications;
+            if (newSpecifications != null) {
+                this.specifications = newSpecifications;
+            }
+        }
         if (changes.objectModel != null || changes.startValues != null ||
             changes.context != null || changes.showSaveButton != null ||
             changes.alwaysAllowSave != null || changes.saveSuccess != null) {
@@ -60,7 +78,10 @@ export class DynamicFormComponent implements OnChanges {
 
     updateData(data) {
         if (this.useSpecifications) {
-            data.specifications = this.specifications;
+            data.specifications = this.specifications.map(spec => ({
+                instrumentation: [],
+                ...spec
+            }));
         }
         this.formValue = data;
         Promise.resolve().then(() => this.data.emit(data));
@@ -97,6 +118,8 @@ export class DynamicFormComponent implements OnChanges {
             this.specifications = newSpecifications;
         } else {
             this.currentSpec = null;
+            this.currentSpecUpdated = null;
+            this.currentSpecType = event.type;
             this.specifications.forEach((spec) => {
                 if (spec.path === event.path) {
                     this.currentSpec = spec;
@@ -111,25 +134,32 @@ export class DynamicFormComponent implements OnChanges {
                 }
             }
             if (this.useSpecifications) {
-                this.dialog.open();
+                Promise.resolve().then(() => this.dialog.open());
             }
         }
     }
 
     saveSpec = () => {
+        const currentSpec = this.currentSpecUpdated ?? this.currentSpec;
         const newSpecifications = [];
         this.specifications.forEach((spec) => {
-            if (spec.path === this.currentSpec.path) {
-                newSpecifications.push(this.currentSpec);
+            if (spec.path === currentSpec.path) {
+                newSpecifications.push(currentSpec);
                 this.currentSpec = null;
+                this.currentSpecUpdated = null;
             } else {
                 newSpecifications.push(spec);
             }
         });
-        if (this.currentSpec != null) {
-            newSpecifications.push(this.currentSpec);
+        if (currentSpec != null) {
+            newSpecifications.push(currentSpec);
         }
         this.specifications = newSpecifications;
+    }
+
+    cancelSpecUpdate = () => {
+        this.currentSpec = null;
+        this.currentSpecUpdated = null;
     }
 
     saveForm = () => {
@@ -141,6 +171,12 @@ export class DynamicFormComponent implements OnChanges {
     saveFinished = (success: boolean) => {
         if (this.savebutton != null) {
             this.savebutton.saveFinished(success);
+        }
+    }
+
+    updateSpecData(data) {
+        if (data !== this.currentSpecUpdated) {
+            this.currentSpecUpdated = data
         }
     }
 }
