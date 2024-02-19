@@ -75,7 +75,9 @@ class ListTaxonomyResource(Resource):
         tax = get_taxonomy('list', taxonomy)
         if tax is None:
             abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
-        item = create_taxonomy_item(tax, request.get_json())
+        item_data = request.get_json()
+        item_data.pop("specifications", None)
+        item = create_taxonomy_item(tax, item_data)
         db.session.add(item)
         db.session.commit()
         return marshal(item, taxonomy_item_get)
@@ -112,6 +114,7 @@ def create_taxonomy_item(tax: Type[T], new_values) -> T:
     Returns:
         T -- The created Taxonomy Item.
     """
+    new_values.pop("specifications", None)  # TODO remove
     item = tax(**new_values)
     db.session.add(item)
     return item
@@ -175,7 +178,9 @@ class TaxonomyItemResource(Resource):
         if tax is None:
             abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
         item = get_taxonomy_item(tax, item_id)
-        edit_taxonomy_item(item, request.get_json())
+        item_data = request.get_json()
+        item_data.pop("specifications", None)
+        edit_taxonomy_item(item, item_data)
         return marshal(item, taxonomy_item_get)
 
     @ns.response(400, 'Mismatching taxonomy type.')
@@ -216,7 +221,9 @@ class ListTaxonomyItemResource(Resource):
         if tax is None:
             abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
         item = get_taxonomy_item(tax, item_id)
-        edit_taxonomy_item(item, request.get_json())
+        item_data = request.get_json()
+        item_data.pop("specifications", None)
+        edit_taxonomy_item(item, item_data)
         return marshal(item, taxonomy_item_get)
 
     @ns.response(400, 'Mismatching taxonomy type.')
@@ -255,6 +262,7 @@ class TreeTaxonomyItemResource(Resource):
         if tax is None:
             abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
         new_item = request.get_json()
+        new_item.pop("specifications", None)
         if new_item['name'] == 'root':
             abort(400, 'Name "root" is forbidden!')
         new_item['parent'] = get_taxonomy_item(tax, item_id)
@@ -273,7 +281,9 @@ class TreeTaxonomyItemResource(Resource):
         if tax is None:
             abort(404, 'Taxonomy "{}" not found.'.format(taxonomy))
         item = get_taxonomy_item(tax, item_id)
-        edit_taxonomy_item(item, request.get_json())
+        item_data = request.get_json()
+        item_data.pop("specifications", None)
+        edit_taxonomy_item(item, item_data)
         return marshal(item, taxonomy_tree_item_get)
 
     @ns.response(400, 'Mismatching taxonomy type.')

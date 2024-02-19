@@ -59,14 +59,14 @@
                 <span>Kind von:</span>
                 <span>{{selectedParent?.name}}</span>
             </div>
-            <dynamic-form [objectModel]="'TaxonomyItemPOST'" [startValues]="{}" (valid)="onValidChange($event)" (data)="onDataChange($event)" #form></dynamic-form>
+            <dynamic-form [objectModel]="'TaxonomyItemPOST'" [startValues]="{}" (valid)="onValidChange($event)" (data)="onDataChange($event)" [useSpecifications]="false" #form></dynamic-form>
         </div>
     </m4m-dialog>
 
     <m4m-dialog [closable]="true" [dialogType]="'save-cancel'" [icon]="'save'" [okCallback]="editItem" #editItemDialog>
         <h1 class="mv0" title>Eintrag bearbeiten:</h1>
         <div class="w-100 ph3 pv2" body>
-            <dynamic-form [objectModel]="'TaxonomyItemPUT'" [startValues]="selectedItem" (valid)="onValidChange($event)" (data)="onDataChange($event)" #form></dynamic-form>
+            <dynamic-form [objectModel]="'TaxonomyItemPUT'" [startValues]="selectedItem" (valid)="onValidChange($event)" (data)="onDataChange($event)" [useSpecifications]="false" #form></dynamic-form>
         </div>
     </m4m-dialog>
 
@@ -74,7 +74,7 @@
         <h1 class="mv0" title>"Nicht Anwendbar" bearbeiten:</h1>
         <div class="w-100 ph3 pv2" body>
             <p>Bitte nur die Beschreibung anpassen!</p>
-            <dynamic-form [objectModel]="'TaxonomyItemPUT'" [startValues]="na" (valid)="onValidChange($event)" (data)="onDataChange($event)" #form></dynamic-form>
+            <dynamic-form [objectModel]="'TaxonomyItemPUT'" [startValues]="na" (valid)="onValidChange($event)" (data)="onDataChange($event)" [useSpecifications]="false" #form></dynamic-form>
         </div>
     </m4m-dialog>
 
