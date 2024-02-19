@@ -43,6 +43,14 @@ sphinx-click = "^2.5.0"
 line-length = 90
 include = '\.pyi?$'
 
+[tool.pytest.ini_options]
+pythonpath=[
+    ".",
+]
+testpaths=[
+    "tests",
+]
+
 [tool.sphinx]
 copyright-year = 2021
 enable-autodoc = true

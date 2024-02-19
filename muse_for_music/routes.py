@@ -5,23 +5,6 @@ from secrets import token_urlsafe
 from .user_api import register_user_api
 from .api import register_api
 
-UI_BP = Blueprint("ui_blueprint", __name__, url_prefix="/")
-
-
-@UI_BP.before_request
-def before_requests():
-    nonce = getattr(g, 'nonce', '')
-    if not nonce:
-        g.nonce = token_urlsafe(32)
-
-
-@UI_BP.after_request
-def inject_csp_headers(response: Response):
-    nonce = getattr(g, 'nonce', '')
-    script_nonce = f"'nonce-{nonce}'" if nonce else ""
-    response.headers["Content-Security-Policy"] = f"default-src 'self'; script-src {script_nonce} 'self'; style-src 'self' 'unsafe-inline'"
-    return response
-
 
 def register_routes(app: Flask, flask_static_digest):
 
@@ -31,6 +14,24 @@ def register_routes(app: Flask, flask_static_digest):
     if app.config['DEBUG']:
         from .debug_routes import register_debug_routes
         register_debug_routes(app)
+
+
+    UI_BP = Blueprint("ui_blueprint", __name__, url_prefix="/")
+
+
+    @UI_BP.before_request
+    def before_requests():
+        nonce = getattr(g, 'nonce', '')
+        if not nonce:
+            g.nonce = token_urlsafe(32)
+
+
+    @UI_BP.after_request
+    def inject_csp_headers(response: Response):
+        nonce = getattr(g, 'nonce', '')
+        script_nonce = f"'nonce-{nonce}'" if nonce else ""
+        response.headers["Content-Security-Policy"] = f"default-src 'self'; script-src {script_nonce} 'self'; style-src 'self' 'unsafe-inline'"
+        return response
 
 
     @UI_BP.route('/', defaults={'path': ''})
