@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { ApiModel, ApiModelRef } from 'app/shared/rest/api-model';
 import { ModelsService } from 'app/shared/rest/models.service';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { SpecificationUpdateEvent } from '../specification-update-event';
 
@@ -12,7 +12,7 @@ import { SpecificationUpdateEvent } from '../specification-update-event';
 })
 export class DynamicFormItemComponent implements OnChanges {
 
-    @Input() form: FormGroup;
+    @Input() form: UntypedFormGroup;
     @Input() property: ApiModel|ApiModelRef;
     @Input() data: any;
     @Input() path: string;

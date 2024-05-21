@@ -107,7 +107,6 @@
       }
     }
   },
-  "defaultProject": "muse4music-ui",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "m4m",
