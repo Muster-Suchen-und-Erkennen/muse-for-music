@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 
 import { ApiModel } from '../rest/api-model';
 
@@ -18,7 +18,7 @@ function customNullValidator(customNull: any): ValidatorFn {
 export class FormGroupService {
     constructor() { }
 
-    toFormGroup(model: ApiModel): FormGroup {
+    toFormGroup(model: ApiModel): UntypedFormGroup {
         const group: {[key: string]: AbstractControl} = {};
         if (model.properties != null) {
             for (const key in model.properties) {
@@ -89,9 +89,9 @@ export class FormGroupService {
                     value = (itemModel as ApiModel).example;
                 }
 
-                group[key] = new FormControl(value, validators);
+                group[key] = new UntypedFormControl(value, validators);
             }
-            return new FormGroup(group);
+            return new UntypedFormGroup(group);
         }
     }
 }

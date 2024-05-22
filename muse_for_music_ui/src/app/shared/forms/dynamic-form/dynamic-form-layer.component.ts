@@ -1,7 +1,7 @@
 
 import {first, map, debounceTime} from 'rxjs/operators';
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { ApiModel, ApiModelRef } from 'app/shared/rest/api-model';
 import { ModelsService } from 'app/shared/rest/models.service';
 import { FormGroupService } from '../form-group.service';
@@ -35,7 +35,7 @@ export class DynamicFormLayerComponent implements OnChanges {
 
     model: ApiModel;
     properties: (ApiModel | ApiModelRef)[];
-    form: FormGroup;
+    form: UntypedFormGroup;
 
     private changeDetectionBatchSubject: Subject<null> = new Subject<null>();
 
