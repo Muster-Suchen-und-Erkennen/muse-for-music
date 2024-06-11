@@ -59,18 +59,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "muse4music-ui:build"
+            "buildTarget": "muse4music-ui:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "muse4music-ui:build:production"
+              "buildTarget": "muse4music-ui:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "muse4music-ui:build"
+            "buildTarget": "muse4music-ui:build"
           }
         },
         "test": {
