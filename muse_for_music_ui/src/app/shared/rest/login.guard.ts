@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Router, CanActivate } from '@angular/router';
+import { Router } from '@angular/router';
 import { UserApiService } from './user-api.service';
 
 
 @Injectable()
-export class LoginGuard implements CanActivate {
+export class LoginGuard  {
 
     constructor(private router: Router, private userApi: UserApiService) { }
 
