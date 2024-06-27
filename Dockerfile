@@ -1,4 +1,4 @@
-FROM node:16-buster as builder
+FROM node:20-buster as builder
 COPY ./muse_for_music_ui /muse_for_music_ui
 RUN cd muse_for_music_ui \
     && npm clean-install \
