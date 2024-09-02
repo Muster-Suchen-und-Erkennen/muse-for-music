@@ -17,14 +17,9 @@
     </script>
     <m4m-root class="h-100 flex flex-column"></m4m-root>
 
-    <script src="{{ static_url_for('static', filename='runtime-es2015.js') | bustcache }}" type="module" nonce="{{nonce}}"></script>
-    <script src="{{ static_url_for('static', filename='runtime-es5.js') }}" nomodule defer nonce="{{nonce}}"></script>
-    <script src="{{ static_url_for('static', filename='polyfills-es2015.js') | bustcache }}" type="module" nonce="{{nonce}}"></script>
-    <script src="{{ static_url_for('static', filename='polyfills-es5.js') }}" nomodule defer nonce="{{nonce}}"></script>
-    <script src="{{ static_url_for('static', filename='vendor-es2015.js') | bustcache }}" type="module" nonce="{{nonce}}"></script>
-    <script src="{{ static_url_for('static', filename='vendor-es5.js') }}" nomodule defer nonce="{{nonce}}"></script>
-    <script src="{{ static_url_for('static', filename='main-es2015.js') | bustcache }}" type="module" nonce="{{nonce}}"></script>
-    <script src="{{ static_url_for('static', filename='main-es5.js') }}" nomodule defer nonce="{{nonce}}"></script>
+    <script src="{{ static_url_for('static', filename='runtime.js') | bustcache }}" type="module" nonce="{{nonce}}"></script>
+    <script src="{{ static_url_for('static', filename='polyfills.js') | bustcache }}" type="module" nonce="{{nonce}}"></script>
+    <script src="{{ static_url_for('static', filename='main.js') | bustcache }}" type="module" nonce="{{nonce}}"></script>
 </body>
 
 </html>
