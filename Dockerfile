@@ -4,7 +4,7 @@ RUN cd muse_for_music_ui \
     && npm clean-install \
     && npm run build -- --configuration production --output-hashing=none --extract-licenses
 
-FROM python:3.9
+FROM python:3.10
 
 LABEL org.opencontainers.image.source="https://github.com/Muster-Suchen-und-Erkennen/muse-for-music"
 
@@ -31,7 +31,7 @@ RUN mkdir --parents /app/instance \
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 RUN chmod +x /wait
 
-RUN python -m pip install poetry gunicorn
+RUN python -m pip install poetry poetry-plugin-export gunicorn
 
 COPY --chown=gunicorn ./migrations /app/migrations
 COPY --chown=gunicorn ./muse_for_music /app/muse_for_music
