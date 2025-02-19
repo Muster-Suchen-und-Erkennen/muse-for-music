@@ -26,14 +26,34 @@ if True:
 
     from flask_restx.model import Model, iteritems, instance, not_none
 
+    def _get_ancestor_field_order(model):
+        ancestor_field_order = {}
+        for parent in model.ancestors:
+            if parent == model.name:
+                continue
+            parent_model = model.get_parent(parent)
+            ancestor_field_order.update(_get_ancestor_field_order(parent_model))
+            order_offset = len(ancestor_field_order) + 1
+            for i, (name, _) in enumerate(iteritems(parent_model)):
+                if name not in ancestor_field_order:
+                    ancestor_field_order[name] = i + order_offset
+
+        return ancestor_field_order
+
     def _schema(self):
         properties = OrderedDict()
         required = set()
         discriminator = None
+        ancestor_field_order = _get_ancestor_field_order(self)
+        order_offset = len(ancestor_field_order) + 1
+
         for i, (name, field) in enumerate(iteritems(self)):
             field = instance(field)
             properties[name] = field.__schema__
-            properties[name]['x-order'] = i + 1
+            if name in ancestor_field_order:
+                properties[name]['x-order'] = ancestor_field_order[name]
+            else:
+                properties[name]['x-order'] = i + order_offset
             if field.required:
                 required.add(name)
             if getattr(field, 'discriminator', False):
