@@ -503,6 +503,7 @@ voice_ref = api.inherit('VoiceREF', voice_post, OrderedDict([
 ]))
 
 related_voice_put = api.model('RelatedVoicePUT', OrderedDict([
+    ('id', fields.Integer(default=-1, readonly=True, example=1)),
     ('type_of_relationship', fields.Nested(taxonomy_item_ref, required=True, taxonomy='VoiceToVoiceRelation', title='Operator')),
     ('related_voice', fields.Nested(voice_ref, required=True, reference='voice', title='Stimme')),
 ]))
