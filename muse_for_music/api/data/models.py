@@ -101,7 +101,7 @@ opus_post = api.model('OpusPOST', OrderedDict([
 ]))
 
 opus_get_citation = api.inherit('OpusGETCitation', opus_post, OrderedDict([
-    ('id', fields.Integer(default=1, readonly=True, example=1)),
+    ('id', fields.Integer(default=-1, readonly=True, example=1)),
     ('_links', NestedFields(opus_links)),
     ('name', fields.String(title='Name', default='', required=True)),
     ('original_name', fields.String(title='Name / Opus Nr.', default='', required=True)),
