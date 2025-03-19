@@ -67,20 +67,29 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
     }
 
     set value(val: ApiObject|ApiObject[]) {
+        let newValue: ApiObject[];
         if (val == undefined) {
-            this._value = []
+            newValue = []
         } else {
             if (!this.isArray) {
                 if ((val as ApiObject).id === this.nullValue.id) {
-                    this._value = [];
-                    val = null;
+                    newValue = [];
                 } else {
-                    this._value = [val];
+                    newValue = [val as ApiObject];
                 }
             } else {
-                this._value = (val as ApiObject[]);
+                newValue = [...(val as ApiObject[])];
             }
         }
+        if (newValue == undefined && this._value == undefined) {
+            return;
+        }
+        if (this._value != null && this._value.length === newValue.length) {
+            if (newValue.every((v, i) => v.id === this._value[i].id)) {
+                return;
+            }
+        }
+        this._value = newValue;
         this.onChange(this.value);
         this.onTouched();
     }

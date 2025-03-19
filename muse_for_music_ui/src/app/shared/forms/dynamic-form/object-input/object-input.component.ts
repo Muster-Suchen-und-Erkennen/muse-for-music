@@ -61,11 +61,19 @@ export class ObjectInputComponent implements ControlValueAccessor, OnInit, After
     }
 
     set value(val: any) {
+        let newVal;
         if (val === this.nullValue) {
-            this.currentValue = undefined;
+            newVal = undefined;
         } else {
-            this.currentValue = val;
+            newVal = {...val};
         }
+        if (newVal == undefined && this.currentValue == undefined) {
+            return;
+        }
+        if (JSON.stringify(newVal) === JSON.stringify(this.currentValue)) {
+            return;
+        }
+        this.currentValue = newVal;
         this.onChange(val);
         this.onTouched();
     }

@@ -29,6 +29,9 @@ export class BooleanInputComponent implements ControlValueAccessor {
     }
 
     set value(val: boolean) {
+        if (this.checked === val) {
+            return;
+        }
         this.checked = val;
         this.onChange(val);
         this.onTouched();

@@ -61,11 +61,21 @@ export class ArrayInputComponent implements ControlValueAccessor, AfterViewInit,
     }
 
     set value(val: any) {
+        let newVal;
         if (val === this.nullValue) {
-            this.currentValue = [];
+            newVal = [];
         } else {
-            this.currentValue = val;
+            newVal = [...val];
         }
+        if (this.currentValue.length === 0 && newVal.length === 0) {
+            return;
+        }
+        if (this.currentValue.length === newVal.length) {
+            if (JSON.stringify(newVal) === JSON.stringify(this.currentValue)) {
+                return;
+            }
+        }
+        this.currentValue = newVal;
         this.onChange(val);
         this.onTouched();
     }
@@ -111,25 +121,10 @@ export class ArrayInputComponent implements ControlValueAccessor, AfterViewInit,
 
     ngAfterViewInit(): void {
         this.formSub = this.formLayers.changes.subscribe((forms) => {
-          const micoForms: DynamicFormLayerComponent[] = forms._results;
-          const validObservables: Observable<boolean>[] = [];
-          let currentlyValid = true;
-          micoForms.forEach((form) => {
-              validObservables.push(form.valid.asObservable());
-              if (!form.form.valid) {
-                  currentlyValid = false;
-              }
-          });
-          if (this.lastValidSub != null) {
-              this.lastValidSub.unsubscribe();
-          }
-          if (validObservables.length > 0) {
-              this.lastValidSub = combineLatest(...validObservables).pipe(map((values) => {
-                  return !values.some(value => !value);
-              })).subscribe((valid) => this.valid = valid);
-          }
-          this.valid = currentlyValid;
-      });
+            const micoForms: DynamicFormLayerComponent[] = forms;
+            this.subscribeToFormValidStatus(micoForms);
+        });
+        this.subscribeToFormValidStatus(this.formLayers);
     }
 
     ngOnDestroy(): void {
@@ -138,6 +133,30 @@ export class ArrayInputComponent implements ControlValueAccessor, AfterViewInit,
         }
         if (this.lastValidSub != null) {
             this.lastValidSub.unsubscribe();
+        }
+    }
+
+    private subscribeToFormValidStatus(micoForms: DynamicFormLayerComponent[]) {
+        const validObservables: Observable<boolean>[] = [];
+        let currentlyValid = true;
+        micoForms.forEach((form) => {
+            validObservables.push(form.valid.asObservable());
+            if (!form.form.valid) {
+                currentlyValid = false;
+            }
+        });
+        if (this.lastValidSub != null) {
+            this.lastValidSub.unsubscribe();
+        }
+        this.valid = currentlyValid;
+        if (validObservables.length > 0) {
+            this.lastValidSub = combineLatest(...validObservables).pipe(map((values) => {
+                return !values.some(value => !value);
+            })).subscribe((valid) => {
+                if (this.valid !== valid) {
+                    this.valid = valid;
+                }
+            });
         }
     }
 
