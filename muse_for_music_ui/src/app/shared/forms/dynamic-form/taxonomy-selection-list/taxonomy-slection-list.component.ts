@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, OnInit, OnDestroy } from '@angular/core';
 
 import { ApiObject } from '../../../rest/api-base.service';
 import { ApiService } from '../../../rest/api.service';
+import { Subscription } from 'rxjs';
 
 class TaxonomyItem {
     id: number;
@@ -32,7 +33,7 @@ class TaxonomyItem {
     templateUrl: './taxonomy-selection-list.component.html',
     styleUrls: ['./taxonomy-selection-list.component.scss']
 })
-export class TaxonomySelectionListComponent implements OnChanges, OnInit {
+export class TaxonomySelectionListComponent implements OnChanges, OnInit, OnDestroy {
 
     isTree: boolean;
     filter: boolean = true;
@@ -55,6 +56,8 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
     selectedSet: Set<number> = new Set<number>();
     matching: Set<number> = new Set<number>();
     openNodes: Set<number> = new Set<number>();
+
+    private sub: Subscription|null = null;
 
     selectableId(index, selectable) {
         return selectable.id;
@@ -115,7 +118,7 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
     }
 
     ngOnInit(): void {
-        this.api.getTaxonomy(this.taxonomy).subscribe(taxonomy => {
+        this.sub = this.api.getTaxonomy(this.taxonomy).subscribe(taxonomy => {
             if (taxonomy == undefined) {
                 return;
             }
@@ -136,6 +139,12 @@ export class TaxonomySelectionListComponent implements OnChanges, OnInit {
             this.closed.clear();
             this.updateMatching(this.search);
         });
+    }
+
+    ngOnDestroy(): void {
+        if (this.sub != null) {
+            this.sub.unsubscribe();
+        }
     }
 
     prepareListTaxonomy(items) {

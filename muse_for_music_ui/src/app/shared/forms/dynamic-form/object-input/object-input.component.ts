@@ -1,6 +1,6 @@
 
 import {take} from 'rxjs/operators';
-import { Component, forwardRef, Input, OnInit, OnChanges, AfterViewInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, forwardRef, Input, OnInit, OnChanges, AfterViewInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, NG_ASYNC_VALIDATORS, AsyncValidator, Validator, NG_VALIDATORS } from '@angular/forms';
 
 import { ApiModel, ApiModelRef } from 'app/shared/rest/api-model';
@@ -24,7 +24,7 @@ import { SpecificationUpdateEvent } from '../specification-update-event';
     multi: true
   }]
 })
-export class ObjectInputComponent implements ControlValueAccessor, OnInit, AfterViewInit, Validator {
+export class ObjectInputComponent implements ControlValueAccessor, OnInit, AfterViewInit, Validator, OnDestroy {
 
     @ViewChild(DynamicFormLayerComponent) formLayer: DynamicFormLayerComponent;
 
@@ -47,6 +47,8 @@ export class ObjectInputComponent implements ControlValueAccessor, OnInit, After
     onTouched: any = () => {};
 
     validator: any = () => { };
+
+    private sub: Subscription|null = null;
 
     constructor(private models: ModelsService) {}
 
@@ -111,8 +113,14 @@ export class ObjectInputComponent implements ControlValueAccessor, OnInit, After
     }
 
     ngAfterViewInit(): void {
-        this.formLayer.valid.subscribe((valid) => {
+        this.sub = this.formLayer.valid.subscribe((valid) => {
             this.valid = valid;
         });
+    }
+
+    ngOnDestroy(): void {
+        if (this.sub != null) {
+            this.sub.unsubscribe();
+        }
     }
 }

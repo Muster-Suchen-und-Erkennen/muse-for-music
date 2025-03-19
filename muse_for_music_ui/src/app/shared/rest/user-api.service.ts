@@ -1,8 +1,8 @@
 
-import {throwError as observableThrowError, timer as observableTimer,  Observable, Subject, AsyncSubject } from 'rxjs';
+import {throwError as observableThrowError, timer as observableTimer,  Observable, Subject, AsyncSubject, Subscription } from 'rxjs';
 
 import {catchError, mergeMap, take} from 'rxjs/operators';
-import { Injectable, OnInit, Injector } from '@angular/core';
+import { Injectable, OnInit, Injector, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseApiService, ApiObject, LinkObject, ApiLinksObject } from './api-base.service';
 import { InfoService } from '../info/info.service';
@@ -35,7 +35,7 @@ interface TokenUpdate {
 }
 
 @Injectable()
-export class UserApiService implements OnInit {
+export class UserApiService implements OnInit, OnDestroy {
 
     private warningSet = new Set([404, 409, ]);
 
@@ -57,6 +57,8 @@ export class UserApiService implements OnInit {
     readonly TOKEN = 'm4m-token';
     readonly REFRESH_TOKEN = 'm4m-refresh-token';
 
+    private sub: Subscription|null = null;
+
     constructor (private rest: BaseApiService, private info: InfoService, private router: Router) {
         observableTimer(1).pipe(take(1)).subscribe(() => {
             this.ngOnInit()
@@ -64,7 +66,7 @@ export class UserApiService implements OnInit {
     }
 
     ngOnInit = (): void => {
-        observableTimer(1, 60000).subscribe((() => {
+        this.sub = observableTimer(1, 60000).subscribe((() => {
             if (this.loggedIn) {
                 let future = new Date();
                 future = new Date(future.getTime() + (3 * 60 * 1000))
@@ -76,6 +78,12 @@ export class UserApiService implements OnInit {
                 }
             }
         }).bind(this));
+    }
+
+    ngOnDestroy = (): void => {
+        if (this.sub != null) {
+            this.sub.unsubscribe();
+        }
     }
 
     updateTokens(loginToken: string, refreshToken?: string) {
@@ -206,7 +214,7 @@ export class UserApiService implements OnInit {
 
     login(username: string, password: string): Observable<boolean> {
         const success = new AsyncSubject<boolean>();
-        this.getAuthRoot().subscribe(auth => {
+        this.getAuthRoot().pipe(take(1)).subscribe(auth => {
             this.rest.post<TokenUpdate>(auth._links.login, {username: username, password: password}).subscribe(data => {
                 this.updateTokens(data.access_token, data.refresh_token);
                 success.next(true);
@@ -225,7 +233,7 @@ export class UserApiService implements OnInit {
     }
 
     refreshLogin = (refreshToken: string) => {
-        this.getAuthRoot().subscribe(auth => {
+        this.getAuthRoot().pipe(take(1)).subscribe(auth => {
             this.rest.post<TokenUpdate>(auth._links.refresh, {}, refreshToken).subscribe(data => {
                 this.updateTokens(data.access_token);
             });
@@ -234,7 +242,7 @@ export class UserApiService implements OnInit {
 
     freshLogin = (password: string) => {
         const finished = new AsyncSubject<boolean>();
-        this.getAuthRoot().subscribe(auth => {
+        this.getAuthRoot().pipe(take(1)).subscribe(auth => {
             this.rest.post<TokenUpdate>(auth._links.fresh_login, { username: this.username, password: password }).subscribe(data => {
                 this.updateTokens(data.access_token, data.refresh_token);
                 finished.next(true);
@@ -246,7 +254,7 @@ export class UserApiService implements OnInit {
 
     changePassword = (password: string, passwordRepeat) => {
         const success = new AsyncSubject<boolean>();
-        this.getAuthRoot().subscribe(auth => {
+        this.getAuthRoot().pipe(take(1)).subscribe(auth => {
             this.rest.post(auth._links['change_password'], {
                 password: password,
                 password_repeat: passwordRepeat
@@ -284,7 +292,7 @@ export class UserApiService implements OnInit {
     getUsers(): Observable<ApiObject[]> {
         const resource = 'users';
         const stream = this.getStreamSource<ApiObject[]>(resource);
-        this.getManagementRoot().subscribe(management => {
+        this.getManagementRoot().pipe(take(1)).subscribe(management => {
             this.rest.get<ApiObject[]>(management._links.user, this.token).subscribe(data => {
                 stream.next(data);
             }, error => this.errorHandler(error, resource, 'GET'));
@@ -295,6 +303,7 @@ export class UserApiService implements OnInit {
     addUser(username: string, password: string): Observable<ApiObject> {
         const baseResource = 'users';
         const stream = this.getManagementRoot().pipe(
+            take(1),
             mergeMap(management => {
                 return this.rest.post<ApiObject>(management._links.user, {username: username, password: password}, this.token).pipe(
                     mergeMap(data => {

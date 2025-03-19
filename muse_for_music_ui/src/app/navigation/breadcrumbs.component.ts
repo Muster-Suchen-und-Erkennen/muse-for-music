@@ -1,8 +1,8 @@
 
-import { timer } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 
 import {take} from 'rxjs/operators';
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { NavigationService, Breadcrumb } from './navigation-service';
 
 
@@ -11,7 +11,7 @@ import { NavigationService, Breadcrumb } from './navigation-service';
   templateUrl: './breadcrumbs.component.html',
   styleUrls: ['./breadcrumbs.component.scss']
 })
-export class BreadcrumbsComponent implements OnInit {
+export class BreadcrumbsComponent implements OnInit, OnDestroy {
 
     @ViewChild('home', {static: true}) home: ElementRef;
     @ViewChild('bcContainer') bcContainer: ElementRef;
@@ -20,13 +20,21 @@ export class BreadcrumbsComponent implements OnInit {
 
     breadcrumbs: Array<Breadcrumb>;
 
+    private sub: Subscription|null=null;
+
     constructor(private data: NavigationService) { }
 
     ngOnInit(): void {
-        this.data.currentBreadcrumbs.subscribe(breadcrumbs => {
+        this.sub = this.data.currentBreadcrumbs.subscribe(breadcrumbs => {
             this.breadcrumbs = breadcrumbs;
             this.scrollToBottom();
         });
+    }
+
+    ngOnDestroy(): void {
+        if (this.sub != null) {
+            this.sub.unsubscribe();
+        }
     }
 
     breadcrumbHeight = () => {

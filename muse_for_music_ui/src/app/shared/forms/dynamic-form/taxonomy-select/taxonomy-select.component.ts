@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, ViewChild, OnInit, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
+import { Component, forwardRef, Input, ViewChild, OnInit, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { ApiObject } from '../../../rest/api-base.service';
@@ -7,6 +7,7 @@ import { myDropdownComponent } from '../../../dropdown/dropdown.component';
 import { ApiService } from '../../../rest/api.service';
 import { SpecificationUpdateEvent } from '../specification-update-event';
 import { ApiModel } from 'app/shared/rest/api-model';
+import { Subscription } from 'rxjs';
 
 
 
@@ -21,7 +22,7 @@ import { ApiModel } from 'app/shared/rest/api-model';
   }],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, OnChanges {
+export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, OnChanges, OnDestroy {
 
     @ViewChild(myDropdownComponent) dropdown: myDropdownComponent
 
@@ -44,6 +45,8 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
     onChange: any = () => {};
 
     onTouched: any = () => {};
+
+    private sub: Subscription|null = null;
 
     selectableId(index, selectable) {
         return selectable.id;
@@ -105,7 +108,7 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
     }
 
     ngOnInit(): void {
-        this.api.getTaxonomy(this.question['x-taxonomy']).subscribe(taxonomy => {
+        this.sub = this.api.getTaxonomy(this.question['x-taxonomy']).subscribe(taxonomy => {
             if (taxonomy == undefined) {
                 return;
             }
@@ -122,6 +125,12 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
         if (changes.specifications != null || changes.path != null) {
             this.updateSpecificationMap();
             this.runChangeDetection();
+        }
+    }
+
+    ngOnDestroy(): void {
+        if (this.sub != null) {
+            this.sub.unsubscribe();
         }
     }
 

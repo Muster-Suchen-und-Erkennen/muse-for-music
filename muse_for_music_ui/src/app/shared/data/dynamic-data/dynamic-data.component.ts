@@ -1,5 +1,5 @@
 
-import {first, map} from 'rxjs/operators';
+import {first, map, take} from 'rxjs/operators';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 
 import { Subscription } from 'rxjs';
@@ -33,6 +33,7 @@ export class DynamicDataComponent implements OnChanges {
         this.models.getModel(this.modelUrl).pipe(
             map(this.models.filterModel(this.filter, this.isBlacklist)),
             first(),
+            take(1),
         ).subscribe(model => {
               const props = [];
               if (model.properties != null) {

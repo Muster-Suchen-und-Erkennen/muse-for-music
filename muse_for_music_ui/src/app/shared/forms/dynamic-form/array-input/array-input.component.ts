@@ -1,6 +1,6 @@
 
 import {map} from 'rxjs/operators';
-import { Component, forwardRef, Input, OnInit, ViewChildren, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, forwardRef, Input, OnInit, ViewChildren, AfterViewInit, Output, EventEmitter, OnDestroy } from '@angular/core';
 
 import { ApiModel } from 'app/shared/rest/api-model';
 import { ModelsService } from 'app/shared/rest/models.service';
@@ -26,7 +26,7 @@ import { SpecificationUpdateEvent } from '../specification-update-event';
     multi: true
   }]
 })
-export class ArrayInputComponent implements ControlValueAccessor, AfterViewInit, Validator {
+export class ArrayInputComponent implements ControlValueAccessor, AfterViewInit, Validator, OnDestroy {
 
     constructor(private models: ModelsService) {}
 
@@ -43,8 +43,10 @@ export class ArrayInputComponent implements ControlValueAccessor, AfterViewInit,
 
     currentValue: any[] = [];
 
-    lastValidSub: Subscription;
     valid: boolean = false;
+
+    private lastValidSub: Subscription|null = null;
+    private formSub: Subscription|null = null;
 
     onChange: any = () => {};
 
@@ -108,7 +110,7 @@ export class ArrayInputComponent implements ControlValueAccessor, AfterViewInit,
     }
 
     ngAfterViewInit(): void {
-        this.formLayers.changes.subscribe((forms) => {
+        this.formSub = this.formLayers.changes.subscribe((forms) => {
           const micoForms: DynamicFormLayerComponent[] = forms._results;
           const validObservables: Observable<boolean>[] = [];
           let currentlyValid = true;
@@ -128,6 +130,15 @@ export class ArrayInputComponent implements ControlValueAccessor, AfterViewInit,
           }
           this.valid = currentlyValid;
       });
+    }
+
+    ngOnDestroy(): void {
+        if (this.formSub != null) {
+            this.formSub.unsubscribe();
+        }
+        if (this.lastValidSub != null) {
+            this.lastValidSub.unsubscribe();
+        }
     }
 
     newItem() {

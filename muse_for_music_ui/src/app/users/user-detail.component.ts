@@ -30,7 +30,7 @@ export class UserDetailComponent {
 
     changePassword = () => {
         if (this.userApi.tokenIsFresh) {
-            this.userApi.changePassword(this.password, this.passwordRepeat).subscribe(_ => {
+            this.userApi.changePassword(this.password, this.passwordRepeat).pipe(take(1)).subscribe(_ => {
                 this.passwordChangeSuccess = true;
                 observableTimer(2000).pipe(take(1)).subscribe(() => this.passwordChangeSuccess = undefined);
             });
@@ -39,7 +39,7 @@ export class UserDetailComponent {
         } else {
             if (this.oldPassword != null && this.oldPassword.length > 1) {
                 this.oldPassword = '';
-                this.userApi.freshLogin(this.oldPassword).subscribe(success => {
+                this.userApi.freshLogin(this.oldPassword).pipe(take(1)).subscribe(success => {
                     this.changePassword();
                 });
             } else {

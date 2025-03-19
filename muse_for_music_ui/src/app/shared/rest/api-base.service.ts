@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, AsyncSubject, throwError as observableThrowError } from 'rxjs';
 import { ApiService } from './api.service';
-import { catchError } from 'rxjs/operators';
+import { catchError, take } from 'rxjs/operators';
 
 export interface LinkObject {
     readonly href: string;
@@ -87,6 +87,7 @@ export class BaseApiService {
                 }
                 return observableThrowError(error.error ?? 'Server error');
             }),
+            take(1),
         ).subscribe((res) => {
             request.next(res as T);
             request.complete();

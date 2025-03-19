@@ -1,8 +1,8 @@
 
-import {timer as observableTimer,  Observable, } from 'rxjs';
+import {timer as observableTimer,  Observable, Subscription, } from 'rxjs';
 
 import {take} from 'rxjs/operators';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { InfoService, Message } from './info.service';
 
 
@@ -10,15 +10,23 @@ import { InfoService, Message } from './info.service';
   selector: 'm4m-info',
   templateUrl: './info.component.html'
 })
-export class InfoComponent implements OnInit {
+export class InfoComponent implements OnInit, OnDestroy {
 
     messages: Array<Message>;
+
+    private sub: Subscription|null = null;
 
     constructor(private info: InfoService) { }
 
     ngOnInit(): void {
         this.messages = [];
-        this.info.messages.subscribe(message => this.addMessage(message));
+        this.sub = this.info.messages.subscribe(message => this.addMessage(message));
+    }
+
+    ngOnDestroy(): void {
+        if (this.sub != null) {
+            this.sub.unsubscribe();
+        }
     }
 
     addMessage(message: Message) {
