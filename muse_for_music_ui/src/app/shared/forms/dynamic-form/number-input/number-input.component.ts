@@ -38,11 +38,16 @@ export class NumberInputComponent implements ControlValueAccessor {
     }
 
     set value(val: number) {
+        let newVal: string;
         if (val === this.nullValue) {
-            this._value = undefined;
+            newVal = undefined;
         } else {
-            this._value = val.toString();
+            newVal = val.toString();
         }
+        if (this._value == newVal) {
+            return;
+        }
+        this._value = newVal;
         this.onChange(val);
         this.onTouched();
     }
@@ -69,7 +74,7 @@ export class NumberInputComponent implements ControlValueAccessor {
     }
 
     writeValue(value) {
-        if (value) {
+        if (value != null) {
             this.value = value;
         }
     }

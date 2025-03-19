@@ -49,7 +49,7 @@ export class BooleanInputComponent implements ControlValueAccessor {
     }
 
     writeValue(value) {
-        if (value) {
+        if (value != null) {
             this.value = value;
         }
     }
