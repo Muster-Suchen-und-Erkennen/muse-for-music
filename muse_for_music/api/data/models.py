@@ -190,7 +190,7 @@ harmonic_center_get = api.model('HarmonicCenterGET', OrderedDict([
 harmonics_put = api.model('HarmonicsPUT', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('degree_of_dissonance', fields.Nested(taxonomy_item_ref, taxonomy='Dissonanzgrad', title='Dissonanzgrad')),
-    ('dissonances', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Dissonanzen', default=[], title='Dissonanzen', description='Nicht ausfüllen. Kategorie wird gestrichen.')),
+    # ('dissonances', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Dissonanzen', default=[], title='Dissonanzen', description='Nicht ausfüllen. Kategorie wird gestrichen.')),
     ('chords', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Akkord', default=[], title='Klänge', description='Auf ganz wenige, wirklich auffällige Klänge beschränken.\n\nFolgende Klänge werden hier erfasst:\n- Verm. Drei- und Vierklänge (nicht aber bei einem verkürzten Dominantseptnonakkord!)\n- Überm. Dreiklänge\n- Neapolitaner\n- Übermäßiger Quintsextakkord')),
     ('harmonic_complexity', fields.Nested(taxonomy_item_ref, taxonomy='HarmonischeKomplexitaet', title='Harmonische Komplexität', description='Der vom Tool errechnete Wert wird durch die Anzahl der Takte dividiert und dann den Kategorien zugeordnet.')),
     ('harmonic_density', fields.Nested(taxonomy_item_ref, taxonomy='HarmonischeDichte', title='Harmonische Dichte')),
@@ -204,7 +204,7 @@ harmonics_put = api.model('HarmonicsPUT', OrderedDict([
 harmonics_get = api.model('HarmonicsGET', OrderedDict([
     ('id', fields.Integer(default=1, readonly=True, example=1)),
     ('degree_of_dissonance', fields.Nested(taxonomy_item_get, taxonomy='Dissonanzgrad', title='Dissonanzgrad')),
-    ('dissonances', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Dissonanzen', default=[], title='Dissonanzen')),
+    # ('dissonances', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='Dissonanzen', default=[], title='Dissonanzen')),
     ('harmonic_complexity', fields.Nested(taxonomy_item_get, taxonomy='HarmonischeKomplexitaet', title='Harmonische Komplexität')),
     ('harmonic_density', fields.Nested(taxonomy_item_get, taxonomy='HarmonischeDichte', title='Harmonische Dichte')),
     ('harmonic_phenomenons', fields.List(fields.Nested(taxonomy_item_get), isArray=True, taxonomy='HarmonischePhaenomene', default=[], title='Harmonische Phänomene')),

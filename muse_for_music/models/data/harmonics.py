@@ -17,7 +17,8 @@ class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
                           #('harmonische_funktion', HarmonischeFunktionVerwandschaft),
                           ('harmonic_analyse', str),)
 
-    _list_attributes = ('harmonic_centers', 'harmonic_changes', 'harmonic_phenomenons', 'dissonances', 'chords', 'harmonische_funktion')
+    _list_attributes = ('harmonic_centers', 'harmonic_changes', 'harmonic_phenomenons', 'chords', 'harmonische_funktion')
+    # removed: 'dissonances'
 
     __tablename__ = 'harmonics'
     id = db.Column(db.Integer, primary_key=True)
