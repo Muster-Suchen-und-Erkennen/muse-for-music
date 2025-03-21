@@ -52,6 +52,10 @@
                 <m4m-number-input class="flex flex-grow" [formControlName]="model['x-key']" [question]="model" [path]="path"></m4m-number-input>
             </ng-container>
 
+            <ng-container *ngSwitchCase="'number'">
+                <m4m-number-input class="flex flex-grow" [formControlName]="model['x-key']" [question]="model" [path]="path"></m4m-number-input>
+            </ng-container>
+
             <ng-container *ngSwitchCase="'boolean'">
                 <m4m-boolean-input class="flex flex-grow" [formControlName]="model['x-key']" [question]="model" [path]="path"></m4m-boolean-input>
             </ng-container>

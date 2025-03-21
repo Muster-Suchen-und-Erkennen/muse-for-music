@@ -59,6 +59,20 @@ export class NumberInputComponent implements ControlValueAccessor {
         return -1;
     }
 
+    get minimum() {
+        if (this.question != null) {
+            if (this.question.hasOwnProperty('x-minimum')) {
+                // custom minimum, as model minimum has to accomodate
+                // the null value == -1 hack
+                return this.question['x-minimum'];
+            }
+            if (this.question.hasOwnProperty('minimum')) {
+                return this.question['minimum'];
+            }
+        }
+        return undefined;
+    }
+
     updateValue(event) {
         this._value = event;
         this.onChange(this.value);
