@@ -20,6 +20,7 @@ from typing import Union, Sequence, Dict
 class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, SpecificationProviderMixin):
 
     _normal_attributes = (('label', str),
+                          ('measures', str),
                           ('occurence_in_part', AuftretenWerkausschnitt),
                           ('share_of_part', Anteil),
                           ('is_tutti', bool),
@@ -34,6 +35,7 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, Specific
     id = db.Column(db.Integer, primary_key=True)
     part_id = db.Column(db.Integer, db.ForeignKey('part.id'), nullable=False)
     label = db.Column(db.String(191), nullable=False, default='A')
+    measures = db.Column(db.Text, nullable=True)
     occurence_in_part_id = db.Column(db.Integer, db.ForeignKey('auftreten_werkausschnitt.id'), nullable=True)
     share_of_part_id = db.Column(db.Integer, db.ForeignKey('anteil.id'), nullable=True)
     instrumentation_id = db.Column(db.Integer, db.ForeignKey('instrumentation.id'))

@@ -475,6 +475,7 @@ subpart_links = api.inherit('SubPartLinks', with_curies, OrderedDict([
 
 subpart_post = api.model('SubPartPOST', OrderedDict([
     ('label', fields.String(required=True, max_length=191, example='A', default='A', title="Name")),
+    ('measures', fields.String(default='', title='Taktangaben', description="Nur ausfüllen falls abweichend vom Werkausschnitt.", nullable=True)),
 ]))
 
 subpart_put = api.inherit('SubPartPUT', subpart_post, OrderedDict([
@@ -535,6 +536,7 @@ voice_put = api.inherit('VoicePUT', voice_post, OrderedDict([
     ('ornaments', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Verzierung', default=[], title='Verzierungen')),
     ('melody_form', fields.Nested(taxonomy_item_ref, taxonomy='Melodieform', title='Melodik')),
     ('intervallik', fields.List(fields.Nested(taxonomy_item_ref), isArray=True, taxonomy='Intervallik', title='Intervallik')),
+    ('intervall_vector', fields.String(default='', title='Intervallvektor', description="[Prime, Sekunde, Terz, Quarte, Triton, Quinte, Sexte, Septime, Oktave, >Oktave]", pattern="\[(\s*[0-9]+\s*,)*(\s*[0-9]+\s*)\]", max_length=2048, nullable=True)),
     ('citations', fields.Nested(citations_put, description='Citations', isNested=True, title='Zitate und Allusionen', allowSave=True)),
     ('related_voices', fields.List(fields.Nested(related_voice_put), isArray=True, default=[], title='Beziehungen zu anderen Stimmen')),
     *specification_provider_put

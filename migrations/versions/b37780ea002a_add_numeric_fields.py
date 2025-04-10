@@ -25,6 +25,12 @@ def upgrade():
 
     with op.batch_alter_table('part', schema=None) as batch_op:
         batch_op.add_column(sa.Column('omissions', sa.Text(), nullable=True))
+
+    with op.batch_alter_table('sub_part', schema=None) as batch_op:
+        batch_op.add_column(sa.Column('measures', sa.Text(), nullable=True))
+
+    with op.batch_alter_table('voice', schema=None) as batch_op:
+        batch_op.add_column(sa.Column('intervall_vector', sa.Text(), nullable=True))
     # ### end Alembic commands ###
 
 
@@ -37,4 +43,10 @@ def downgrade():
         batch_op.drop_column('numeric_harmonic_complexity')
         batch_op.drop_column('numeric_harmonic_density')
         batch_op.drop_column('numeric_degree_of_dissonance')
+
+    with op.batch_alter_table('sub_part', schema=None) as batch_op:
+        batch_op.drop_column('measures')
+
+    with op.batch_alter_table('voice', schema=None) as batch_op:
+        batch_op.drop_column('intervall_vector')
     # ### end Alembic commands ###

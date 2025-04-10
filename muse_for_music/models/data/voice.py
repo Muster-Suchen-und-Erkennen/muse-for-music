@@ -33,6 +33,7 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, Specificat
                           ('rhythm', Rhythm),
                           ('composition', Composition),
                           ('rendition', Rendition),
+                          ('intervall_vector', str),
                           ('has_melody', bool),
                           ('melody_form', Melodieform),
                           ('citations', Citations),
@@ -60,6 +61,7 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, Specificat
     occurence_in_part_id = db.Column(db.Integer, db.ForeignKey('auftreten_werkausschnitt.id'), nullable=True)
     composition_id = db.Column(db.Integer, db.ForeignKey('composition.id'), nullable=True)
     rendition_id = db.Column(db.Integer, db.ForeignKey('rendition.id'), nullable=True)
+    intervall_vector = db.Column(db.Text, nullable=True)
     citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), nullable=True)
     ambitus_id = db.Column(db.Integer, db.ForeignKey('ambitus_group.id'), nullable=True)
 
