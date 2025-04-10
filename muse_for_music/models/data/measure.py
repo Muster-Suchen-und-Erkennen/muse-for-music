@@ -21,4 +21,7 @@ class Measure(db.Model, GetByID, UpdateableModelMixin):
 
     @from_page.setter
     def from_page(self, value):
+        if value is None:
+            self._from_page = None
+            return
         self._from_page = value if value > 0 else None
