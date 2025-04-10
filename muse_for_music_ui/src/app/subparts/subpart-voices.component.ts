@@ -47,7 +47,7 @@ export class SubPartVoicesComponent implements OnInit, OnDestroy {
                 this.voices = data;
                 const tableData = [];
                 this.voices.forEach(voice => {
-                    const row = new TableRow(voice.id, [voice.name, voice.measure_start.measure, voice.measure_end.measure],
+                    const row = new TableRow(voice.id, [voice.name],
                                              ['subparts', this.subPartID, 'voices', voice.id]);
                     tableData.push(row);
                 });

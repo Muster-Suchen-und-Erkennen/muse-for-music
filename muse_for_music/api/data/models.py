@@ -498,8 +498,6 @@ voice_links = api.inherit('VoiceLinks', with_curies, OrderedDict([
 
 voice_post = api.model('VoicePOST', OrderedDict([
     ('name', fields.String(default='', required=True, min_length=1, max_length=191, title='Name')),
-    ('measure_start', fields.Nested(measure_model, required=True, isNested=True, title='Starttakt')),
-    ('measure_end', fields.Nested(measure_model, required=True, isNested=True, title='Endtakt')),
 ]))
 
 
