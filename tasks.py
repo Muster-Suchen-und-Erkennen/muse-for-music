@@ -30,11 +30,8 @@ def clean_js_dependencies(c):
 
 
 @task
-def dependencies_py(c, from_lockfile=False):
-    if from_lockfile:
-        c.run('pipenv install --deploy', shell=SHELL)
-    else:
-        c.run('pipenv install', shell=SHELL)
+def dependencies_py(c):
+    c.run('poetry install', shell=SHELL)
 
 
 @task
@@ -68,7 +65,7 @@ def build(c, production=False, deploy_url='/static/', base_href='/'):
     with c.cd('./{module}'.format(module=UI_MODULE_NAME)):
         attrs = [
             '--',
-            '--extract-css',
+            # '--extract-css',
             "--deploy-url='{}'".format(deploy_url),
             "--base-href='{}'".format(base_href),
         ]
@@ -151,7 +148,7 @@ def start_js(c, deploy_url='/static/'):
     with c.cd('./{module}'.format(module=UI_MODULE_NAME)):
         attrs = [
             '--',
-            '--extract-css',
+            # '--extract-css',
             "--deploy-url='{}'".format(deploy_url),
             "--watch",
         ]
