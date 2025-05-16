@@ -19,6 +19,7 @@
 
     <script src="{{ static_url_for('static', filename='runtime.js') | bustcache }}" type="module" nonce="{{nonce}}"></script>
     <script src="{{ static_url_for('static', filename='polyfills.js') | bustcache }}" type="module" nonce="{{nonce}}"></script>
+    <script src="{{ static_url_for('static', filename='vendor.js') | bustcache }}" type="module" nonce="{{nonce}}"></script>
     <script src="{{ static_url_for('static', filename='main.js') | bustcache }}" type="module" nonce="{{nonce}}"></script>
 </body>
 

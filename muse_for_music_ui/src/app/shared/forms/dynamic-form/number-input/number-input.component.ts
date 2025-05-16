@@ -38,11 +38,16 @@ export class NumberInputComponent implements ControlValueAccessor {
     }
 
     set value(val: number) {
+        let newVal: string;
         if (val === this.nullValue) {
-            this._value = undefined;
+            newVal = undefined;
         } else {
-            this._value = val.toString();
+            newVal = val.toString();
         }
+        if (this._value == newVal) {
+            return;
+        }
+        this._value = newVal;
         this.onChange(val);
         this.onTouched();
     }
@@ -52,6 +57,20 @@ export class NumberInputComponent implements ControlValueAccessor {
             return this.question['x-nullValue'];
         }
         return -1;
+    }
+
+    get minimum() {
+        if (this.question != null) {
+            if (this.question.hasOwnProperty('x-minimum')) {
+                // custom minimum, as model minimum has to accomodate
+                // the null value == -1 hack
+                return this.question['x-minimum'];
+            }
+            if (this.question.hasOwnProperty('minimum')) {
+                return this.question['minimum'];
+            }
+        }
+        return undefined;
     }
 
     updateValue(event) {
@@ -69,7 +88,7 @@ export class NumberInputComponent implements ControlValueAccessor {
     }
 
     writeValue(value) {
-        if (value) {
+        if (value != null) {
             this.value = value;
         }
     }

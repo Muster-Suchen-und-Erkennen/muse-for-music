@@ -58,7 +58,8 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
 
     @Input('value')
     get value(): ApiObject|ApiObject[] {
-        if (this.choices == null || this.selected == null || this.selected.length === 0) {
+        const noChoices = this.choices != null && this.choices.length === 0;
+        if (noChoices || this.selected == null || this.selected.length === 0) {
             return this.nullValue;
         }
         if (this.question['x-isArray']) {
@@ -73,18 +74,28 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
     }
 
     set value(val: ApiObject|ApiObject[]) {
+        let newValue: ApiObject[];
         if (this.question['x-isArray']) {
-            this.selected = (val as ApiObject[]);
+            newValue = [...(val as ApiObject[])];
         } else {
             if (val != null && this.nullValue != null
                 && (val as ApiObject).id != null
                 && (val as ApiObject).id === this.nullValue.id) {
-                this.selected = [];
+                newValue = [];
             } else {
-                this.selected = [val];
+                newValue = [val as ApiObject];
             }
         }
-        this.onChange(val);
+        if (newValue == undefined && this.selected == undefined) {
+            return;
+        }
+        if (this.selected != null && this.selected.length === newValue.length) {
+            if (newValue.every((v, i) => v.id === this.selected[i].id)) {
+                return;
+            }
+        }
+        this.selected = newValue;
+        this.onChange(this.value);
         this.onTouched();
     }
 
@@ -151,6 +162,7 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
                     return;
                 }
                 this.choices = data;
+                this.onChange(this.value);
             });
         };
         if (this.question['x-reference'] === 'opus') {
@@ -160,6 +172,7 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
                     return;
                 }
                 this.choices = data;
+                this.onChange(this.value);
             });
         };
         if (this.question['x-reference'] === 'voice') {
@@ -188,6 +201,7 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
                     choices.push(voice);
                 })
                 this.choices = choices;
+                this.onChange(this.value);
             });
         };
     }
@@ -213,7 +227,7 @@ export class ReferenceChooserComponent implements ControlValueAccessor, OnInit, 
     }
 
     selectedChange(selected: ApiObject[]) {
-        this.selected = selected;
+        this.selected = [...selected];
         this.dropdown.closeDropdown();
         this.onChange(this.value);
         this.onTouched();

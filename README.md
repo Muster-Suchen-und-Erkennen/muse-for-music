@@ -54,6 +54,19 @@ poetry run flask drop_db
 poetry run invoke create-test-db
 ```
 
+## Set admin password
+
+```shell
+poetry run flask set-user-password --username admin
+```
+
+or inside the Docker container:
+
+```shell
+python -m flask set-user-password --username admin
+```
+
+
 ## Docker
 You can also build and run the project in Docker. Under windows you also need WSL2 for that. You need to have a working docker and run the following commandos:
 ```shell

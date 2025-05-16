@@ -1,12 +1,13 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy } from '@angular/core';
 import { ApiModel, ApiModelRef } from 'app/shared/rest/api-model';
 import { ModelsService } from 'app/shared/rest/models.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'data-item',
     templateUrl: './data-item.component.html'
 })
-export class DataItemComponent implements OnChanges {
+export class DataItemComponent implements OnChanges, OnDestroy {
 
     @Input() property: ApiModel|ApiModelRef;
     @Input() data: any;
@@ -15,17 +16,28 @@ export class DataItemComponent implements OnChanges {
     model: ApiModel|ApiModelRef;
     open: boolean = false;
 
+    private sub: Subscription|null = null;
+
     constructor(private models: ModelsService) { }
 
     ngOnChanges(changes): void {
         if (changes.property != null) {
             if ((this.property as ApiModelRef).$ref != null) {
-                this.models.getModel((this.property as ApiModelRef).$ref).subscribe(model => {
+                if (this.sub != null) {
+                    this.sub.unsubscribe();
+                }
+                this.sub = this.models.getModel((this.property as ApiModelRef).$ref).subscribe(model => {
                     this.model = model;
                 });
             } else {
                 this.model = this.property;
             }
+        }
+    }
+
+    ngOnDestroy(): void {
+        if (this.sub != null) {
+            this.sub.unsubscribe();
         }
     }
 

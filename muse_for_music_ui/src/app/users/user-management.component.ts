@@ -5,6 +5,7 @@ import { NavigationService, Breadcrumb } from '../navigation/navigation-service'
 import { Subscription, Subject } from 'rxjs';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { myDialogComponent } from '../shared/dialog/dialog.component';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'm4m-user-management',
@@ -49,6 +50,10 @@ export class UserManagementComponent implements OnInit, OnDestroy {
         if (this.usersubscription != null) {
             this.usersubscription.unsubscribe();
         }
+        if (this.pendingActionSubscription != null) {
+            this.pendingActionSubscription.unsubscribe();
+        }
+        this.freshLogin.complete();
     }
 
     addUser = () => {
@@ -158,7 +163,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
         if (this.userApi.tokenIsFresh) {
             this.freshLogin.next(true);
         } else {
-            this.userApi.freshLogin(this.password).subscribe(success => {
+            this.userApi.freshLogin(this.password).pipe(take(1)).subscribe(success => {
                 this.password = '';
                 this.freshLogin.next(true);
             }, (err) => {

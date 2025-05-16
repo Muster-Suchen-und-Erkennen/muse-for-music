@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { NavigationService, Breadcrumb } from '../navigation/navigation-service';
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { TableRow } from '../shared/table/table.component';
 import { UserApiService } from 'app/shared/rest/user-api.service';
+import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'm4m-people-overview',
@@ -12,7 +14,7 @@ import { UserApiService } from 'app/shared/rest/user-api.service';
   styleUrls: ['./people-overview.component.scss'],
   providers: [DatePipe]
 })
-export class PeopleOverviewComponent implements OnInit {
+export class PeopleOverviewComponent implements OnInit, OnDestroy {
 
     valid: boolean;
     newPersonData: any;
@@ -24,12 +26,14 @@ export class PeopleOverviewComponent implements OnInit {
 
     swagger: any;
 
+    private sub: Subscription|null = null;
+
     constructor(private data: NavigationService, private api: ApiService, private userApi: UserApiService, private datePipe: DatePipe) { }
 
     ngOnInit(): void {
         this.data.changeTitle('Personen');
         this.data.changeBreadcrumbs([new Breadcrumb('Personen', '/people')]);
-        this.api.getPeople().subscribe(data => {
+        this.sub = this.api.getPeople().subscribe(data => {
             if (data == undefined) {
                 return;
             }
@@ -60,9 +64,15 @@ export class PeopleOverviewComponent implements OnInit {
         });
     }
 
+    ngOnDestroy(): void {
+        if (this.sub != null) {
+            this.sub.unsubscribe();
+        }
+    }
+
     save = () => {
         if (this.valid) {
-            this.api.postPerson(this.newPersonData).subscribe(person => {
+            this.api.postPerson(this.newPersonData).pipe(take(1)).subscribe(person => {
                 this.selected = person.id;
                 this.selectedPerson = person;
             });

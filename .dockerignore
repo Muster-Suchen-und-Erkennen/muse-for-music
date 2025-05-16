@@ -4,6 +4,7 @@ node_modules
 npm-debug.log
 Dockerfile*
 docker-compose*
+.angular
 .dockerignore
 .git
 .gitignore
@@ -19,6 +20,7 @@ htmlcov
 instance
 __pycache__
 *.pyc
+**/*.pyc
 muse_for_music.egg-info
 Pipfile.lock
 .env

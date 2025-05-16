@@ -27,14 +27,13 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, Specificat
 
     _normal_attributes = (
                           ('name', str),
-                          ('measure_start', Measure),
-                          ('measure_end', Measure),
                           ('occurence_in_part', AuftretenWerkausschnitt),
                           ('share', Anteil),
                           ('satz', Satz),
                           ('rhythm', Rhythm),
                           ('composition', Composition),
                           ('rendition', Rendition),
+                          ('intervall_vector', str),
                           ('has_melody', bool),
                           ('melody_form', Melodieform),
                           ('citations', Citations),
@@ -62,6 +61,7 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, Specificat
     occurence_in_part_id = db.Column(db.Integer, db.ForeignKey('auftreten_werkausschnitt.id'), nullable=True)
     composition_id = db.Column(db.Integer, db.ForeignKey('composition.id'), nullable=True)
     rendition_id = db.Column(db.Integer, db.ForeignKey('rendition.id'), nullable=True)
+    intervall_vector = db.Column(db.Text, nullable=True)
     citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), nullable=True)
     ambitus_id = db.Column(db.Integer, db.ForeignKey('ambitus_group.id'), nullable=True)
 
@@ -83,15 +83,15 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, Specificat
 
     _subquery_load = ['satz', 'rhythm', 'composition', 'rendition', 'citations']
 
-    def __init__(self, subpart: Union[int, SubPart], measure_start: dict, measure_end: dict, name: str, **kwargs):
+    def __init__(self, subpart: Union[int, SubPart], name: str, **kwargs):
         if isinstance(subpart, SubPart):
             self.subpart = subpart
         else:
             self.subpart = SubPart.get_by_id(subpart)
         self.name = name
 
-        self.measure_start = Measure(**measure_start)
-        self.measure_end = Measure(**measure_end)
+        self.measure_start = Measure()
+        self.measure_end = Measure()
         db.session.add(self.measure_start)
         db.session.add(self.measure_end)
 
@@ -246,4 +246,3 @@ class RelatedVoices(db.Model, GetByID, UpdateableModelMixin):
         self.voice = voice
         if kwargs:
             self.update(kwargs)
-            

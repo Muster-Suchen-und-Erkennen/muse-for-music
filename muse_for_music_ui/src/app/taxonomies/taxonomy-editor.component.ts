@@ -5,6 +5,7 @@ import { NavigationService, Breadcrumb } from '../navigation/navigation-service'
 import { ApiObject } from '../shared/rest/api-base.service';
 import { ApiService } from '../shared/rest/api.service';
 import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 class TaxonomyItem {
     id: number;
@@ -183,7 +184,7 @@ export class TaxonomyEditorComponent implements OnInit, OnDestroy {
         if (this.valid) {
             const taxonomy = this.taxonomyList.find(tax => tax.name === this.selectedTaxonomy);
             if (taxonomy != null) {
-                this.api.postTaxonomyItem(taxonomy, this.itemData, this.selectedParent).subscribe(_ => {return});
+                this.api.postTaxonomyItem(taxonomy, this.itemData, this.selectedParent).pipe(take(1)).subscribe(_ => {return});
             }
         }
     };
@@ -192,7 +193,7 @@ export class TaxonomyEditorComponent implements OnInit, OnDestroy {
         if (this.valid) {
             const taxonomy = this.taxonomyList.find(tax => tax.name === this.selectedTaxonomy);
             if (taxonomy != null) {
-                this.api.putTaxonomyItem(taxonomy, this.selectedItem, this.itemData).subscribe(_ => {return});
+                this.api.putTaxonomyItem(taxonomy, this.selectedItem, this.itemData).pipe(take(1)).subscribe(_ => {return});
             }
         }
     };
@@ -202,7 +203,7 @@ export class TaxonomyEditorComponent implements OnInit, OnDestroy {
             const taxonomy = this.taxonomyList.find(tax => tax.name === this.selectedTaxonomy);
             if (taxonomy != null) {
                 const data = {id: this.na.id, name: this.na.name, description: this.itemData.description};
-                this.api.putTaxonomyItem(taxonomy, this.na, data).subscribe(_ => {return});
+                this.api.putTaxonomyItem(taxonomy, this.na, data).pipe(take(1)).subscribe(_ => {return});
             }
         }
     };
@@ -211,7 +212,7 @@ export class TaxonomyEditorComponent implements OnInit, OnDestroy {
         if (this.valid) {
             const taxonomy = this.taxonomyList.find(tax => tax.name === this.selectedTaxonomy);
             if (taxonomy != null) {
-                this.api.deleteTaxonomyItem(taxonomy, this.selectedItem).subscribe(_ => {return});
+                this.api.deleteTaxonomyItem(taxonomy, this.selectedItem).pipe(take(1)).subscribe(_ => {return});
             }
         }
     };

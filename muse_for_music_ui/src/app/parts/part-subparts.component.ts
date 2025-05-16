@@ -1,15 +1,17 @@
-import { Component, OnInit, Input, Testability } from '@angular/core';
+import { Component, OnInit, Input, Testability, OnDestroy } from '@angular/core';
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
 import { TableRow } from '../shared/table/table.component';
 import { UserApiService } from 'app/shared/rest/user-api.service';
+import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'm4m-part-subparts',
   templateUrl: './part-subparts.component.html',
   styleUrls: ['./part-subparts.component.scss']
 })
-export class PartSubpartsComponent implements OnInit {
+export class PartSubpartsComponent implements OnInit, OnDestroy {
 
     @Input() partID: number;
 
@@ -23,16 +25,22 @@ export class PartSubpartsComponent implements OnInit {
 
     newSubPartData: any;
 
+    private partSub: Subscription|null = null;
+    private subPartSub: Subscription|null = null;
+
     constructor(private api: ApiService, private userApi: UserApiService) { }
 
     ngOnInit(): void {
-        this.api.getPart(this.partID).subscribe(data => {
+        this.partSub = this.api.getPart(this.partID).subscribe(data => {
             if (data == undefined) {
                 return;
             }
             this.part = data;
             this.subparts = this.part.subparts;
-            this.api.getSubParts(data).subscribe(data => {
+            if (this.subPartSub != null) {
+                this.subPartSub.unsubscribe();
+            }
+            this.subPartSub = this.api.getSubParts(data).subscribe(data => {
                 if (data == undefined) {
                     return;
                 }
@@ -48,6 +56,15 @@ export class PartSubpartsComponent implements OnInit {
         });
     }
 
+    ngOnDestroy(): void {
+        if (this.partSub != null) {
+            this.partSub.unsubscribe();
+        }
+        if (this.subPartSub != null) {
+            this.subPartSub.unsubscribe();
+        }
+    }
+
     showEditButton() {
         return this.userApi.loggedIn && this.userApi.roles.has('user') && this.userApi.isEditing();
     }
@@ -55,7 +72,7 @@ export class PartSubpartsComponent implements OnInit {
 
     save = () => {
         if (this.valid) {
-            this.api.postSubPart(this.part, this.newSubPartData).subscribe(_ => {return});
+            this.api.postSubPart(this.part, this.newSubPartData).pipe(take(1)).subscribe(_ => {return});
         }
     };
 

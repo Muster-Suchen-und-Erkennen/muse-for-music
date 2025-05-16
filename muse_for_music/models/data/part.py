@@ -19,6 +19,7 @@ class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, Specificati
                           ('measure_start', Measure),
                           ('measure_end', Measure),
                           ('length', int),
+                          ('omissions', str),
                           ('movement', int),
                           ('dramaturgic_context', DramaturgicContext),
                           ('tempo_context', TempoContext),
@@ -45,6 +46,7 @@ class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, Specificati
     opus = db.relationship(Opus, lazy='select', backref=db.backref('parts', cascade="all, delete-orphan"))
     measure_start = db.relationship(Measure, foreign_keys=[measure_start_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
     measure_end = db.relationship(Measure, foreign_keys=[measure_end_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
+    omissions = db.Column(db.Text, nullable=True)
     #occurence_in_movement = db.relationship(AuftretenSatz, lazy='joined')
     instrumentation_context = db.relationship(InstrumentationContext, single_parent=True, cascade="all, delete-orphan")
     dynamic_context = db.relationship(DynamicContext, single_parent=True, cascade="all, delete-orphan")
@@ -55,7 +57,7 @@ class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, Specificati
                       'instrumentation_context', 'subparts']
 
     def __init__(self, opus_id: int, measure_start: dict, measure_end: dict,
-                 length: int=1, movement: int=1, name: str='', **kwargs):
+                 length: int=1, movement: int=1, name: str='', omissions: str='', **kwargs):
         self.opus = Opus.get_by_id(opus_id)
         self.name = name
         self.movement = movement
@@ -64,6 +66,7 @@ class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, Specificati
         db.session.add(self.measure_start)
         db.session.add(self.measure_end)
         self.length = length
+        self.omissions = omissions
 
         self.instrumentation_context = InstrumentationContext()
         self.dynamic_context = DynamicContext()

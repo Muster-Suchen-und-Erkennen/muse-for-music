@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, ViewChild, OnInit, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
+import { Component, forwardRef, Input, ViewChild, OnInit, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { ApiObject } from '../../../rest/api-base.service';
@@ -7,6 +7,7 @@ import { myDropdownComponent } from '../../../dropdown/dropdown.component';
 import { ApiService } from '../../../rest/api.service';
 import { SpecificationUpdateEvent } from '../specification-update-event';
 import { ApiModel } from 'app/shared/rest/api-model';
+import { Subscription } from 'rxjs';
 
 
 
@@ -21,7 +22,7 @@ import { ApiModel } from 'app/shared/rest/api-model';
   }],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, OnChanges {
+export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, OnChanges, OnDestroy {
 
     @ViewChild(myDropdownComponent) dropdown: myDropdownComponent
 
@@ -45,6 +46,8 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
 
     onTouched: any = () => {};
 
+    private sub: Subscription|null = null;
+
     selectableId(index, selectable) {
         return selectable.id;
     }
@@ -64,20 +67,29 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
     }
 
     set value(val: ApiObject|ApiObject[]) {
+        let newValue: ApiObject[];
         if (val == undefined) {
-            this._value = []
+            newValue = []
         } else {
             if (!this.isArray) {
                 if ((val as ApiObject).id === this.nullValue.id) {
-                    this._value = [];
-                    val = null;
+                    newValue = [];
                 } else {
-                    this._value = [val];
+                    newValue = [val as ApiObject];
                 }
             } else {
-                this._value = (val as ApiObject[]);
+                newValue = [...(val as ApiObject[])];
             }
         }
+        if (newValue == undefined && this._value == undefined) {
+            return;
+        }
+        if (this._value != null && this._value.length === newValue.length) {
+            if (newValue.every((v, i) => v.id === this._value[i].id)) {
+                return;
+            }
+        }
+        this._value = newValue;
         this.onChange(this.value);
         this.onTouched();
     }
@@ -105,7 +117,7 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
     }
 
     ngOnInit(): void {
-        this.api.getTaxonomy(this.question['x-taxonomy']).subscribe(taxonomy => {
+        this.sub = this.api.getTaxonomy(this.question['x-taxonomy']).subscribe(taxonomy => {
             if (taxonomy == undefined) {
                 return;
             }
@@ -122,6 +134,12 @@ export class TaxonomySelectComponent implements ControlValueAccessor, OnInit, On
         if (changes.specifications != null || changes.path != null) {
             this.updateSpecificationMap();
             this.runChangeDetection();
+        }
+    }
+
+    ngOnDestroy(): void {
+        if (this.sub != null) {
+            this.sub.unsubscribe();
         }
     }
 

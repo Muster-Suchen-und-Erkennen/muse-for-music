@@ -1,4 +1,4 @@
-import { Component, OnChanges, Input, OnInit } from '@angular/core';
+import { Component, OnChanges, Input, OnInit, OnDestroy } from '@angular/core';
 
 import { ApiService } from '../shared/rest/api.service';
 import { ApiObject } from '../shared/rest/api-base.service';
@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
   selector: 'm4m-history',
   templateUrl: './history.component.html',
 })
-export class HistoryComponent implements OnChanges, OnInit {
+export class HistoryComponent implements OnChanges, OnInit, OnDestroy {
 
     @Input() user: string;
 
@@ -44,5 +44,11 @@ export class HistoryComponent implements OnChanges, OnInit {
             }
             this.history = data;
         });
+    }
+
+    ngOnDestroy(): void {
+        if (this.sub != null) {
+            this.sub.unsubscribe();
+        }
     }
 }

@@ -1,6 +1,6 @@
 
-import {first, map, debounceTime} from 'rxjs/operators';
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {first, map, debounceTime, take} from 'rxjs/operators';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { ApiModel, ApiModelRef } from 'app/shared/rest/api-model';
 import { ModelsService } from 'app/shared/rest/models.service';
@@ -13,7 +13,7 @@ import { SpecificationUpdateEvent } from './specification-update-event';
     templateUrl: './dynamic-form-layer.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DynamicFormLayerComponent implements OnChanges {
+export class DynamicFormLayerComponent implements OnChanges, OnDestroy {
 
     @Input() modelUrl: string;
     @Input() filter: string[] = [];
@@ -41,10 +41,11 @@ export class DynamicFormLayerComponent implements OnChanges {
 
     private lastValid: boolean = false;
 
-    private formSubscription: Subscription;
+    private formSubscription: Subscription|null = null;
+    private changeSub: Subscription|null = null;
 
     constructor(private models: ModelsService, private formGroups: FormGroupService, private changeDetector: ChangeDetectorRef) {
-        this.changeDetectionBatchSubject.asObservable().pipe(debounceTime(50)).subscribe(() => this.runChangeDetection());
+        this.changeSub = this.changeDetectionBatchSubject.asObservable().pipe(debounceTime(50)).subscribe(() => this.runChangeDetection());
     }
 
     private runChangeDetection() {
@@ -61,7 +62,9 @@ export class DynamicFormLayerComponent implements OnChanges {
             this.models.getModel(this.modelUrl).pipe(
                 map(this.models.filterModel(this.filter, this.isBlacklist)),
                 map(this.models.filterModel(['specifications'], true)),
-                first(),).subscribe(model => {
+                first(),
+                take(1),
+            ).subscribe(model => {
                     const props = [];
                     if (model.properties != null) {
                         for (const key in model.properties) {
@@ -106,6 +109,16 @@ export class DynamicFormLayerComponent implements OnChanges {
         if (changes.path != null || changes.context != null || changes.debug != null) {
             this.runChangeDetection();
         }
+    }
+
+    ngOnDestroy(): void {
+        if (this.changeSub != null) {
+            this.changeSub.unsubscribe();
+        }
+        if (this.formSubscription != null) {
+            this.formSubscription.unsubscribe();
+        }
+        this.changeDetectionBatchSubject.unsubscribe();
     }
 
     private updateValidStatus() {

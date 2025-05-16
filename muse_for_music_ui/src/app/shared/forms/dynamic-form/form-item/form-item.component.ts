@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnChanges, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { ApiModel, ApiModelRef } from 'app/shared/rest/api-model';
 import { ModelsService } from 'app/shared/rest/models.service';
 import { UntypedFormGroup } from '@angular/forms';
@@ -10,7 +10,7 @@ import { SpecificationUpdateEvent } from '../specification-update-event';
     templateUrl: './form-item.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DynamicFormItemComponent implements OnChanges {
+export class DynamicFormItemComponent implements OnChanges, OnDestroy {
 
     @Input() form: UntypedFormGroup;
     @Input() property: ApiModel|ApiModelRef;
@@ -25,7 +25,8 @@ export class DynamicFormItemComponent implements OnChanges {
     model: ApiModel|ApiModelRef;
     open: boolean = false;
 
-    private statusChangeSubscription: Subscription;
+    private statusChangeSubscription: Subscription|null = null;
+    private modelSub: Subscription|null = null;
 
     constructor(private models: ModelsService, private changeDetector: ChangeDetectorRef) { }
 
@@ -38,7 +39,10 @@ export class DynamicFormItemComponent implements OnChanges {
     ngOnChanges(changes): void {
         if (changes.property != null) {
             if ((this.property as ApiModelRef).$ref != null) {
-                this.models.getModel((this.property as ApiModelRef).$ref).subscribe(model => {
+                if (this.modelSub != null) {
+                    this.modelSub.unsubscribe();
+                }
+                this.modelSub = this.models.getModel((this.property as ApiModelRef).$ref).subscribe(model => {
                     this.model = model;
                     this.runChangeDetection();
                 });
@@ -63,6 +67,15 @@ export class DynamicFormItemComponent implements OnChanges {
                     });
                 }
             }
+        }
+    }
+
+    ngOnDestroy(): void {
+        if (this.modelSub != null) {
+            this.modelSub.unsubscribe();
+        }
+        if (this.statusChangeSubscription != null) {
+            this.statusChangeSubscription.unsubscribe();
         }
     }
 

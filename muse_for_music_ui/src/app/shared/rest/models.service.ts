@@ -1,5 +1,5 @@
 
-import {timeout, first, reduce, mergeMap, concatMap, map} from 'rxjs/operators';
+import {timeout, first, reduce, mergeMap, concatMap, map, take} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { InfoService } from '../info/info.service';
 import { Observable, Subject, of, from, AsyncSubject } from 'rxjs';
@@ -391,13 +391,14 @@ export class ModelsService {
                     }
                     return model;
                 }),
-                first(),)
-                .subscribe((model) => {
-                    if (model != null) {
-                        stream.next(model);
-                        stream.complete();
-                    }
-                });
+                first(),
+                take(1),
+            ).subscribe((model) => {
+                if (model != null) {
+                    stream.next(model);
+                    stream.complete();
+                }
+            });
         }
         return stream.asObservable().pipe(timeout(2000),first(),);
     }

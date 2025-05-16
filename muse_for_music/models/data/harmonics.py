@@ -12,19 +12,26 @@ from typing import Union, Sequence, List
 class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
 
     _normal_attributes = (('degree_of_dissonance', Dissonanzgrad),
+                          ('numeric_degree_of_dissonance', float),
                           ('harmonic_density', HarmonischeDichte),
+                          ('numeric_harmonic_density', float),
                           ('harmonic_complexity', HarmonischeKomplexitaet),
+                          ('numeric_harmonic_complexity', float),
                           #('harmonische_funktion', HarmonischeFunktionVerwandschaft),
                           ('harmonic_analyse', str),)
 
-    _list_attributes = ('harmonic_centers', 'harmonic_changes', 'harmonic_phenomenons', 'dissonances', 'chords', 'harmonische_funktion')
+    _list_attributes = ('harmonic_centers', 'harmonic_changes', 'harmonic_phenomenons', 'chords', 'harmonische_funktion')
+    # removed: 'dissonances'
 
     __tablename__ = 'harmonics'
     id = db.Column(db.Integer, primary_key=True)
     #harmonic_function_modulation_id = db.Column(db.Integer, db.ForeignKey('harmonische_funktion_verwandschaft.id'))
     degree_of_dissonance_id = db.Column(db.Integer, db.ForeignKey('dissonanzgrad.id'))
+    numeric_degree_of_dissonance = db.Column(db.Float, nullable=True)
     harmonic_density_id = db.Column(db.Integer, db.ForeignKey('harmonische_dichte.id'))
+    numeric_harmonic_density = db.Column(db.Float, nullable=True)
     harmonic_complexity_id = db.Column(db.Integer, db.ForeignKey('harmonische_komplexitaet.id'))
+    numeric_harmonic_complexity = db.Column(db.Float, nullable=True)
     harmonic_analyse = db.Column(db.Text, nullable=True)
 
     #harmonische_funktion = db.relationship('HarmonischeFunktionVerwandschaft', lazy='joined')
