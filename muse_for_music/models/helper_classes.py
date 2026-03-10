@@ -1,27 +1,41 @@
+from datetime import date, datetime
 from logging import Logger
-from datetime import datetime, date
-from typing import TypeVar, ClassVar, Sequence, Dict, Type, Tuple, List, Union, cast, Any, Optional
+from typing import (
+    Any,
+    ClassVar,
+    Dict,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    TypeAlias,
+    TypeVar,
+    Union,
+    cast,
+)
 
 from flask import current_app
-from sqlalchemy.sql import select, Select
-from sqlalchemy.orm import joinedload, subqueryload, selectinload
 from flask_restx.errors import ValidationError
+from sqlalchemy.orm import joinedload, selectinload, subqueryload
+from sqlalchemy.sql import Select, select
 from typing_extensions import Self
 
 from .. import db
 
+ModelBase: TypeAlias = db.Model
+X = TypeVar("X", bound=ModelBase)
 
-X = TypeVar('X', bound=db.Model)
 
+class GetByID:
 
-class GetByID():
-
-    _eager_load: ClassVar[Union[List[str],Tuple[str]]] = tuple()
+    _eager_load: ClassVar[Union[List[str], Tuple[str]]] = tuple()
     _joined_load: List[str] = []
     _subquery_load: List[str] = []
 
     @classmethod
-    def prepare_query(cls: Type[Self], lazy: bool=False) -> Select[Tuple[Self]]:
+    def prepare_query(cls: Type[Self], lazy: bool = False) -> Select[Tuple[Self]]:
         q = select(cls)
         if lazy:
             return q
@@ -47,32 +61,40 @@ class GetByID():
         if isinstance(id_, GetByID):  # for lazy direct object passing
             return id_.id
         if isinstance(id_, dict):  # for lazy dict passing
-            return id_['id']
+            return id_["id"]
         if isinstance(id_, int):
-            if id_ < 0: # no negative ids in system (all negative ids mapped to -1)
+            if id_ < 0:  # no negative ids in system (all negative ids mapped to -1)
                 return -1
             return id_
-        if id_ is None: # None object is associated with negative id
+        if id_ is None:  # None object is associated with negative id
             return -1
-        raise TypeError('"id" is of wrong type. Expected: int, dict or {}, Got {}'.format(GetByID, type(id_)))
+        raise TypeError(
+            '"id" is of wrong type. Expected: int, dict or {}, Got {}'.format(
+                GetByID, type(id_)
+            )
+        )
 
     @classmethod
-    def get_by_id_or_dict(cls: Type[Self], id_: Union[int, dict, Self], lazy: bool=False) -> Optional[Self]:
+    def get_by_id_or_dict(
+        cls: Type[Self], id_: Union[int, dict, Self], lazy: bool = False
+    ) -> Optional[Self]:
         if isinstance(id_, cls):  # for lazy direct object passing
             return id_
         if isinstance(id_, dict):  # for lazy dict passing
-            id_ = id_['id']
+            id_ = id_["id"]
         return cls.get_by_id(id_, lazy)
 
     @classmethod
-    def get_by_id(cls: Type[Self], id_: int, lazy: bool=False) -> Optional[Self]:
+    def get_by_id(cls: Type[Self], id_: int, lazy: bool = False) -> Optional[Self]:
         if id_ < 0:
             return None
-        query = cls.prepare_query(lazy).where(cls.id==id_)
+        query = cls.prepare_query(lazy).where(cls.id == id_)
         return db.session.execute(query).scalar_one_or_none()
 
     @classmethod
-    def get_list_by_id(cls: Type[Self], ids: Sequence[int], lazy: bool=True) -> Sequence[Self]:
+    def get_list_by_id(
+        cls: Type[Self], ids: Sequence[int], lazy: bool = True
+    ) -> Sequence[Self]:
         if not ids:
             return []
         if len(ids) == 1:
@@ -82,7 +104,9 @@ class GetByID():
         return db.session.execute(query).scalars().all()
 
     @classmethod
-    def get_multiple_by_id(cls: Type[Self], ids: Sequence[int], lazy: bool=True) -> Dict[int, Self]:
+    def get_multiple_by_id(
+        cls: Type[Self], ids: Sequence[int], lazy: bool = True
+    ) -> Dict[int, Self]:
         if not ids:
             return {}
         if len(ids) == 1:
@@ -95,26 +119,30 @@ class GetByID():
         return {obj.id: obj for obj in result}
 
 
-class UpdateableModelMixin():
+class UpdateableModelMixin:
 
     _normal_attributes: Tuple[Tuple[str, Type], ...] = tuple()
     _reference_only_attributes: Tuple[str, ...] = tuple()
     _optional_attributes: Tuple[str, ...] = tuple()
     _list_attributes: Tuple[str, ...] = tuple()
 
-    def _update_normal_attributes(self, new_values: Dict, partial: bool=False):
+    def _update_normal_attributes(self, new_values: Dict, partial: bool = False):
         expire_self = False
         for name, cls in self._normal_attributes:
             self.check_for_required_attr(name, new_values, cls, partial)
             value = new_values.get(name)
-            if issubclass(cls, UpdateableModelMixin) and (name not in self._reference_only_attributes):
+            if issubclass(cls, UpdateableModelMixin) and (
+                name not in self._reference_only_attributes
+            ):
                 expire_self = self.update_complex_object(name, value, cls, expire_self)
             elif issubclass(cls, GetByID):
                 if value is None:
                     setattr(self, name, None)
                     continue
                 cls = cast(GetByID, cls)
-                if cls.get_id_from_object(getattr(self, name)) == cls.get_id_from_object(value):
+                if cls.get_id_from_object(getattr(self, name)) == cls.get_id_from_object(
+                    value
+                ):
                     # object already set!
                     continue
                 resolved_value = cls.get_by_id_or_dict(value, True)
@@ -126,20 +154,24 @@ class UpdateableModelMixin():
                 if value is None:
                     setattr(self, name, None)
                     continue
-                parsed_value = datetime.strptime(value, '%Y-%m-%d')
+                parsed_value = datetime.strptime(value, "%Y-%m-%d")
                 parsed_date = parsed_value.date()
                 if getattr(self, name) != parsed_date:
                     setattr(self, name, parsed_date)
         if expire_self:
             db.session.expire(self)
 
-    def check_for_required_attr(self, name, new_values, cls, partial: bool=False):
+    def check_for_required_attr(self, name, new_values, cls, partial: bool = False):
         if name not in new_values and name not in self._optional_attributes:
             if not partial:
-                raise ValidationError("'{}' is a required property for class {}".format(name, self.__class__))
+                raise ValidationError(
+                    "'{}' is a required property for class {}".format(
+                        name, self.__class__
+                    )
+                )
             else:
                 if cls == str:
-                    new_values.name = ''
+                    new_values.name = ""
                 elif cls == int:
                     new_values = -1
                 elif cls == float:
@@ -165,8 +197,11 @@ class UpdateableModelMixin():
             except Exception as e:
                 print(type(e))
                 logger: Logger = current_app.logger
-                logger.exception("Failed to auto instantiate class %s on update of %s",
-                                 cls.__name__, self.__class__.__name__)
+                logger.exception(
+                    "Failed to auto instantiate class %s on update of %s",
+                    cls.__name__,
+                    self.__class__.__name__,
+                )
         else:
             attr_to_update.update(value)
         return expire_self
@@ -184,22 +219,26 @@ class UpdateableModelMixin():
         db.session.add(self)
 
 
-K = TypeVar('K', bound=GetByID)
-V = TypeVar('V', bound=GetByID)
-W = TypeVar('W', bound=UpdateableModelMixin)
+K = TypeVar("K", bound=GetByID)
+V = TypeVar("V", bound=GetByID)
+W = TypeVar("W", bound=UpdateableModelMixin)
 
 
-class UpdateListMixin():
+class UpdateListMixin:
 
-    def _update_reference_only_list(self, item_list: Union[Sequence[int],
-                                    Sequence[dict]], old_items: Dict[int, K],
-                                    mapping_cls: Type[K], item_cls: Type[V],
-                                    mapping_cls_attribute: str):
+    def _update_reference_only_list(
+        self,
+        item_list: Union[Sequence[int], Sequence[dict]],
+        old_items: Mapping[int, K],
+        mapping_cls: Type[K],
+        item_cls: Type[V],
+        mapping_cls_attribute: str,
+    ):
         to_add: List[int] = []
 
         for item in item_list:
             if isinstance(item, dict):
-                item = item.get('id')
+                item = item.get("id")
                 if item is None:
                     continue
             item = cast(int, item)
@@ -223,11 +262,11 @@ class UpdateListMixin():
         if to_delete:
             db.session.expire(self)
 
-    def _update_updateable_model_list(self, item_list: Sequence[dict],
-                                      old_items: Dict[int, W],
-                                      item_cls: Type[W]):
+    def _update_updateable_model_list(
+        self, item_list: Sequence[dict], old_items: Mapping[int, W], item_cls: Type[W]
+    ):
         for item_dict in item_list:
-            item_id = item_dict.get('id')
+            item_id = item_dict.get("id")
             if item_id in old_items:
                 old_items[item_id].update(item_dict)
                 db.session.add(old_items[item_id])
@@ -243,9 +282,14 @@ class UpdateListMixin():
         if to_delete:
             db.session.expire(self)
 
-    def update_list(self, item_list: Union[Sequence[int], Sequence[dict], None],
-                    old_items: Union[Dict[int, K], Dict[int, W]], mapping_cls: Any,
-                    item_cls: Type[V] = None, mapping_cls_attribute: str = None):
+    def update_list(
+        self,
+        item_list: Union[Sequence[int], Sequence[dict], None],
+        old_items: Union[Mapping[int, K], Mapping[int, W], Mapping[int, ModelBase]],
+        mapping_cls: Any,
+        item_cls: Type[V] | None = None,
+        mapping_cls_attribute: str = None,
+    ):
 
         # consider None an empty list
         if item_list is None:
@@ -253,8 +297,15 @@ class UpdateListMixin():
 
         if issubclass(mapping_cls, UpdateableModelMixin):
             self._update_updateable_model_list(item_list, old_items, mapping_cls)
-        elif issubclass(item_cls, GetByID) and item_cls is not None and mapping_cls_attribute:
-            self._update_reference_only_list(item_list, old_items, mapping_cls,
-                                             item_cls, mapping_cls_attribute)
+        elif (
+            issubclass(item_cls, GetByID)
+            and item_cls is not None
+            and mapping_cls_attribute
+        ):
+            self._update_reference_only_list(
+                item_list, old_items, mapping_cls, item_cls, mapping_cls_attribute
+            )
         else:
-            raise TypeError('Either mapping_cls was not an UpdateableModelMixin or too few Arguments were provided!')
+            raise TypeError(
+                "Either mapping_cls was not an UpdateableModelMixin or too few Arguments were provided!"
+            )

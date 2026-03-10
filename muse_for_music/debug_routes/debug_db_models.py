@@ -1,23 +1,23 @@
 """Module to list debug information for Database Models."""
 
+from datetime import date, datetime
 from inspect import getmembers, isclass, ismodule
+from typing import Dict, List, Union, cast
+
+from flask import abort, render_template, url_for
+from sqlalchemy.inspection import inspect
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.properties import ColumnProperty
 from sqlalchemy.orm.relationships import RelationshipProperty
 from sqlalchemy.sql.schema import Column
-from sqlalchemy.sql.sqltypes import Integer, Float, String, Boolean, Date, DateTime
-from sqlalchemy.inspection import inspect
-from typing import cast, List, Dict, Union
-from datetime import datetime, date
+from sqlalchemy.sql.sqltypes import Boolean, Date, DateTime, Float, Integer, String
 
-from flask import render_template, url_for, abort
-from . import debug_blueprint
 from .. import db
+from ..models import data
 from ..models.taxonomies import get_taxonomies
 from ..models.taxonomies.helper_classes import Taxonomy
-from ..models import data
-
+from . import debug_blueprint
 
 _taxonomy_classes = {}
 _data_classes = {}
@@ -33,7 +33,7 @@ def _inspect_module(module):
     """
     module_list = getmembers(module, predicate=ismodule)
     classes = getmembers(module, predicate=isclass)
-    for (name, cls) in classes:
+    for name, cls in classes:
         if issubclass(cls, db.Model) and not issubclass(cls, Taxonomy):
             if cls is not db.Model:
                 _data_classes[name] = cls
@@ -70,22 +70,26 @@ def _get_class_attributes(attributes, cls, properties, mapper_attrs, table_attri
         table_attributes: Dict[str, Union[ColumnProperty, RelationshipProperty]] -- dict to fill in
     """
     for attr in attributes:
-        if attr.startswith('_'):
+        if attr.startswith("_"):
             continue
-        if attr.endswith('_id'):
+        if attr.endswith("_id"):
             continue
-        if attr in ('metadata', 'query'):
+        if attr in ("metadata", "query"):
             continue
         var = getattr(cls, attr)
         if callable(var):
             continue
         if isinstance(var, property):
             try:
-                attr = '_' + attr
+                attr = "_" + attr
                 var = getattr(cls, attr)
                 properties.append(attr)
             except AttributeError as err:
-                print('could not determin corresponding attribute for property {}'.format(var))
+                print(
+                    "could not determin corresponding attribute for property {}".format(
+                        var
+                    )
+                )
                 continue
         if isinstance(var, InstrumentedAttribute):
             var = cast(InstrumentedAttribute, var)
@@ -114,32 +118,48 @@ def _analyze_db_model(cls):
             mapper: Mapper = attr.mapper
             if issubclass(mapper.class_, Taxonomy):
                 normal_attributes.append((name, mapper.class_))
-                model_fields.append("'{}': fields.Nested(taxonomy_item_get, description='{}'),".format(name, mapper.class_.__name__))
+                model_fields.append(
+                    "'{}': fields.Nested(taxonomy_item_get, description='{}'),".format(
+                        name, mapper.class_.__name__
+                    )
+                )
             else:
                 if name in properties:
-                    name = name.lstrip('_')
+                    name = name.lstrip("_")
                     attributes_containing_lists.append(name)
                     classname = mapper.class_.__name__
-                    if 'To' in classname:
-                        classname = classname.split('To')[0]
-                        model_fields.append("'{}': fields.List(fields.Nested(taxonomy_item_get, description='{}'), default=[]),".format(name, classname))
+                    if "To" in classname:
+                        classname = classname.split("To")[0]
+                        model_fields.append(
+                            "'{}': fields.List(fields.Nested(taxonomy_item_get, description='{}'), default=[]),".format(
+                                name, classname
+                            )
+                        )
                     else:
-                        model_fields.append("'{}': fields.List(fields.Raw(description='{}'), default=[]),".format(name, classname))
+                        model_fields.append(
+                            "'{}': fields.List(fields.Raw(description='{}'), default=[]),".format(
+                                name, classname
+                            )
+                        )
                 else:
-                    model_fields.append("'{}': fields.Raw(description='{}'),".format(name, mapper.class_.__name__))
+                    model_fields.append(
+                        "'{}': fields.Raw(description='{}'),".format(
+                            name, mapper.class_.__name__
+                        )
+                    )
                     normal_attributes.append((name, mapper.class_))
         if isinstance(attr, ColumnProperty):
             col: Column = attr.columns[0]
-            zusatz = ''
+            zusatz = ""
             if col.default is not None:
                 default = col.default.arg
                 if isinstance(default, str):
                     zusatz = "default='{}'".format(default)
                 else:
-                    zusatz = 'default={}'.format(default)
+                    zusatz = "default={}".format(default)
             if isinstance(col.type, Integer):
                 model_fields.append("'{}': fields.Integer({}),".format(name, zusatz))
-                if name != 'id':
+                if name != "id":
                     normal_attributes.append((name, int))
             elif isinstance(col.type, Float):
                 model_fields.append("'{}': fields.Float({}),".format(name, zusatz))
@@ -157,23 +177,25 @@ def _analyze_db_model(cls):
                 unknown_attributes.append((name, col.type))
 
     return {
-        'model_fields': model_fields,
-        'normal_attributes': tuple(normal_attributes),
-        'attributes_containing_lists': tuple(attributes_containing_lists),
-        'unknown_attributes': tuple(unknown_attributes),
+        "model_fields": model_fields,
+        "normal_attributes": tuple(normal_attributes),
+        "attributes_containing_lists": tuple(attributes_containing_lists),
+        "unknown_attributes": tuple(unknown_attributes),
     }
 
 
-@debug_blueprint.route('/db-models')
+@debug_blueprint.route("/db-models")
 def model_overview():
     _fill_class_dicts()
-    return render_template('debug/db-models/all.html',
-                           title='muse4music – DB Models',
-                           taxonomy_classes=sorted(_taxonomy_classes.keys()),
-                           data_classes=sorted(_data_classes.keys()))
+    return render_template(
+        "debug/db-models/all.html",
+        title="muse4music – DB Models",
+        taxonomy_classes=sorted(_taxonomy_classes.keys()),
+        data_classes=sorted(_data_classes.keys()),
+    )
 
 
-@debug_blueprint.route('/db-models/<string:classname>')
+@debug_blueprint.route("/db-models/<string:classname>")
 def model_detail(classname):
     _fill_class_dicts()
     cls = _taxonomy_classes.get(classname)
@@ -181,7 +203,9 @@ def model_detail(classname):
         cls = _data_classes.get(classname)
     if cls is None:
         abort(404)
-    return render_template('debug/db-models/model.html',
-                           title='muse4music – DB Model <{}>'.format(classname),
-                           classname=classname,
-                           model_data=_analyze_db_model(cls))
+    return render_template(
+        "debug/db-models/model.html",
+        title="muse4music – DB Model <{}>".format(classname),
+        classname=classname,
+        model_data=_analyze_db_model(cls),
+    )

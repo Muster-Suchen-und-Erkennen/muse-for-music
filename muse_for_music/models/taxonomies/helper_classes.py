@@ -1,10 +1,11 @@
-from csv import DictReader, DictWriter
-from collections import OrderedDict
-from logging import Logger
 import re
-from typing import List, Sequence, Type, ClassVar
+from collections import OrderedDict
+from csv import DictReader, DictWriter
+from logging import Logger
+from typing import ClassVar, List, Sequence, Type
 
 from sqlalchemy.sql import select
+from sqlalchemy.orm import MappedColumn, Mapped
 from typing_extensions import Self
 
 from ... import db
@@ -15,10 +16,10 @@ class Taxonomy(GetByID):
 
     taxonomy_type: ClassVar[str]
     select_multiple: ClassVar[bool] = False
-    display_name: ClassVar[str|None] = None
-    specification: ClassVar[str|None] = None
-    name: str
-    description: str|None
+    display_name: ClassVar[str | None] = None
+    specification: ClassVar[str | None] = None
+    name: MappedColumn[str]
+    description: MappedColumn[str | None]
 
     def __init__(self, name: str, description: None) -> None:
         """Create new List Taxonomy object."""
@@ -47,14 +48,14 @@ class Taxonomy(GetByID):
 
     @classmethod
     def not_applicable_item(cls):
-        q = select(cls).where(cls.name=='na').limit(1)
+        q = select(cls).where(cls.name == "na").limit(1)
         return db.session.execute(q).scalar_one_or_none()
 
 
 class ListTaxonomy(Taxonomy):
     """Base class for list taxonomies."""
 
-    taxonomy_type = 'list'
+    taxonomy_type = "list"
 
     def __repr__(self):
         """Get repr of taxonomy."""
@@ -63,7 +64,7 @@ class ListTaxonomy(Taxonomy):
     @classmethod
     def get_all(cls: Type[Self]) -> Sequence[Self]:
         """Get all elements of taxonomy."""
-        q = select(cls).where(cls.name!='na')
+        q = select(cls).where(cls.name != "na")
         return db.session.execute(q).scalars().all()
 
     items = get_all
@@ -73,14 +74,13 @@ class ListTaxonomy(Taxonomy):
         """Load taxonomy from csv file."""
         items: OrderedDict[str, ListTaxonomy] = OrderedDict()
         for row in input_data:
-            name: str = row['name']
-            description: str = row.get('description')
-            if name.upper() == 'ROOT':
+            name: str = row["name"]
+            description: str = row.get("description")
+            if name.upper() == "ROOT":
                 continue
             if name in items:
                 logger.warning('Duplicate names are not allowed! \
-                                Found "%s" but name is already used.',
-                               name)
+                                Found "%s" but name is already used.', name)
                 break
             items[name] = cls(name=name, description=description)
         else:
@@ -93,47 +93,53 @@ class ListTaxonomy(Taxonomy):
     @classmethod
     def save(cls, output_data: DictWriter, logger: Logger):
         output_data.writeheader()
-        output_data.writerow({
-            'name': 'root',
-            'parent': '',
-            'description': '',
-        })
+        output_data.writerow(
+            {
+                "name": "root",
+                "parent": "",
+                "description": "",
+            }
+        )
         items = cls.get_all()
         names = set()
         for item in items:
             if item.name in names:
                 logger.warning('An item with name "%s" was already exported!', item.name)
             names.add(item.name)
-            output_data.writerow({
-                'name': item.name,
-                'parent': 'root',
-                'description': item.description,
-            })
-
+            output_data.writerow(
+                {
+                    "name": item.name,
+                    "parent": "root",
+                    "description": item.description,
+                }
+            )
 
 
 class TreeTaxonomy(Taxonomy):
     """Base class for tree taxonomies."""
 
-    taxonomy_type = 'tree'
+    taxonomy_type = "tree"
     select_leafs_only = False
 
-    children: List['TreeTaxonomy'] = []
+    children: Mapped[List["TreeTaxonomy"]]
 
-    def __init__(self, name: str, description=None, parent: 'TreeTaxonomy'=None) -> None:
+    def __init__(
+        self, name: str, description=None, parent: "TreeTaxonomy" = None
+    ) -> None:
         """Create new TreeTaxonomy object."""
         self.parent = parent
         super().__init__(name=name, description=description)
 
     def __repr__(self):
         """Get repr of taxonomy."""
-        return '<{} "{}", children {}>'.format(type(self).__name__, self.name,
-                                               [child.__repr__() for child in self.children])
+        return '<{} "{}", children {}>'.format(
+            type(self).__name__, self.name, [child.__repr__() for child in self.children]
+        )
 
     @classmethod
-    def get_root(cls: Type[Self]) -> Self|None:
+    def get_root(cls: Type[Self]) -> Self | None:
         """Get root node of taxonomy."""
-        q = select(cls).where(cls.name=='root').limit(1)
+        q = select(cls).where(cls.name == "root").limit(1)
         return db.session.execute(q).scalar_one_or_none()
 
     items = get_root
@@ -141,26 +147,28 @@ class TreeTaxonomy(Taxonomy):
     @classmethod
     def load(cls, input_data: DictReader, logger: Logger):
         """Load taxonomy from csv file."""
-        pattern = re.compile(r'^(\d+|\(\d+\)|\[\d+\]|\{\d+\}|<\d+>),?\s+')
+        pattern = re.compile(r"^(\d+|\(\d+\)|\[\d+\]|\{\d+\}|<\d+>),?\s+")
         items: OrderedDict[str, TreeTaxonomy] = OrderedDict()
         for row in input_data:
-            name: str = row['name']
-            description: str = row.get('description')
+            name: str = row["name"]
+            description: str = row.get("description")
             if name in items:
                 logger.warning('Duplicate names are not allowed! \
-                                Found "%s" but "%r" is already used.',
-                               name, items[name])
+                                Found "%s" but "%r" is already used.', name, items[name])
                 break
-            if not row.get('parent'):
-                items[name] = cls(name=pattern.sub('', name))
+            if not row.get("parent"):
+                items[name] = cls(name=pattern.sub("", name))
             else:
-                parent_name = row['parent']
+                parent_name = row["parent"]
                 if parent_name not in items:
-                    logger.warning('Child "%s" defined before Parent "%s"!',
-                                   name, parent_name)
+                    logger.warning(
+                        'Child "%s" defined before Parent "%s"!', name, parent_name
+                    )
                     break
                 parent = items[parent_name]
-                items[name] = cls(name=pattern.sub('', name), parent=parent, description=description)
+                items[name] = cls(
+                    name=pattern.sub("", name), parent=parent, description=description
+                )
         else:
             for value in items.values():
                 db.session.add(value)
@@ -182,11 +190,19 @@ class TreeTaxonomy(Taxonomy):
             if count == 1:
                 name_mappings[item.id] = item.name
             else:
-                name_mappings[item.id] = '({count}) {name}'.format(count=count, name=item.name)
-            output_data.writerow({
-                'name': name_mappings.get(item.id, item.name),
-                'parent': '' if item.name.upper() == 'ROOT' else name_mappings.get(item.parent.id, item.parent.name),
-                'description': item.description,
-            })
+                name_mappings[item.id] = "({count}) {name}".format(
+                    count=count, name=item.name
+                )
+            output_data.writerow(
+                {
+                    "name": name_mappings.get(item.id, item.name),
+                    "parent": (
+                        ""
+                        if item.name.upper() == "ROOT"
+                        else name_mappings.get(item.parent.id, item.parent.name)
+                    ),
+                    "description": item.description,
+                }
+            )
             for child in reversed(item.children):
                 stack.append(child)

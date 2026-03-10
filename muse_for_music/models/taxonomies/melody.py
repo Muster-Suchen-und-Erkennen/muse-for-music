@@ -1,12 +1,13 @@
 from ... import db
 from .helper_classes import ListTaxonomy, TreeTaxonomy
 
-__all__ = ['Melodiebewegung', 'Melodieform']
+__all__ = ["Melodiebewegung", "Melodieform"]
 
 
 class Melodiebewegung(db.Model, ListTaxonomy):
     """DB Model for choices."""
-    __tablename__ = 'melodiebewegung'
+
+    __tablename__ = "melodiebewegung"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
@@ -15,19 +16,17 @@ class Melodiebewegung(db.Model, ListTaxonomy):
 
 class Melodieform(db.Model, TreeTaxonomy):
     """DB Model for doc."""
-    __tablename__ = 'melodieform'
+
+    __tablename__ = "melodieform"
 
     id = db.Column(db.Integer, primary_key=True)
-    parent_id = db.Column(db.Integer, db.ForeignKey('melodieform.id', ondelete='CASCADE'))
+    parent_id = db.Column(db.Integer, db.ForeignKey("melodieform.id", ondelete="CASCADE"))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship('Melodieform',
-                               passive_deletes='all',
-                               lazy='selectin',
-                               join_depth=8,
-                               backref=db.backref('parent',
-                                                  remote_side=[id],
-                                                  lazy='select',
-                                                  join_depth=1
-                                                 )
-                              )
+    children = db.relationship(
+        "Melodieform",
+        passive_deletes="all",
+        lazy="selectin",
+        join_depth=8,
+        backref=db.backref("parent", remote_side=[id], lazy="select", join_depth=1),
+    )

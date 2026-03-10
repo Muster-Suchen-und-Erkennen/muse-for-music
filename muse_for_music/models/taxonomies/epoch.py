@@ -1,8 +1,7 @@
 from ... import db
 from .helper_classes import ListTaxonomy
 
-
-__all__ = ['Epoche']
+__all__ = ["Epoche"]
 
 
 class Epoche(db.Model, ListTaxonomy):
@@ -11,5 +10,3 @@ class Epoche(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-
-

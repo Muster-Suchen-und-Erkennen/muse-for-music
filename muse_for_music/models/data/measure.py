@@ -4,8 +4,8 @@ from ..helper_classes import GetByID, UpdateableModelMixin
 
 class Measure(db.Model, GetByID, UpdateableModelMixin):
 
-    _normal_attributes = (('from_page', int), ('measure', int))
-    _optional_attributes = ('from_page', )
+    _normal_attributes = (("from_page", int), ("measure", int))
+    _optional_attributes = ("from_page",)
 
     id = db.Column(db.Integer, primary_key=True)
     _from_page = db.Column(db.Integer, nullable=True)

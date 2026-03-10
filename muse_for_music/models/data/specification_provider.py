@@ -1,35 +1,47 @@
+from typing import Sequence, Union
+
 from ... import db
+from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 from ..taxonomies import SpecAnteil, SpecAuftreten, SpecInstrument
-from ..helper_classes import GetByID, UpdateListMixin, UpdateableModelMixin
-
-from typing import Union, Sequence
 
 
-class SpecificationProviderMixin():
+class SpecificationProviderMixin:
     def __init_subclass__(cls) -> None:
 
         tablename = cls.__tablename__
 
-        class Specification (db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
-            _normal_attributes = (('share', SpecAnteil),
-                                  ('occurence', SpecAuftreten),
-                                  ('path', str))
+        class Specification(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
+            _normal_attributes = (
+                ("share", SpecAnteil),
+                ("occurence", SpecAuftreten),
+                ("path", str),
+            )
 
-            _list_attributes = ('instrumentation',)
+            _list_attributes = ("instrumentation",)
 
-            __tablename__ = tablename + '_specification'
+            __tablename__ = tablename + "_specification"
 
             id = db.Column(db.Integer, primary_key=True)
             path = db.Column(db.Text)
-            parent_id = db.Column(db.Integer, db.ForeignKey(tablename + '.id'))
+            parent_id = db.Column(db.Integer, db.ForeignKey(tablename + ".id"))
             share_id = db.Column(db.Integer, db.ForeignKey(SpecAnteil.id), nullable=True)
-            occurence_id = db.Column(db.Integer, db.ForeignKey(SpecAuftreten.id), nullable=True)
+            occurence_id = db.Column(
+                db.Integer, db.ForeignKey(SpecAuftreten.id), nullable=True
+            )
 
-            share = db.relationship(SpecAnteil, lazy='selectin')
-            occurence = db.relationship(SpecAuftreten, lazy='selectin')
+            share = db.relationship(SpecAnteil, lazy="selectin")
+            occurence = db.relationship(SpecAuftreten, lazy="selectin")
 
-            parent = db.relationship(cls, backref=db.backref('_specifications', lazy='selectin', single_parent=True, cascade='all, delete-orphan'),
-                            foreign_keys=[parent_id])
+            parent = db.relationship(
+                cls,
+                backref=db.backref(
+                    "_specifications",
+                    lazy="selectin",
+                    single_parent=True,
+                    cascade="all, delete-orphan",
+                ),
+                foreign_keys=[parent_id],
+            )
 
             def __init__(self, parent, **kwargs) -> None:
                 super().__init__()
@@ -39,24 +51,50 @@ class SpecificationProviderMixin():
 
             @property
             def instrumentation(self):
-                return [mapping.spezifikation_instrument for mapping in self._spezifikation_instrument]
+                return [
+                    mapping.spezifikation_instrument
+                    for mapping in self._spezifikation_instrument
+                ]
 
             @instrumentation.setter
-            def instrumentation(self, spezifikation_instrument_list:Union[Sequence[int], Sequence[dict]]):
-                old_items = {mapping.spezifikation_instrument.id: mapping for mapping in self._spezifikation_instrument}
-                self.update_list(spezifikation_instrument_list, old_items, SpecInstrumentToSpecification,
-                                SpecInstrument, 'spezifikation_instrument')
-
+            def instrumentation(
+                self, spezifikation_instrument_list: Union[Sequence[int], Sequence[dict]]
+            ):
+                old_items = {
+                    mapping.spezifikation_instrument.id: mapping
+                    for mapping in self._spezifikation_instrument
+                }
+                self.update_list(
+                    spezifikation_instrument_list,
+                    old_items,
+                    SpecInstrumentToSpecification,
+                    SpecInstrument,
+                    "spezifikation_instrument",
+                )
 
         class SpecInstrumentToSpecification(db.Model):
 
-            __tablename__ = tablename + '_spec_instrument_to_specification'
+            __tablename__ = tablename + "_spec_instrument_to_specification"
 
-            specifications_id = db.Column(db.Integer, db.ForeignKey(Specification.__tablename__ + '.id'), primary_key=True)
-            spezifikation_instrument_id = db.Column(db.Integer, db.ForeignKey('spezifikation_instrument.id'), primary_key=True)
+            specifications_id = db.Column(
+                db.Integer,
+                db.ForeignKey(Specification.__tablename__ + ".id"),
+                primary_key=True,
+            )
+            spezifikation_instrument_id = db.Column(
+                db.Integer, db.ForeignKey("spezifikation_instrument.id"), primary_key=True
+            )
 
-            specifications = db.relationship(Specification, backref=db.backref('_spezifikation_instrument', lazy='selectin', single_parent=True, cascade="all, delete-orphan"))
-            spezifikation_instrument = db.relationship('SpecInstrument')
+            specifications = db.relationship(
+                Specification,
+                backref=db.backref(
+                    "_spezifikation_instrument",
+                    lazy="selectin",
+                    single_parent=True,
+                    cascade="all, delete-orphan",
+                ),
+            )
+            spezifikation_instrument = db.relationship("SpecInstrument")
 
             def __init__(self, specifications, spezifikation_instrument, **kwargs):
                 self.specifications = specifications
@@ -69,6 +107,6 @@ class SpecificationProviderMixin():
         return self._specifications
 
     @specifications.setter
-    def specifications(self, specifications_list:Union[Sequence[int], Sequence[dict]]):
+    def specifications(self, specifications_list: Union[Sequence[int], Sequence[dict]]):
         old_items = {mapping.id: mapping for mapping in self._specifications}
         self.update_list(specifications_list, old_items, self._Specification)

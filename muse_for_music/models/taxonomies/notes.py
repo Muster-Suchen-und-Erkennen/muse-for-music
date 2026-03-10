@@ -1,13 +1,13 @@
 from ... import db
 from .helper_classes import ListTaxonomy, TreeTaxonomy
 
-__all__ = ['Grundton', 'Notenwert', 'Intervall', 'Intervallik', 'Oktave']
+__all__ = ["Grundton", "Notenwert", "Intervall", "Intervallik", "Oktave"]
 
 
 class Grundton(db.Model, ListTaxonomy):
     """DB Model for choices."""
 
-    display_name="Ton"
+    display_name = "Ton"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
@@ -16,7 +16,8 @@ class Grundton(db.Model, ListTaxonomy):
 
 class Oktave(db.Model, ListTaxonomy):
     """DB Model for choices."""
-    __tablename__ = 'oktave'
+
+    __tablename__ = "oktave"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
@@ -25,7 +26,8 @@ class Oktave(db.Model, ListTaxonomy):
 
 class Notenwert(db.Model, ListTaxonomy):
     """DB Model for choices."""
-    __tablename__ = 'notenwert'
+
+    __tablename__ = "notenwert"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
@@ -34,7 +36,8 @@ class Notenwert(db.Model, ListTaxonomy):
 
 class Intervall(db.Model, ListTaxonomy):
     """DB Model for choices."""
-    __tablename__ = 'intervall'
+
+    __tablename__ = "intervall"
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
@@ -43,19 +46,17 @@ class Intervall(db.Model, ListTaxonomy):
 
 class Intervallik(db.Model, TreeTaxonomy):
     """DB Model for doc."""
-    __tablename__ = 'intervallik'
+
+    __tablename__ = "intervallik"
 
     id = db.Column(db.Integer, primary_key=True)
-    parent_id = db.Column(db.Integer, db.ForeignKey('intervallik.id', ondelete='CASCADE'))
+    parent_id = db.Column(db.Integer, db.ForeignKey("intervallik.id", ondelete="CASCADE"))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship('Intervallik',
-                               passive_deletes='all',
-                               lazy='selectin',
-                               join_depth=8,
-                               backref=db.backref('parent',
-                                                  remote_side=[id],
-                                                  lazy='select',
-                                                  join_depth=1
-                                                 )
-                              )
+    children = db.relationship(
+        "Intervallik",
+        passive_deletes="all",
+        lazy="selectin",
+        join_depth=8,
+        backref=db.backref("parent", remote_side=[id], lazy="select", join_depth=1),
+    )

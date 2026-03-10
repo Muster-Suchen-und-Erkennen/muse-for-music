@@ -1,14 +1,15 @@
 import enum
-from typing import Union, Sequence
 from json import dumps, loads
-from sqlalchemy.sql import func, select
+from typing import Sequence, Union
+
 from flask_jwt_extended import get_jwt_identity
+from sqlalchemy.sql import func, select
 
 from ... import db
 from ..users import User
-from .people import Person
 from .opus import Opus
 from .part import Part
+from .people import Person
 from .subpart import SubPart
 from .voice import Voice
 
@@ -39,13 +40,13 @@ class TypeEnum(enum.Enum):
         elif isinstance(resource, Voice):
             return TypeEnum.voice
         else:
-            raise TypeError('Resource has wrong Type ' + str(type(resource)))
+            raise TypeError("Resource has wrong Type " + str(type(resource)))
 
 
 class History(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     time = db.Column(db.DateTime, server_default=func.now())
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
     method = db.Column(db.Enum(MethodEnum))
     type = db.Column(db.Enum(TypeEnum))
     resource = db.Column(db.String(191))
@@ -54,9 +55,12 @@ class History(db.Model):
 
     _full_resource = None
 
-    def __init__(self, method: MethodEnum,
-                 resource: Union[Person, Opus, Part, SubPart, Voice],
-                 user: Union[str, User, None]=None):
+    def __init__(
+        self,
+        method: MethodEnum,
+        resource: Union[Person, Opus, Part, SubPart, Voice],
+        user: Union[str, User, None] = None,
+    ):
         if user is None:
             user = get_jwt_identity()
         if isinstance(user, str):
@@ -73,20 +77,22 @@ class History(db.Model):
     @staticmethod
     def fingerprint(resource: Union[Person, Opus, Part, SubPart, Voice]):
         if isinstance(resource, Person):
-            return dumps({'id': resource.id}, sort_keys=True)
+            return dumps({"id": resource.id}, sort_keys=True)
         elif isinstance(resource, Opus):
-            return dumps({'id': resource.id}, sort_keys=True)
+            return dumps({"id": resource.id}, sort_keys=True)
         elif isinstance(resource, Part):
-            return dumps({'id': resource.id, 'opus_id': resource.opus_id}, sort_keys=True)
+            return dumps({"id": resource.id, "opus_id": resource.opus_id}, sort_keys=True)
         elif isinstance(resource, SubPart):
-            return dumps({'id': resource.id, 'part_id': resource.part_id}, sort_keys=True)
+            return dumps({"id": resource.id, "part_id": resource.part_id}, sort_keys=True)
         elif isinstance(resource, Voice):
-            return dumps({'id': resource.id, 'subpart_id': resource.subpart_id}, sort_keys=True)
+            return dumps(
+                {"id": resource.id, "subpart_id": resource.subpart_id}, sort_keys=True
+            )
         else:
-            raise TypeError('Resource has wrong Type ' + str(type(resource)))
+            raise TypeError("Resource has wrong Type " + str(type(resource)))
 
     @classmethod
-    def isOwner(cls, resource, user: Union[str, User, None]=None):
+    def isOwner(cls, resource, user: Union[str, User, None] = None):
         if user is None:
             user = get_jwt_identity()
         if isinstance(user, str):
@@ -95,7 +101,16 @@ class History(db.Model):
             return False
         type_ = TypeEnum.fromResource(resource)
         resource_id = History.fingerprint(resource)
-        q = select(cls).where(cls.user==user, cls.method==MethodEnum.create, cls.type==type_, cls.resource==resource_id).limit(1)
+        q = (
+            select(cls)
+            .where(
+                cls.user == user,
+                cls.method == MethodEnum.create,
+                cls.type == type_,
+                cls.resource == resource_id,
+            )
+            .limit(1)
+        )
         result = db.session.execute(select(q.exists())).scalar_one_or_none()
         return bool(result)
 

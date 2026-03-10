@@ -1,6 +1,7 @@
 import enum
 from datetime import date, datetime
 from typing import Union
+
 from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin
 
@@ -13,12 +14,13 @@ class GenderEnum(enum.Enum):
 
 class Person(db.Model, GetByID, UpdateableModelMixin):
 
-    _normal_attributes = (('name', str),
-                          ('gender', str),
-                          ('birth_date', int),
-                          ('death_date', int),
-                          ('nationality', str))
-
+    _normal_attributes = (
+        ("name", str),
+        ("gender", str),
+        ("birth_date", int),
+        ("death_date", int),
+        ("nationality", str),
+    )
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(191), unique=True, index=True)
@@ -27,10 +29,15 @@ class Person(db.Model, GetByID, UpdateableModelMixin):
     death_date = db.Column(db.Integer(), nullable=True)
     nationality = db.Column(db.String(100), nullable=True)
 
-    def __init__(self, name: str, gender: Union[str, GenderEnum],
-                 birth_date: int = -1,
-                 death_date: int = -1,
-                 nationality: str=None, **kwargs) -> None:
+    def __init__(
+        self,
+        name: str,
+        gender: Union[str, GenderEnum],
+        birth_date: int = -1,
+        death_date: int = -1,
+        nationality: str = None,
+        **kwargs,
+    ) -> None:
         self.name = name
         if isinstance(gender, int):
             gender = GenderEnum[gender]
@@ -44,4 +51,4 @@ class Person(db.Model, GetByID, UpdateableModelMixin):
             self.nationality = nationality
 
     def __repr__(self):
-        return '<Person %r>' % self.name
+        return "<Person %r>" % self.name
