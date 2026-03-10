@@ -2,8 +2,9 @@
 
 from flask import jsonify, url_for, request
 from flask_restx import Resource, marshal, abort
-from flask_jwt_extended import jwt_required, get_jwt_claims, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.sql import select, delete
 
 from json import dumps
 
@@ -33,9 +34,10 @@ ns = api.namespace('part', description='Resource for Parts.', path='/parts')
 class PartsListResource(Resource):
 
     @ns.marshal_list_with(part_small)
-    @jwt_required
+    @jwt_required()
     def get(self):
-        return Part.query.all()
+        q = select(Part)
+        return db.session.execute(q).scalars().all()
 
 
 @ns.route('/<int:id>/')
@@ -43,19 +45,19 @@ class PartResource(Resource):
 
     @ns.marshal_with(part_get)
     @ns.response(404, 'Part not found.')
-    @jwt_required
+    @jwt_required()
     def get(self, id):
-        part = Part.get_by_id(id)  # type: Part
+        part = Part.get_by_id(id)
         if part is None:
             abort(404, 'Requested part not found!')
         return part
 
-    @ns.doc(model=part_get, body=part_put)
+    @ns.doc(model=part_get, expect=[part_put], validate=True)
     @ns.response(404, 'Part not found.')
-    @jwt_required
+    @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def put(self, id):
-        part = Part.get_by_id(id)  # type: Part
+        part = Part.get_by_id(id)
         if part is None:
             abort(404, 'Requested part not found!')
         new_values = request.get_json()
@@ -64,9 +66,10 @@ class PartResource(Resource):
 
         username = get_jwt_identity()
         user = User.get_user_by_name(username)
-        History.query.filter(History.user_id == user.id,
+        del_q = delete(History).where(History.user_id == user.id,
                              History.method == MethodEnum.update,
-                             History.resource == History.fingerprint(part)).delete()
+                             History.resource == History.fingerprint(part))
+        db.session.execute(del_q)
         hist = History(MethodEnum.update, part, user)
         db.session.add(hist)
 
@@ -74,13 +77,13 @@ class PartResource(Resource):
         return marshal(part, part_get)
 
     @ns.response(404, 'Part not found.')
-    @jwt_required
+    @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def delete(self, id):
-        part = Part.get_by_id(id)  # type: Part
+        part = Part.get_by_id(id)
         if part is None:
             abort(404, 'Requested part not found!')
-        if RoleEnum.admin.name not in get_jwt_claims() and not History.isOwner(part):
+        if RoleEnum.admin.name not in get_jwt().get("user_claims", []) and not History.isOwner(part):  # FIXME claim
             abort(403, 'Only the owner of a resource and Administrators can delete a resource!')
         hist = History(MethodEnum.delete, part)
         db.session.add(hist)
@@ -94,13 +97,13 @@ class PartResource(Resource):
 class PartSubpartsResource(Resource):
 
     @ns.marshal_list_with(subpart_get)
-    @jwt_required
+    @jwt_required()
     def get(self, id):
-        subparts = SubPart.query.filter_by(part_id=id).all()
-        return subparts
+        q = select(SubPart).where(SubPart.part_id==id)
+        return db.session.execute(q).scalars().all()
 
-    @ns.doc(model=subpart_get, body=subpart_post)
-    @jwt_required
+    @ns.doc(model=subpart_get, expect=[subpart_post], validate=True)
+    @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def post(self, id):
         new_values = request.get_json()

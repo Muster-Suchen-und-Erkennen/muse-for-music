@@ -40,7 +40,7 @@ class Composition(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
     @sequences.setter
     def sequences(self, sequence_list: Sequence[dict]):
         old_items = {seq.id: seq for seq in self._sequences}
-        to_add = []  # type: List[MusicialSequence]
+        to_add: List[MusicialSequence] = []
 
         for sequence in sequence_list:
             sequence_id = sequence.get('id')
@@ -52,7 +52,7 @@ class Composition(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
 
         for seq in to_add:
             db.session.add(seq)
-        to_delete = list(old_items.values())  # type: List[MusicialSequence]
+        to_delete: List[MusicialSequence] = list(old_items.values())
         for seq in to_delete:
             db.session.delete(seq)
 
@@ -61,7 +61,7 @@ class CompositionTechniqueToComposition(db.Model):
     composition_id = db.Column(db.Integer, db.ForeignKey('composition.id'), primary_key=True)
     verarbeitungstechnik_id = db.Column(db.Integer, db.ForeignKey('verarbeitungstechnik.id'), primary_key=True)
 
-    composition = db.relationship(Composition, backref=db.backref('_techniques', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
+    composition = db.relationship(Composition, backref=db.backref('_techniques', lazy='selectin', single_parent=True, cascade="all, delete-orphan"))
     verarbeitungstechnik = db.relationship('Verarbeitungstechnik')
 
     def __init__(self, composition, verarbeitungstechnik, **kwargs):
@@ -79,9 +79,9 @@ class MusicialSequence(db.Model, GetByID):
     flow_id = db.Column(db.Integer, db.ForeignKey('bewegung_im_tonraum.id'))
     beats = db.Column(db.Integer)
 
-    starting_interval = db.relationship(Intervall, lazy='joined')
-    flow = db.relationship(BewegungImTonraum, lazy='joined')
-    composition = db.relationship(Composition, backref=db.backref('_sequences', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
+    starting_interval = db.relationship(Intervall, lazy='selectin')
+    flow = db.relationship(BewegungImTonraum, lazy='selectin')
+    composition = db.relationship(Composition, backref=db.backref('_sequences', lazy='selectin', single_parent=True, cascade="all, delete-orphan"))
 
     def __init__(self, composition, starting_interval, flow, beats: int, tonal_corrected: bool=False, exact_repetition: bool=False, **kwargs):
         if isinstance(composition, Composition):

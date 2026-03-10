@@ -5,7 +5,7 @@ from functools import wraps
 from typing import List
 from flask import Flask, Blueprint, logging
 from flask_restx import Api, abort
-from flask_jwt_extended import get_jwt_claims
+from flask_jwt_extended import get_jwt
 from flask_jwt_extended.exceptions import NoAuthorizationError
 from .. import jwt
 from ..models.users import User, RoleEnum
@@ -36,7 +36,7 @@ def has_roles(roles: List[RoleEnum]):
     def has_roles_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            claims = get_jwt_claims()
+            claims = get_jwt().get("user_claims", [])
             for role in roles:
                 if role.name in claims:
                     break
@@ -51,12 +51,12 @@ def has_roles(roles: List[RoleEnum]):
     return has_roles_decorator
 
 
-auth_logger = getLogger('flask.app.auth')  # type: Logger
+auth_logger: Logger = getLogger('flask.app.auth')
 
 
 user_api_blueprint = Blueprint('user_api', __name__)
 
-user_api = Api(user_api_blueprint, version='0.1', title='User API', doc='/doc/',
+user_api = Api(version='0.1', title='User API', doc='/doc/',
                authorizations=authorizations, security='jwt',
                description='API for Authentication and User Management.')
 
@@ -66,13 +66,15 @@ def load_user_identity(user: User):
     return user.username
 
 
-@jwt.user_claims_loader
+@jwt.additional_claims_loader
 def load_user_claims(user: User):
-    return user.roles_json
+    return {
+        "user_claims": [role for role in user.roles_json]
+    }
 
 
 @jwt.expired_token_loader
-def expired_token(expired_token):
+def expired_token(jwt_header, jwt_payload):
     message = 'Token is expired.'
     log_unauthorized(message)
     abort(401, message)
@@ -91,14 +93,14 @@ def unauthorized(message: str):
 
 
 @jwt.needs_fresh_token_loader
-def stale_token():
+def stale_token(jwt_header, jwt_payload):
     message = 'The JWT Token is not fresh. Please request a new Token directly with the /auth resource.'
     log_unauthorized(message)
     abort(403, message)
 
 
 @jwt.revoked_token_loader
-def revoked_token():
+def revoked_token(jwt_header, jwt_payload):
     message = 'The Token has been revoked.'
     log_unauthorized(message)
     abort(401, message)
@@ -114,7 +116,9 @@ def log_unauthorized(message):
     auth_logger.debug('Unauthorized access: %s', message)
 
 
-from . import root, administration, authentication
+from . import root, administration, authentication  # noqa
+
+user_api.init_app(user_api_blueprint)
 
 
 def register_user_api(app: Flask):

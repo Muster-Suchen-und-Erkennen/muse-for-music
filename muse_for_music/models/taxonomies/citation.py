@@ -14,7 +14,7 @@ class Zitat(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('Zitat',
                                passive_deletes='all',
-                               lazy='joined',
+                               lazy='selectin',
                                join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],
@@ -34,7 +34,7 @@ class Programmgegenstand(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('Programmgegenstand',
                                passive_deletes='all',
-                               lazy='joined',
+                               lazy='selectin',
                                join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],

@@ -44,16 +44,16 @@ class Part(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, Specificati
     dramaturgic_context_id = db.Column(db.Integer, db.ForeignKey('dramaturgic_context.id'), nullable=True)
 
     opus = db.relationship(Opus, lazy='select', backref=db.backref('parts', cascade="all, delete-orphan"))
-    measure_start = db.relationship(Measure, foreign_keys=[measure_start_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
-    measure_end = db.relationship(Measure, foreign_keys=[measure_end_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
+    measure_start = db.relationship(Measure, foreign_keys=[measure_start_id], lazy='selectin', single_parent=True, cascade="all, delete-orphan")
+    measure_end = db.relationship(Measure, foreign_keys=[measure_end_id], lazy='selectin', single_parent=True, cascade="all, delete-orphan")
     omissions = db.Column(db.Text, nullable=True)
-    #occurence_in_movement = db.relationship(AuftretenSatz, lazy='joined')
+    #occurence_in_movement = db.relationship(AuftretenSatz, lazy='selectin')
     instrumentation_context = db.relationship(InstrumentationContext, single_parent=True, cascade="all, delete-orphan")
     dynamic_context = db.relationship(DynamicContext, single_parent=True, cascade="all, delete-orphan")
     tempo_context = db.relationship(TempoContext, single_parent=True, cascade="all, delete-orphan")
     dramaturgic_context = db.relationship(DramaturgicContext, single_parent=True, cascade="all, delete-orphan")
 
-    _subquery_load = ['dramaturgic_context', 'tempo_context', 'dynamic_context',
+    _eager_load = ['dramaturgic_context', 'tempo_context', 'dynamic_context',
                       'instrumentation_context', 'subparts']
 
     def __init__(self, opus_id: int, measure_start: dict, measure_end: dict,
@@ -112,7 +112,7 @@ class FormaleFunktionToPart(db.Model):
     part_id = db.Column(db.Integer, db.ForeignKey('part.id'), primary_key=True)
     formale_funktion_id = db.Column(db.Integer, db.ForeignKey('formale_funktion.id', name='fk_formale_funktion_to_part_formale_funktion_id'), primary_key=True)
 
-    part = db.relationship(Part, backref=db.backref('_formal_functions', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
+    part = db.relationship(Part, backref=db.backref('_formal_functions', lazy='selectin', single_parent=True, cascade='all, delete-orphan'))
     formale_funktion = db.relationship('FormaleFunktion')
 
     def __init__(self, part, formale_funktion, **kwargs):
@@ -123,7 +123,7 @@ class AuftretenSatzToPart(db.Model):
     part_id = db.Column(db.Integer, db.ForeignKey('part.id'), primary_key=True)
     auftreten_satz_id = db.Column(db.Integer, db.ForeignKey('auftreten_satz.id', name='fk_auftreten_satz_to_part_auftreten_satz_id'), primary_key=True)
 
-    part = db.relationship(Part, backref=db.backref('_occurence_in_movement', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
+    part = db.relationship(Part, backref=db.backref('_occurence_in_movement', lazy='selectin', single_parent=True, cascade='all, delete-orphan'))
     auftreten_satz = db.relationship('AuftretenSatz')
 
     def __init__(self, part, auftreten_satz, **kwargs):

@@ -2,6 +2,7 @@ from logging import Logger, StreamHandler, Formatter, getLogger, DEBUG
 from sys import stdout
 from flask import Flask, Blueprint
 from flask.cli import with_appcontext
+from sqlalchemy.sql import select
 import click
 
 
@@ -10,7 +11,7 @@ from .users import User, UserRole, RoleEnum
 
 DB_CLI = Blueprint('db_cli', __name__, cli_group=None)
 
-DB_COMMAND_LOGGER = getLogger('flask.app.db')  # type: Logger
+DB_COMMAND_LOGGER: Logger = getLogger('flask.app.db')
 
 formatter = Formatter(fmt='[%(levelname)s] [%(name)-16s] %(message)s')
 
@@ -88,7 +89,8 @@ def create_populated_db():
 
 
 def list_users_function():
-    return [u.username for u in User.query.all()]
+    q = select(User.username)
+    return db.session.execute(q).scalars().all()
 
 
 @DB_CLI.cli.command('list-users')
@@ -99,7 +101,8 @@ def list_users():
 
 
 def reset_password_function(username, password):
-    user = User.query.filter(User.username == username).first()
+    q = select(User).where(User.username == username).limit(1)
+    user = db.session.execute(q).scalar_one_or_none()
     if user is None:
         DB_COMMAND_LOGGER.info('User %s was not found.', username)
         return

@@ -3,8 +3,9 @@
 
 from flask import jsonify, url_for, request
 from flask_restx import Resource, marshal, abort
-from flask_jwt_extended import jwt_required, get_jwt_claims, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.sql import select, delete
 
 from json import dumps
 
@@ -29,13 +30,14 @@ ns = api.namespace('opus', description='Resource for opuses.', path='/opuses')
 class OpusListResource(Resource):
 
     @ns.marshal_list_with(opus_small)
-    @jwt_required
+    @jwt_required()
     def get(self):
-        return Opus.query.all()
+        q = select(Opus)
+        return db.session.execute(q).scalars().all()
 
-    @ns.doc(model=opus_small_get, body=opus_post)
+    @ns.doc(model=opus_small_get, expect=[opus_post], validate=True)
     @ns.response(409, 'Name is not unique.')
-    @jwt_required
+    @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def post(self):
         new_opus = Opus(**request.get_json())
@@ -60,19 +62,19 @@ class OpusResource(Resource):
 
     @ns.marshal_with(opus_small_get)
     @ns.response(404, 'Opus not found.')
-    @jwt_required
+    @jwt_required()
     def get(self, id):
-        opus = Opus.get_by_id(id)  # type: Opus
+        opus = Opus.get_by_id(id)
         if opus is None:
             abort(404, 'Requested opus not found!')
         return opus
 
-    @ns.doc(model=opus_small_get, body=opus_put)
+    @ns.doc(model=opus_small_get, expect=[opus_put], validate=True)
     @ns.response(404, 'Opus not found.')
-    @jwt_required
+    @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def put(self, id):
-        opus = Opus.get_by_id(id)  # type: Opus
+        opus = Opus.get_by_id(id)
         if opus is None:
             abort(404, 'Requested opus not found!')
         new_values = request.get_json()
@@ -81,9 +83,10 @@ class OpusResource(Resource):
             opus.update(new_values)
             username = get_jwt_identity()
             user = User.get_user_by_name(username)
-            History.query.filter(History.user_id == user.id,
+            del_q = delete(History).where(History.user_id == user.id,
                                 History.method == MethodEnum.update,
-                                History.resource == History.fingerprint(opus)).delete()
+                                History.resource == History.fingerprint(opus))
+            db.session.execute(del_q)
             hist = History(MethodEnum.update, opus, user)
             db.session.add(hist)
             db.session.commit()
@@ -98,13 +101,13 @@ class OpusResource(Resource):
             abort(500, str(err))
 
     @ns.response(404, 'Opus not found.')
-    @jwt_required
+    @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def delete(self, id):
-        opus = Opus.get_by_id(id)  # type: Opus
+        opus = Opus.get_by_id(id)
         if opus is None:
             abort(404, 'Requested opus not found!')
-        if RoleEnum.admin.name not in get_jwt_claims() and not History.isOwner(opus):
+        if RoleEnum.admin.name not in get_jwt().get("user_claims", []) and not History.isOwner(opus):  # FIXME claim
             abort(403, 'Only the owner of a resource and Administrators can delete a resource!')
         hist = History(MethodEnum.delete, opus)
         db.session.add(hist)
@@ -120,14 +123,14 @@ class OpusResource(Resource):
 class OpusPartsResource(Resource):
 
     @ns.marshal_list_with(part_get)
-    @jwt_required
+    @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def get(self, id):
-        parts = Part.query.filter_by(opus_id=id).all()
-        return parts
+        q = select(Part).where(Part.opus_id == id)
+        return db.session.execute(q).scalars().all()
 
-    @ns.doc(model=part_get, body=part_post)
-    @jwt_required
+    @ns.doc(model=part_get, expect=[part_post], validate=True)
+    @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def post(self, id):
         new_values = request.get_json()

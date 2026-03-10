@@ -5,6 +5,7 @@ from flask import jsonify, url_for, request
 from flask_restx import Resource, marshal, reqparse, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy.sql import select, delete
 from sqlalchemy import literal
 
 from json import dumps
@@ -28,17 +29,20 @@ ns = api.namespace('person', description='Resource for persons.', path='/persons
 
 
 def check_if_person_exists(name):
-    q = Person.query.enable_eagerloads(False).filter(Person.name == name).exists()
-    if db.session.query(q).scalar():
+    q = select(Person).where(Person.name == name).limit(1)
+    result = db.session.execute(select(q.exists())).scalar_one_or_none()
+    if bool(result):
         abort(409, 'Name "{}" is already in use!'.format(name))
 
 
 def check_if_person_is_in_use(person: Person):
-    q = Opus.query.enable_eagerloads(False).filter(Opus.composer == person).exists()
-    if db.session.query(q).scalar():
+    q = select(Opus).where(Opus.composer == person).limit(1)
+    used_as_composer = db.session.execute(select(q.exists())).scalar_one_or_none()
+    if bool(used_as_composer):
         abort(409, 'Can not delete Person "{}" beacause it is still in use!'.format(person.name))
-    q = PersonToCitations.query.enable_eagerloads(False).filter(PersonToCitations.person == person).exists()
-    if db.session.query(q).scalar():
+    q = select(PersonToCitations).where(PersonToCitations.person == person).limit(1)
+    used_as_citation = db.session.execute(select(q.exists())).scalar_one_or_none()
+    if bool(used_as_citation):
         abort(409, 'Can not delete Person "{}" beacause it is still in use!'.format(person.name))
 
 
@@ -46,13 +50,14 @@ def check_if_person_is_in_use(person: Person):
 class PersonListResource(Resource):
 
     @ns.marshal_list_with(person_get)
-    @jwt_required
+    @jwt_required()
     def get(self):
-        return Person.query.all()
+        q = select(Person)
+        return db.session.execute(q).scalars().all()
 
-    @ns.doc(model=person_get, body=person_post)
+    @ns.doc(model=person_get, expect=[person_post], validate=True)
     @ns.response(409, 'Name is not unique.')
-    @jwt_required
+    @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def post(self):
         check_if_person_exists(request.get_json()['name'])
@@ -76,19 +81,19 @@ class PersonResource(Resource):
 
     @ns.marshal_with(person_get)
     @ns.response(404, 'Person not found.')
-    @jwt_required
+    @jwt_required()
     def get(self, id):
-        person = Person.query.filter_by(id=id).first()
+        person = Person.get_by_id(id)
         if person is None:
             abort(404, 'Requested person not found!')
         return person
 
-    @ns.doc(model=person_get, body=person_put, vaidate=True)
+    @ns.doc(model=person_get, expect=[person_put], validate=True)
     @ns.response(404, 'Person not found.')
-    @jwt_required
+    @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def put(self, id):
-        person = Person.query.filter_by(id=id).first()  # type: Person
+        person = Person.get_by_id(id)
         if person is None:
             abort(404, 'Requested person not found!')
         new_values = request.get_json()
@@ -113,19 +118,20 @@ class PersonResource(Resource):
         db.session.add(person)
         username = get_jwt_identity()
         user = User.get_user_by_name(username)
-        History.query.filter(History.user_id == user.id,
+        del_q = delete(History).where(History.user_id == user.id,
                              History.method == MethodEnum.update,
-                             History.resource == History.fingerprint(person)).delete()
+                             History.resource == History.fingerprint(person))
+        db.session.execute(del_q)
         hist = History(MethodEnum.update, person, user)
         db.session.add(hist)
         db.session.commit()
         return marshal(person, person_get)
 
     @ns.response(404, 'Person not found.')
-    @jwt_required
+    @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def delete(self, id):
-        person = Person.query.filter_by(id=id).first()
+        person = Person.get_by_id(id)
         if person is None:
             abort(404, 'Requested person not found!')
         check_if_person_is_in_use(person)

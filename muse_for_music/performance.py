@@ -7,7 +7,7 @@ from sqlalchemy import event
 from logging import getLogger, INFO
 
 
-from typing import Any, List
+from typing import List
 
 
 QueryRecord = namedtuple('QueryRecord', ['duration', 'statement', 'write', 'params'])
@@ -111,7 +111,6 @@ class RequestPerformance:
                     )
                     methodToLogWith(log_msg_stmt)
             if len(self.queries) > 5:
-                statements = [q.statement for q in self.queries]
                 queries = '\n\t'.join(sorted(q.statement for q in self.queries))
                 methodToLogWith('performance report: too many queries {nr_queries}, url {method} {url}\n{queries}'.format(
                     queries=queries,

@@ -1,5 +1,8 @@
 import enum
-from typing import List
+from typing import List, Optional
+
+from sqlalchemy.sql import select
+
 from .. import db, bcrypt
 
 
@@ -14,7 +17,7 @@ class User(db.Model):
     username = db.Column(db.String(120), unique=True, index=True)
     password = db.Column(db.String(64))
     deleted = db.Column(db.Boolean(), default=False)
-    roles = db.relationship('UserRole', back_populates='user', lazy='joined',
+    roles = db.relationship('UserRole', back_populates='user', lazy='selectin',
                             cascade="all, delete-orphan",
                             passive_deletes=True)
 
@@ -38,8 +41,9 @@ class User(db.Model):
         return bcrypt.check_password_hash(self.password, password)
 
     @classmethod
-    def get_user_by_name(cls, username: str) -> 'User':
-        return cls.query.filter_by(username=username).first()
+    def get_user_by_name(cls, username: str) -> Optional['User']:
+        q = select(cls).where(cls.username==username).limit(1)
+        return db.session.execute(q).scalar_one_or_none()
 
 
 class UserRole(db.Model):

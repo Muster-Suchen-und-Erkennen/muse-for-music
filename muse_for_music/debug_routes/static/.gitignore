@@ -1,0 +1,3 @@
+cache_manifest.json
+**/*.gz
+debug/taxonomies/taxonomies-*.css

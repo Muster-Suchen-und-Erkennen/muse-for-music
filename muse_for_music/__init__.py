@@ -3,7 +3,7 @@ from logging import Formatter
 from logging.handlers import RotatingFileHandler
 from secrets import token_urlsafe
 
-from flask import Flask, logging
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import event
 from sqlalchemy.schema import MetaData
@@ -12,13 +12,11 @@ from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 from flask_static_digest import FlaskStaticDigest
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from .reverse_proxy_fix import apply_reverse_proxy_fix
 from pathlib import Path
 
-from flask import g
-
-db = None  # type: SQLAlchemy
+db: SQLAlchemy
 db = SQLAlchemy(metadata=MetaData(naming_convention={
     'pk': 'pk_%(table_name)s',
     'fk': 'fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s',
@@ -27,9 +25,9 @@ db = SQLAlchemy(metadata=MetaData(naming_convention={
     'ck': 'ck_%(table_name)s_%(column_0_name)s',
 }))
 
-bcrypt = Bcrypt()  # type: Bcrypt
+bcrypt: Bcrypt = Bcrypt()
 
-jwt = JWTManager()  # type: JWTManager
+jwt: JWTManager = JWTManager()
 
 
 def apply_additional_db_config(app):
@@ -93,7 +91,7 @@ def create_app():
     # Setup DB and bcrypt
     db.init_app(app)
     apply_additional_db_config(app)
-    migrate = Migrate(app, db)  # type: Migrate
+    Migrate(app, db)
     bcrypt.init_app(app)
 
     # Setup JWT

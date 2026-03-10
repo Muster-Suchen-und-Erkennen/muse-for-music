@@ -2,7 +2,9 @@ from collections import namedtuple
 from hypothesis import assume, reject, strategies as st
 from hypothesis import settings, Phase
 from flask_restx import fields, Model
+from sqlalchemy import select
 
+from muse_for_music import db
 from muse_for_music.api import api
 from muse_for_music.models.taxonomies import get_taxonomies
 
@@ -62,7 +64,8 @@ def taxonomy_strategy(taxonomy: str, nullable: bool=False):
         })
     taxonomies = get_taxonomies()
     tax = taxonomies[taxonomy.upper()]
-    items = tax.query.all()
+    q = select(tax)
+    items = db.session.execute(q).scalars().all()
     for item in items:
         choices.append({
             'id': item.id,

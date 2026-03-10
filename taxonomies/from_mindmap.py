@@ -5,7 +5,7 @@ import re
 from os import path
 from xml.etree import ElementTree as ET
 from csv import DictWriter
-from typing import List
+from typing import List, Optional
 
 
 class Node():
@@ -43,9 +43,9 @@ class Node():
 
 class MindMap():
     """Class representing the mindmap document."""
-    filename = None  # type: str
-    xml = None  # type: ET
-    current_node = None  # type: Node
+    filename: str = None
+    xml: Optional[ET] = None
+    current_node: Optional[Node] = None
 
     def __init__(self, filename: str) -> None:
         self.filename = filename

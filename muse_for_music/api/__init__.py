@@ -18,11 +18,13 @@ authorizations = {
     },
 }
 
-api = Api(api_blueprint, version='0.1', title='MUSE4Music API', doc='/doc/',
+api = Api(version='0.1', title='MUSE4Music API', doc='/doc/',
           authorizations=authorizations, security='jwt',
           description='The restful api for muse 4 music.')
 
-from . import root, taxonomies, data
+from . import root, taxonomies, data  # noqa
+
+api.init_app(api_blueprint)
 
 
 @api.errorhandler(ValidationError)

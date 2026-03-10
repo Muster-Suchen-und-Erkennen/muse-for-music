@@ -99,8 +99,8 @@ def _analyze_db_model(cls):
     """
     attributes = dir(cls)
 
-    table_attributes = {}  # type: Dict[str, Union[ColumnProperty, RelationshipProperty]]
-    properties = []  # type: List[str]
+    table_attributes: Dict[str, Union[ColumnProperty, RelationshipProperty]] = {}
+    properties: list[str] = []
     mapper_attrs = inspect(cls).attrs
 
     _get_class_attributes(attributes, cls, properties, mapper_attrs, table_attributes)
@@ -111,7 +111,7 @@ def _analyze_db_model(cls):
     unknown_attributes = []
     for name, attr in table_attributes.items():
         if isinstance(attr, RelationshipProperty):
-            mapper = attr.mapper  # type: Mapper
+            mapper: Mapper = attr.mapper
             if issubclass(mapper.class_, Taxonomy):
                 normal_attributes.append((name, mapper.class_))
                 model_fields.append("'{}': fields.Nested(taxonomy_item_get, description='{}'),".format(name, mapper.class_.__name__))
@@ -129,7 +129,7 @@ def _analyze_db_model(cls):
                     model_fields.append("'{}': fields.Raw(description='{}'),".format(name, mapper.class_.__name__))
                     normal_attributes.append((name, mapper.class_))
         if isinstance(attr, ColumnProperty):
-            col = attr.columns[0]  # type: Column
+            col: Column = attr.columns[0]
             zusatz = ''
             if col.default is not None:
                 default = col.default.arg

@@ -19,7 +19,7 @@ class HarmonischeEntwicklung(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('HarmonischeEntwicklung',
                                passive_deletes='all',
-                               lazy='joined',
+                               lazy='selectin',
                                join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],
@@ -41,7 +41,7 @@ class Tonalitaet(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('Tonalitaet',
                                passive_deletes='all',
-                               lazy='joined',
+                               lazy='selectin',
                                join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],
@@ -74,7 +74,7 @@ class HarmonischeStufe(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('HarmonischeStufe',
                                passive_deletes='all',
-                               lazy='joined',
+                               lazy='selectin',
                                join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],
@@ -96,7 +96,7 @@ class HarmonischeFunktionVerwandschaft(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('HarmonischeFunktionVerwandschaft',
                                passive_deletes='all',
-                               lazy='joined',
+                               lazy='selectin',
                                join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],
@@ -118,7 +118,7 @@ class HarmonischePhaenomene(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('HarmonischePhaenomene',
                                passive_deletes='all',
-                               lazy='joined',
+                               lazy='selectin',
                                join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],

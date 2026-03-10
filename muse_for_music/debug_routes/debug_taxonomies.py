@@ -3,7 +3,7 @@
 from flask import render_template, url_for, abort
 from . import debug_blueprint
 from ..models.taxonomies import get_taxonomies
-from ..models.taxonomies.helper_classes import ListTaxonomy
+from ..models.taxonomies.helper_classes import ListTaxonomy, TreeTaxonomy
 
 
 @debug_blueprint.route('/taxonomies')
@@ -22,6 +22,7 @@ def view_taxonomy(taxonomy: str):
         template = 'debug/taxonomies/list.html'
         content = tax.get_all()
     else:
+        assert issubclass(tax, TreeTaxonomy)
         template = 'debug/taxonomies/tree.html'
         content = (tax.get_root(), )
     return render_template(template,

@@ -3,7 +3,7 @@ from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 from ..taxonomies import TempoEinbettung, TempoEntwicklung, Tempo
 
-from typing import Union, Sequence, Dict
+from typing import Union, Sequence
 
 
 class TempoContext(db.Model, GetByID, UpdateableModelMixin):
@@ -63,7 +63,7 @@ class TempoToTempoGroup(db.Model):
     tempo_group_id = db.Column(db.Integer, db.ForeignKey('tempo_group.id'), primary_key=True)
     tempo_id = db.Column(db.Integer, db.ForeignKey('tempo.id'), primary_key=True)
 
-    tempo_group = db.relationship(TempoGroup, backref=db.backref('_tempo_markings', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
+    tempo_group = db.relationship(TempoGroup, backref=db.backref('_tempo_markings', lazy='selectin', single_parent=True, cascade='all, delete-orphan'))
     tempo = db.relationship('Tempo')
 
     def __init__(self, tempo_group, tempo, **kwargs):
@@ -75,7 +75,7 @@ class TempoEntwicklungToTempoGroup(db.Model):
     tempo_group_id = db.Column(db.Integer, db.ForeignKey('tempo_group.id'), primary_key=True)
     tempo_entwicklung_id = db.Column(db.Integer, db.ForeignKey('tempo_entwicklung.id'), primary_key=True)
 
-    tempo_group = db.relationship(TempoGroup, backref=db.backref('_tempo_changes', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
+    tempo_group = db.relationship(TempoGroup, backref=db.backref('_tempo_changes', lazy='selectin', single_parent=True, cascade='all, delete-orphan'))
     tempo_entwicklung = db.relationship('TempoEntwicklung')
 
     def __init__(self, tempo_group, tempo_entwicklung, **kwargs):

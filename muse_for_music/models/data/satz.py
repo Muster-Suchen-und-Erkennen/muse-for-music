@@ -2,7 +2,6 @@ from sqlalchemy.orm import backref
 from muse_for_music.models.taxonomies import satz
 from ... import db
 from ..taxonomies import SatzartAllgemein, SatzartSpeziell
-from ..helper_classes import GetByID, UpdateableModelMixin
 from ..helper_classes import GetByID, UpdateListMixin, UpdateableModelMixin
 
 from typing import Union, Sequence, List
@@ -11,15 +10,15 @@ from typing import Union, Sequence, List
 class Satz(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
     #_normal_attributes = (#('satzart_allgemein', SatzartAllgemein), ('satzart_speziell', SatzartSpeziell))
-    _list_attributes = ('satzart_allgemein','satzart_speziell')
+    _list_attributes = ('satzart_allgemein', 'satzart_speziell')
 
     __tablename__ = 'satz'
     id = db.Column(db.Integer, primary_key=True)
     #satzart_allgemein_id = db.Column(db.Integer, db.ForeignKey('satzart_allgemein.id'), nullable=True)
     #satzart_speziell_id = db.Column(db.Integer, db.ForeignKey('satzart_speziell.id'), nullable=True)
 
-    #satzart_allgemein = db.relationship(SatzartAllgemein, lazy='joined')
-    #satzart_speziell = db.relationship(SatzartSpeziell, lazy='joined')
+    #satzart_allgemein = db.relationship(SatzartAllgemein, lazy='selectin')
+    #satzart_speziell = db.relationship(SatzartSpeziell, lazy='selectin')
 
     @property
     def satzart_allgemein(self):
@@ -46,7 +45,7 @@ class SatzartAllgemeinToSatz(db.Model):
     satz_id = db.Column(db.Integer, db.ForeignKey('satz.id'), primary_key=True)
     satzart_allgemein_id = db.Column(db.Integer, db.ForeignKey('satzart_allgemein.id'), primary_key=True)
 
-    satz = db.relationship(Satz, backref=db.backref('_satzart_allgemein', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
+    satz = db.relationship(Satz, backref=db.backref('_satzart_allgemein', lazy='selectin', single_parent=True, cascade="all, delete-orphan"))
     satzart_allgemein = db.relationship('SatzartAllgemein')
 
     def __init__(self, satz, satzart_allgemein, **kwargs):
@@ -58,7 +57,7 @@ class SatzartSpeziellToSatz(db.Model):
     satz_id = db.Column(db.Integer, db.ForeignKey('satz.id'), primary_key=True)
     satzart_speziell_id = db.Column(db.Integer, db.ForeignKey('satzart_speziell.id'), primary_key=True)
 
-    satz = db.relationship(Satz, backref=db.backref('_satzart_speziell', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
+    satz = db.relationship(Satz, backref=db.backref('_satzart_speziell', lazy='selectin', single_parent=True, cascade="all, delete-orphan"))
     satzart_speziell = db.relationship('SatzartSpeziell')
 
     def __init__(self, satz, satzart_speziell, **kwargs):

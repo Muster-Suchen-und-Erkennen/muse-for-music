@@ -1,6 +1,7 @@
 from flask import url_for, request
 from flask_restx import Resource, fields, abort, marshal
-from flask_jwt_extended import jwt_required, fresh_jwt_required, get_jwt_identity, get_jwt_claims
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy.sql import select, update
 from ..hal_field import HaLUrl, UrlData, NestedFields
 
 from . import user_api as api
@@ -57,15 +58,15 @@ class AdministrationRootResource(Resource):
 class UsersResource(Resource):
 
     @ns.marshal_list_with(user_model)
-    @jwt_required
+    @jwt_required()
     @has_roles(roles=[RoleEnum.admin])
     def get(self):
-        users = User.query.all()
-        return users
+        q = select(User)
+        return db.session.execute(q).scalars().all()
 
     @ns.doc(model=user_model)
     @ns.expect(user_auth_model)
-    @fresh_jwt_required
+    @jwt_required(fresh=True)
     @has_roles(roles=[RoleEnum.admin])
     def post(self):
         user = User(api.payload.get('username', None), api.payload.get('password', None))
@@ -79,7 +80,7 @@ class UsersResource(Resource):
 class UserResource(Resource):
 
     @ns.marshal_with(user_model)
-    @jwt_required
+    @jwt_required()
     @has_roles(roles=[RoleEnum.admin])
     def get(self, username: str):
         user = User.get_user_by_name(username)
@@ -89,7 +90,7 @@ class UserResource(Resource):
 
     @ns.marshal_with(user_model)
     @ns.expect(password_reset_model)
-    @fresh_jwt_required
+    @jwt_required(fresh=True)
     @has_roles(roles=[RoleEnum.admin])
     def post(self, username: str):
         if username == get_jwt_identity():
@@ -107,7 +108,7 @@ class UserResource(Resource):
         return user
 
     @ns.param('with-history', 'Delete user completely including links to history.', type=bool, required=False, default=False)
-    @fresh_jwt_required
+    @jwt_required(fresh=True)
     @has_roles(roles=[RoleEnum.admin])
     def delete(self, username: str):
         if username == get_jwt_identity():
@@ -118,7 +119,8 @@ class UserResource(Resource):
         if request.args.get('with-history', 'false') == 'true':
             if not user.deleted:
                 abort(400, 'Can not delete History of active user!')
-            History.query.filter(History.user_id == user.id).update(values={'user_id': None})
+            update_q = update(History).where(History.user_id == user.id).values(user_id=None)
+            db.session.execute(update_q)
             db.session.delete(user)
             db.session.commit()
         else:
@@ -131,7 +133,7 @@ class UserResource(Resource):
 class UserRoleResource(Resource):
 
     @ns.marshal_list_with(user_role)
-    @jwt_required
+    @jwt_required()
     @has_roles(roles=[RoleEnum.admin])
     def get(self, username: str):
         user = User.get_user_by_name(username)
@@ -141,7 +143,7 @@ class UserRoleResource(Resource):
 
     @ns.marshal_list_with(user_role)
     @ns.expect(user_role)
-    @fresh_jwt_required
+    @jwt_required(fresh=True)
     @has_roles(roles=[RoleEnum.admin])
     def post(self, username: str):
         user = User.get_user_by_name(username)
@@ -156,7 +158,7 @@ class UserRoleResource(Resource):
 
     @ns.marshal_list_with(user_role)
     @ns.expect(user_role)
-    @fresh_jwt_required
+    @jwt_required(fresh=True)
     @has_roles(roles=[RoleEnum.admin])
     def delete(self, username: str):
         if username == get_jwt_identity():

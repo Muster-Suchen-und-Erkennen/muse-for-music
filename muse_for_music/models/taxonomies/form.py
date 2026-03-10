@@ -16,7 +16,7 @@ class FormaleFunktion(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('FormaleFunktion',
                                passive_deletes='all',
-                               lazy='joined',
+                               lazy='selectin',
                                join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],

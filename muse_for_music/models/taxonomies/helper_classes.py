@@ -2,17 +2,23 @@ from csv import DictReader, DictWriter
 from collections import OrderedDict
 from logging import Logger
 import re
+from typing import List, Sequence, Type, ClassVar
+
+from sqlalchemy.sql import select
+from typing_extensions import Self
+
 from ... import db
-from ..helper_classes import GetByID, X
-from typing import Dict, List, Sequence, Any, Type, TypeVar
+from ..helper_classes import GetByID
 
 
 class Taxonomy(GetByID):
 
-    taxonomy_type = None  # type: str
-    select_multiple = False  # type: bool
-    display_name = None  # type: str
-    specification = None # type: str
+    taxonomy_type: ClassVar[str]
+    select_multiple: ClassVar[bool] = False
+    display_name: ClassVar[str|None] = None
+    specification: ClassVar[str|None] = None
+    name: str
+    description: str|None
 
     def __init__(self, name: str, description: None) -> None:
         """Create new List Taxonomy object."""
@@ -21,7 +27,8 @@ class Taxonomy(GetByID):
 
     @classmethod
     def clear_all(cls, logger: Logger):
-        objects = cls.query.all()
+        q = select(cls)
+        objects = db.session.execute(q).scalars().all()
         for obj in objects:
             db.session.delete(obj)
         db.session.commit()
@@ -40,32 +47,34 @@ class Taxonomy(GetByID):
 
     @classmethod
     def not_applicable_item(cls):
-        return cls.query.filter_by(name='na').first()
+        q = select(cls).where(cls.name=='na').limit(1)
+        return db.session.execute(q).scalar_one_or_none()
 
 
 class ListTaxonomy(Taxonomy):
     """Base class for list taxonomies."""
 
-    taxonomy_type = 'list'  # type: str
+    taxonomy_type = 'list'
 
     def __repr__(self):
         """Get repr of taxonomy."""
         return '<{} "{}">'.format(type(self).__name__, self.name)
 
     @classmethod
-    def get_all(cls: Type[X]) -> List[X]:
+    def get_all(cls: Type[Self]) -> Sequence[Self]:
         """Get all elements of taxonomy."""
-        return cls.query.filter(cls.name != 'na').all()
+        q = select(cls).where(cls.name!='na')
+        return db.session.execute(q).scalars().all()
 
     items = get_all
 
     @classmethod
     def load(cls, input_data: DictReader, logger: Logger):
         """Load taxonomy from csv file."""
-        items = OrderedDict()  # type: Dict[str, ListTaxonomy]
+        items: OrderedDict[str, ListTaxonomy] = OrderedDict()
         for row in input_data:
-            name = row['name']  # type: str
-            description = row.get('description')  # type: str
+            name: str = row['name']
+            description: str = row.get('description')
             if name.upper() == 'ROOT':
                 continue
             if name in items:
@@ -75,7 +84,7 @@ class ListTaxonomy(Taxonomy):
                 break
             items[name] = cls(name=name, description=description)
         else:
-            for name, value in items.items():
+            for value in items.values():
                 db.session.add(value)
             db.session.commit()
             return
@@ -106,10 +115,10 @@ class ListTaxonomy(Taxonomy):
 class TreeTaxonomy(Taxonomy):
     """Base class for tree taxonomies."""
 
-    taxonomy_type = 'tree'  # type: str
-    select_leafs_only = False  # type: bool
+    taxonomy_type = 'tree'
+    select_leafs_only = False
 
-    children = []  # type: List[TreeTaxonomy]
+    children: List['TreeTaxonomy'] = []
 
     def __init__(self, name: str, description=None, parent: 'TreeTaxonomy'=None) -> None:
         """Create new TreeTaxonomy object."""
@@ -122,9 +131,10 @@ class TreeTaxonomy(Taxonomy):
                                                [child.__repr__() for child in self.children])
 
     @classmethod
-    def get_root(cls: Type[X]) -> X:
+    def get_root(cls: Type[Self]) -> Self|None:
         """Get root node of taxonomy."""
-        return cls.query.filter_by(name='root').first()
+        q = select(cls).where(cls.name=='root').limit(1)
+        return db.session.execute(q).scalar_one_or_none()
 
     items = get_root
 
@@ -132,10 +142,10 @@ class TreeTaxonomy(Taxonomy):
     def load(cls, input_data: DictReader, logger: Logger):
         """Load taxonomy from csv file."""
         pattern = re.compile(r'^(\d+|\(\d+\)|\[\d+\]|\{\d+\}|<\d+>),?\s+')
-        items = OrderedDict()  # type: Dict[str, TreeTaxonomy]
+        items: OrderedDict[str, TreeTaxonomy] = OrderedDict()
         for row in input_data:
-            name = row['name']  # type: str
-            description = row.get('description')  # type: str
+            name: str = row['name']
+            description: str = row.get('description')
             if name in items:
                 logger.warning('Duplicate names are not allowed! \
                                 Found "%s" but "%r" is already used.',
@@ -152,7 +162,7 @@ class TreeTaxonomy(Taxonomy):
                 parent = items[parent_name]
                 items[name] = cls(name=pattern.sub('', name), parent=parent, description=description)
         else:
-            for name, value in items.items():
+            for value in items.values():
                 db.session.add(value)
             db.session.commit()
             return

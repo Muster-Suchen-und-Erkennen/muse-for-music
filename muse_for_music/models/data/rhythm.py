@@ -48,7 +48,7 @@ class TaktartToRhythm(db.Model):
     rhythm_id = db.Column(db.Integer, db.ForeignKey('rhythm.id'), primary_key=True)
     taktart_id = db.Column(db.Integer, db.ForeignKey('taktart.id'), primary_key=True)
 
-    rhythm = db.relationship(Rhythm, backref=db.backref('_measure_times', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
+    rhythm = db.relationship(Rhythm, backref=db.backref('_measure_times', lazy='selectin', single_parent=True, cascade="all, delete-orphan"))
     taktart = db.relationship('Taktart')
 
     def __init__(self, rhythm, taktart, **kwargs):
@@ -60,7 +60,7 @@ class RhythmustypToRhythm(db.Model):
     rhythm_id = db.Column(db.Integer, db.ForeignKey('rhythm.id'), primary_key=True)
     rhythmustyp_id = db.Column(db.Integer, db.ForeignKey('rhythmustyp.id'), primary_key=True)
 
-    rhythm = db.relationship(Rhythm, backref=db.backref('_rhythm_types', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
+    rhythm = db.relationship(Rhythm, backref=db.backref('_rhythm_types', lazy='selectin', single_parent=True, cascade="all, delete-orphan"))
     rhythmustyp = db.relationship('Rhythmustyp')
 
     def __init__(self, rhythm, rhythmustyp, **kwargs):
@@ -72,7 +72,7 @@ class RhythmischesPhaenomenToRhythm(db.Model):
     rhythm_id = db.Column(db.Integer, db.ForeignKey('rhythm.id'), primary_key=True)
     rhythmisches_phaenomen_id = db.Column(db.Integer, db.ForeignKey('rhythmisches_phaenomen.id'), primary_key=True)
 
-    rhythm = db.relationship(Rhythm, backref=db.backref('_rhythmic_phenomenons', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
+    rhythm = db.relationship(Rhythm, backref=db.backref('_rhythmic_phenomenons', lazy='selectin', single_parent=True, cascade="all, delete-orphan"))
     rhythmisches_phaenomen = db.relationship('RhythmischesPhaenomen')
 
     def __init__(self, rhythm, rhythmisches_phaenomen, **kwargs):

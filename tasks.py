@@ -114,7 +114,7 @@ def create_start_config(c):
 @task
 def upgrade_db(c):
     current = c.run('flask db current', hide=True, warn=True, shell=SHELL)
-    last_line = current.stdout.strip().split('\n')[-1]  # type: str
+    last_line: str = current.stdout.strip().split('\n')[-1]
     db_exists = last_line.endswith('(head)')
     if db_exists:
         print('Upgrading existing db.')

@@ -1,9 +1,7 @@
 from flask import url_for, request
 from flask_restx import Resource, fields, abort
 from flask_jwt_extended import jwt_required, create_access_token, \
-                               get_jwt_identity, create_refresh_token, \
-                               get_jwt_claims, jwt_refresh_token_required, \
-                               fresh_jwt_required
+                               get_jwt_identity, create_refresh_token
 
 from . import user_api as api
 from .import auth_logger
@@ -99,7 +97,7 @@ class ChangePassword(Resource):
 
     @api.expect(password_change_model)
     @api.response(401, 'Not Authenticated')
-    @fresh_jwt_required
+    @jwt_required(fresh=True)
     def post(self):
         """Change user password."""
         user = User.get_user_by_name(get_jwt_identity())
@@ -119,12 +117,14 @@ class Check(Resource):
 
     @api.marshal_with(user_model)
     @api.response(401, 'Not Authenticated')
-    @jwt_required
+    @jwt_required()
     def get(self):
         """Check your current access token."""
+        claims = get_jwt().get("user_claims", [])  # FIXME claim
+        roles = [r.name for r in RoleEnum if r.name in claims]  # FIXME claim
         ret = {
             'username': get_jwt_identity(),
-            'roles': get_jwt_claims()
+            'roles': roles
         }
         return ret
 
@@ -136,7 +136,7 @@ class Refresh(Resource):
     @api.doc(security=['jwt-refresh'])
     @api.marshal_with(jwt_response)
     @api.response(401, 'Wrong username or pasword.')
-    @jwt_refresh_token_required
+    @jwt_required(refresh=True)
     def post(self):
         """Create a new access token with a refresh token."""
         username = get_jwt_identity()

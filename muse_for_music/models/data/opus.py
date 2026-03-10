@@ -1,3 +1,5 @@
+from sqlalchemy.sql import select
+
 from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin
 
@@ -30,11 +32,11 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
     original_name = db.Column(db.String(191), index=True, nullable=True)
     composer_id = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=True)
     score_link = db.Column(db.Text, nullable=True)
-    first_printed_at = db.Column(db.String(191), nullable=True)  # TODO Foreign key
+    first_printed_at = db.Column(db.String(191), nullable=True)
     first_printed_in = db.Column(db.Integer, nullable=True)
     composition_year = db.Column(db.Integer, nullable=True)
-    composition_place = db.Column(db.String(191), nullable=True)  # TODO Foreign key
-    first_played_at = db.Column(db.String(191), nullable=True)  # TODO Foreign key
+    composition_place = db.Column(db.String(191), nullable=True)
+    first_played_at = db.Column(db.String(191), nullable=True)
     first_played_in = db.Column(db.Integer, nullable=True)
     notes = db.Column(db.Text, nullable=True)
     movements = db.Column(db.Integer)
@@ -43,12 +45,12 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
     tonalitaet_id = db.Column(db.Integer, db.ForeignKey('tonalitaet.id', ondelete='RESTRICT'))
 
     composer = db.relationship('Person', lazy='select')
-    genre = db.relationship(GattungNineteenthCentury, lazy='joined')
-    grundton = db.relationship('Grundton', lazy='joined')
-    tonalitaet = db.relationship('Tonalitaet', lazy='joined')
+    genre = db.relationship(GattungNineteenthCentury, lazy='selectin')
+    grundton = db.relationship('Grundton', lazy='selectin')
+    tonalitaet = db.relationship('Tonalitaet', lazy='selectin')
     # TODO metadata
 
-    _subquery_load = ['composer', 'parts']
+    _eager_load = ['composer', 'parts']
 
     def __init__(self, name: str, composer: any=None, movements:int =1,
                  printed: bool=False, **kwargs) -> None:
@@ -65,14 +67,15 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
             else:
                 composer_id = composer.get('id')
             if composer_id is not None:
-                comp = Person.get_by_id(composer_id)  # type: Person
+                comp = Person.get_by_id(composer_id)
                 self.composer = comp
             else:
                 self.composer = Person(**composer)
                 db.session.add(self.composer)
 
         if 'genre' in kwargs:
-            genre = GattungNineteenthCentury.query.filter_by(name=kwargs['genre']).first()
+            q = select(GattungNineteenthCentury).where(GattungNineteenthCentury.name==kwargs['genre']).limit(1)
+            genre = db.session.execute(q).scalar_one_or_none()
             if genre:
                 self.genre = genre
 

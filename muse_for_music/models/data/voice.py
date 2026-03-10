@@ -2,6 +2,7 @@ from muse_for_music.models.taxonomies import specifications
 from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 
+from sqlalchemy.orm import Mapped
 from typing import Union, Sequence, Dict
 
 from .measure import Measure
@@ -66,7 +67,7 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, Specificat
     ambitus_id = db.Column(db.Integer, db.ForeignKey('ambitus_group.id'), nullable=True)
 
     subpart = db.relationship(SubPart, lazy='select', backref=db.backref('voices', single_parent=True, cascade="all, delete-orphan"))
-    _instrumentation = db.relationship('Instrumentation', lazy='subquery', single_parent=True, cascade="all, delete-orphan")  # type: Instrumentation
+    _instrumentation: Mapped[Instrumentation] = db.relationship('Instrumentation', lazy='subquery', single_parent=True, cascade="all, delete-orphan")
     satz = db.relationship(Satz, single_parent=True, cascade="all, delete-orphan")
     rhythm = db.relationship(Rhythm, single_parent=True, cascade="all, delete-orphan")
     # stimmverlauf
@@ -77,11 +78,11 @@ class Voice(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, Specificat
     composition = db.relationship(Composition, single_parent=True, cascade="all, delete-orphan")
     rendition = db.relationship(Rendition, single_parent=True, cascade="all, delete-orphan")
     citations = db.relationship(Citations, single_parent=True, cascade="all, delete-orphan")
-    measure_start = db.relationship(Measure, foreign_keys=[measure_start_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
-    measure_end = db.relationship(Measure, foreign_keys=[measure_end_id], lazy='joined', single_parent=True, cascade="all, delete-orphan")
+    measure_start = db.relationship(Measure, foreign_keys=[measure_start_id], lazy='selectin', single_parent=True, cascade="all, delete-orphan")
+    measure_end = db.relationship(Measure, foreign_keys=[measure_end_id], lazy='selectin', single_parent=True, cascade="all, delete-orphan")
     ambitus = db.relationship(AmbitusGroup, single_parent=True, cascade="all, delete-orphan")
 
-    _subquery_load = ['satz', 'rhythm', 'composition', 'rendition', 'citations']
+    _eager_load = ['satz', 'rhythm', 'composition', 'rendition', 'citations']
 
     def __init__(self, subpart: Union[int, SubPart], name: str, **kwargs):
         if isinstance(subpart, SubPart):
@@ -170,7 +171,7 @@ class MusikalischeWendungToVoice(db.Model):
     voice_id = db.Column(db.Integer, db.ForeignKey('voice.id'), primary_key=True)
     musikalische_wendung_id = db.Column(db.Integer, db.ForeignKey('musikalische_wendung.id', name='fk_musikalische_wendung_to_voice_musikalische_wendung_id'), primary_key=True)
 
-    voice = db.relationship(Voice, backref=db.backref('_musicial_figures', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
+    voice = db.relationship(Voice, backref=db.backref('_musicial_figures', lazy='selectin', single_parent=True, cascade='all, delete-orphan'))
     musikalische_wendung = db.relationship('MusikalischeWendung')
 
     def __init__(self, voice, musikalische_wendung, **kwargs):
@@ -182,7 +183,7 @@ class MusikalischeFunktionToVoice(db.Model):
     voice_id = db.Column(db.Integer, db.ForeignKey('voice.id'), primary_key=True)
     musikalische_funktion_id = db.Column(db.Integer, db.ForeignKey('musikalische_funktion.id'), primary_key=True)
 
-    voice = db.relationship(Voice, backref=db.backref('_musicial_function', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
+    voice = db.relationship(Voice, backref=db.backref('_musicial_function', lazy='selectin', single_parent=True, cascade='all, delete-orphan'))
     musikalische_funktion = db.relationship('MusikalischeFunktion')
 
     def __init__(self, voice, musikalische_funktion, **kwargs):
@@ -194,7 +195,7 @@ class VerzierungToVoice(db.Model):
     voice_id = db.Column(db.Integer, db.ForeignKey('voice.id'), primary_key=True)
     verzierung_id = db.Column(db.Integer, db.ForeignKey('verzierung.id'), primary_key=True)
 
-    voice = db.relationship(Voice, backref=db.backref('_ornaments', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
+    voice = db.relationship(Voice, backref=db.backref('_ornaments', lazy='selectin', single_parent=True, cascade='all, delete-orphan'))
     verzierung = db.relationship('Verzierung')
 
     def __init__(self, voice, verzierung, **kwargs):
@@ -206,7 +207,7 @@ class NotenwertToVoice(db.Model):
     voice_id = db.Column(db.Integer, db.ForeignKey('voice.id'), primary_key=True)
     notenwert_id = db.Column(db.Integer, db.ForeignKey('notenwert.id'), primary_key=True)
 
-    voice = db.relationship(Voice, backref=db.backref('_dominant_note_values', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
+    voice = db.relationship(Voice, backref=db.backref('_dominant_note_values', lazy='selectin', single_parent=True, cascade='all, delete-orphan'))
     notenwert = db.relationship('Notenwert')
 
     def __init__(self, voice, notenwert, **kwargs):
@@ -218,7 +219,7 @@ class IntervallikToVoice(db.Model):
     voice_id = db.Column(db.Integer, db.ForeignKey('voice.id'), primary_key=True)
     intervallik_id = db.Column(db.Integer, db.ForeignKey('intervallik.id'), primary_key=True)
 
-    voice = db.relationship(Voice, backref=db.backref('_intervallik', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
+    voice = db.relationship(Voice, backref=db.backref('_intervallik', lazy='selectin', single_parent=True, cascade='all, delete-orphan'))
     intervallik = db.relationship('Intervallik')
 
     def __init__(self, voice, intervallik, **kwargs):
@@ -237,7 +238,7 @@ class RelatedVoices(db.Model, GetByID, UpdateableModelMixin):
     related_voice_id = db.Column(db.Integer, db.ForeignKey('voice.id'))
     type_of_relationship_id = db.Column(db.Integer, db.ForeignKey('voice_to_voice_relation.id'))
 
-    voice = db.relationship(Voice, backref=db.backref('_related_voices', lazy='joined', single_parent=True, cascade='all, delete-orphan'),
+    voice = db.relationship(Voice, backref=db.backref('_related_voices', lazy='selectin', single_parent=True, cascade='all, delete-orphan'),
                             foreign_keys=[voice_id])
     related_voice = db.relationship('Voice', foreign_keys=[related_voice_id])
     type_of_relationship = db.relationship('VoiceToVoiceRelation')

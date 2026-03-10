@@ -7,6 +7,8 @@ from inspect import getmembers, isclass
 from typing import Dict, TypeVar, Type
 from flask import current_app
 from flask.cli import with_appcontext
+from sqlalchemy.sql import select
+from sqlalchemy.sql.functions import count
 import click
 
 from .helper_classes import Taxonomy
@@ -37,16 +39,14 @@ from .rendition import *
 from .specifications import *
 
 
-T = TypeVar('T', bound=Taxonomy)
-
-
 def generate_na_elements():
     """Generate all missing "na" elements."""
-    taxonomies = get_taxonomies()  # type: Dict[str, Type[T]]
+    taxonomies = get_taxonomies()
     for taxonomy in taxonomies.values():
         try:
-            count = taxonomy.query.count()
-            if count == 0:
+            count_q = select(count(taxonomy))
+            item_count = db.session.execute(count_q).scalar()
+            if item_count == 0:
                 continue  # skip taxonomies without any entry
         except:
             continue  # skip non existing taxonomies
@@ -70,12 +70,12 @@ def init_taxonomies(reload, folder_path: str):
     folder_path = path.abspath(folder_path)
     click.echo('Scanning folder "{}"'.format(folder_path))
     files = glob(path.join(folder_path, '*.csv'))
-    taxonomies = get_taxonomies()  # type: Dict[str, Type[T]]
+    taxonomies: dict[str, Type[Taxonomy]] = get_taxonomies()
     unmatched_csv_files = []
     for file in files:
         name = path.splitext(path.basename(file))[0].upper()
         if name in taxonomies:
-            tax = taxonomies[name]  # type: Type[T]
+            tax: Type[Taxonomy] = taxonomies[name]
             if reload:
                 click.echo('Clearing old taxonomy data for "{}"'.format(name))
                 tax.clear_all(DB_COMMAND_LOGGER)
@@ -114,7 +114,7 @@ def save_taxonomies(folder_path: str):
         click.echo('Please provide a path to a folder!')
         return
     makedirs(folder_path, exist_ok=True)
-    taxonomies = get_taxonomies()  # type: Dict[str, Type[T]]
+    taxonomies: Dict[str, Type[Taxonomy]] = get_taxonomies()
     click.echo('Exporting taxonomies into folder "{}"'.format(folder_path))
     for name, taxonomy in taxonomies.items():
         filepath = path.join(folder_path, taxonomy.__name__ + '.csv')
@@ -127,7 +127,7 @@ def save_taxonomies(folder_path: str):
 
 
 
-def get_taxonomies() -> Dict[str, Type[T]]:
+def get_taxonomies() -> Dict[str, Type[Taxonomy]]:
     temp = {}
     for name, member in getmembers(sys.modules[__name__], isclass):
         if member is Taxonomy:

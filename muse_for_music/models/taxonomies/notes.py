@@ -7,6 +7,8 @@ __all__ = ['Grundton', 'Notenwert', 'Intervall', 'Intervallik', 'Oktave']
 class Grundton(db.Model, ListTaxonomy):
     """DB Model for choices."""
 
+    display_name="Ton"
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
@@ -49,7 +51,7 @@ class Intervallik(db.Model, TreeTaxonomy):
     description = db.Column(db.Text(), nullable=True)
     children = db.relationship('Intervallik',
                                passive_deletes='all',
-                               lazy='joined',
+                               lazy='selectin',
                                join_depth=8,
                                backref=db.backref('parent',
                                                   remote_side=[id],

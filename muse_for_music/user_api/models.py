@@ -9,7 +9,7 @@ with_curies = api.model('WithCuries', {
 })
 
 root_links = api.inherit('RootLinks', with_curies, {
-    'self': HaLUrl(UrlData('user_api.default_root_resource', absolute=True)),
+    'self': HaLUrl(UrlData('user_api.root', absolute=True)),
     'login': HaLUrl(UrlData('user_api.auth_login', absolute=True)),
     'fresh_login': HaLUrl(UrlData('user_api.auth_fresh_login', absolute=True)),
     'refresh': HaLUrl(UrlData('user_api.auth_refresh', absolute=True)),

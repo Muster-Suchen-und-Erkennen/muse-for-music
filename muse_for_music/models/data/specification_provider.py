@@ -4,16 +4,17 @@ from ..helper_classes import GetByID, UpdateListMixin, UpdateableModelMixin
 
 from typing import Union, Sequence
 
+
 class SpecificationProviderMixin():
     def __init_subclass__(cls) -> None:
-        
+
         tablename = cls.__tablename__
 
         class Specification (db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
             _normal_attributes = (('share', SpecAnteil),
-                                ('occurence', SpecAuftreten),
-                                ('path', str))
-            
+                                  ('occurence', SpecAuftreten),
+                                  ('path', str))
+
             _list_attributes = ('instrumentation',)
 
             __tablename__ = tablename + '_specification'
@@ -24,12 +25,12 @@ class SpecificationProviderMixin():
             share_id = db.Column(db.Integer, db.ForeignKey(SpecAnteil.id), nullable=True)
             occurence_id = db.Column(db.Integer, db.ForeignKey(SpecAuftreten.id), nullable=True)
 
-            share = db.relationship(SpecAnteil, lazy='joined')
-            occurence = db.relationship(SpecAuftreten, lazy='joined')
+            share = db.relationship(SpecAnteil, lazy='selectin')
+            occurence = db.relationship(SpecAuftreten, lazy='selectin')
 
-            parent = db.relationship(cls, backref=db.backref('_specifications', lazy='joined', single_parent=True, cascade='all, delete-orphan'),
+            parent = db.relationship(cls, backref=db.backref('_specifications', lazy='selectin', single_parent=True, cascade='all, delete-orphan'),
                             foreign_keys=[parent_id])
-            
+
             def __init__(self, parent, **kwargs) -> None:
                 super().__init__()
                 self.parent = parent
@@ -54,7 +55,7 @@ class SpecificationProviderMixin():
             specifications_id = db.Column(db.Integer, db.ForeignKey(Specification.__tablename__ + '.id'), primary_key=True)
             spezifikation_instrument_id = db.Column(db.Integer, db.ForeignKey('spezifikation_instrument.id'), primary_key=True)
 
-            specifications = db.relationship(Specification, backref=db.backref('_spezifikation_instrument', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
+            specifications = db.relationship(Specification, backref=db.backref('_spezifikation_instrument', lazy='selectin', single_parent=True, cascade="all, delete-orphan"))
             spezifikation_instrument = db.relationship('SpecInstrument')
 
             def __init__(self, specifications, spezifikation_instrument, **kwargs):

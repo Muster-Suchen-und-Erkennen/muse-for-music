@@ -48,7 +48,7 @@ class AusdruckToRendition(db.Model):
     rendition_id = db.Column(db.Integer, db.ForeignKey('rendition.id'), primary_key=True)
     ausdruck_id = db.Column(db.Integer, db.ForeignKey('ausdruck.id'), primary_key=True)
 
-    rendition = db.relationship(Rendition, backref=db.backref('_mood_markings', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
+    rendition = db.relationship(Rendition, backref=db.backref('_mood_markings', lazy='selectin', single_parent=True, cascade='all, delete-orphan'))
     ausdruck = db.relationship('Ausdruck')
 
     def __init__(self, rendition, ausdruck, **kwargs):
@@ -60,7 +60,7 @@ class ArtikulationToRendition(db.Model):
     rendition_id = db.Column(db.Integer, db.ForeignKey('rendition.id'), primary_key=True)
     artikulation_id = db.Column(db.Integer, db.ForeignKey('artikulation.id'), primary_key=True)
 
-    rendition = db.relationship(Rendition, backref=db.backref('_articulation_markings', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
+    rendition = db.relationship(Rendition, backref=db.backref('_articulation_markings', lazy='selectin', single_parent=True, cascade='all, delete-orphan'))
     artikulation = db.relationship('Artikulation')
 
     def __init__(self, rendition, artikulation, **kwargs):
@@ -72,7 +72,7 @@ class SpielanweisungToRendition(db.Model):
     rendition_id = db.Column(db.Integer, db.ForeignKey('rendition.id'), primary_key=True)
     spielanweisung_id = db.Column(db.Integer, db.ForeignKey('spielanweisung.id'), primary_key=True)
 
-    rendition = db.relationship(Rendition, backref=db.backref('_technic_markings', lazy='joined', single_parent=True, cascade='all, delete-orphan'))
+    rendition = db.relationship(Rendition, backref=db.backref('_technic_markings', lazy='selectin', single_parent=True, cascade='all, delete-orphan'))
     spielanweisung = db.relationship('Spielanweisung')
 
     def __init__(self, rendition, spielanweisung, **kwargs):

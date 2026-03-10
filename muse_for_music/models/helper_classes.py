@@ -1,89 +1,106 @@
 from logging import Logger
 from datetime import datetime, date
-from typing import TypeVar, Sequence, Dict, Type, List, Union, cast, Any
+from typing import TypeVar, ClassVar, Sequence, Dict, Type, Tuple, List, Union, cast, Any, Optional
+
 from flask import current_app
-from sqlalchemy.orm import joinedload, subqueryload, Query
+from sqlalchemy.sql import select, Select
+from sqlalchemy.orm import joinedload, subqueryload, selectinload
 from flask_restx.errors import ValidationError
+from typing_extensions import Self
+
 from .. import db
+
 
 X = TypeVar('X', bound=db.Model)
 
 
 class GetByID():
 
-    _joined_load = []  # type: List[str]
-    _subquery_load = []  # type: List[str]
+    _eager_load: ClassVar[Union[List[str],Tuple[str]]] = tuple()
+    _joined_load: List[str] = []
+    _subquery_load: List[str] = []
 
     @classmethod
-    def prepare_query(cls: Type[X], lazy: bool=False) -> Query:
-        query = cls.query
+    def prepare_query(cls: Type[Self], lazy: bool=False) -> Select[Tuple[Self]]:
+        q = select(cls)
         if lazy:
-            return query
+            return q
         options = []
+        for attr in cls._eager_load:
+            column = getattr(cls, attr)
+            options.append(selectinload(column))
         for attr in cls._joined_load:
-            options.append(joinedload(attr))
+            raise ValueError(f"{cls}._joined_load should no longer be used.")
+            column = getattr(cls, attr)
+            options.append(joinedload(column))
         for attr in cls._subquery_load:
-            options.append(subqueryload(attr))
+            raise ValueError(f"{cls}._subqery_load should no longer be used.")
+            column = getattr(cls, attr)
+            options.append(subqueryload(column))
 
         if options:
-            query = query.options(*options)
-        return query
+            q = q.options(*options)
+        return q
 
     @staticmethod
-    def get_id_from_object(id: Union[int, dict, X]) -> int:
-        if isinstance(id, GetByID):  # for lazy direct object passing
-            return id.id
-        if isinstance(id, dict):  # for lazy dict passing
-            return id['id']
-        if isinstance(id, int):
-            if id < 0: # no negative ids in system (all negative ids mapped to -1)
+    def get_id_from_object(id_: Union[int, dict, X]) -> int:
+        if isinstance(id_, GetByID):  # for lazy direct object passing
+            return id_.id
+        if isinstance(id_, dict):  # for lazy dict passing
+            return id_['id']
+        if isinstance(id_, int):
+            if id_ < 0: # no negative ids in system (all negative ids mapped to -1)
                 return -1
-            return id
-        if id is None: # None object is associated with negative id
+            return id_
+        if id_ is None: # None object is associated with negative id
             return -1
-        raise TypeError('"id" is of wrong type. Expected: int, dict or {}, Got {}'.format(GetByID, type(id)))
+        raise TypeError('"id" is of wrong type. Expected: int, dict or {}, Got {}'.format(GetByID, type(id_)))
 
     @classmethod
-    def get_by_id_or_dict(cls: Type[X], id: Union[int, dict, X], lazy: bool=False) -> X:
-        if isinstance(id, cls):  # for lazy direct object passing
-            return id
-        if isinstance(id, dict):  # for lazy dict passing
-            id = id['id']
-        return cls.get_by_id(id, lazy)
+    def get_by_id_or_dict(cls: Type[Self], id_: Union[int, dict, Self], lazy: bool=False) -> Optional[Self]:
+        if isinstance(id_, cls):  # for lazy direct object passing
+            return id_
+        if isinstance(id_, dict):  # for lazy dict passing
+            id_ = id_['id']
+        return cls.get_by_id(id_, lazy)
 
     @classmethod
-    def get_by_id(cls: Type[X], id: int, lazy: bool=False) -> X:
-        if id < 0:
+    def get_by_id(cls: Type[Self], id_: int, lazy: bool=False) -> Optional[Self]:
+        if id_ < 0:
             return None
-        query = cls.prepare_query(lazy)
-        return query.filter_by(id=id).first()
+        query = cls.prepare_query(lazy).where(cls.id==id_)
+        return db.session.execute(query).scalar_one_or_none()
 
     @classmethod
-    def get_list_by_id(cls: Type[X], ids: Sequence[int], lazy: bool=True) -> List[X]:
+    def get_list_by_id(cls: Type[Self], ids: Sequence[int], lazy: bool=True) -> Sequence[Self]:
         if not ids:
             return []
         if len(ids) == 1:
-            return [cls.get_by_id(ids[0], lazy)]
-        query = cls.prepare_query(lazy)
-        return query.filter(cls.id.in_(ids)).all()
+            result = cls.get_by_id(ids[0], lazy)
+            return [result] if result is not None else []
+        query = cls.prepare_query(lazy).where(cls.id.in_(ids))
+        return db.session.execute(query).scalars().all()
 
     @classmethod
-    def get_multiple_by_id(cls: Type[X], ids: Sequence[int], lazy: bool=True) -> Dict[int, X]:
+    def get_multiple_by_id(cls: Type[Self], ids: Sequence[int], lazy: bool=True) -> Dict[int, Self]:
         if not ids:
             return {}
         if len(ids) == 1:
-            return {ids[0]: cls.get_by_id(ids[0], lazy)}
-        query = cls.prepare_query(lazy)
-        result = query.filter(cls.id.in_(ids)).all()
+            result = cls.get_by_id(ids[0], lazy)
+            if result is None:
+                return {}
+            return {result.id: result}
+        query = cls.prepare_query(lazy).where(cls.id.in_(ids))
+        result = db.session.execute(query).scalars().all()
         return {obj.id: obj for obj in result}
 
 
 class UpdateableModelMixin():
 
-    _normal_attributes = tuple()  # type: Tuple[Tuple(str,Type)]
-    _reference_only_attributes = tuple()  # type: Tuple[str]
-    _optional_attributes = tuple()  # type: Tuple[str]
-    _list_attributes = tuple()  # type: Tuple[str]
+    _normal_attributes: Tuple[Tuple[str, Type], ...] = tuple()
+    _reference_only_attributes: Tuple[str, ...] = tuple()
+    _optional_attributes: Tuple[str, ...] = tuple()
+    _list_attributes: Tuple[str, ...] = tuple()
 
     def _update_normal_attributes(self, new_values: Dict, partial: bool=False):
         expire_self = False
@@ -133,7 +150,7 @@ class UpdateableModelMixin():
                     raise ValidationError("'{}' is a required property".format(name))
 
     def update_complex_object(self, name, value, cls, expire_self):
-        attr_to_update = getattr(self, name)  # type: UpdateableModelMixin
+        attr_to_update: UpdateableModelMixin = getattr(self, name)
         if value is None:
             setattr(self, name, None)
             if attr_to_update is not None:
@@ -147,7 +164,7 @@ class UpdateableModelMixin():
                 attr_to_update.update(value)
             except Exception as e:
                 print(type(e))
-                logger = current_app.logger  # type: Logger
+                logger: Logger = current_app.logger
                 logger.exception("Failed to auto instantiate class %s on update of %s",
                                  cls.__name__, self.__class__.__name__)
         else:
@@ -178,7 +195,7 @@ class UpdateListMixin():
                                     Sequence[dict]], old_items: Dict[int, K],
                                     mapping_cls: Type[K], item_cls: Type[V],
                                     mapping_cls_attribute: str):
-        to_add = []  # type: List[int]
+        to_add: List[int] = []
 
         for item in item_list:
             if isinstance(item, dict):
@@ -191,9 +208,10 @@ class UpdateListMixin():
             else:
                 to_add.append(item)
 
-        items_to_add = item_cls.get_list_by_id(to_add)  # type: List[V]
-        to_delete = list(old_items.values())  # type: List[K]
-        for item_to_add in items_to_add:  # type: V
+        items_to_add: Sequence[V] = item_cls.get_list_by_id(to_add)
+        to_delete: List[K] = list(old_items.values())
+        item_to_add: V
+        for item_to_add in items_to_add:
             if to_delete:
                 mapping = to_delete.pop()
                 setattr(mapping, mapping_cls_attribute, item_to_add)
@@ -215,11 +233,11 @@ class UpdateListMixin():
                 db.session.add(old_items[item_id])
                 del old_items[item_id]
             else:
-                new_item = item_cls(self)  # type: W
+                new_item: W = item_cls(self)
                 new_item.update(item_dict)
                 db.session.add(new_item)
 
-        to_delete = list(old_items.values())  # type: List[W]
+        to_delete: List[W] = list(old_items.values())
         for item in to_delete:
             db.session.delete(item)
         if to_delete:

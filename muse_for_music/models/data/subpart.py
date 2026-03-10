@@ -1,6 +1,7 @@
 from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 
+from sqlalchemy.orm import Mapped
 from typing import Union
 
 from .part import Part
@@ -14,7 +15,6 @@ from .instrumentation import Instrumentation
 from .specification_provider import SpecificationProviderMixin
 from ..taxonomies import Anteil, AuftretenWerkausschnitt, MusikalischeWendung
 
-from typing import Union, Sequence, Dict
 
 
 class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, SpecificationProviderMixin):
@@ -46,15 +46,15 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, Specific
     # ambitus_id = db.Column(db.Integer, db.ForeignKey('ambitus_group.id'), nullable=True)
 
     part = db.relationship(Part, lazy='select', backref=db.backref('subparts', single_parent=True, cascade="all, delete-orphan"))
-    occurence_in_part = db.relationship(AuftretenWerkausschnitt, lazy='joined', single_parent=True)
-    share_of_part = db.relationship(Anteil, lazy='joined', single_parent=True)
-    _instrumentation = db.relationship('Instrumentation', lazy='subquery', single_parent=True, cascade="all, delete-orphan")  # type: Instrumentation
+    occurence_in_part = db.relationship(AuftretenWerkausschnitt, lazy='selectin', single_parent=True)
+    share_of_part = db.relationship(Anteil, lazy='selectin', single_parent=True)
+    _instrumentation: Mapped[Instrumentation] = db.relationship('Instrumentation', lazy='subquery', single_parent=True, cascade="all, delete-orphan")
     dynamic = db.relationship(Dynamic, single_parent=True, cascade="all, delete-orphan")
     harmonics = db.relationship(Harmonics, single_parent=True, cascade="all, delete-orphan")
     tempo = db.relationship(TempoGroup, single_parent=True, cascade="all, delete-orphan")
     # ambitus = db.relationship(AmbitusGroup, single_parent=True, cascade="all, delete-orphan")
 
-    _subquery_load = ['dynamic', 'harmonics', 'voices']
+    _eager_load = ['dynamic', 'harmonics', 'voices']
 
     def __init__(self, part_id: Union[int, Part], label: str = 'A', **kwargs):
         if isinstance(part_id, Part):

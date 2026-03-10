@@ -24,7 +24,7 @@ if True:
         return schema
     Raw.schema = newSchema
 
-    from flask_restx.model import Model, iteritems, instance, not_none
+    from flask_restx.model import Model, instance, not_none
 
     def _get_ancestor_field_order(model):
         ancestor_field_order = {}
@@ -34,7 +34,7 @@ if True:
             parent_model = model.get_parent(parent)
             ancestor_field_order.update(_get_ancestor_field_order(parent_model))
             order_offset = len(ancestor_field_order) + 1
-            for i, (name, _) in enumerate(iteritems(parent_model)):
+            for i, name in enumerate(parent_model.keys()):  # FIXME: check!
                 if name not in ancestor_field_order:
                     ancestor_field_order[name] = i + order_offset
 
@@ -47,7 +47,7 @@ if True:
         ancestor_field_order = _get_ancestor_field_order(self)
         order_offset = len(ancestor_field_order) + 1
 
-        for i, (name, field) in enumerate(iteritems(self)):
+        for i, (name, field) in enumerate(self.items()):  # FIXME: check!
             field = instance(field)
             properties[name] = field.__schema__
             if name in ancestor_field_order:
@@ -158,7 +158,6 @@ class UrlData():
                 current_app.logger.debug('Could not build url because some provided values were none.\n' +
                                  'UrlParam: "%s", ObjectKey: "%s"',
                                  key, self.url_data[key])
-                from flask import request
                 print(request)
                 print(obj)
                 return None
@@ -192,11 +191,11 @@ class HaLUrl(StringMixin, Raw):
         self.url_data = url_data
         self.is_list = isinstance(url_data, list)
 
-    def output(self, key, obj, ordered=False):
+    def output(self, key, obj, ordered=False, **kwargs):
         output = {}
         if self.is_list:
             output = []
-            for data in UrlData:
+            for data in self.url_data:
                 output.append(self.generate_link(data, obj))
         else:
             output = self.generate_link(self.url_data, obj)

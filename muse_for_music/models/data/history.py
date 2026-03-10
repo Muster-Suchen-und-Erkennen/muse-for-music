@@ -1,7 +1,7 @@
 import enum
 from typing import Union, Sequence
 from json import dumps, loads
-from sqlalchemy.sql import func
+from sqlalchemy.sql import func, select
 from flask_jwt_extended import get_jwt_identity
 
 from ... import db
@@ -56,11 +56,12 @@ class History(db.Model):
 
     def __init__(self, method: MethodEnum,
                  resource: Union[Person, Opus, Part, SubPart, Voice],
-                 user: Union[str, User]=None):
+                 user: Union[str, User, None]=None):
         if user is None:
             user = get_jwt_identity()
         if isinstance(user, str):
             user = User.get_user_by_name(user)
+        assert user is not None
         self.user = user
         self.method = method
         if method == MethodEnum.create:
@@ -85,17 +86,18 @@ class History(db.Model):
             raise TypeError('Resource has wrong Type ' + str(type(resource)))
 
     @classmethod
-    def isOwner(cls, resource, user: [str, User]=None):
+    def isOwner(cls, resource, user: Union[str, User, None]=None):
         if user is None:
             user = get_jwt_identity()
         if isinstance(user, str):
             user = User.get_user_by_name(user)
         if user is None:
             return False
-        type = TypeEnum.fromResource(resource)
+        type_ = TypeEnum.fromResource(resource)
         resource_id = History.fingerprint(resource)
-        result = cls.query.filter(cls.user == user, cls.method == MethodEnum.create, cls.type == type, cls.resource == resource_id).first()
-        return result is not None
+        q = select(cls).where(cls.user==user, cls.method==MethodEnum.create, cls.type==type_, cls.resource==resource_id).limit(1)
+        result = db.session.execute(select(q.exists())).scalar_one_or_none()
+        return bool(result)
 
     @property
     def full_resource(self) -> Union[Person, Opus, Part, SubPart, Voice, None]:
