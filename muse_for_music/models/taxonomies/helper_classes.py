@@ -126,9 +126,8 @@ class TreeTaxonomy(Taxonomy):
 
     # common types
     parent_id: MappedColumn[int | None]
-    # FIXME: add these back in after all taxonomy relationships are cleaned up
-    # parent: Mapped[Self | None]
-    # children: Mapped[List[Self]]
+    parent: Mapped[Self | None]
+    children: Mapped[List[Self]]
 
     def __init__(
         self, name: str, description: str | None = None, parent: Self | None = None

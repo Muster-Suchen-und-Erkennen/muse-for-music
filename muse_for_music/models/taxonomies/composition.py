@@ -1,3 +1,5 @@
+from sqlalchemy.orm import relationship
+
 from ... import db
 from .helper_classes import TreeTaxonomy
 
@@ -15,12 +17,20 @@ class Verarbeitungstechnik(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship(
-        "Verarbeitungstechnik",
+
+    parent = relationship(
+        lambda: Verarbeitungstechnik,
+        remote_side=[id],
+        lazy="select",
+        join_depth=1,
+        back_populates="children",
+    )
+    children = relationship(
+        lambda: Verarbeitungstechnik,
         passive_deletes="all",
         lazy="selectin",
         join_depth=8,
-        backref=db.backref("parent", remote_side=[id], lazy="select", join_depth=1),
+        back_populates="parent",
     )
 
 
@@ -37,10 +47,18 @@ class MusikalischeWendung(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship(
-        "MusikalischeWendung",
+
+    parent = relationship(
+        lambda: MusikalischeWendung,
+        remote_side=[id],
+        lazy="select",
+        join_depth=1,
+        back_populates="children",
+    )
+    children = relationship(
+        lambda: MusikalischeWendung,
         passive_deletes="all",
         lazy="selectin",
         join_depth=8,
-        backref=db.backref("parent", remote_side=[id], lazy="select", join_depth=1),
+        back_populates="parent",
     )

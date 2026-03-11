@@ -1,3 +1,5 @@
+from sqlalchemy.orm import relationship
+
 from ... import db
 from .helper_classes import ListTaxonomy, TreeTaxonomy
 
@@ -45,12 +47,20 @@ class LautstaerkeEntwicklung(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship(
-        "LautstaerkeEntwicklung",
+
+    parent = relationship(
+        lambda: LautstaerkeEntwicklung,
+        remote_side=[id],
+        lazy="select",
+        join_depth=1,
+        back_populates="children",
+    )
+    children = relationship(
+        lambda: LautstaerkeEntwicklung,
         passive_deletes="all",
         lazy="selectin",
         join_depth=8,
-        backref=db.backref("parent", remote_side=[id], lazy="select", join_depth=1),
+        back_populates="parent",
     )
 
 

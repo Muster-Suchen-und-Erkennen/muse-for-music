@@ -1,3 +1,5 @@
+from sqlalchemy.orm import relationship
+
 from ... import db
 from .helper_classes import ListTaxonomy, TreeTaxonomy
 
@@ -25,12 +27,20 @@ class HarmonischeEntwicklung(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship(
-        "HarmonischeEntwicklung",
+
+    parent = relationship(
+        lambda: HarmonischeEntwicklung,
+        remote_side=[id],
+        lazy="select",
+        join_depth=1,
+        back_populates="children",
+    )
+    children = relationship(
+        lambda: HarmonischeEntwicklung,
         passive_deletes="all",
         lazy="selectin",
         join_depth=8,
-        backref=db.backref("parent", remote_side=[id], lazy="select", join_depth=1),
+        back_populates="parent",
     )
 
 
@@ -45,12 +55,20 @@ class Tonalitaet(db.Model, TreeTaxonomy):
     parent_id = db.Column(db.Integer, db.ForeignKey("tonalitaet.id", ondelete="CASCADE"))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship(
-        "Tonalitaet",
+
+    parent = relationship(
+        lambda: Tonalitaet,
+        remote_side=[id],
+        lazy="select",
+        join_depth=1,
+        back_populates="children",
+    )
+    children = relationship(
+        lambda: Tonalitaet,
         passive_deletes="all",
         lazy="selectin",
         join_depth=8,
-        backref=db.backref("parent", remote_side=[id], lazy="select", join_depth=1),
+        back_populates="parent",
     )
 
 
@@ -79,12 +97,20 @@ class HarmonischeStufe(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship(
-        "HarmonischeStufe",
+
+    parent = relationship(
+        lambda: HarmonischeStufe,
+        remote_side=[id],
+        lazy="select",
+        join_depth=1,
+        back_populates="children",
+    )
+    children = relationship(
+        lambda: HarmonischeStufe,
         passive_deletes="all",
         lazy="selectin",
         join_depth=8,
-        backref=db.backref("parent", remote_side=[id], lazy="select", join_depth=1),
+        back_populates="parent",
     )
 
 
@@ -102,12 +128,20 @@ class HarmonischeFunktionVerwandschaft(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship(
-        "HarmonischeFunktionVerwandschaft",
+
+    parent = relationship(
+        lambda: HarmonischeFunktionVerwandschaft,
+        remote_side=[id],
+        lazy="select",
+        join_depth=1,
+        back_populates="children",
+    )
+    children = relationship(
+        lambda: HarmonischeFunktionVerwandschaft,
         passive_deletes="all",
         lazy="selectin",
         join_depth=8,
-        backref=db.backref("parent", remote_side=[id], lazy="select", join_depth=1),
+        back_populates="parent",
     )
 
 
@@ -124,12 +158,20 @@ class HarmonischePhaenomene(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship(
-        "HarmonischePhaenomene",
+
+    parent = relationship(
+        lambda: HarmonischePhaenomene,
+        remote_side=[id],
+        lazy="select",
+        join_depth=1,
+        back_populates="children",
+    )
+    children = relationship(
+        lambda: HarmonischePhaenomene,
         passive_deletes="all",
         lazy="selectin",
         join_depth=8,
-        backref=db.backref("parent", remote_side=[id], lazy="select", join_depth=1),
+        back_populates="parent",
     )
 
 

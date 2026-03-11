@@ -1,3 +1,5 @@
+from sqlalchemy.orm import relationship
+
 from ... import db
 from .helper_classes import TreeTaxonomy
 
@@ -13,12 +15,20 @@ class Zitat(db.Model, TreeTaxonomy):
     parent_id = db.Column(db.Integer, db.ForeignKey("zitat.id", ondelete="CASCADE"))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship(
-        "Zitat",
+
+    parent = relationship(
+        lambda: Zitat,
+        remote_side=[id],
+        lazy="select",
+        join_depth=1,
+        back_populates="children",
+    )
+    children = relationship(
+        lambda: Zitat,
         passive_deletes="all",
         lazy="selectin",
         join_depth=8,
-        backref=db.backref("parent", remote_side=[id], lazy="select", join_depth=1),
+        back_populates="parent",
     )
 
 
@@ -33,12 +43,20 @@ class Programmgegenstand(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship(
-        "Programmgegenstand",
+
+    parent = relationship(
+        lambda: Programmgegenstand,
+        remote_side=[id],
+        lazy="select",
+        join_depth=1,
+        back_populates="children",
+    )
+    children = relationship(
+        lambda: Programmgegenstand,
         passive_deletes="all",
         lazy="selectin",
         join_depth=8,
-        backref=db.backref("parent", remote_side=[id], lazy="select", join_depth=1),
+        back_populates="parent",
     )
 
 
@@ -51,8 +69,18 @@ class Tonmalerei(db.Model, TreeTaxonomy):
     parent_id = db.Column(db.Integer, db.ForeignKey("tonmalerei.id", ondelete="CASCADE"))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship(
-        "Tonmalerei",
+
+    parent = relationship(
+        lambda: Tonmalerei,
+        remote_side=[id],
+        lazy="select",
+        join_depth=1,
+        back_populates="children",
+    )
+    children = relationship(
+        lambda: Tonmalerei,
         passive_deletes="all",
-        backref=db.backref("parent", remote_side=[id], lazy="select", join_depth=1),
+        lazy="selectin",
+        join_depth=8,
+        back_populates="parent",
     )

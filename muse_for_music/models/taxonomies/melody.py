@@ -1,3 +1,5 @@
+from sqlalchemy.orm import relationship
+
 from ... import db
 from .helper_classes import ListTaxonomy, TreeTaxonomy
 
@@ -23,10 +25,18 @@ class Melodieform(db.Model, TreeTaxonomy):
     parent_id = db.Column(db.Integer, db.ForeignKey("melodieform.id", ondelete="CASCADE"))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship(
-        "Melodieform",
+
+    parent = relationship(
+        lambda: Melodieform,
+        remote_side=[id],
+        lazy="select",
+        join_depth=1,
+        back_populates="children",
+    )
+    children = relationship(
+        lambda: Melodieform,
         passive_deletes="all",
         lazy="selectin",
         join_depth=8,
-        backref=db.backref("parent", remote_side=[id], lazy="select", join_depth=1),
+        back_populates="parent",
     )
