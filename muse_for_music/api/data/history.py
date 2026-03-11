@@ -1,17 +1,9 @@
-from typing import List
-
-from flask import jsonify, request, url_for
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
-from flask_restx import Resource, abort, marshal
+from flask_restx import Resource, abort
 from sqlalchemy.sql import select
 
 from ... import db
 from ...models.data.history import History, MethodEnum
-from ...models.data.opus import Opus
-from ...models.data.part import Part
-from ...models.data.people import Person
-from ...models.data.subpart import SubPart
-from ...models.data.voice import Voice
 from ...models.users import User
 from ...user_api import RoleEnum, has_roles
 from . import api

@@ -12,8 +12,6 @@ from ...models.taxonomies import Taxonomy, get_taxonomies
 from ...user_api import RoleEnum, has_roles
 from .. import api
 
-ns = api.namespace("taxonomies", description="All Taxonomies.")
-
 from .models import (
     list_taxonomy_model,
     taxonomy_item_get,
@@ -25,6 +23,8 @@ from .models import (
     tree_taxonomy_model,
     tree_taxonomy_model_json,
 )
+
+ns = api.namespace("taxonomies", description="All Taxonomies.")
 
 taxonomies: Dict[str, Type[Taxonomy]] = get_taxonomies()
 

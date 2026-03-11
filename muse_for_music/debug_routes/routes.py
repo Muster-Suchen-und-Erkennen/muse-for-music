@@ -1,6 +1,4 @@
-import urllib
-
-from flask import current_app, render_template, url_for
+from flask import current_app, render_template
 
 from . import debug_blueprint
 

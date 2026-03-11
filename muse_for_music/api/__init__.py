@@ -2,7 +2,7 @@
 
 from flask import Blueprint, Flask
 from flask_jwt_extended.exceptions import NoAuthorizationError
-from flask_restx import Api, abort
+from flask_restx import Api
 from flask_restx.errors import ValidationError
 
 from ..user_api import log_unauthorized

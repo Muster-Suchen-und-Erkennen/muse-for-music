@@ -1,6 +1,6 @@
 """Module containing debug views for taxonomies."""
 
-from flask import abort, render_template, url_for
+from flask import abort, render_template
 
 from ..models.taxonomies import get_taxonomies
 from ..models.taxonomies.helper_classes import ListTaxonomy, TreeTaxonomy

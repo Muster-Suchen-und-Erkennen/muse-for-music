@@ -2,6 +2,7 @@ import enum
 from typing import List, Optional
 
 from sqlalchemy.sql import select
+from sqlalchemy.orm import relationship, Mapped, MappedColumn
 
 from .. import bcrypt, db
 
@@ -13,12 +14,12 @@ class RoleEnum(enum.Enum):
 
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(120), unique=True, index=True)
-    password = db.Column(db.String(64))
-    deleted = db.Column(db.Boolean(), default=False)
-    roles = db.relationship(
-        "UserRole",
+    id: MappedColumn[int] = db.Column(db.Integer, primary_key=True)
+    username: MappedColumn[str] = db.Column(db.String(120), unique=True, index=True)
+    password: MappedColumn[str] = db.Column(db.String(64))
+    deleted: MappedColumn[bool] = db.Column(db.Boolean(), default=False)
+    roles: Mapped[list["UserRole"]] = relationship(
+        lambda: UserRole,
         back_populates="user",
         lazy="selectin",
         cascade="all, delete-orphan",
@@ -27,7 +28,7 @@ class User(db.Model):
 
     def __init__(self, username: str, password: str):
         self.username = username
-        self.password = bcrypt.generate_password_hash(password)
+        self.password = bcrypt.generate_password_hash(password).decode("utf-8")
 
     def __repr__(self):
         return "<User %r>" % self.username
@@ -37,7 +38,7 @@ class User(db.Model):
         return [role.role.name for role in self.roles]
 
     def set_password(self, password: str):
-        self.password = bcrypt.generate_password_hash(password)
+        self.password = bcrypt.generate_password_hash(password).decode("utf-8")
 
     def check_password(self, password: str, ignore_deleted: bool = False) -> bool:
         if self.deleted and not ignore_deleted:
@@ -51,12 +52,12 @@ class User(db.Model):
 
 
 class UserRole(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(
-        db.Integer, db.ForeignKey("user.id", onupdate="CASCADE", ondelete="CASCADE")
+    id: MappedColumn[int] = db.Column(db.Integer, primary_key=True)
+    user_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(User.id, onupdate="CASCADE", ondelete="CASCADE")
     )
-    user = db.relationship("User", back_populates="roles")
-    role = db.Column(db.Enum(RoleEnum))
+    user: Mapped[User] = relationship(User, back_populates="roles")
+    role: MappedColumn[RoleEnum] = db.Column(db.Enum(RoleEnum))
 
     def __init__(self, user: User, role: RoleEnum):
         self.user = user

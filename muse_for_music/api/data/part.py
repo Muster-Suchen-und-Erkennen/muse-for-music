@@ -2,30 +2,20 @@
 
 from json import dumps
 
-from flask import jsonify, request, url_for
+from flask import request
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from flask_restx import Resource, abort, marshal
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import delete, select
 
 from ... import db
 from ...models.data.history import Backup, History, MethodEnum, TypeEnum
-from ...models.data.measure import Measure
 from ...models.data.part import Part
 from ...models.data.subpart import SubPart
-from ...models.taxonomies import (
-    InstrumentierungEinbettungQualitaet,
-    InstrumentierungEinbettungQuantitaet,
-    Lautstaerke,
-    LautstaerkeEinbettung,
-    TempoEinbettung,
-    TempoEntwicklung,
-)
 from ...models.users import User
 from ...user_api import RoleEnum, has_roles
 from . import api
 from .backup import to_backup_json
-from .models import part_get, part_post, part_put, part_small, subpart_get, subpart_post
+from .models import part_get, part_put, part_small, subpart_get, subpart_post
 
 ns = api.namespace("part", description="Resource for Parts.", path="/parts")
 

@@ -1,7 +1,6 @@
 from datetime import date, datetime
 from logging import Logger
 from typing import (
-    Any,
     ClassVar,
     Dict,
     List,
@@ -18,21 +17,22 @@ from typing import (
 
 from flask import current_app
 from flask_restx.errors import ValidationError
-from sqlalchemy.orm import joinedload, selectinload, subqueryload
+from flask_sqlalchemy.model import Model
+from sqlalchemy.orm import selectinload, MappedColumn
 from sqlalchemy.sql import Select, select
 from typing_extensions import Self
 
 from .. import db
 
-ModelBase: TypeAlias = db.Model
+ModelBase: TypeAlias = Model
 X = TypeVar("X", bound=ModelBase)
 
 
 class GetByID:
 
-    _eager_load: ClassVar[Union[List[str], Tuple[str]]] = tuple()
-    _joined_load: List[str] = []
-    _subquery_load: List[str] = []
+    _eager_load: ClassVar[Union[List[str], Tuple[str, ...]]] = tuple()
+
+    id: MappedColumn[int]
 
     @classmethod
     def prepare_query(cls: Type[Self], lazy: bool = False) -> Select[Tuple[Self]]:
@@ -43,14 +43,6 @@ class GetByID:
         for attr in cls._eager_load:
             column = getattr(cls, attr)
             options.append(selectinload(column))
-        for attr in cls._joined_load:
-            raise ValueError(f"{cls}._joined_load should no longer be used.")
-            column = getattr(cls, attr)
-            options.append(joinedload(column))
-        for attr in cls._subquery_load:
-            raise ValueError(f"{cls}._subqery_load should no longer be used.")
-            column = getattr(cls, attr)
-            options.append(subqueryload(column))
 
         if options:
             q = q.options(*options)
@@ -82,6 +74,7 @@ class GetByID:
             return id_
         if isinstance(id_, dict):  # for lazy dict passing
             id_ = id_["id"]
+        assert isinstance(id_, int)
         return cls.get_by_id(id_, lazy)
 
     @classmethod
@@ -126,7 +119,9 @@ class UpdateableModelMixin:
     _optional_attributes: Tuple[str, ...] = tuple()
     _list_attributes: Tuple[str, ...] = tuple()
 
-    def _update_normal_attributes(self, new_values: Dict, partial: bool = False):
+    def _update_normal_attributes(  # noqa: C901
+        self, new_values: Dict, partial: bool = False
+    ):
         expire_self = False
         for name, cls in self._normal_attributes:
             self.check_for_required_attr(name, new_values, cls, partial)
@@ -170,14 +165,16 @@ class UpdateableModelMixin:
                     )
                 )
             else:
-                if cls == str:
+                if issubclass(cls, str):
                     new_values.name = ""
-                elif cls == int:
-                    new_values = -1
-                elif cls == float:
-                    new_values = -1
-                elif cls == bool:
+                elif issubclass(cls, bool):
+                    # bool check must happen before int
+                    # as bool is subclass of int
                     new_values = False
+                elif issubclass(cls, int):
+                    new_values = -1
+                elif issubclass(cls, float):
+                    new_values = -1
                 else:
                     raise ValidationError("'{}' is a required property".format(name))
 
@@ -219,7 +216,6 @@ class UpdateableModelMixin:
         db.session.add(self)
 
 
-K = TypeVar("K", bound=GetByID)
 V = TypeVar("V", bound=GetByID)
 W = TypeVar("W", bound=UpdateableModelMixin)
 
@@ -229,12 +225,13 @@ class UpdateListMixin:
     def _update_reference_only_list(
         self,
         item_list: Union[Sequence[int], Sequence[dict]],
-        old_items: Mapping[int, K],
-        mapping_cls: Type[K],
+        old_items: Mapping[int, X],
+        mapping_cls: Type[X],
         item_cls: Type[V],
         mapping_cls_attribute: str,
     ):
         to_add: List[int] = []
+        old_items = dict(old_items)
 
         for item in item_list:
             if isinstance(item, dict):
@@ -248,14 +245,14 @@ class UpdateListMixin:
                 to_add.append(item)
 
         items_to_add: Sequence[V] = item_cls.get_list_by_id(to_add)
-        to_delete: List[K] = list(old_items.values())
+        to_delete: List[X] = list(old_items.values())
         item_to_add: V
         for item_to_add in items_to_add:
             if to_delete:
                 mapping = to_delete.pop()
                 setattr(mapping, mapping_cls_attribute, item_to_add)
             else:
-                mapping = mapping_cls(self, item_to_add)
+                mapping = mapping_cls(self, item_to_add)  # type: ignore
                 db.session.add(mapping)
         for mapping in to_delete:
             db.session.delete(mapping)
@@ -265,6 +262,7 @@ class UpdateListMixin:
     def _update_updateable_model_list(
         self, item_list: Sequence[dict], old_items: Mapping[int, W], item_cls: Type[W]
     ):
+        old_items = dict(old_items)
         for item_dict in item_list:
             item_id = item_dict.get("id")
             if item_id in old_items:
@@ -272,7 +270,7 @@ class UpdateListMixin:
                 db.session.add(old_items[item_id])
                 del old_items[item_id]
             else:
-                new_item: W = item_cls(self)
+                new_item: W = item_cls(self)  # type: ignore
                 new_item.update(item_dict)
                 db.session.add(new_item)
 
@@ -285,25 +283,34 @@ class UpdateListMixin:
     def update_list(
         self,
         item_list: Union[Sequence[int], Sequence[dict], None],
-        old_items: Union[Mapping[int, K], Mapping[int, W], Mapping[int, ModelBase]],
-        mapping_cls: Any,
+        old_items: Mapping[int, X],
+        mapping_cls: Type[X],
         item_cls: Type[V] | None = None,
-        mapping_cls_attribute: str = None,
+        mapping_cls_attribute: str | None = None,
     ):
 
         # consider None an empty list
         if item_list is None:
             item_list = tuple()
 
+        assert issubclass(mapping_cls, ModelBase)
         if issubclass(mapping_cls, UpdateableModelMixin):
-            self._update_updateable_model_list(item_list, old_items, mapping_cls)
+            self._update_updateable_model_list(
+                item_list,  # type: ignore
+                old_items,  # type: ignore
+                mapping_cls,
+            )
         elif (
-            issubclass(item_cls, GetByID)
-            and item_cls is not None
+            item_cls is not None
+            and issubclass(item_cls, GetByID)
             and mapping_cls_attribute
         ):
             self._update_reference_only_list(
-                item_list, old_items, mapping_cls, item_cls, mapping_cls_attribute
+                item_list,
+                old_items,  # type: ignore
+                mapping_cls,
+                item_cls,
+                mapping_cls_attribute,
             )
         else:
             raise TypeError(

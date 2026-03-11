@@ -6,7 +6,7 @@ from enum import Enum
 
 from flask_restx import fields
 
-from ...hal_field import EmbeddedFields, HaLUrl, NestedFields, NestedModel, UrlData
+from ...hal_field import HaLUrl, NestedFields, UrlData
 from ...models.data.opus import Opus
 from ...models.data.part import Part
 from ...models.data.people import Person

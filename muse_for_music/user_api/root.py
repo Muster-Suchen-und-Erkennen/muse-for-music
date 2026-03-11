@@ -10,4 +10,4 @@ def render_root_custom():
     return marshal(None, root_model)
 
 
-user_api.render_root = render_root_custom
+user_api.render_root = render_root_custom  # type: ignore

@@ -1,17 +1,17 @@
 """Module to list debug information for Database Models."""
 
-from datetime import date, datetime
+from datetime import date
 from inspect import getmembers, isclass, ismodule
-from typing import Dict, List, Union, cast
+from typing import Dict, Union, cast
 
-from flask import abort, render_template, url_for
+from flask import abort, render_template
 from sqlalchemy.inspection import inspect
 from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy.orm.mapper import Mapper
 from sqlalchemy.orm.properties import ColumnProperty
 from sqlalchemy.orm.relationships import RelationshipProperty
 from sqlalchemy.sql.schema import Column
-from sqlalchemy.sql.sqltypes import Boolean, Date, DateTime, Float, Integer, String
+from sqlalchemy.sql.sqltypes import Boolean, Date, Float, Integer, String
 
 from .. import db
 from ..models import data
@@ -84,7 +84,7 @@ def _get_class_attributes(attributes, cls, properties, mapper_attrs, table_attri
                 attr = "_" + attr
                 var = getattr(cls, attr)
                 properties.append(attr)
-            except AttributeError as err:
+            except AttributeError:
                 print(
                     "could not determin corresponding attribute for property {}".format(
                         var
@@ -149,7 +149,7 @@ def _analyze_db_model(cls):
                     )
                     normal_attributes.append((name, mapper.class_))
         if isinstance(attr, ColumnProperty):
-            col: Column = attr.columns[0]
+            col: Column = attr.columns[0]  # type: ignore assign
             zusatz = ""
             if col.default is not None:
                 default = col.default.arg

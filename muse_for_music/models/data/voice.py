@@ -59,52 +59,52 @@ class Voice(
 
     __tablename__ = "voice"
 
-    id: MappedColumn[int] = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     subpart_id: MappedColumn[int] = db.Column(
-        db.Integer, db.ForeignKey("sub_part.id"), nullable=False
+        db.Integer, db.ForeignKey(SubPart.id), nullable=False
     )
     name: MappedColumn[str | None] = db.Column(db.String(191), nullable=True)
     measure_start_id: MappedColumn[int] = db.Column(
-        db.Integer, db.ForeignKey("measure.id"), nullable=False
+        db.Integer, db.ForeignKey(Measure.id), nullable=False
     )
     measure_end_id: MappedColumn[int] = db.Column(
-        db.Integer, db.ForeignKey("measure.id"), nullable=False
+        db.Integer, db.ForeignKey(Measure.id), nullable=False
     )
     instrumentation_id: MappedColumn[int] = db.Column(
         db.Integer,
-        db.ForeignKey("instrumentation.id", ondelete="CASCADE"),
+        db.ForeignKey(Instrumentation.id, ondelete="CASCADE"),
         nullable=False,
     )
     satz_id: MappedColumn[int | None] = db.Column(
-        db.Integer, db.ForeignKey("satz.id"), nullable=True
+        db.Integer, db.ForeignKey(Satz.id), nullable=True
     )
     rhythm_id: MappedColumn[int | None] = db.Column(
-        db.Integer, db.ForeignKey("rhythm.id"), nullable=True
+        db.Integer, db.ForeignKey(Rhythm.id), nullable=True
     )
     # stimmverlauf
     has_melody: MappedColumn[bool] = db.Column(db.Boolean, default=False)
     melody_form_id: MappedColumn[int | None] = db.Column(
-        db.Integer, db.ForeignKey("melodieform.id"), nullable=True
+        db.Integer, db.ForeignKey(Melodieform.id), nullable=True
     )
     # Einsatz der Stimme
     share_id: MappedColumn[int | None] = db.Column(
-        db.Integer, db.ForeignKey("anteil.id"), nullable=True
+        db.Integer, db.ForeignKey(Anteil.id), nullable=True
     )
     occurence_in_part_id: MappedColumn[int | None] = db.Column(
-        db.Integer, db.ForeignKey("auftreten_werkausschnitt.id"), nullable=True
+        db.Integer, db.ForeignKey(AuftretenWerkausschnitt.id), nullable=True
     )
     composition_id: MappedColumn[int | None] = db.Column(
-        db.Integer, db.ForeignKey("composition.id"), nullable=True
+        db.Integer, db.ForeignKey(Composition.id), nullable=True
     )
     rendition_id: MappedColumn[int | None] = db.Column(
-        db.Integer, db.ForeignKey("rendition.id"), nullable=True
+        db.Integer, db.ForeignKey(Rendition.id), nullable=True
     )
     intervall_vector: MappedColumn[str | None] = db.Column(db.Text, nullable=True)
     citations_id: MappedColumn[int | None] = db.Column(
-        db.Integer, db.ForeignKey("citations.id"), nullable=True
+        db.Integer, db.ForeignKey(Citations.id), nullable=True
     )
     ambitus_id: MappedColumn[int | None] = db.Column(
-        db.Integer, db.ForeignKey("ambitus_group.id"), nullable=True
+        db.Integer, db.ForeignKey(AmbitusGroup.id), nullable=True
     )
 
     subpart: Mapped[SubPart] = relationship(
@@ -113,7 +113,7 @@ class Voice(
         backref=db.backref("voices", single_parent=True, cascade="all, delete-orphan"),
     )
     _instrumentation: Mapped[Instrumentation] = relationship(
-        "Instrumentation",
+        Instrumentation,
         lazy="subquery",
         single_parent=True,
         cascade="all, delete-orphan",
@@ -160,43 +160,43 @@ class Voice(
 
     # backrefs
     _musicial_figures: Mapped[list["MusikalischeWendungToVoice"]] = relationship(
-        "MusikalischeWendungToVoice",
+        lambda: MusikalischeWendungToVoice,
         lazy="selectin",
         single_parent=True,
         cascade="all, delete-orphan",
         back_populates="voice",
     )
     _musicial_function: Mapped[list["MusikalischeFunktionToVoice"]] = relationship(
-        "MusikalischeFunktionToVoice",
+        lambda: MusikalischeFunktionToVoice,
         lazy="selectin",
         single_parent=True,
         cascade="all, delete-orphan",
         back_populates="voice",
     )
     _ornaments: Mapped[list["VerzierungToVoice"]] = relationship(
-        "VerzierungToVoice",
+        lambda: VerzierungToVoice,
         lazy="selectin",
         single_parent=True,
         cascade="all, delete-orphan",
         back_populates="voice",
     )
     _dominant_note_values: Mapped[list["NotenwertToVoice"]] = relationship(
-        "NotenwertToVoice",
+        lambda: NotenwertToVoice,
         lazy="selectin",
         single_parent=True,
         cascade="all, delete-orphan",
         back_populates="voice",
     )
     _intervallik: Mapped[list["IntervallikToVoice"]] = relationship(
-        "IntervallikToVoice",
+        lambda: IntervallikToVoice,
         lazy="selectin",
         single_parent=True,
         cascade="all, delete-orphan",
         back_populates="voice",
     )
     _related_voices: Mapped[list["RelatedVoices"]] = relationship(
-        "RelatedVoices",
-        primaryjoin=lambda: Voice.id==RelatedVoices.voice_id,
+        lambda: RelatedVoices,
+        primaryjoin=lambda: Voice.id == RelatedVoices.voice_id,
         lazy="selectin",
         single_parent=True,
         cascade="all, delete-orphan",
@@ -316,78 +316,90 @@ class Voice(
 
 
 class MusikalischeWendungToVoice(db.Model):
-    voice_id = db.Column(db.Integer, db.ForeignKey("voice.id"), primary_key=True)
-    musikalische_wendung_id = db.Column(
+    voice_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Voice.id), primary_key=True
+    )
+    musikalische_wendung_id: MappedColumn[int] = db.Column(
         db.Integer,
         db.ForeignKey(
-            "musikalische_wendung.id",
+            MusikalischeWendung.id,
             name="fk_musikalische_wendung_to_voice_musikalische_wendung_id",
         ),
         primary_key=True,
     )
 
     voice: Mapped[Voice] = relationship(Voice, back_populates="_musicial_figures")
-    musikalische_wendung: Mapped["MusikalischeWendung"] = relationship(
-        "MusikalischeWendung"
-    )
+    musikalische_wendung: Mapped[MusikalischeWendung] = relationship(MusikalischeWendung)
 
-    def __init__(self, voice, musikalische_wendung, **kwargs):
+    def __init__(self, voice: Voice, musikalische_wendung: MusikalischeWendung, **kwargs):
         self.voice = voice
         self.musikalische_wendung = musikalische_wendung
 
 
 class MusikalischeFunktionToVoice(db.Model):
-    voice_id = db.Column(db.Integer, db.ForeignKey("voice.id"), primary_key=True)
-    musikalische_funktion_id = db.Column(
-        db.Integer, db.ForeignKey("musikalische_funktion.id"), primary_key=True
+    voice_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Voice.id), primary_key=True
+    )
+    musikalische_funktion_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(MusikalischeFunktion.id), primary_key=True
     )
 
     voice: Mapped[Voice] = relationship(Voice, back_populates="_musicial_function")
-    musikalische_funktion: Mapped["MusikalischeFunktion"] = relationship(
-        "MusikalischeFunktion"
+    musikalische_funktion: Mapped[MusikalischeFunktion] = relationship(
+        MusikalischeFunktion
     )
 
-    def __init__(self, voice, musikalische_funktion, **kwargs):
+    def __init__(
+        self, voice: Voice, musikalische_funktion: MusikalischeFunktion, **kwargs
+    ):
         self.voice = voice
         self.musikalische_funktion = musikalische_funktion
 
 
 class VerzierungToVoice(db.Model):
-    voice_id = db.Column(db.Integer, db.ForeignKey("voice.id"), primary_key=True)
-    verzierung_id = db.Column(
-        db.Integer, db.ForeignKey("verzierung.id"), primary_key=True
+    voice_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Voice.id), primary_key=True
+    )
+    verzierung_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Verzierung.id), primary_key=True
     )
 
     voice: Mapped[Voice] = relationship(Voice, back_populates="_ornaments")
-    verzierung: Mapped["Verzierung"] = relationship("Verzierung")
+    verzierung: Mapped[Verzierung] = relationship(Verzierung)
 
-    def __init__(self, voice, verzierung, **kwargs):
+    def __init__(self, voice: Voice, verzierung: Verzierung, **kwargs):
         self.voice = voice
         self.verzierung = verzierung
 
 
 class NotenwertToVoice(db.Model):
-    voice_id = db.Column(db.Integer, db.ForeignKey("voice.id"), primary_key=True)
-    notenwert_id = db.Column(db.Integer, db.ForeignKey("notenwert.id"), primary_key=True)
+    voice_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Voice.id), primary_key=True
+    )
+    notenwert_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Notenwert.id), primary_key=True
+    )
 
     voice: Mapped[Voice] = relationship(Voice, back_populates="_dominant_note_values")
-    notenwert: Mapped["Notenwert"] = relationship("Notenwert")
+    notenwert: Mapped[Notenwert] = relationship(Notenwert)
 
-    def __init__(self, voice, notenwert, **kwargs):
+    def __init__(self, voice: Voice, notenwert: Notenwert, **kwargs):
         self.voice = voice
         self.notenwert = notenwert
 
 
 class IntervallikToVoice(db.Model):
-    voice_id = db.Column(db.Integer, db.ForeignKey("voice.id"), primary_key=True)
-    intervallik_id = db.Column(
-        db.Integer, db.ForeignKey("intervallik.id"), primary_key=True
+    voice_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Voice.id), primary_key=True
+    )
+    intervallik_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Intervallik.id), primary_key=True
     )
 
     voice: Mapped[Voice] = relationship(Voice, back_populates="_intervallik")
-    intervallik: Mapped["Intervallik"] = relationship("Intervallik")
+    intervallik: Mapped[Intervallik] = relationship(Intervallik)
 
-    def __init__(self, voice, intervallik, **kwargs):
+    def __init__(self, voice: Voice, intervallik: Intervallik, **kwargs):
         self.voice = voice
         self.intervallik = intervallik
 
@@ -400,22 +412,22 @@ class RelatedVoices(db.Model, GetByID, UpdateableModelMixin):
     )
     _reference_only_attributes = ("related_voice",)
 
-    id = db.Column(db.Integer, primary_key=True)
-    voice_id = db.Column(db.Integer, db.ForeignKey("voice.id"))
-    related_voice_id = db.Column(db.Integer, db.ForeignKey("voice.id"))
-    type_of_relationship_id = db.Column(
-        db.Integer, db.ForeignKey("voice_to_voice_relation.id")
+    id: MappedColumn[int] = db.Column(db.Integer, primary_key=True)
+    voice_id: MappedColumn[int] = db.Column(db.Integer, db.ForeignKey(Voice.id))
+    related_voice_id: MappedColumn[int] = db.Column(db.Integer, db.ForeignKey(Voice.id))
+    type_of_relationship_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(VoiceToVoiceRelation.id)
     )
 
     voice: Mapped[Voice] = relationship(
         Voice, back_populates="_related_voices", foreign_keys=[voice_id]
     )
     related_voice: Mapped[Voice] = relationship(Voice, foreign_keys=[related_voice_id])
-    type_of_relationship: Mapped["VoiceToVoiceRelation"] = relationship(
-        "VoiceToVoiceRelation"
+    type_of_relationship: Mapped[VoiceToVoiceRelation] = relationship(
+        VoiceToVoiceRelation
     )
 
-    def __init__(self, voice, **kwargs):
+    def __init__(self, voice: Voice, **kwargs):
         self.voice = voice
         if kwargs:
             self.update(kwargs)

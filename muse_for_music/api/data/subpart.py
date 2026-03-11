@@ -2,21 +2,15 @@
 
 from json import dumps
 
-from flask import jsonify, request, url_for
+from flask import request
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from flask_restx import Resource, abort, marshal
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import delete, select
 
 from ... import db
 from ...models.data.history import Backup, History, MethodEnum, TypeEnum
 from ...models.data.subpart import SubPart
 from ...models.data.voice import Voice
-from ...models.taxonomies import (
-    Anteil,
-    InstrumentierungEinbettungQualitaet,
-    InstrumentierungEinbettungQuantitaet,
-)
 from ...models.users import User
 from ...user_api import RoleEnum, has_roles
 from . import api
@@ -56,6 +50,7 @@ class SubPartResource(Resource):
         subpart = SubPart.get_by_id(subpart_id)
         if subpart is None:
             abort(404, "Requested subpart not found!")
+        assert subpart is not None
 
         new_values = request.get_json()
 
@@ -63,6 +58,7 @@ class SubPartResource(Resource):
 
         username = get_jwt_identity()
         user = User.get_user_by_name(username)
+        assert user is not None
         del_q = delete(History).where(
             History.user_id == user.id,
             History.method == MethodEnum.update,
@@ -82,6 +78,7 @@ class SubPartResource(Resource):
         subpart = SubPart.get_by_id(subpart_id)
         if subpart is None:
             abort(404, "Requested subpart not found!")
+        assert subpart is not None
         if RoleEnum.admin.name not in get_jwt().get(
             "user_claims", []
         ) and not History.isOwner(
@@ -109,6 +106,7 @@ class SubPartVoiceListResource(Resource):
         subpart = SubPart.get_by_id(subpart_id)
         if subpart is None:
             abort(404, "Requested subpart not found!")
+        assert subpart is not None
         return subpart.voices
 
     @ns.doc(model=voice_get, expect=[voice_post], validate=True)
@@ -119,6 +117,7 @@ class SubPartVoiceListResource(Resource):
         subpart = SubPart.get_by_id(subpart_id)
         if subpart is None:
             abort(404, "Requested subpart not found!")
+        assert subpart is not None
 
         new_values = request.get_json()
 
@@ -140,6 +139,7 @@ class SubPartVoiceResource(Resource):
         voice = Voice.get_by_id(voice_id)
         if voice is None:
             abort(404, "Requested voice not found!")
+        assert voice is not None
         return voice
 
     @ns.doc(model=voice_get, expect=[voice_put], validate=True)
@@ -150,12 +150,14 @@ class SubPartVoiceResource(Resource):
         voice = Voice.get_by_id(voice_id)
         if voice is None:
             abort(404, "Requested voice not found!")
+        assert voice is not None
 
         new_values = request.get_json()
 
         voice.update(new_values)
         username = get_jwt_identity()
         user = User.get_user_by_name(username)
+        assert user is not None
         del_q = delete(History).where(
             History.user_id == user.id,
             History.method == MethodEnum.update,
@@ -174,6 +176,7 @@ class SubPartVoiceResource(Resource):
         voice = Voice.get_by_id(voice_id)
         if voice is None:
             abort(404, "Requested voice not found!")
+        assert voice is not None
         if RoleEnum.admin.name not in get_jwt().get(
             "user_claims", []
         ) and not History.isOwner(

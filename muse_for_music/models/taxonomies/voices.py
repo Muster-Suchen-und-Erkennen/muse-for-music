@@ -1,3 +1,5 @@
+from sqlalchemy.orm import relationship
+
 from ... import db
 from .helper_classes import ListTaxonomy, TreeTaxonomy
 
@@ -13,16 +15,24 @@ class MusikalischeFunktion(db.Model, TreeTaxonomy):
 
     id = db.Column(db.Integer, primary_key=True)
     parent_id = db.Column(
-        db.Integer, db.ForeignKey("musikalische_funktion.id", ondelete="CASCADE")
+        db.Integer, db.ForeignKey(f"{__tablename__}.id", ondelete="CASCADE")
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship(
-        "MusikalischeFunktion",
+
+    parent = relationship(
+        lambda: MusikalischeFunktion,
+        remote_side=[id],
+        lazy="select",
+        join_depth=1,
+        back_populates="children",
+    )
+    children = relationship(
+        lambda: MusikalischeFunktion,
         passive_deletes="all",
         lazy="selectin",
         join_depth=8,
-        backref=db.backref("parent", remote_side=[id], lazy="select", join_depth=1),
+        back_populates="parent",
     )
 
 
@@ -35,12 +45,20 @@ class Verzierung(db.Model, TreeTaxonomy):
     parent_id = db.Column(db.Integer, db.ForeignKey("verzierung.id", ondelete="CASCADE"))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
-    children = db.relationship(
-        "Verzierung",
+
+    parent = relationship(
+        lambda: Verzierung,
+        remote_side=[id],
+        lazy="select",
+        join_depth=1,
+        back_populates="children",
+    )
+    children = relationship(
+        lambda: Verzierung,
         passive_deletes="all",
         lazy="selectin",
         join_depth=8,
-        backref=db.backref("parent", remote_side=[id], lazy="select", join_depth=1),
+        back_populates="parent",
     )
 
 

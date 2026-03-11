@@ -2,7 +2,7 @@ import re
 from collections import OrderedDict
 from csv import DictReader, DictWriter
 from logging import Logger
-from typing import ClassVar, List, Sequence, Type
+from typing import ClassVar, List, Sequence, Type, Union
 
 from sqlalchemy.sql import select
 from sqlalchemy.orm import MappedColumn, Mapped
@@ -18,10 +18,12 @@ class Taxonomy(GetByID):
     select_multiple: ClassVar[bool] = False
     display_name: ClassVar[str | None] = None
     specification: ClassVar[str | None] = None
+
+    # common types
     name: MappedColumn[str]
     description: MappedColumn[str | None]
 
-    def __init__(self, name: str, description: None) -> None:
+    def __init__(self, name: str, description: str | None) -> None:
         """Create new List Taxonomy object."""
         self.name = name
         self.description = description
@@ -36,15 +38,15 @@ class Taxonomy(GetByID):
 
     @classmethod
     def load(cls, input_data: DictReader, logger: Logger):
-        NotImplementedError
+        raise NotImplementedError
 
     @classmethod
     def save(cls, output_data: DictWriter, logger: Logger):
-        NotImplementedError
+        raise NotImplementedError
 
     @classmethod
-    def items(cls):
-        NotImplementedError
+    def items(cls) -> Union[Sequence[Self], Self, None]:
+        raise NotImplementedError
 
     @classmethod
     def not_applicable_item(cls):
@@ -73,9 +75,10 @@ class ListTaxonomy(Taxonomy):
     def load(cls, input_data: DictReader, logger: Logger):
         """Load taxonomy from csv file."""
         items: OrderedDict[str, ListTaxonomy] = OrderedDict()
+        row: dict[str, str]
         for row in input_data:
             name: str = row["name"]
-            description: str = row.get("description")
+            description: str | None = row.get("description")
             if name.upper() == "ROOT":
                 continue
             if name in items:
@@ -121,10 +124,14 @@ class TreeTaxonomy(Taxonomy):
     taxonomy_type = "tree"
     select_leafs_only = False
 
-    children: Mapped[List["TreeTaxonomy"]]
+    # common types
+    parent_id: MappedColumn[int | None]
+    # FIXME: add these back in after all taxonomy relationships are cleaned up
+    # parent: Mapped[Self | None]
+    # children: Mapped[List[Self]]
 
     def __init__(
-        self, name: str, description=None, parent: "TreeTaxonomy" = None
+        self, name: str, description: str | None = None, parent: Self | None = None
     ) -> None:
         """Create new TreeTaxonomy object."""
         self.parent = parent
@@ -151,7 +158,7 @@ class TreeTaxonomy(Taxonomy):
         items: OrderedDict[str, TreeTaxonomy] = OrderedDict()
         for row in input_data:
             name: str = row["name"]
-            description: str = row.get("description")
+            description: str | None = row.get("description")
             if name in items:
                 logger.warning('Duplicate names are not allowed! \
                                 Found "%s" but "%r" is already used.', name, items[name])

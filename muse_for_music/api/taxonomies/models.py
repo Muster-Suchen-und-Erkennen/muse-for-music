@@ -16,7 +16,7 @@ from collections import OrderedDict
 
 from flask_restx import fields, marshal
 
-from ...hal_field import EmbeddedFields, HaLUrl, NestedFields, NestedModel, UrlData
+from ...hal_field import HaLUrl, NestedFields, UrlData
 from ..models import with_curies
 from . import ns
 
@@ -252,6 +252,7 @@ taxonomy_list_resource = ns.model(
     "TaxonomyList",
     {
         "_links": NestedFields(taxonomy_list_links),
+        # FXIME test
         "taxonomies": fields.Nested(taxonomy_model, "taxonomies", as_list=True),
     },
 )

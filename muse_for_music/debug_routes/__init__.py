@@ -10,7 +10,7 @@ debug_blueprint = Blueprint(
     "debug_routes", __name__, template_folder="templates", static_folder="static"
 )
 
-from . import debug_db_models, debug_taxonomies, routes
+from . import debug_db_models, debug_taxonomies, routes  # noqa
 
 
 @debug_blueprint.route("/")
