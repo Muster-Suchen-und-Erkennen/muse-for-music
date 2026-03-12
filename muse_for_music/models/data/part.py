@@ -1,13 +1,9 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING, Sequence, Union
+from typing import Sequence, Union
 
 from sqlalchemy.orm import Mapped, MappedColumn, relationship
 
 from ... import db
 
-if TYPE_CHECKING:
-    from .subpart import SubPart
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 from ..taxonomies import AuftretenSatz, FormaleFunktion
 from .dramaturgic_context import DramaturgicContext
@@ -99,7 +95,7 @@ class Part(
 
     # cross-file backref: SubPart.part uses back_populates="subparts"
     subparts: Mapped[list["SubPart"]] = relationship(
-        "SubPart",
+        lambda: SubPart,
         single_parent=True,
         cascade="all, delete-orphan",
         back_populates="part",
@@ -245,3 +241,6 @@ class AuftretenSatzToPart(db.Model):
     def __init__(self, part, auftreten_satz, **kwargs):
         self.part = part
         self.auftreten_satz = auftreten_satz
+
+
+from .subpart import SubPart  # noqa

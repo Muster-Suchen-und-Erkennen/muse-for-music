@@ -1,14 +1,8 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
 from sqlalchemy.orm import Mapped, MappedColumn, relationship
 from sqlalchemy.sql import select
 
 from ... import db
 
-if TYPE_CHECKING:
-    from .part import Part
 from ..helper_classes import GetByID, UpdateableModelMixin
 from ..taxonomies import GattungNineteenthCentury, Grundton, Tonalitaet
 from .people import Person
@@ -72,7 +66,7 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
 
     # cross-file backref: Part.opus uses back_populates="parts"
     parts: Mapped[list["Part"]] = relationship(
-        "Part",
+        lambda: Part,
         cascade="all, delete-orphan",
         back_populates="opus",
     )
@@ -83,7 +77,7 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
     def __init__(
         self,
         name: str,
-        composer: any = None,
+        composer: dict | int | None = None,
         movements: int = 1,
         printed: bool = False,
         **kwargs,
@@ -124,3 +118,6 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
 
     def __repr__(self):
         return "<Werk %r>" % self.name
+
+
+from .part import Part  # noqa

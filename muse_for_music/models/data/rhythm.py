@@ -122,9 +122,7 @@ class RhythmischesPhaenomenToRhythm(db.Model):
         db.Integer, db.ForeignKey(RhythmischesPhaenomen.id), primary_key=True
     )
 
-    rhythm: Mapped[Rhythm] = relationship(
-        Rhythm, back_populates="_rhythmic_phenomenons"
-    )
+    rhythm: Mapped[Rhythm] = relationship(Rhythm, back_populates="_rhythmic_phenomenons")
     rhythmisches_phaenomen: Mapped[RhythmischesPhaenomen] = relationship(
         RhythmischesPhaenomen
     )

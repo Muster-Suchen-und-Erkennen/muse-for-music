@@ -39,6 +39,4 @@ class AmbitusGroup(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     lowest_pitch: Mapped[Grundton] = relationship(
         Grundton, foreign_keys=[lowest_pitch_id]
     )
-    lowest_octave: Mapped[Oktave] = relationship(
-        Oktave, foreign_keys=[lowest_octave_id]
-    )
+    lowest_octave: Mapped[Oktave] = relationship(Oktave, foreign_keys=[lowest_octave_id])

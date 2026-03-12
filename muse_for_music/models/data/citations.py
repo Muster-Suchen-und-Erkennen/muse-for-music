@@ -192,15 +192,11 @@ class OpusCitation(db.Model, GetByID, UpdateableModelMixin):
     _reference_only_attributes = ("opus",)
 
     id: MappedColumn[int] = db.Column(db.Integer, primary_key=True)
-    citations_id: MappedColumn[int] = db.Column(
-        db.Integer, db.ForeignKey(Citations.id)
-    )
+    citations_id: MappedColumn[int] = db.Column(db.Integer, db.ForeignKey(Citations.id))
     opus_id: MappedColumn[int | None] = db.Column(
         db.Integer, db.ForeignKey(Opus.id), nullable=True
     )
-    citation_type_id: MappedColumn[int] = db.Column(
-        db.Integer, db.ForeignKey(Zitat.id)
-    )
+    citation_type_id: MappedColumn[int] = db.Column(db.Integer, db.ForeignKey(Zitat.id))
 
     citations: Mapped[Citations] = relationship(
         Citations, back_populates="_opus_citations"

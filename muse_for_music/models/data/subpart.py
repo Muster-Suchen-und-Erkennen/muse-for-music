@@ -1,17 +1,11 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING, Union
+from typing import Union
 
 from sqlalchemy.orm import Mapped, MappedColumn, relationship
 
 from ... import db
 
-if TYPE_CHECKING:
-    from .voice import Voice
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
-from ..taxonomies import Anteil, AuftretenWerkausschnitt, MusikalischeWendung
-from .ambitus import AmbitusGroup
-from .citations import Citations
+from ..taxonomies import Anteil, AuftretenWerkausschnitt
 from .dynamic import Dynamic
 from .harmonics import Harmonics
 from .instrumentation import Instrumentation
@@ -71,7 +65,9 @@ class SubPart(
     occurence_in_part: Mapped[AuftretenWerkausschnitt] = relationship(
         AuftretenWerkausschnitt, lazy="selectin", single_parent=True
     )
-    share_of_part: Mapped[Anteil] = relationship(Anteil, lazy="selectin", single_parent=True)
+    share_of_part: Mapped[Anteil] = relationship(
+        Anteil, lazy="selectin", single_parent=True
+    )
     _instrumentation: Mapped[Instrumentation] = relationship(
         Instrumentation,
         lazy="subquery",
@@ -91,7 +87,7 @@ class SubPart(
 
     # cross-file backref: Voice.subpart uses back_populates="voices"
     voices: Mapped[list["Voice"]] = relationship(
-        "Voice",
+        lambda: Voice,
         single_parent=True,
         cascade="all, delete-orphan",
         back_populates="subpart",
@@ -119,3 +115,6 @@ class SubPart(
     @instrumentation.setter
     def instrumentation(self, data: list):
         self._instrumentation.instruments = data
+
+
+from .voice import Voice  # noqa

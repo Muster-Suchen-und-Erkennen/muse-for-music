@@ -110,9 +110,7 @@ class DynamicMarking(db.Model, GetByID, UpdateableModelMixin):
     )
 
     id: MappedColumn[int] = db.Column(db.Integer, primary_key=True)
-    dynamic_id: MappedColumn[int] = db.Column(
-        db.Integer, db.ForeignKey(Dynamic.id)
-    )
+    dynamic_id: MappedColumn[int] = db.Column(db.Integer, db.ForeignKey(Dynamic.id))
     lautstaerke_id: MappedColumn[int | None] = db.Column(
         db.Integer, db.ForeignKey(Lautstaerke.id)
     )
@@ -138,9 +136,7 @@ class LautstaerkeEntwicklungToDynamic(db.Model):
         db.Integer, db.ForeignKey(LautstaerkeEntwicklung.id), primary_key=True
     )
 
-    dynamic: Mapped[Dynamic] = relationship(
-        Dynamic, back_populates="_dynamic_changes"
-    )
+    dynamic: Mapped[Dynamic] = relationship(Dynamic, back_populates="_dynamic_changes")
     lautstaerke_entwicklung: Mapped[LautstaerkeEntwicklung] = relationship(
         LautstaerkeEntwicklung
     )

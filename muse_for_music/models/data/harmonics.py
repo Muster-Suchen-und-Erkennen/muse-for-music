@@ -80,12 +80,14 @@ class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
         cascade="all, delete-orphan",
         back_populates="harmonics",
     )
-    _harmonic_phenomenons: Mapped[list["HarmonischePhaenomeneToHarmonics"]] = relationship(
-        lambda: HarmonischePhaenomeneToHarmonics,
-        lazy="selectin",
-        single_parent=True,
-        cascade="all, delete-orphan",
-        back_populates="harmonics",
+    _harmonic_phenomenons: Mapped[list["HarmonischePhaenomeneToHarmonics"]] = (
+        relationship(
+            lambda: HarmonischePhaenomeneToHarmonics,
+            lazy="selectin",
+            single_parent=True,
+            cascade="all, delete-orphan",
+            back_populates="harmonics",
+        )
     )
     _harmonic_changes: Mapped[list["HarmonischeEntwicklungToHarmonics"]] = relationship(
         lambda: HarmonischeEntwicklungToHarmonics,
@@ -222,9 +224,7 @@ class HarmonicCenter(db.Model, UpdateableModelMixin):
     )
 
     id: MappedColumn[int] = db.Column(db.Integer, primary_key=True)
-    harmonics_id: MappedColumn[int] = db.Column(
-        db.Integer, db.ForeignKey(Harmonics.id)
-    )
+    harmonics_id: MappedColumn[int] = db.Column(db.Integer, db.ForeignKey(Harmonics.id))
     grundton_id: MappedColumn[int | None] = db.Column(
         db.Integer, db.ForeignKey(Grundton.id)
     )
@@ -322,9 +322,7 @@ class DissonanzenToHarmonics(db.Model):
         db.Integer, db.ForeignKey(Dissonanzen.id), primary_key=True
     )
 
-    harmonics: Mapped[Harmonics] = relationship(
-        Harmonics, back_populates="_dissonances"
-    )
+    harmonics: Mapped[Harmonics] = relationship(Harmonics, back_populates="_dissonances")
     dissonanzen: Mapped[Dissonanzen] = relationship(Dissonanzen)
 
     def __init__(self, harmonics, dissonanzen, **kwargs):
