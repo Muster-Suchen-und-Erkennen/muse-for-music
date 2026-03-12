@@ -1,8 +1,13 @@
-from typing import Sequence, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Sequence, Union
 
 from sqlalchemy.orm import Mapped, MappedColumn, relationship
 
 from ... import db
+
+if TYPE_CHECKING:
+    from .subpart import SubPart
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 from ..taxonomies import AuftretenSatz, FormaleFunktion
 from .dramaturgic_context import DramaturgicContext

@@ -1,8 +1,13 @@
-from typing import Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Union
 
 from sqlalchemy.orm import Mapped, MappedColumn, relationship
 
 from ... import db
+
+if TYPE_CHECKING:
+    from .voice import Voice
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 from ..taxonomies import Anteil, AuftretenWerkausschnitt, MusikalischeWendung
 from .ambitus import AmbitusGroup

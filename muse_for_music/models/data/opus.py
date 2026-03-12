@@ -1,7 +1,14 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from sqlalchemy.orm import Mapped, MappedColumn, relationship
 from sqlalchemy.sql import select
 
 from ... import db
+
+if TYPE_CHECKING:
+    from .part import Part
 from ..helper_classes import GetByID, UpdateableModelMixin
 from ..taxonomies import GattungNineteenthCentury, Grundton, Tonalitaet
 from .people import Person
