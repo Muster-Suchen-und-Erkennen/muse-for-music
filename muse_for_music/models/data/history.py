@@ -50,9 +50,9 @@ class History(db.Model):
     user_id: MappedColumn[int | None] = db.Column(
         db.Integer, db.ForeignKey(User.id), nullable=True
     )
-    method = db.Column(db.Enum(MethodEnum))
-    type = db.Column(db.Enum(TypeEnum))
-    resource = db.Column(db.String(191))
+    method: MappedColumn[MethodEnum | None] = db.Column(db.Enum(MethodEnum))
+    type: MappedColumn[TypeEnum | None] = db.Column(db.Enum(TypeEnum))
+    resource: MappedColumn[str | None] = db.Column(db.String(191))
 
     user: Mapped[User] = relationship(User)
 
