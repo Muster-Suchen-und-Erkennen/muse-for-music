@@ -1,4 +1,6 @@
-from typing import List, Sequence, Union
+from typing import Sequence, Union
+
+from sqlalchemy.orm import Mapped, MappedColumn, relationship
 
 from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
@@ -16,6 +18,22 @@ class Dynamic(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
     __tablename__ = "dynamic"
     id = db.Column(db.Integer, primary_key=True)
+
+    # backrefs
+    _dynamic_markings: Mapped[list["DynamicMarking"]] = relationship(
+        lambda: DynamicMarking,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="dynamic",
+    )
+    _dynamic_changes: Mapped[list["LautstaerkeEntwicklungToDynamic"]] = relationship(
+        lambda: LautstaerkeEntwicklungToDynamic,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="dynamic",
+    )
 
     @property
     def dynamic_changes(self):
@@ -57,25 +75,29 @@ class DynamicContext(db.Model, GetByID, UpdateableModelMixin):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    loudness_before_id = db.Column(
-        db.Integer, db.ForeignKey("lautstaerke.id"), nullable=True
+    loudness_before_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Lautstaerke.id), nullable=True
     )
-    loudness_after_id = db.Column(
-        db.Integer, db.ForeignKey("lautstaerke.id"), nullable=True
+    loudness_after_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Lautstaerke.id), nullable=True
     )
-    dynamic_trend_before_id = db.Column(
-        db.Integer, db.ForeignKey("lautstaerke_einbettung.id"), nullable=True
+    dynamic_trend_before_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(LautstaerkeEinbettung.id), nullable=True
     )
-    dynamic_trend_after_id = db.Column(
-        db.Integer, db.ForeignKey("lautstaerke_einbettung.id"), nullable=True
+    dynamic_trend_after_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(LautstaerkeEinbettung.id), nullable=True
     )
 
-    loudness_before = db.relationship(Lautstaerke, foreign_keys=[loudness_before_id])
-    loudness_after = db.relationship(Lautstaerke, foreign_keys=[loudness_after_id])
-    dynamic_trend_before = db.relationship(
+    loudness_before: Mapped[Lautstaerke] = relationship(
+        Lautstaerke, foreign_keys=[loudness_before_id]
+    )
+    loudness_after: Mapped[Lautstaerke] = relationship(
+        Lautstaerke, foreign_keys=[loudness_after_id]
+    )
+    dynamic_trend_before: Mapped[LautstaerkeEinbettung] = relationship(
         LautstaerkeEinbettung, foreign_keys=[dynamic_trend_before_id]
     )
-    dynamic_trend_after = db.relationship(
+    dynamic_trend_after: Mapped[LautstaerkeEinbettung] = relationship(
         LautstaerkeEinbettung, foreign_keys=[dynamic_trend_after_id]
     )
 
@@ -87,24 +109,20 @@ class DynamicMarking(db.Model, GetByID, UpdateableModelMixin):
         ("lautstaerke", Lautstaerke),
     )
 
-    id = db.Column(db.Integer, primary_key=True)
-    dynamic_id = db.Column(db.Integer, db.ForeignKey("dynamic.id"))
-    lautstaerke_id = db.Column(db.Integer, db.ForeignKey("lautstaerke.id"))
-    lautstaerke_zusatz_id = db.Column(
-        db.Integer, db.ForeignKey("lautstaerke_zusatz.id"), nullable=True
+    id: MappedColumn[int] = db.Column(db.Integer, primary_key=True)
+    dynamic_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Dynamic.id)
+    )
+    lautstaerke_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Lautstaerke.id)
+    )
+    lautstaerke_zusatz_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(LautstaerkeZusatz.id), nullable=True
     )
 
-    dynamic = db.relationship(
-        Dynamic,
-        backref=db.backref(
-            "_dynamic_markings",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
-    )
-    lautstaerke = db.relationship("Lautstaerke")
-    lautstaerke_zusatz = db.relationship("LautstaerkeZusatz")
+    dynamic: Mapped[Dynamic] = relationship(Dynamic, back_populates="_dynamic_markings")
+    lautstaerke: Mapped[Lautstaerke] = relationship(Lautstaerke)
+    lautstaerke_zusatz: Mapped[LautstaerkeZusatz] = relationship(LautstaerkeZusatz)
 
     def __init__(self, dynamic, **kwargs):
         self.dynamic = dynamic
@@ -113,21 +131,19 @@ class DynamicMarking(db.Model, GetByID, UpdateableModelMixin):
 
 
 class LautstaerkeEntwicklungToDynamic(db.Model):
-    dynamic_id = db.Column(db.Integer, db.ForeignKey("dynamic.id"), primary_key=True)
-    lautstaerke_entwicklung_id = db.Column(
-        db.Integer, db.ForeignKey("lautstaerke_entwicklung.id"), primary_key=True
+    dynamic_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Dynamic.id), primary_key=True
+    )
+    lautstaerke_entwicklung_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(LautstaerkeEntwicklung.id), primary_key=True
     )
 
-    dynamic = db.relationship(
-        Dynamic,
-        backref=db.backref(
-            "_dynamic_changes",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
+    dynamic: Mapped[Dynamic] = relationship(
+        Dynamic, back_populates="_dynamic_changes"
     )
-    lautstaerke_entwicklung = db.relationship("LautstaerkeEntwicklung")
+    lautstaerke_entwicklung: Mapped[LautstaerkeEntwicklung] = relationship(
+        LautstaerkeEntwicklung
+    )
 
     def __init__(self, dynamic, lautstaerke_entwicklung, **kwargs):
         self.dynamic = dynamic

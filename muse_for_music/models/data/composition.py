@@ -1,5 +1,7 @@
 from typing import List, Sequence, Union
 
+from sqlalchemy.orm import Mapped, MappedColumn, relationship
+
 from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 from ..taxonomies import BewegungImTonraum, Intervall, Verarbeitungstechnik
@@ -22,6 +24,22 @@ class Composition(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
     nr_repetitions_3_4 = db.Column(db.Integer, server_default=db.text("'0'"))
     nr_repetitions_5_6 = db.Column(db.Integer, server_default=db.text("'0'"))
     nr_repetitions_7_10 = db.Column(db.Integer, server_default=db.text("'0'"))
+
+    # backrefs
+    _techniques: Mapped[list["CompositionTechniqueToComposition"]] = relationship(
+        lambda: CompositionTechniqueToComposition,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="composition",
+    )
+    _sequences: Mapped[list["MusicialSequence"]] = relationship(
+        lambda: MusicialSequence,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="composition",
+    )
 
     @property
     def composition_techniques(self):
@@ -67,23 +85,19 @@ class Composition(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
 
 
 class CompositionTechniqueToComposition(db.Model):
-    composition_id = db.Column(
-        db.Integer, db.ForeignKey("composition.id"), primary_key=True
+    composition_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Composition.id), primary_key=True
     )
-    verarbeitungstechnik_id = db.Column(
-        db.Integer, db.ForeignKey("verarbeitungstechnik.id"), primary_key=True
+    verarbeitungstechnik_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Verarbeitungstechnik.id), primary_key=True
     )
 
-    composition = db.relationship(
-        Composition,
-        backref=db.backref(
-            "_techniques",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
+    composition: Mapped[Composition] = relationship(
+        Composition, back_populates="_techniques"
     )
-    verarbeitungstechnik = db.relationship("Verarbeitungstechnik")
+    verarbeitungstechnik: Mapped[Verarbeitungstechnik] = relationship(
+        Verarbeitungstechnik
+    )
 
     def __init__(self, composition, verarbeitungstechnik, **kwargs):
         self.composition = composition
@@ -92,24 +106,24 @@ class CompositionTechniqueToComposition(db.Model):
 
 class MusicialSequence(db.Model, GetByID):
     __tablename__ = "sequence"
-    id = db.Column(db.Integer, primary_key=True)
-    composition_id = db.Column(db.Integer, db.ForeignKey("composition.id"))
+    id: MappedColumn[int] = db.Column(db.Integer, primary_key=True)
+    composition_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Composition.id)
+    )
     tonal_corrected = db.Column(db.Boolean, default=False)
     exact_repetition = db.Column(db.Boolean, default=False)
-    starting_interval_id = db.Column(db.Integer, db.ForeignKey("intervall.id"))
-    flow_id = db.Column(db.Integer, db.ForeignKey("bewegung_im_tonraum.id"))
+    starting_interval_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Intervall.id)
+    )
+    flow_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(BewegungImTonraum.id)
+    )
     beats = db.Column(db.Integer)
 
-    starting_interval = db.relationship(Intervall, lazy="selectin")
-    flow = db.relationship(BewegungImTonraum, lazy="selectin")
-    composition = db.relationship(
-        Composition,
-        backref=db.backref(
-            "_sequences",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
+    starting_interval: Mapped[Intervall] = relationship(Intervall, lazy="selectin")
+    flow: Mapped[BewegungImTonraum] = relationship(BewegungImTonraum, lazy="selectin")
+    composition: Mapped[Composition] = relationship(
+        Composition, back_populates="_sequences"
     )
 
     def __init__(

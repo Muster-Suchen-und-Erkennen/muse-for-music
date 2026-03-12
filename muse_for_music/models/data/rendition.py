@@ -1,4 +1,6 @@
-from typing import Dict, Sequence, Union
+from typing import Sequence, Union
+
+from sqlalchemy.orm import Mapped, MappedColumn, relationship
 
 from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
@@ -11,6 +13,29 @@ class Rendition(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
     __tablename__ = "rendition"
     id = db.Column(db.Integer, primary_key=True)
+
+    # backrefs
+    _mood_markings: Mapped[list["AusdruckToRendition"]] = relationship(
+        lambda: AusdruckToRendition,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="rendition",
+    )
+    _articulation_markings: Mapped[list["ArtikulationToRendition"]] = relationship(
+        lambda: ArtikulationToRendition,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="rendition",
+    )
+    _technic_markings: Mapped[list["SpielanweisungToRendition"]] = relationship(
+        lambda: SpielanweisungToRendition,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="rendition",
+    )
 
     @property
     def mood_markings(self):
@@ -63,19 +88,17 @@ class Rendition(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
 
 class AusdruckToRendition(db.Model):
-    rendition_id = db.Column(db.Integer, db.ForeignKey("rendition.id"), primary_key=True)
-    ausdruck_id = db.Column(db.Integer, db.ForeignKey("ausdruck.id"), primary_key=True)
-
-    rendition = db.relationship(
-        Rendition,
-        backref=db.backref(
-            "_mood_markings",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
+    rendition_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Rendition.id), primary_key=True
     )
-    ausdruck = db.relationship("Ausdruck")
+    ausdruck_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Ausdruck.id), primary_key=True
+    )
+
+    rendition: Mapped[Rendition] = relationship(
+        Rendition, back_populates="_mood_markings"
+    )
+    ausdruck: Mapped[Ausdruck] = relationship(Ausdruck)
 
     def __init__(self, rendition, ausdruck, **kwargs):
         self.rendition = rendition
@@ -83,21 +106,17 @@ class AusdruckToRendition(db.Model):
 
 
 class ArtikulationToRendition(db.Model):
-    rendition_id = db.Column(db.Integer, db.ForeignKey("rendition.id"), primary_key=True)
-    artikulation_id = db.Column(
-        db.Integer, db.ForeignKey("artikulation.id"), primary_key=True
+    rendition_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Rendition.id), primary_key=True
+    )
+    artikulation_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Artikulation.id), primary_key=True
     )
 
-    rendition = db.relationship(
-        Rendition,
-        backref=db.backref(
-            "_articulation_markings",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
+    rendition: Mapped[Rendition] = relationship(
+        Rendition, back_populates="_articulation_markings"
     )
-    artikulation = db.relationship("Artikulation")
+    artikulation: Mapped[Artikulation] = relationship(Artikulation)
 
     def __init__(self, rendition, artikulation, **kwargs):
         self.rendition = rendition
@@ -105,21 +124,17 @@ class ArtikulationToRendition(db.Model):
 
 
 class SpielanweisungToRendition(db.Model):
-    rendition_id = db.Column(db.Integer, db.ForeignKey("rendition.id"), primary_key=True)
-    spielanweisung_id = db.Column(
-        db.Integer, db.ForeignKey("spielanweisung.id"), primary_key=True
+    rendition_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Rendition.id), primary_key=True
+    )
+    spielanweisung_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Spielanweisung.id), primary_key=True
     )
 
-    rendition = db.relationship(
-        Rendition,
-        backref=db.backref(
-            "_technic_markings",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
+    rendition: Mapped[Rendition] = relationship(
+        Rendition, back_populates="_technic_markings"
     )
-    spielanweisung = db.relationship("Spielanweisung")
+    spielanweisung: Mapped[Spielanweisung] = relationship(Spielanweisung)
 
     def __init__(self, rendition, spielanweisung, **kwargs):
         self.rendition = rendition

@@ -2,6 +2,8 @@ import enum
 from datetime import date, datetime
 from typing import Union
 
+from sqlalchemy.orm import MappedColumn
+
 from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin
 
@@ -22,12 +24,12 @@ class Person(db.Model, GetByID, UpdateableModelMixin):
         ("nationality", str),
     )
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(191), unique=True, index=True)
+    id: MappedColumn[int] = db.Column(db.Integer, primary_key=True)
+    name: MappedColumn[str | None] = db.Column(db.String(191), unique=True, index=True)
     gender = db.Column(db.Enum(GenderEnum))
-    birth_date = db.Column(db.Integer(), nullable=True)
-    death_date = db.Column(db.Integer(), nullable=True)
-    nationality = db.Column(db.String(100), nullable=True)
+    birth_date: MappedColumn[int | None] = db.Column(db.Integer(), nullable=True)
+    death_date: MappedColumn[int | None] = db.Column(db.Integer(), nullable=True)
+    nationality: MappedColumn[str | None] = db.Column(db.String(100), nullable=True)
 
     def __init__(
         self,

@@ -1,5 +1,7 @@
 from typing import Sequence, Union
 
+from sqlalchemy.orm import Mapped, MappedColumn, relationship
+
 from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 from ..taxonomies import Tempo, TempoEinbettung, TempoEntwicklung
@@ -17,29 +19,29 @@ class TempoContext(db.Model, GetByID, UpdateableModelMixin):
     __tablename__ = "tempo_context"
     id = db.Column(db.Integer, primary_key=True)
 
-    tempo_context_before_id = db.Column(
-        db.Integer, db.ForeignKey("tempo_einbettung.id"), nullable=True
+    tempo_context_before_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(TempoEinbettung.id), nullable=True
     )
-    tempo_context_after_id = db.Column(
-        db.Integer, db.ForeignKey("tempo_einbettung.id"), nullable=True
+    tempo_context_after_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(TempoEinbettung.id), nullable=True
     )
-    tempo_trend_before_id = db.Column(
-        db.Integer, db.ForeignKey("tempo_entwicklung.id"), nullable=True
+    tempo_trend_before_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(TempoEntwicklung.id), nullable=True
     )
-    tempo_trend_after_id = db.Column(
-        db.Integer, db.ForeignKey("tempo_entwicklung.id"), nullable=True
+    tempo_trend_after_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(TempoEntwicklung.id), nullable=True
     )
 
-    tempo_context_before = db.relationship(
+    tempo_context_before: Mapped[TempoEinbettung] = relationship(
         TempoEinbettung, foreign_keys=[tempo_context_before_id]
     )
-    tempo_context_after = db.relationship(
+    tempo_context_after: Mapped[TempoEinbettung] = relationship(
         TempoEinbettung, foreign_keys=[tempo_context_after_id]
     )
-    tempo_trend_before = db.relationship(
+    tempo_trend_before: Mapped[TempoEntwicklung] = relationship(
         TempoEntwicklung, foreign_keys=[tempo_trend_before_id]
     )
-    tempo_trend_after = db.relationship(
+    tempo_trend_after: Mapped[TempoEntwicklung] = relationship(
         TempoEntwicklung, foreign_keys=[tempo_trend_after_id]
     )
 
@@ -50,6 +52,22 @@ class TempoGroup(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
     __tablename__ = "tempo_group"
     id = db.Column(db.Integer, primary_key=True)
+
+    # backrefs
+    _tempo_markings: Mapped[list["TempoToTempoGroup"]] = relationship(
+        lambda: TempoToTempoGroup,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="tempo_group",
+    )
+    _tempo_changes: Mapped[list["TempoEntwicklungToTempoGroup"]] = relationship(
+        lambda: TempoEntwicklungToTempoGroup,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="tempo_group",
+    )
 
     @property
     def tempo_markings(self):
@@ -81,21 +99,17 @@ class TempoGroup(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
 
 
 class TempoToTempoGroup(db.Model):
-    tempo_group_id = db.Column(
-        db.Integer, db.ForeignKey("tempo_group.id"), primary_key=True
+    tempo_group_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(TempoGroup.id), primary_key=True
     )
-    tempo_id = db.Column(db.Integer, db.ForeignKey("tempo.id"), primary_key=True)
+    tempo_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Tempo.id), primary_key=True
+    )
 
-    tempo_group = db.relationship(
-        TempoGroup,
-        backref=db.backref(
-            "_tempo_markings",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
+    tempo_group: Mapped[TempoGroup] = relationship(
+        TempoGroup, back_populates="_tempo_markings"
     )
-    tempo = db.relationship("Tempo")
+    tempo: Mapped[Tempo] = relationship(Tempo)
 
     def __init__(self, tempo_group, tempo, **kwargs):
         self.tempo_group = tempo_group
@@ -103,23 +117,17 @@ class TempoToTempoGroup(db.Model):
 
 
 class TempoEntwicklungToTempoGroup(db.Model):
-    tempo_group_id = db.Column(
-        db.Integer, db.ForeignKey("tempo_group.id"), primary_key=True
+    tempo_group_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(TempoGroup.id), primary_key=True
     )
-    tempo_entwicklung_id = db.Column(
-        db.Integer, db.ForeignKey("tempo_entwicklung.id"), primary_key=True
+    tempo_entwicklung_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(TempoEntwicklung.id), primary_key=True
     )
 
-    tempo_group = db.relationship(
-        TempoGroup,
-        backref=db.backref(
-            "_tempo_changes",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
+    tempo_group: Mapped[TempoGroup] = relationship(
+        TempoGroup, back_populates="_tempo_changes"
     )
-    tempo_entwicklung = db.relationship("TempoEntwicklung")
+    tempo_entwicklung: Mapped[TempoEntwicklung] = relationship(TempoEntwicklung)
 
     def __init__(self, tempo_group, tempo_entwicklung, **kwargs):
         self.tempo_group = tempo_group

@@ -1,6 +1,6 @@
 from typing import Union
 
-from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import Mapped, MappedColumn, relationship
 
 from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
@@ -36,41 +36,61 @@ class SubPart(
     __tablename__ = "sub_part"
 
     id = db.Column(db.Integer, primary_key=True)
-    part_id = db.Column(db.Integer, db.ForeignKey("part.id"), nullable=False)
-    label = db.Column(db.String(191), nullable=False, default="A")
-    measures = db.Column(db.Text, nullable=True)
-    occurence_in_part_id = db.Column(
-        db.Integer, db.ForeignKey("auftreten_werkausschnitt.id"), nullable=True
+    part_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Part.id), nullable=False
     )
-    share_of_part_id = db.Column(db.Integer, db.ForeignKey("anteil.id"), nullable=True)
-    instrumentation_id = db.Column(db.Integer, db.ForeignKey("instrumentation.id"))
-    is_tutti = db.Column(db.Boolean, default=False)
-    dynamic_id = db.Column(db.Integer, db.ForeignKey("dynamic.id"), nullable=True)
-    harmonics_id = db.Column(db.Integer, db.ForeignKey("harmonics.id"), nullable=True)
-    tempo_id = db.Column(db.Integer, db.ForeignKey("tempo_group.id"), nullable=True)
+    label: MappedColumn[str] = db.Column(db.String(191), nullable=False, default="A")
+    measures: MappedColumn[str | None] = db.Column(db.Text, nullable=True)
+    occurence_in_part_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(AuftretenWerkausschnitt.id), nullable=True
+    )
+    share_of_part_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Anteil.id), nullable=True
+    )
+    instrumentation_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Instrumentation.id)
+    )
+    is_tutti: MappedColumn[bool] = db.Column(db.Boolean, default=False)
+    dynamic_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Dynamic.id), nullable=True
+    )
+    harmonics_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Harmonics.id), nullable=True
+    )
+    tempo_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(TempoGroup.id), nullable=True
+    )
     # ambitus_id = db.Column(db.Integer, db.ForeignKey('ambitus_group.id'), nullable=True)
 
-    part = db.relationship(
-        Part,
-        lazy="select",
-        backref=db.backref("subparts", single_parent=True, cascade="all, delete-orphan"),
-    )
-    occurence_in_part = db.relationship(
+    part: Mapped[Part] = relationship(Part, lazy="select", back_populates="subparts")
+    occurence_in_part: Mapped[AuftretenWerkausschnitt] = relationship(
         AuftretenWerkausschnitt, lazy="selectin", single_parent=True
     )
-    share_of_part = db.relationship(Anteil, lazy="selectin", single_parent=True)
-    _instrumentation: Mapped[Instrumentation] = db.relationship(
-        "Instrumentation",
+    share_of_part: Mapped[Anteil] = relationship(Anteil, lazy="selectin", single_parent=True)
+    _instrumentation: Mapped[Instrumentation] = relationship(
+        Instrumentation,
         lazy="subquery",
         single_parent=True,
         cascade="all, delete-orphan",
     )
-    dynamic = db.relationship(Dynamic, single_parent=True, cascade="all, delete-orphan")
-    harmonics = db.relationship(
+    dynamic: Mapped[Dynamic] = relationship(
+        Dynamic, single_parent=True, cascade="all, delete-orphan"
+    )
+    harmonics: Mapped[Harmonics] = relationship(
         Harmonics, single_parent=True, cascade="all, delete-orphan"
     )
-    tempo = db.relationship(TempoGroup, single_parent=True, cascade="all, delete-orphan")
-    # ambitus = db.relationship(AmbitusGroup, single_parent=True, cascade="all, delete-orphan")
+    tempo: Mapped[TempoGroup] = relationship(
+        TempoGroup, single_parent=True, cascade="all, delete-orphan"
+    )
+    # ambitus = relationship(AmbitusGroup, single_parent=True, cascade="all, delete-orphan")
+
+    # cross-file backref: Voice.subpart uses back_populates="voices"
+    voices: Mapped[list["Voice"]] = relationship(
+        "Voice",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="subpart",
+    )
 
     _eager_load = ["dynamic", "harmonics", "voices"]
 

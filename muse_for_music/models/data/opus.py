@@ -1,3 +1,4 @@
+from sqlalchemy.orm import Mapped, MappedColumn, relationship
 from sqlalchemy.sql import select
 
 from ... import db
@@ -29,9 +30,13 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
     _reference_only_attributes = ("composer",)
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(191), unique=True, index=True)
-    original_name = db.Column(db.String(191), index=True, nullable=True)
-    composer_id = db.Column(db.Integer, db.ForeignKey("person.id"), nullable=True)
+    name: MappedColumn[str | None] = db.Column(db.String(191), unique=True, index=True)
+    original_name: MappedColumn[str | None] = db.Column(
+        db.String(191), index=True, nullable=True
+    )
+    composer_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Person.id), nullable=True
+    )
     score_link = db.Column(db.Text, nullable=True)
     first_printed_at = db.Column(db.String(191), nullable=True)
     first_printed_in = db.Column(db.Integer, nullable=True)
@@ -41,18 +46,29 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
     first_played_in = db.Column(db.Integer, nullable=True)
     notes = db.Column(db.Text, nullable=True)
     movements = db.Column(db.Integer)
-    genre_id = db.Column(
-        db.Integer, db.ForeignKey("gattung_nineteenth_century.id", ondelete="RESTRICT")
+    genre_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(GattungNineteenthCentury.id, ondelete="RESTRICT")
     )
-    grundton_id = db.Column(db.Integer, db.ForeignKey("grundton.id", ondelete="RESTRICT"))
-    tonalitaet_id = db.Column(
-        db.Integer, db.ForeignKey("tonalitaet.id", ondelete="RESTRICT")
+    grundton_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Grundton.id, ondelete="RESTRICT")
+    )
+    tonalitaet_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Tonalitaet.id, ondelete="RESTRICT")
     )
 
-    composer = db.relationship("Person", lazy="select")
-    genre = db.relationship(GattungNineteenthCentury, lazy="selectin")
-    grundton = db.relationship("Grundton", lazy="selectin")
-    tonalitaet = db.relationship("Tonalitaet", lazy="selectin")
+    composer: Mapped[Person] = relationship(Person, lazy="select")
+    genre: Mapped[GattungNineteenthCentury] = relationship(
+        GattungNineteenthCentury, lazy="selectin"
+    )
+    grundton: Mapped[Grundton] = relationship(Grundton, lazy="selectin")
+    tonalitaet: Mapped[Tonalitaet] = relationship(Tonalitaet, lazy="selectin")
+
+    # cross-file backref: Part.opus uses back_populates="parts"
+    parts: Mapped[list["Part"]] = relationship(
+        "Part",
+        cascade="all, delete-orphan",
+        back_populates="opus",
+    )
     # TODO metadata
 
     _eager_load = ["composer", "parts"]

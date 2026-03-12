@@ -1,4 +1,6 @@
-from typing import List, Sequence, Union
+from typing import Sequence, Union
+
+from sqlalchemy.orm import Mapped, MappedColumn, relationship
 
 from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
@@ -13,6 +15,29 @@ class Rhythm(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
     __tablename__ = "rhythm"
     id = db.Column(db.Integer, primary_key=True)
     polymetric = db.Column(db.Boolean, default=False)
+
+    # backrefs
+    _measure_times: Mapped[list["TaktartToRhythm"]] = relationship(
+        lambda: TaktartToRhythm,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="rhythm",
+    )
+    _rhythm_types: Mapped[list["RhythmustypToRhythm"]] = relationship(
+        lambda: RhythmustypToRhythm,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="rhythm",
+    )
+    _rhythmic_phenomenons: Mapped[list["RhythmischesPhaenomenToRhythm"]] = relationship(
+        lambda: RhythmischesPhaenomenToRhythm,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="rhythm",
+    )
 
     @property
     def measure_times(self):
@@ -58,19 +83,15 @@ class Rhythm(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
 
 
 class TaktartToRhythm(db.Model):
-    rhythm_id = db.Column(db.Integer, db.ForeignKey("rhythm.id"), primary_key=True)
-    taktart_id = db.Column(db.Integer, db.ForeignKey("taktart.id"), primary_key=True)
-
-    rhythm = db.relationship(
-        Rhythm,
-        backref=db.backref(
-            "_measure_times",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
+    rhythm_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Rhythm.id), primary_key=True
     )
-    taktart = db.relationship("Taktart")
+    taktart_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Taktart.id), primary_key=True
+    )
+
+    rhythm: Mapped[Rhythm] = relationship(Rhythm, back_populates="_measure_times")
+    taktart: Mapped[Taktart] = relationship(Taktart)
 
     def __init__(self, rhythm, taktart, **kwargs):
         self.rhythm = rhythm
@@ -78,21 +99,15 @@ class TaktartToRhythm(db.Model):
 
 
 class RhythmustypToRhythm(db.Model):
-    rhythm_id = db.Column(db.Integer, db.ForeignKey("rhythm.id"), primary_key=True)
-    rhythmustyp_id = db.Column(
-        db.Integer, db.ForeignKey("rhythmustyp.id"), primary_key=True
+    rhythm_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Rhythm.id), primary_key=True
+    )
+    rhythmustyp_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Rhythmustyp.id), primary_key=True
     )
 
-    rhythm = db.relationship(
-        Rhythm,
-        backref=db.backref(
-            "_rhythm_types",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
-    )
-    rhythmustyp = db.relationship("Rhythmustyp")
+    rhythm: Mapped[Rhythm] = relationship(Rhythm, back_populates="_rhythm_types")
+    rhythmustyp: Mapped[Rhythmustyp] = relationship(Rhythmustyp)
 
     def __init__(self, rhythm, rhythmustyp, **kwargs):
         self.rhythm = rhythm
@@ -100,21 +115,19 @@ class RhythmustypToRhythm(db.Model):
 
 
 class RhythmischesPhaenomenToRhythm(db.Model):
-    rhythm_id = db.Column(db.Integer, db.ForeignKey("rhythm.id"), primary_key=True)
-    rhythmisches_phaenomen_id = db.Column(
-        db.Integer, db.ForeignKey("rhythmisches_phaenomen.id"), primary_key=True
+    rhythm_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Rhythm.id), primary_key=True
+    )
+    rhythmisches_phaenomen_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(RhythmischesPhaenomen.id), primary_key=True
     )
 
-    rhythm = db.relationship(
-        Rhythm,
-        backref=db.backref(
-            "_rhythmic_phenomenons",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
+    rhythm: Mapped[Rhythm] = relationship(
+        Rhythm, back_populates="_rhythmic_phenomenons"
     )
-    rhythmisches_phaenomen = db.relationship("RhythmischesPhaenomen")
+    rhythmisches_phaenomen: Mapped[RhythmischesPhaenomen] = relationship(
+        RhythmischesPhaenomen
+    )
 
     def __init__(self, rhythm, rhythmisches_phaenomen, **kwargs):
         self.rhythm = rhythm

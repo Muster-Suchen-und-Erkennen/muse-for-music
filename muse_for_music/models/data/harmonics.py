@@ -1,4 +1,6 @@
-from typing import List, Sequence, Union
+from typing import Sequence, Union
+
+from sqlalchemy.orm import Mapped, MappedColumn, relationship
 
 from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
@@ -45,20 +47,74 @@ class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
     __tablename__ = "harmonics"
     id = db.Column(db.Integer, primary_key=True)
     # harmonic_function_modulation_id = db.Column(db.Integer, db.ForeignKey('harmonische_funktion_verwandschaft.id'))
-    degree_of_dissonance_id = db.Column(db.Integer, db.ForeignKey("dissonanzgrad.id"))
+    degree_of_dissonance_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Dissonanzgrad.id)
+    )
     numeric_degree_of_dissonance = db.Column(db.Float, nullable=True)
-    harmonic_density_id = db.Column(db.Integer, db.ForeignKey("harmonische_dichte.id"))
+    harmonic_density_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(HarmonischeDichte.id)
+    )
     numeric_harmonic_density = db.Column(db.Float, nullable=True)
-    harmonic_complexity_id = db.Column(
-        db.Integer, db.ForeignKey("harmonische_komplexitaet.id")
+    harmonic_complexity_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(HarmonischeKomplexitaet.id)
     )
     numeric_harmonic_complexity = db.Column(db.Float, nullable=True)
     harmonic_analyse = db.Column(db.Text, nullable=True)
 
-    # harmonische_funktion = db.relationship('HarmonischeFunktionVerwandschaft', lazy='selectin')
-    degree_of_dissonance = db.relationship("Dissonanzgrad", lazy="selectin")
-    harmonic_density = db.relationship("HarmonischeDichte", lazy="selectin")
-    harmonic_complexity = db.relationship("HarmonischeKomplexitaet", lazy="selectin")
+    # harmonische_funktion = relationship('HarmonischeFunktionVerwandschaft', lazy='selectin')
+    degree_of_dissonance: Mapped[Dissonanzgrad] = relationship(
+        Dissonanzgrad, lazy="selectin"
+    )
+    harmonic_density: Mapped[HarmonischeDichte] = relationship(
+        HarmonischeDichte, lazy="selectin"
+    )
+    harmonic_complexity: Mapped[HarmonischeKomplexitaet] = relationship(
+        HarmonischeKomplexitaet, lazy="selectin"
+    )
+
+    # backrefs
+    _harmonic_centers: Mapped[list["HarmonicCenter"]] = relationship(
+        lambda: HarmonicCenter,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="harmonics",
+    )
+    _harmonic_phenomenons: Mapped[list["HarmonischePhaenomeneToHarmonics"]] = relationship(
+        lambda: HarmonischePhaenomeneToHarmonics,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="harmonics",
+    )
+    _harmonic_changes: Mapped[list["HarmonischeEntwicklungToHarmonics"]] = relationship(
+        lambda: HarmonischeEntwicklungToHarmonics,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="harmonics",
+    )
+    _special_chords: Mapped[list["AkkordToHarmonics"]] = relationship(
+        lambda: AkkordToHarmonics,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="harmonics",
+    )
+    _dissonances: Mapped[list["DissonanzenToHarmonics"]] = relationship(
+        lambda: DissonanzenToHarmonics,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="harmonics",
+    )
+    _harmonische_funktion: Mapped[list["HarmonischeFunktionToHarmonics"]] = relationship(
+        lambda: HarmonischeFunktionToHarmonics,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="harmonics",
+    )
 
     @property
     def harmonic_centers(self):
@@ -165,28 +221,34 @@ class HarmonicCenter(db.Model, UpdateableModelMixin):
         ("harmonische_funktion", HarmonischeFunktion),
     )
 
-    id = db.Column(db.Integer, primary_key=True)
-    harmonics_id = db.Column(db.Integer, db.ForeignKey("harmonics.id"))
-    grundton_id = db.Column(db.Integer, db.ForeignKey("grundton.id"))
-    tonalitaet_id = db.Column(db.Integer, db.ForeignKey("tonalitaet.id"))
-    harmonische_funktion_id = db.Column(
-        db.Integer, db.ForeignKey("harmonische_funktion.id")
+    id: MappedColumn[int] = db.Column(db.Integer, primary_key=True)
+    harmonics_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Harmonics.id)
     )
-    harmonische_stufe_id = db.Column(db.Integer, db.ForeignKey("harmonische_stufe.id"))
+    grundton_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Grundton.id)
+    )
+    tonalitaet_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Tonalitaet.id)
+    )
+    harmonische_funktion_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(HarmonischeFunktion.id)
+    )
+    harmonische_stufe_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(HarmonischeStufe.id)
+    )
 
-    harmonics = db.relationship(
-        Harmonics,
-        backref=db.backref(
-            "_harmonic_centers",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
+    harmonics: Mapped[Harmonics] = relationship(
+        Harmonics, back_populates="_harmonic_centers"
     )
-    grundton = db.relationship("Grundton", lazy="selectin")
-    tonalitaet = db.relationship("Tonalitaet", lazy="selectin")
-    harmonische_funktion = db.relationship("HarmonischeFunktion", lazy="selectin")
-    harmonische_stufe = db.relationship("HarmonischeStufe", lazy="selectin")
+    grundton: Mapped[Grundton] = relationship(Grundton, lazy="selectin")
+    tonalitaet: Mapped[Tonalitaet] = relationship(Tonalitaet, lazy="selectin")
+    harmonische_funktion: Mapped[HarmonischeFunktion] = relationship(
+        HarmonischeFunktion, lazy="selectin"
+    )
+    harmonische_stufe: Mapped[HarmonischeStufe] = relationship(
+        HarmonischeStufe, lazy="selectin"
+    )
 
     def __init__(self, harmonics, **kwargs):
         self.harmonics = harmonics
@@ -195,21 +257,19 @@ class HarmonicCenter(db.Model, UpdateableModelMixin):
 
 
 class HarmonischePhaenomeneToHarmonics(db.Model):
-    harmonics_id = db.Column(db.Integer, db.ForeignKey("harmonics.id"), primary_key=True)
-    harmonische_phaenomene_id = db.Column(
-        db.Integer, db.ForeignKey("harmonische_phaenomene.id"), primary_key=True
+    harmonics_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Harmonics.id), primary_key=True
+    )
+    harmonische_phaenomene_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(HarmonischePhaenomene.id), primary_key=True
     )
 
-    harmonics = db.relationship(
-        Harmonics,
-        backref=db.backref(
-            "_harmonic_phenomenons",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
+    harmonics: Mapped[Harmonics] = relationship(
+        Harmonics, back_populates="_harmonic_phenomenons"
     )
-    harmonische_phaenomene = db.relationship("HarmonischePhaenomene")
+    harmonische_phaenomene: Mapped[HarmonischePhaenomene] = relationship(
+        HarmonischePhaenomene
+    )
 
     def __init__(self, harmonics, harmonische_phaenomene, **kwargs):
         self.harmonics = harmonics
@@ -217,21 +277,19 @@ class HarmonischePhaenomeneToHarmonics(db.Model):
 
 
 class HarmonischeEntwicklungToHarmonics(db.Model):
-    harmonics_id = db.Column(db.Integer, db.ForeignKey("harmonics.id"), primary_key=True)
-    harmonische_entwicklung_id = db.Column(
-        db.Integer, db.ForeignKey("harmonische_entwicklung.id"), primary_key=True
+    harmonics_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Harmonics.id), primary_key=True
+    )
+    harmonische_entwicklung_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(HarmonischeEntwicklung.id), primary_key=True
     )
 
-    harmonics = db.relationship(
-        Harmonics,
-        backref=db.backref(
-            "_harmonic_changes",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
+    harmonics: Mapped[Harmonics] = relationship(
+        Harmonics, back_populates="_harmonic_changes"
     )
-    harmonische_entwicklung = db.relationship("HarmonischeEntwicklung")
+    harmonische_entwicklung: Mapped[HarmonischeEntwicklung] = relationship(
+        HarmonischeEntwicklung
+    )
 
     def __init__(self, harmonics, harmonische_entwicklung, **kwargs):
         self.harmonics = harmonics
@@ -239,19 +297,17 @@ class HarmonischeEntwicklungToHarmonics(db.Model):
 
 
 class AkkordToHarmonics(db.Model):
-    harmonics_id = db.Column(db.Integer, db.ForeignKey("harmonics.id"), primary_key=True)
-    akkord_id = db.Column(db.Integer, db.ForeignKey("akkord.id"), primary_key=True)
-
-    harmonics = db.relationship(
-        Harmonics,
-        backref=db.backref(
-            "_special_chords",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
+    harmonics_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Harmonics.id), primary_key=True
     )
-    akkord = db.relationship("Akkord")
+    akkord_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Akkord.id), primary_key=True
+    )
+
+    harmonics: Mapped[Harmonics] = relationship(
+        Harmonics, back_populates="_special_chords"
+    )
+    akkord: Mapped[Akkord] = relationship(Akkord)
 
     def __init__(self, harmonics, akkord, **kwargs):
         self.harmonics = harmonics
@@ -259,21 +315,17 @@ class AkkordToHarmonics(db.Model):
 
 
 class DissonanzenToHarmonics(db.Model):
-    harmonics_id = db.Column(db.Integer, db.ForeignKey("harmonics.id"), primary_key=True)
-    dissonanzen_id = db.Column(
-        db.Integer, db.ForeignKey("dissonanzen.id"), primary_key=True
+    harmonics_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Harmonics.id), primary_key=True
+    )
+    dissonanzen_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Dissonanzen.id), primary_key=True
     )
 
-    harmonics = db.relationship(
-        Harmonics,
-        backref=db.backref(
-            "_dissonances",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
+    harmonics: Mapped[Harmonics] = relationship(
+        Harmonics, back_populates="_dissonances"
     )
-    dissonanzen = db.relationship("Dissonanzen")
+    dissonanzen: Mapped[Dissonanzen] = relationship(Dissonanzen)
 
     def __init__(self, harmonics, dissonanzen, **kwargs):
         self.harmonics = harmonics
@@ -281,23 +333,21 @@ class DissonanzenToHarmonics(db.Model):
 
 
 class HarmonischeFunktionToHarmonics(db.Model):
-    harmonics_id = db.Column(db.Integer, db.ForeignKey("harmonics.id"), primary_key=True)
-    harmonic_function_modulation_id = db.Column(
+    harmonics_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Harmonics.id), primary_key=True
+    )
+    harmonic_function_modulation_id: MappedColumn[int] = db.Column(
         db.Integer,
-        db.ForeignKey("harmonische_funktion_verwandschaft.id"),
+        db.ForeignKey(HarmonischeFunktionVerwandschaft.id),
         primary_key=True,
     )
 
-    harmonics = db.relationship(
-        Harmonics,
-        backref=db.backref(
-            "_harmonische_funktion",
-            lazy="selectin",
-            single_parent=True,
-            cascade="all, delete-orphan",
-        ),
+    harmonics: Mapped[Harmonics] = relationship(
+        Harmonics, back_populates="_harmonische_funktion"
     )
-    harmonische_funktion = db.relationship("HarmonischeFunktionVerwandschaft")
+    harmonische_funktion: Mapped[HarmonischeFunktionVerwandschaft] = relationship(
+        HarmonischeFunktionVerwandschaft
+    )
 
     def __init__(self, harmonics, harmonische_funktion, **kwargs):
         self.harmonics = harmonics

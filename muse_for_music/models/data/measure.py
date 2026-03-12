@@ -1,3 +1,5 @@
+from sqlalchemy.orm import MappedColumn
+
 from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin
 
@@ -7,9 +9,9 @@ class Measure(db.Model, GetByID, UpdateableModelMixin):
     _normal_attributes = (("from_page", int), ("measure", int))
     _optional_attributes = ("from_page",)
 
-    id = db.Column(db.Integer, primary_key=True)
-    _from_page = db.Column(db.Integer, nullable=True)
-    measure = db.Column(db.Integer, nullable=False)
+    id: MappedColumn[int] = db.Column(db.Integer, primary_key=True)
+    _from_page: MappedColumn[int | None] = db.Column(db.Integer, nullable=True)
+    measure: MappedColumn[int] = db.Column(db.Integer, nullable=False)
 
     def __init__(self, measure: int = 1, from_page: int = None, **kwargs):
         self.measure = measure

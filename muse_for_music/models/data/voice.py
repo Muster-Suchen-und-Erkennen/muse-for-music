@@ -110,7 +110,7 @@ class Voice(
     subpart: Mapped[SubPart] = relationship(
         SubPart,
         lazy="select",
-        backref=db.backref("voices", single_parent=True, cascade="all, delete-orphan"),
+        back_populates="voices",
     )
     _instrumentation: Mapped[Instrumentation] = relationship(
         Instrumentation,

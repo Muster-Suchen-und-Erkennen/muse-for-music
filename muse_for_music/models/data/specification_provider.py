@@ -1,5 +1,7 @@
 from typing import Sequence, Union
 
+from sqlalchemy.orm import Mapped, MappedColumn
+
 from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 from ..taxonomies import SpecAnteil, SpecAuftreten, SpecInstrument

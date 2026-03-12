@@ -1,8 +1,9 @@
 import enum
 from json import dumps, loads
-from typing import Sequence, Union
+from typing import Union
 
 from flask_jwt_extended import get_jwt_identity
+from sqlalchemy.orm import Mapped, MappedColumn, relationship
 from sqlalchemy.sql import func, select
 
 from ... import db
@@ -44,14 +45,16 @@ class TypeEnum(enum.Enum):
 
 
 class History(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id: MappedColumn[int] = db.Column(db.Integer, primary_key=True)
     time = db.Column(db.DateTime, server_default=func.now())
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
+    user_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(User.id), nullable=True
+    )
     method = db.Column(db.Enum(MethodEnum))
     type = db.Column(db.Enum(TypeEnum))
     resource = db.Column(db.String(191))
 
-    user = db.relationship(User)
+    user: Mapped[User] = relationship(User)
 
     _full_resource = None
 
@@ -137,7 +140,7 @@ class History(db.Model):
 
 
 class Backup(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id: MappedColumn[int] = db.Column(db.Integer, primary_key=True)
     time = db.Column(db.DateTime, server_default=func.now())
     type = db.Column(db.Enum(TypeEnum))
     resource = db.Column(db.Text())
