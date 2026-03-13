@@ -42,7 +42,7 @@ def generate_na_elements():
     taxonomies = get_taxonomies()
     for taxonomy in taxonomies.values():
         try:
-            count_q = select(count(taxonomy))
+            count_q = select(count(taxonomy))  # type: ignore
             item_count = db.session.execute(count_q).scalar()
             if item_count == 0:
                 continue  # skip taxonomies without any entry

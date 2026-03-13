@@ -1,10 +1,11 @@
 """Module for part resource"""
 
+from http import HTTPStatus
 from json import dumps
 
 from flask import request
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
-from flask_restx import Resource, abort, marshal
+from flask_restx import Resource, marshal
 from sqlalchemy.sql import delete, select
 
 from ... import db
@@ -13,6 +14,7 @@ from ...models.data.part import Part
 from ...models.data.subpart import SubPart
 from ...models.users import User
 from ...user_api import RoleEnum, has_roles
+from ...util import abort
 from . import api
 from .backup import to_backup_json
 from .models import part_get, part_put, part_small, subpart_get, subpart_post
@@ -34,28 +36,29 @@ class PartsListResource(Resource):
 class PartResource(Resource):
 
     @ns.marshal_with(part_get)
-    @ns.response(404, "Part not found.")
+    @ns.response(HTTPStatus.NOT_FOUND, "Part not found.")
     @jwt_required()
     def get(self, id):
         part = Part.get_by_id(id)
         if part is None:
-            abort(404, "Requested part not found!")
+            abort(HTTPStatus.NOT_FOUND, "Requested part not found!")
         return part
 
     @ns.doc(model=part_get, expect=[part_put], validate=True)
-    @ns.response(404, "Part not found.")
+    @ns.response(HTTPStatus.NOT_FOUND, "Part not found.")
     @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def put(self, id):
         part = Part.get_by_id(id)
         if part is None:
-            abort(404, "Requested part not found!")
+            abort(HTTPStatus.NOT_FOUND, "Requested part not found!")
         new_values = request.get_json()
 
         part.update(new_values)
 
         username = get_jwt_identity()
         user = User.get_user_by_name(username)
+        assert user is not None  # JWT setup is broken if this fails
         del_q = delete(History).where(
             History.user_id == user.id,
             History.method == MethodEnum.update,
@@ -68,20 +71,18 @@ class PartResource(Resource):
         db.session.commit()
         return marshal(part, part_get)
 
-    @ns.response(404, "Part not found.")
+    @ns.response(HTTPStatus.NOT_FOUND, "Part not found.")
     @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def delete(self, id):
         part = Part.get_by_id(id)
         if part is None:
-            abort(404, "Requested part not found!")
+            abort(HTTPStatus.NOT_FOUND, "Requested part not found!")
         if RoleEnum.admin.name not in get_jwt().get(
             "user_claims", []
-        ) and not History.isOwner(
-            part
-        ):  # FIXME claim
+        ) and not History.isOwner(part):
             abort(
-                403,
+                HTTPStatus.FORBIDDEN,
                 "Only the owner of a resource and Administrators can delete a resource!",
             )
         hist = History(MethodEnum.delete, part)

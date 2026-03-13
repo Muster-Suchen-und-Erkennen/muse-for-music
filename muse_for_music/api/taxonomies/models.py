@@ -6,10 +6,10 @@ https://github.com/noirbizarre/flask-restplus/issues/280
 https://github.com/noirbizarre/flask-restplus/issues/293
 
 Use taxonomy_tree_item_get_json for documentation:
-@api.response(200, 'Success', taxonomy_tree_item_get_json)
+@api.response(HTTPStatus.OK, 'Success', taxonomy_tree_item_get_json)
 
 Use taxonomy_tree_item_get for marshalling:
-return marshal(test, taxonomy_tree_item_get), 200
+return marshal(test, taxonomy_tree_item_get), HTTPStatus.OK
 """
 
 from collections import OrderedDict
@@ -102,7 +102,7 @@ taxonomy_item_get = ns.inherit(
 )
 
 # Use taxonomy_tree_item_get for marshalling:
-# return marshal(test, taxonomy_tree_item_get), 200
+# return marshal(test, taxonomy_tree_item_get), HTTPStatus.OK
 taxonomy_tree_item_get = ns.inherit(
     "TaxonomyTreeItemGET", taxonomy_item_get, OrderedDict()
 )
@@ -117,7 +117,7 @@ taxonomy_tree_item_get["children"] = fields.List(
 # https://github.com/noirbizarre/flask-restplus/issues/293
 
 # Use taxonomy_tree_item_get_json for documentation:
-# @api.response(200, 'Success', taxonomy_tree_item_get_json)
+# @api.response(HTTPStatus.OK, 'Success', taxonomy_tree_item_get_json)
 
 taxonomy_tree_item_get_json = ns.schema_model(
     "TaxonomyTreeItemGETJSON",
@@ -142,7 +142,8 @@ taxonomy_tree_item_get_json = ns.schema_model(
 class TaxonomyItems(fields.Raw):
     """Raw field for formatting taxonomy Items."""
 
-    def format(self, items):
+    def format(self, value):
+        items = value
         if callable(items):
             items = items()
         if isinstance(items, list):
@@ -252,7 +253,6 @@ taxonomy_list_resource = ns.model(
     "TaxonomyList",
     {
         "_links": NestedFields(taxonomy_list_links),
-        # FXIME test
-        "taxonomies": fields.Nested(taxonomy_model, "taxonomies", as_list=True),
+        "taxonomies": fields.Nested(taxonomy_model, attribute="taxonomies", as_list=True),
     },
 )

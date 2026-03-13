@@ -3,7 +3,6 @@ from typing import Sequence, Union
 from sqlalchemy.orm import Mapped, MappedColumn, relationship
 
 from ... import db
-
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 from ..taxonomies import AuftretenSatz, FormaleFunktion
 from .dramaturgic_context import DramaturgicContext
@@ -62,6 +61,7 @@ class Part(
     dramaturgic_context_id: MappedColumn[int | None] = db.Column(
         db.Integer, db.ForeignKey(DramaturgicContext.id), nullable=True
     )
+    omissions: MappedColumn[str | None] = db.Column(db.Text, nullable=True)
 
     opus: Mapped[Opus] = relationship(Opus, lazy="select", back_populates="parts")
     measure_start: Mapped[Measure] = relationship(
@@ -78,7 +78,6 @@ class Part(
         single_parent=True,
         cascade="all, delete-orphan",
     )
-    omissions = db.Column(db.Text, nullable=True)
     # occurence_in_movement = relationship(AuftretenSatz, lazy='selectin')
     instrumentation_context: Mapped[InstrumentationContext] = relationship(
         InstrumentationContext, single_parent=True, cascade="all, delete-orphan"
@@ -127,7 +126,7 @@ class Part(
 
     def __init__(
         self,
-        opus_id: int,
+        opus_id: Union[int, Opus],
         measure_start: dict,
         measure_end: dict,
         length: int = 1,
@@ -136,7 +135,13 @@ class Part(
         omissions: str = "",
         **kwargs,
     ):
-        self.opus = Opus.get_by_id(opus_id)
+        if isinstance(opus_id, int):
+            found_opus = Opus.get_by_id(opus_id)
+            if found_opus is None:
+                raise KeyError(f"Did not find opus with Opus.id=={opus_id}!")
+        else:
+            found_opus = opus_id
+        self.opus = found_opus
         self.name = name
         self.movement = movement
         self.measure_start = Measure(**measure_start)

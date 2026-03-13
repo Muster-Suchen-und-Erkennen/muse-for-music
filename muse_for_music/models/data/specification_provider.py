@@ -1,7 +1,7 @@
-from typing import Sequence, Union, ClassVar, Protocol, Generic, TypeVar
+from typing import ClassVar, Generic, Protocol, Sequence, TypeVar, Union
 
-from sqlalchemy.orm import Mapped, MappedColumn, relationship
 from flask_sqlalchemy.model import Model
+from sqlalchemy.orm import Mapped, MappedColumn, relationship
 from typing_extensions import Self
 
 from ... import db

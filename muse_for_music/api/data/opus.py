@@ -1,10 +1,11 @@
 """Module for the opus resource."""
 
+from http import HTTPStatus
 from json import dumps
 
 from flask import request
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
-from flask_restx import Resource, abort, marshal
+from flask_restx import Resource, marshal
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import delete, select
 
@@ -14,16 +15,10 @@ from ...models.data.opus import Opus
 from ...models.data.part import Part
 from ...models.users import User
 from ...user_api import RoleEnum, has_roles
+from ...util import abort
 from . import api
 from .backup import to_backup_json
-from .models import (
-    opus_post,
-    opus_put,
-    opus_small,
-    opus_small_get,
-    part_get,
-    part_post,
-)
+from .models import opus_post, opus_put, opus_small, opus_small_get, part_get, part_post
 
 ns = api.namespace("opus", description="Resource for opuses.", path="/opuses")
 
@@ -38,7 +33,7 @@ class OpusListResource(Resource):
         return db.session.execute(q).scalars().all()
 
     @ns.doc(model=opus_small_get, expect=[opus_post], validate=True)
-    @ns.response(409, "Name is not unique.")
+    @ns.response(HTTPStatus.CONFLICT, "Name is not unique.")
     @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def post(self):
@@ -55,36 +50,37 @@ class OpusListResource(Resource):
                 err = err.orig
             message = str(err)
             if "UNIQUE constraint failed" in message:
-                abort(409, "Name is not unique!")
-            abort(500, str(err))
+                abort(HTTPStatus.CONFLICT, "Name is not unique!")
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR, str(err))
 
 
 @ns.route("/<int:id>/")
 class OpusResource(Resource):
 
     @ns.marshal_with(opus_small_get)
-    @ns.response(404, "Opus not found.")
+    @ns.response(HTTPStatus.NOT_FOUND, "Opus not found.")
     @jwt_required()
     def get(self, id):
         opus = Opus.get_by_id(id)
         if opus is None:
-            abort(404, "Requested opus not found!")
+            abort(HTTPStatus.NOT_FOUND, "Requested opus not found!")
         return opus
 
     @ns.doc(model=opus_small_get, expect=[opus_put], validate=True)
-    @ns.response(404, "Opus not found.")
+    @ns.response(HTTPStatus.NOT_FOUND, "Opus not found.")
     @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def put(self, id):
         opus = Opus.get_by_id(id)
         if opus is None:
-            abort(404, "Requested opus not found!")
+            abort(HTTPStatus.NOT_FOUND, "Requested opus not found!")
         new_values = request.get_json()
 
         try:
             opus.update(new_values)
             username = get_jwt_identity()
             user = User.get_user_by_name(username)
+            assert user is not None  # JWT setup is broken if this fails
             del_q = delete(History).where(
                 History.user_id == user.id,
                 History.method == MethodEnum.update,
@@ -101,23 +97,21 @@ class OpusResource(Resource):
                 err = err.orig
             message = str(err)
             if "UNIQUE constraint failed" in message:
-                abort(409, "Name is not unique!")
-            abort(500, str(err))
+                abort(HTTPStatus.CONFLICT, "Name is not unique!")
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR, str(err))
 
-    @ns.response(404, "Opus not found.")
+    @ns.response(HTTPStatus.NOT_FOUND, "Opus not found.")
     @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def delete(self, id):
         opus = Opus.get_by_id(id)
         if opus is None:
-            abort(404, "Requested opus not found!")
+            abort(HTTPStatus.NOT_FOUND, "Requested opus not found!")
         if RoleEnum.admin.name not in get_jwt().get(
             "user_claims", []
-        ) and not History.isOwner(
-            opus
-        ):  # FIXME claim
+        ) and not History.isOwner(opus):
             abort(
-                403,
+                HTTPStatus.FORBIDDEN,
                 "Only the owner of a resource and Administrators can delete a resource!",
             )
         hist = History(MethodEnum.delete, opus)

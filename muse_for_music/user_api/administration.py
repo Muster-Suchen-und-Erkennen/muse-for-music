@@ -1,12 +1,15 @@
+from http import HTTPStatus
+
 from flask import request
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from flask_restx import Resource, abort, fields, marshal
+from flask_restx import Resource, fields, marshal
 from sqlalchemy.sql import select, update
 
 from .. import db
 from ..hal_field import HaLUrl, NestedFields, UrlData
 from ..models.data.history import History
 from ..models.users import RoleEnum, User, UserRole
+from ..util import abort
 from . import has_roles
 from . import user_api as api
 from .authentication import user_auth_model
@@ -122,13 +125,13 @@ class UserResource(Resource):
     @has_roles(roles=[RoleEnum.admin])
     def post(self, username: str):
         if username == get_jwt_identity():
-            abort(400, "Admins cant reset their own password.")
+            abort(HTTPStatus.BAD_REQUEST, "Admins cant reset their own password.")
         user = User.get_user_by_name(username)
         if user is None:
             abort()
         password = api.payload.get("password", None)
         if password is None:
-            abort(400, "Password must not be empty!")
+            abort(HTTPStatus.BAD_REQUEST, "Password must not be empty!")
         user.set_password(password)
         user.deleted = False
         db.session.add(user)
@@ -146,13 +149,13 @@ class UserResource(Resource):
     @has_roles(roles=[RoleEnum.admin])
     def delete(self, username: str):
         if username == get_jwt_identity():
-            abort(400, "User can NOT delete itself!")
+            abort(HTTPStatus.BAD_REQUEST, "User can NOT delete itself!")
         user = User.get_user_by_name(username)
         if user is None:
             abort()
         if request.args.get("with-history", "false") == "true":
             if not user.deleted:
-                abort(400, "Can not delete History of active user!")
+                abort(HTTPStatus.BAD_REQUEST, "Can not delete History of active user!")
             update_q = (
                 update(History).where(History.user_id == user.id).values(user_id=None)
             )
@@ -199,7 +202,10 @@ class UserRoleResource(Resource):
     def delete(self, username: str):
         if username == get_jwt_identity():
             if api.payload.get("role", None) == RoleEnum.admin.name:
-                abort(400, "Admin user can NOT remove admin role on itself!")
+                abort(
+                    HTTPStatus.BAD_REQUEST,
+                    "Admin user can NOT remove admin role on itself!",
+                )
         user = User.get_user_by_name(username)
         if user is None:
             abort()

@@ -6,10 +6,8 @@ from ... import db
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 from ..taxonomies import (
     Akkord,
-    AnzahlMelodietoene,
     Dissonanzen,
     Dissonanzgrad,
-    Frequenz,
     Grundton,
     HarmonischeDichte,
     HarmonischeEntwicklung,
@@ -50,16 +48,22 @@ class Harmonics(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
     degree_of_dissonance_id: MappedColumn[int | None] = db.Column(
         db.Integer, db.ForeignKey(Dissonanzgrad.id)
     )
-    numeric_degree_of_dissonance = db.Column(db.Float, nullable=True)
+    numeric_degree_of_dissonance: MappedColumn[float | None] = db.Column(
+        db.Float, nullable=True
+    )
     harmonic_density_id: MappedColumn[int | None] = db.Column(
         db.Integer, db.ForeignKey(HarmonischeDichte.id)
     )
-    numeric_harmonic_density = db.Column(db.Float, nullable=True)
+    numeric_harmonic_density: MappedColumn[float | None] = db.Column(
+        db.Float, nullable=True
+    )
     harmonic_complexity_id: MappedColumn[int | None] = db.Column(
         db.Integer, db.ForeignKey(HarmonischeKomplexitaet.id)
     )
-    numeric_harmonic_complexity = db.Column(db.Float, nullable=True)
-    harmonic_analyse = db.Column(db.Text, nullable=True)
+    numeric_harmonic_complexity: MappedColumn[float | None] = db.Column(
+        db.Float, nullable=True
+    )
+    harmonic_analyse: MappedColumn[str | None] = db.Column(db.Text, nullable=True)
 
     # harmonische_funktion = relationship('HarmonischeFunktionVerwandschaft', lazy='selectin')
     degree_of_dissonance: Mapped[Dissonanzgrad] = relationship(

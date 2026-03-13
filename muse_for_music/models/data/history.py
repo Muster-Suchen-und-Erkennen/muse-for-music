@@ -1,4 +1,5 @@
 import enum
+from datetime import datetime
 from json import dumps, loads
 from typing import Union
 
@@ -64,11 +65,18 @@ class History(db.Model):
         resource: Union[Person, Opus, Part, SubPart, Voice],
         user: Union[str, User, None] = None,
     ):
+        _user_orig = user
         if user is None:
             user = get_jwt_identity()
         if isinstance(user, str):
             user = User.get_user_by_name(user)
-        assert user is not None
+        if user is None:
+            extra = f"(user={_user_orig})"
+            if _user_orig is None:
+                extra = f"(get_jwt_identity()={get_jwt_identity()})"
+            raise ValueError(
+                f"Could not find a user to associate the history entry with. {extra}"
+            )
         self.user = user
         self.method = method
         if method == MethodEnum.create:
@@ -141,9 +149,9 @@ class History(db.Model):
 
 class Backup(db.Model):
     id: MappedColumn[int] = db.Column(db.Integer, primary_key=True)
-    time = db.Column(db.DateTime, server_default=func.now())
-    type = db.Column(db.Enum(TypeEnum))
-    resource = db.Column(db.Text())
+    time: MappedColumn[datetime] = db.Column(db.DateTime, server_default=func.now())
+    type: MappedColumn[TypeEnum] = db.Column(db.Enum(TypeEnum))
+    resource: MappedColumn[str] = db.Column(db.Text())
 
     def __init__(self, resource_type: TypeEnum, resource: str):
         self.type = resource_type

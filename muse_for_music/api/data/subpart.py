@@ -1,10 +1,11 @@
 """Module for the subparts resource."""
 
+from http import HTTPStatus
 from json import dumps
 
 from flask import request
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
-from flask_restx import Resource, abort, marshal
+from flask_restx import Resource, marshal
 from sqlalchemy.sql import delete, select
 
 from ... import db
@@ -13,6 +14,7 @@ from ...models.data.subpart import SubPart
 from ...models.data.voice import Voice
 from ...models.users import User
 from ...user_api import RoleEnum, has_roles
+from ...util import abort
 from . import api
 from .backup import to_backup_json
 from .models import subpart_get, subpart_put, voice_get, voice_post, voice_put
@@ -34,22 +36,22 @@ class SubPartListResource(Resource):
 class SubPartResource(Resource):
 
     @ns.marshal_with(subpart_get)
-    @ns.response(404, "Subpart not found.")
+    @ns.response(HTTPStatus.NOT_FOUND, "Subpart not found.")
     @jwt_required()
     def get(self, subpart_id):
         subpart = SubPart.get_by_id(subpart_id)
         if subpart is None:
-            abort(404, "Requested subpart not found!")
+            abort(HTTPStatus.NOT_FOUND, "Requested subpart not found!")
         return subpart
 
     @ns.doc(model=subpart_get, expect=[subpart_put], validate=True)
-    @ns.response(404, "Subpart not found.")
+    @ns.response(HTTPStatus.NOT_FOUND, "Subpart not found.")
     @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def put(self, subpart_id):
         subpart = SubPart.get_by_id(subpart_id)
         if subpart is None:
-            abort(404, "Requested subpart not found!")
+            abort(HTTPStatus.NOT_FOUND, "Requested subpart not found!")
         assert subpart is not None
 
         new_values = request.get_json()
@@ -71,21 +73,19 @@ class SubPartResource(Resource):
         db.session.commit()
         return marshal(subpart, subpart_get)
 
-    @ns.response(404, "Subpart not found.")
+    @ns.response(HTTPStatus.NOT_FOUND, "Subpart not found.")
     @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def delete(self, subpart_id):
         subpart = SubPart.get_by_id(subpart_id)
         if subpart is None:
-            abort(404, "Requested subpart not found!")
+            abort(HTTPStatus.NOT_FOUND, "Requested subpart not found!")
         assert subpart is not None
         if RoleEnum.admin.name not in get_jwt().get(
             "user_claims", []
-        ) and not History.isOwner(
-            subpart
-        ):  # FIXME claim
+        ) and not History.isOwner(subpart):
             abort(
-                403,
+                HTTPStatus.FORBIDDEN,
                 "Only the owner of a resource and Administrators can delete a resource!",
             )
         hist = History(MethodEnum.delete, subpart)
@@ -100,23 +100,23 @@ class SubPartResource(Resource):
 class SubPartVoiceListResource(Resource):
 
     @ns.marshal_list_with(voice_get)
-    @ns.response(404, "Subpart not found.")
+    @ns.response(HTTPStatus.NOT_FOUND, "Subpart not found.")
     @jwt_required()
     def get(self, subpart_id):
         subpart = SubPart.get_by_id(subpart_id)
         if subpart is None:
-            abort(404, "Requested subpart not found!")
+            abort(HTTPStatus.NOT_FOUND, "Requested subpart not found!")
         assert subpart is not None
         return subpart.voices
 
     @ns.doc(model=voice_get, expect=[voice_post], validate=True)
-    @ns.response(404, "Subpart not found.")
+    @ns.response(HTTPStatus.NOT_FOUND, "Subpart not found.")
     @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def post(self, subpart_id):
         subpart = SubPart.get_by_id(subpart_id)
         if subpart is None:
-            abort(404, "Requested subpart not found!")
+            abort(HTTPStatus.NOT_FOUND, "Requested subpart not found!")
         assert subpart is not None
 
         new_values = request.get_json()
@@ -133,23 +133,23 @@ class SubPartVoiceListResource(Resource):
 class SubPartVoiceResource(Resource):
 
     @ns.marshal_with(voice_get)
-    @ns.response(404, "voice not found.")
+    @ns.response(HTTPStatus.NOT_FOUND, "voice not found.")
     @jwt_required()
     def get(self, subpart_id, voice_id):
         voice = Voice.get_by_id(voice_id)
         if voice is None:
-            abort(404, "Requested voice not found!")
+            abort(HTTPStatus.NOT_FOUND, "Requested voice not found!")
         assert voice is not None
         return voice
 
     @ns.doc(model=voice_get, expect=[voice_put], validate=True)
-    @ns.response(404, "voice not found.")
+    @ns.response(HTTPStatus.NOT_FOUND, "voice not found.")
     @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def put(self, subpart_id, voice_id):
         voice = Voice.get_by_id(voice_id)
         if voice is None:
-            abort(404, "Requested voice not found!")
+            abort(HTTPStatus.NOT_FOUND, "Requested voice not found!")
         assert voice is not None
 
         new_values = request.get_json()
@@ -169,21 +169,19 @@ class SubPartVoiceResource(Resource):
         db.session.commit()
         return marshal(voice, voice_get)
 
-    @ns.response(404, "voice not found.")
+    @ns.response(HTTPStatus.NOT_FOUND, "voice not found.")
     @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def delete(self, subpart_id, voice_id):
         voice = Voice.get_by_id(voice_id)
         if voice is None:
-            abort(404, "Requested voice not found!")
+            abort(HTTPStatus.NOT_FOUND, "Requested voice not found!")
         assert voice is not None
         if RoleEnum.admin.name not in get_jwt().get(
             "user_claims", []
-        ) and not History.isOwner(
-            voice
-        ):  # FIXME claim
+        ) and not History.isOwner(voice):
             abort(
-                403,
+                HTTPStatus.FORBIDDEN,
                 "Only the owner of a resource and Administrators can delete a resource!",
             )
         hist = History(MethodEnum.delete, voice)

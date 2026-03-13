@@ -46,8 +46,8 @@ def apply_additional_db_config(app):
                 cursor.close()
 
 
-def create_app():
-    FLASK_STATIC_DIGEST = FlaskStaticDigest()  # type: FlaskStaticDigest
+def create_app():  # noqa: C901
+    FLASK_STATIC_DIGEST = FlaskStaticDigest()
 
     instance_path: str | None = environ.get("INSTANCE_PATH", None)
     if instance_path:
@@ -56,9 +56,7 @@ def create_app():
 
     # Setup Config
 
-    app = Flask(
-        __name__, instance_relative_config=True, instance_path=instance_path
-    )  # type: Flask
+    app = Flask(__name__, instance_relative_config=True, instance_path=instance_path)
     makedirs(app.instance_path, exist_ok=True)
     app.config["LOG_PATH"] = app.instance_path
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///{}/test.db".format(

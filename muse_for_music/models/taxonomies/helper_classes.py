@@ -4,8 +4,8 @@ from csv import DictReader, DictWriter
 from logging import Logger
 from typing import ClassVar, List, Sequence, Type, Union
 
+from sqlalchemy.orm import Mapped, MappedColumn
 from sqlalchemy.sql import select
-from sqlalchemy.orm import MappedColumn, Mapped
 from typing_extensions import Self
 
 from ... import db

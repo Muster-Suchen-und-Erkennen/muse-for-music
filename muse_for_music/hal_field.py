@@ -15,7 +15,7 @@ from flask_restx.fields import (
 )
 
 # monkeypatch flask restplus to allow custom fields
-if True:
+if True:  # noqa: C901
     old_init = Raw.__init__
 
     @wraps(old_init)
@@ -35,7 +35,7 @@ if True:
             "x-" + k: v for k, v in kwargs.items() if k not in std_args
         }
 
-    Raw.__init__ = newInit
+    Raw.__init__ = newInit  # type: ignore
 
     old_schema = Raw.schema
 
@@ -58,7 +58,7 @@ if True:
             parent_model = model.get_parent(parent)
             ancestor_field_order.update(_get_ancestor_field_order(parent_model))
             order_offset = len(ancestor_field_order) + 1
-            for i, name in enumerate(parent_model.keys()):  # FIXME: check!
+            for i, name in enumerate(parent_model.keys()):
                 if name not in ancestor_field_order:
                     ancestor_field_order[name] = i + order_offset
 
@@ -71,7 +71,7 @@ if True:
         ancestor_field_order = _get_ancestor_field_order(self)
         order_offset = len(ancestor_field_order) + 1
 
-        for i, (name, field) in enumerate(self.items()):  # FIXME: check!
+        for i, (name, field) in enumerate(self.items()):
             field = instance(field)
             properties[name] = field.__schema__
             if name in ancestor_field_order:
@@ -93,7 +93,7 @@ if True:
             }
         )
 
-    setattr(Model, "_schema", property(_schema))
+    Model._schema = property(_schema)  # type: ignore
 
 
 class NestedFields(Nested):
@@ -101,13 +101,13 @@ class NestedFields(Nested):
     def __init__(self, model, **kwargs):
         super().__init__(model=model, **kwargs)
 
-    def output(self, key, obj, ordered=False):
+    def output(self, key, obj, ordered=False, **kwargs):
         return marshal(obj, self.nested)
 
 
 class NestedModel:
 
-    def __init__(self, model, attribute: str = None, as_list: bool = False):
+    def __init__(self, model, attribute: str | None = None, as_list: bool = False):
         self.model = model
         self.attribute = attribute
         self.as_list = as_list
@@ -126,7 +126,7 @@ class EmbeddedFields(Raw):
     def nested_model(self, name):
         return self.embedded_models[name].nested
 
-    def output(self, key, obj, orderes=False):
+    def output(self, key, obj, orderes=False, **kwargs):
         data = {}
 
         for name in self.embedded_models:
@@ -166,15 +166,19 @@ class UrlData:
         endpoint: str,
         absolute=False,
         scheme=None,
-        url: str = None,
-        title: str = None,
-        name: str = None,
+        url: str | None = None,
+        title: str | None = None,
+        name: str | None = None,
         templated: bool = False,
-        url_data: dict = {},
-        path_variables: list = [],
-        hashtag: str = None,
+        url_data: dict | None = None,
+        path_variables: list | None = None,
+        hashtag: str | None = None,
         force_trailing_slash: bool = True,
     ):
+        if url_data is None:
+            url_data = {}
+        if path_variables is None:
+            path_variables = []
         self.endpoint = endpoint
         self.absolute = absolute
         self.scheme = scheme
@@ -209,6 +213,10 @@ class UrlData:
                 return None
             url_data[key] = value
         endpoint = self.endpoint if self.endpoint is not None else request.endpoint
+        if endpoint is None:
+            raise ValueError(
+                "self.endpoint must not be None when used outside of a request context!"
+            )
         o = urlparse(url_for(endpoint, _external=self.absolute, **url_data))
         path = ""
         if o.path.endswith("/") or not self.force_trailing_slash:
@@ -241,10 +249,12 @@ class HaLUrl(StringMixin, Raw):
     def output(self, key, obj, ordered=False, **kwargs):
         output = {}
         if self.is_list:
+            assert isinstance(self.url_data, list)
             output = []
             for data in self.url_data:
                 output.append(self.generate_link(data, obj))
         else:
+            assert isinstance(self.url_data, UrlData)
             output = self.generate_link(self.url_data, obj)
 
         return output

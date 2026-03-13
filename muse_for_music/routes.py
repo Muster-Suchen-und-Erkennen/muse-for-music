@@ -7,7 +7,7 @@ from .api import register_api
 from .user_api import register_user_api
 
 
-def register_routes(app: Flask, flask_static_digest):
+def register_routes(app: Flask, flask_static_digest):  # noqa: C901
 
     register_user_api(app)
     register_api(app)

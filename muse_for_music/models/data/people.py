@@ -1,5 +1,4 @@
 import enum
-from datetime import date, datetime
 from typing import Union
 
 from sqlalchemy.orm import MappedColumn
@@ -34,14 +33,16 @@ class Person(db.Model, GetByID, UpdateableModelMixin):
     def __init__(
         self,
         name: str,
-        gender: Union[str, GenderEnum],
+        gender: Union[int, str, GenderEnum],
         birth_date: int = -1,
         death_date: int = -1,
-        nationality: str = None,
+        nationality: str | None = None,
         **kwargs,
     ) -> None:
         self.name = name
         if isinstance(gender, int):
+            gender = GenderEnum(gender)
+        elif isinstance(gender, str):
             gender = GenderEnum[gender]
         gender = GenderEnum.male
         self.gender = gender

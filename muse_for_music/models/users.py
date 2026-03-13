@@ -1,8 +1,8 @@
 import enum
 from typing import List, Optional
 
+from sqlalchemy.orm import Mapped, MappedColumn, relationship
 from sqlalchemy.sql import select
-from sqlalchemy.orm import relationship, Mapped, MappedColumn
 
 from .. import bcrypt, db
 

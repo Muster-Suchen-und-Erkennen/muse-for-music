@@ -1,10 +1,11 @@
 """Module for the persons resource."""
 
+from http import HTTPStatus
 from json import dumps
 
 from flask import request
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from flask_restx import Resource, abort, marshal
+from flask_restx import Resource, marshal
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import delete, select
 
@@ -15,6 +16,7 @@ from ...models.data.opus import Opus
 from ...models.data.people import GenderEnum, Person
 from ...models.users import User
 from ...user_api import RoleEnum, has_roles
+from ...util import abort
 from .. import api
 from .backup import to_backup_json
 from .models import person_get, person_post, person_put
@@ -26,7 +28,7 @@ def check_if_person_exists(name):
     q = select(Person).where(Person.name == name).limit(1)
     result = db.session.execute(select(q.exists())).scalar_one_or_none()
     if bool(result):
-        abort(409, 'Name "{}" is already in use!'.format(name))
+        abort(HTTPStatus.CONFLICT, 'Name "{}" is already in use!'.format(name))
 
 
 def check_if_person_is_in_use(person: Person):
@@ -34,14 +36,14 @@ def check_if_person_is_in_use(person: Person):
     used_as_composer = db.session.execute(select(q.exists())).scalar_one_or_none()
     if bool(used_as_composer):
         abort(
-            409,
+            HTTPStatus.CONFLICT,
             'Can not delete Person "{}" beacause it is still in use!'.format(person.name),
         )
     q = select(PersonToCitations).where(PersonToCitations.person == person).limit(1)
     used_as_citation = db.session.execute(select(q.exists())).scalar_one_or_none()
     if bool(used_as_citation):
         abort(
-            409,
+            HTTPStatus.CONFLICT,
             'Can not delete Person "{}" beacause it is still in use!'.format(person.name),
         )
 
@@ -56,7 +58,7 @@ class PersonListResource(Resource):
         return db.session.execute(q).scalars().all()
 
     @ns.doc(model=person_get, expect=[person_post], validate=True)
-    @ns.response(409, "Name is not unique.")
+    @ns.response(HTTPStatus.CONFLICT, "Name is not unique.")
     @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def post(self):
@@ -72,30 +74,30 @@ class PersonListResource(Resource):
             db.session.rollback()
             message = str(err)
             if "UNIQUE constraint failed" in message:
-                abort(409, "Name is not unique!")
-            abort(500, str(err))
+                abort(HTTPStatus.CONFLICT, "Name is not unique!")
+            abort(HTTPStatus.INTERNAL_SERVER_ERROR, str(err))
 
 
 @ns.route("/<int:id>/")
 class PersonResource(Resource):
 
     @ns.marshal_with(person_get)
-    @ns.response(404, "Person not found.")
+    @ns.response(HTTPStatus.NOT_FOUND, "Person not found.")
     @jwt_required()
     def get(self, id):
         person = Person.get_by_id(id)
         if person is None:
-            abort(404, "Requested person not found!")
+            abort(HTTPStatus.NOT_FOUND, "Requested person not found!")
         return person
 
     @ns.doc(model=person_get, expect=[person_put], validate=True)
-    @ns.response(404, "Person not found.")
+    @ns.response(HTTPStatus.NOT_FOUND, "Person not found.")
     @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def put(self, id):
         person = Person.get_by_id(id)
         if person is None:
-            abort(404, "Requested person not found!")
+            abort(HTTPStatus.NOT_FOUND, "Requested person not found!")
         new_values = request.get_json()
 
         if person.name != new_values["name"]:
@@ -118,6 +120,7 @@ class PersonResource(Resource):
         db.session.add(person)
         username = get_jwt_identity()
         user = User.get_user_by_name(username)
+        assert user is not None  # JWT setup is broken if this fails
         del_q = delete(History).where(
             History.user_id == user.id,
             History.method == MethodEnum.update,
@@ -129,13 +132,13 @@ class PersonResource(Resource):
         db.session.commit()
         return marshal(person, person_get)
 
-    @ns.response(404, "Person not found.")
+    @ns.response(HTTPStatus.NOT_FOUND, "Person not found.")
     @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def delete(self, id):
         person = Person.get_by_id(id)
         if person is None:
-            abort(404, "Requested person not found!")
+            abort(HTTPStatus.NOT_FOUND, "Requested person not found!")
         check_if_person_is_in_use(person)
         hist = History(MethodEnum.delete, person)
         db.session.add(hist)

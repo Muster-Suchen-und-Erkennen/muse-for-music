@@ -20,14 +20,14 @@ def to_backup_json(obj) -> dict | None:
 
 @to_backup_json.register(Person)
 def person_to_backup_json(obj: Person) -> dict | None:
-    serializable = marshal(obj, person_get)
+    serializable = marshal(obj, person_get)  # type: ignore
     assert isinstance(serializable, dict)  # type check assert
     return serializable
 
 
 @to_backup_json.register(Opus)
 def opus_to_backup_json(obj: Opus) -> dict | None:
-    serializable: dict = marshal(obj, opus_get)
+    serializable: dict = marshal(obj, opus_get)  # type: ignore
     assert isinstance(serializable, dict)  # type check assert
     serializable["parts"] = [to_backup_json(part) for part in obj.parts]
     return serializable
@@ -35,7 +35,7 @@ def opus_to_backup_json(obj: Opus) -> dict | None:
 
 @to_backup_json.register(Part)
 def part_to_backup_json(obj: Part) -> dict | None:
-    serializable: dict = marshal(obj, part_get)
+    serializable: dict = marshal(obj, part_get)  # type: ignore
     assert isinstance(serializable, dict)  # type check assert
     serializable["subparts"] = [to_backup_json(subpart) for subpart in obj.subparts]
     return serializable
@@ -43,7 +43,7 @@ def part_to_backup_json(obj: Part) -> dict | None:
 
 @to_backup_json.register(SubPart)
 def subpart_to_backup_json(obj: SubPart) -> dict | None:
-    serializable: dict = marshal(obj, subpart_get)
+    serializable: dict = marshal(obj, subpart_get)  # type: ignore
     assert isinstance(serializable, dict)  # type check assert
     serializable["voices"] = [to_backup_json(voice) for voice in obj.voices]
     return serializable

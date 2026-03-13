@@ -20,10 +20,18 @@ class Composition(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
     __tablename__ = "composition"
     id = db.Column(db.Integer, primary_key=True)
 
-    nr_repetitions_1_2 = db.Column(db.Integer, server_default=db.text("'0'"))
-    nr_repetitions_3_4 = db.Column(db.Integer, server_default=db.text("'0'"))
-    nr_repetitions_5_6 = db.Column(db.Integer, server_default=db.text("'0'"))
-    nr_repetitions_7_10 = db.Column(db.Integer, server_default=db.text("'0'"))
+    nr_repetitions_1_2: MappedColumn[int] = db.Column(
+        db.Integer, server_default=db.text("'0'")
+    )
+    nr_repetitions_3_4: MappedColumn[int] = db.Column(
+        db.Integer, server_default=db.text("'0'")
+    )
+    nr_repetitions_5_6: MappedColumn[int] = db.Column(
+        db.Integer, server_default=db.text("'0'")
+    )
+    nr_repetitions_7_10: MappedColumn[int] = db.Column(
+        db.Integer, server_default=db.text("'0'")
+    )
 
     # backrefs
     _techniques: Mapped[list["CompositionTechniqueToComposition"]] = relationship(
@@ -110,15 +118,15 @@ class MusicialSequence(db.Model, GetByID):
     composition_id: MappedColumn[int] = db.Column(
         db.Integer, db.ForeignKey(Composition.id)
     )
-    tonal_corrected = db.Column(db.Boolean, default=False)
-    exact_repetition = db.Column(db.Boolean, default=False)
+    tonal_corrected: MappedColumn[bool] = db.Column(db.Boolean, default=False)
+    exact_repetition: MappedColumn[bool] = db.Column(db.Boolean, default=False)
     starting_interval_id: MappedColumn[int | None] = db.Column(
         db.Integer, db.ForeignKey(Intervall.id)
     )
     flow_id: MappedColumn[int | None] = db.Column(
         db.Integer, db.ForeignKey(BewegungImTonraum.id)
     )
-    beats = db.Column(db.Integer)
+    beats: MappedColumn[int | None] = db.Column(db.Integer)
 
     starting_interval: Mapped[Intervall] = relationship(Intervall, lazy="selectin")
     flow: Mapped[BewegungImTonraum] = relationship(BewegungImTonraum, lazy="selectin")
@@ -139,20 +147,31 @@ class MusicialSequence(db.Model, GetByID):
         if isinstance(composition, Composition):
             self.composition = composition
         else:
-            self.composition = Composition.get_by_id(composition)
+            found_composition = Composition.get_by_id(composition)
+            if found_composition is None:
+                raise KeyError(
+                    f"Did not find composition with Compisition.id=={composition}!"
+                )
+            self.composition = found_composition
         self.update(starting_interval, flow, beats, tonal_corrected, exact_repetition)
 
     def update(
         self,
-        starting_interval,
-        flow,
+        starting_interval: int | dict | Intervall,
+        flow: int | dict | BewegungImTonraum,
         beats: int,
         tonal_corrected: bool,
         exact_repetition: bool,
         **kwargs,
     ):
-        self.starting_interval = Intervall.get_by_id_or_dict(starting_interval)
-        self.flow = BewegungImTonraum.get_by_id_or_dict(flow)
+        found_intervall = Intervall.get_by_id_or_dict(starting_interval)
+        if found_intervall is None:
+            raise KeyError(f"Did not find intervall matching '{starting_interval}'!")
+        found_flow = BewegungImTonraum.get_by_id_or_dict(flow)
+        if found_flow is None:
+            raise KeyError(f"Did not find BewegungImTonraum matching '{flow}'!")
+        self.starting_interval = found_intervall
+        self.flow = found_flow
         self.beats = beats
         self.tonal_corrected = tonal_corrected
         self.exact_repetition = exact_repetition

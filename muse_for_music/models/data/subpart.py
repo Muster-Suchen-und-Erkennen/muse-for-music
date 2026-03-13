@@ -3,7 +3,6 @@ from typing import Union
 from sqlalchemy.orm import Mapped, MappedColumn, relationship
 
 from ... import db
-
 from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
 from ..taxonomies import Anteil, AuftretenWerkausschnitt
 from .dynamic import Dynamic
@@ -99,7 +98,10 @@ class SubPart(
         if isinstance(part_id, Part):
             self.part = part_id
         else:
-            self.part = Part.get_by_id(part_id)
+            found_part = Part.get_by_id(part_id)
+            if found_part is None:
+                raise KeyError(f"Did not find a part with Part.id=={part_id}.")
+            self.part = found_part
         self.label = label
 
         self.satz = Satz()

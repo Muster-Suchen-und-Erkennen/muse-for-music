@@ -1,5 +1,7 @@
 """Root Module for the API."""
 
+from http import HTTPStatus
+
 from flask import Blueprint, Flask
 from flask_jwt_extended.exceptions import NoAuthorizationError
 from flask_restx import Api
@@ -35,14 +37,17 @@ api.init_app(api_blueprint)
 @api.errorhandler(ValidationError)
 def handle_validation_erorr(error: ValidationError):
     """Validation failed."""
-    return {"errors": error.msg, "message": "Input payload validation failed"}
+    return {
+        "errors": error.msg,
+        "message": "Input payload validation failed",
+    }, HTTPStatus.BAD_REQUEST
 
 
 @api.errorhandler(NoAuthorizationError)
 def missing_header(error):
     """User is not authorized for this operation."""
     log_unauthorized(str(error))
-    return {"message": str(error)}, 401
+    return {"message": str(error)}, HTTPStatus.UNAUTHORIZED
 
 
 def register_api(app: Flask):

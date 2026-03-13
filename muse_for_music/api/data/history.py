@@ -1,11 +1,14 @@
+from http import HTTPStatus
+
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
-from flask_restx import Resource, abort
+from flask_restx import Resource
 from sqlalchemy.sql import select
 
 from ... import db
 from ...models.data.history import History, MethodEnum
 from ...models.users import User
 from ...user_api import RoleEnum, has_roles
+from ...util import abort
 from . import api
 from .models import history_get
 
@@ -31,10 +34,14 @@ class UserHistoryResource(Resource):
     @jwt_required()
     def get(self, username):
         if username != get_jwt_identity():
-            claims = get_jwt().get("user_claims", [])  # FIXME claim
+            claims = get_jwt().get("user_claims", [])
             if RoleEnum.admin.name not in claims:
-                abort(403, "Only admin users can access history of other users.")
+                abort(
+                    HTTPStatus.FORBIDDEN,
+                    "Only admin users can access history of other users.",
+                )
         user = User.get_user_by_name(username)
+        assert user is not None  # JWT setup is broken if this fails
         q = (
             select(History)
             .where(History.user_id == user.id)

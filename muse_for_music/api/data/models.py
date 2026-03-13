@@ -52,7 +52,7 @@ class EnumField(fields.Raw, fields.StringMixin):
         schema = super().schema()
         schema.update(enum=enum)
         if enum and schema["example"] is None:
-            schema["example"] = enum[0]
+            schema["example"] = enum[0]  # type: ignore
         return schema
 
 
@@ -2384,7 +2384,7 @@ voice_put = api.inherit(
                     default="",
                     title="Intervallvektor",
                     description="[Prime, Sekunde, Terz, Quarte, Triton, Quinte, Sexte, Septime, Oktave, >Oktave]",
-                    pattern="\[(\s*[0-9]+\s*,)*(\s*[0-9]+\s*)\]",
+                    pattern=r"\[(\s*[0-9]+\s*,)*(\s*[0-9]+\s*)\]",
                     max_length=2048,
                     nullable=True,
                 ),
@@ -2536,7 +2536,7 @@ voice_get = api.inherit(
                     default="",
                     title="Intervallvektor",
                     description="[Prime, Sekunde, Terz, Quarte, Triton, Quinte, Sexte, Septime, Oktave, >Oktave]",
-                    pattern="\[(\s*[0-9]+\s*,)*(\s*[0-9]+\s*)\]",
+                    pattern=r"\[(\s*[0-9]+\s*,)*(\s*[0-9]+\s*)\]",
                     max_length=2048,
                     nullable=True,
                 ),

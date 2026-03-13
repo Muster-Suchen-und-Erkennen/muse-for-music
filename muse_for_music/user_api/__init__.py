@@ -1,4 +1,5 @@
 from functools import wraps
+from http import HTTPStatus
 from logging import DEBUG, Formatter, Logger, getLogger
 from logging.handlers import RotatingFileHandler
 from os import path
@@ -7,10 +8,11 @@ from typing import List
 from flask import Blueprint, Flask
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended.exceptions import NoAuthorizationError
-from flask_restx import Api, abort
+from flask_restx import Api
 
 from .. import jwt
 from ..models.users import RoleEnum, User
+from ..util import abort
 
 authorizations = {
     "jwt": {
@@ -49,7 +51,7 @@ def has_roles(roles: List[RoleEnum]):
                     claims,
                 )
                 abort(
-                    403,
+                    HTTPStatus.FORBIDDEN,
                     'Only members of the group(s) "{}" have access to this resource.'.format(
                         '", "'.join([role.name for role in roles])
                     ),
@@ -90,39 +92,39 @@ def load_user_claims(user: User):
 def expired_token(jwt_header, jwt_payload):
     message = "Token is expired."
     log_unauthorized(message)
-    abort(401, message)
+    abort(HTTPStatus.UNAUTHORIZED, message)
 
 
 @jwt.invalid_token_loader
 def invalid_token(message: str):
     log_unauthorized(message)
-    abort(401, message)
+    abort(HTTPStatus.UNAUTHORIZED, message)
 
 
 @jwt.unauthorized_loader
 def unauthorized(message: str):
     log_unauthorized(message)
-    abort(401, message)
+    abort(HTTPStatus.UNAUTHORIZED, message)
 
 
 @jwt.needs_fresh_token_loader
 def stale_token(jwt_header, jwt_payload):
     message = "The JWT Token is not fresh. Please request a new Token directly with the /auth resource."
     log_unauthorized(message)
-    abort(403, message)
+    abort(HTTPStatus.FORBIDDEN, message)
 
 
 @jwt.revoked_token_loader
 def revoked_token(jwt_header, jwt_payload):
     message = "The Token has been revoked."
     log_unauthorized(message)
-    abort(401, message)
+    abort(HTTPStatus.UNAUTHORIZED, message)
 
 
 @user_api.errorhandler(NoAuthorizationError)
 def missing_header(error):
     log_unauthorized(error.message)
-    return {"message": error.message}, 401
+    return {"message": error.message}, HTTPStatus.UNAUTHORIZED
 
 
 def log_unauthorized(message):

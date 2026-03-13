@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
@@ -5,10 +7,11 @@ from flask_jwt_extended import (
     get_jwt_identity,
     jwt_required,
 )
-from flask_restx import Resource, abort, fields
+from flask_restx import Resource, fields
 
 from .. import db
 from ..models.users import RoleEnum, User
+from ..util import abort
 from . import auth_logger
 from . import user_api as api
 
@@ -50,10 +53,10 @@ def login_user():
     user = User.get_user_by_name(username)
     if not user:
         auth_logger.debug('Attempted login with unknown username "%s".', username)
-        abort(401, "Wrong username or pasword.")
+        abort(HTTPStatus.UNAUTHORIZED, "Wrong username or pasword.")
     if not user.check_password(password):
         auth_logger.error('Attempted login with invalid password for user "%s"', username)
-        abort(401, "Wrong username or pasword.")
+        abort(HTTPStatus.UNAUTHORIZED, "Wrong username or pasword.")
 
     auth_logger.info('New login from user "%s"', username)
     return user
@@ -65,7 +68,7 @@ class Login(Resource):
 
     @api.doc(security=None)
     @api.marshal_with(jwt_response_full)
-    @api.response(401, "Wrong username or pasword.")
+    @api.response(HTTPStatus.UNAUTHORIZED, "Wrong username or pasword.")
     @api.expect(user_auth_model)
     def post(self):
         """Login with username and password to get a new token and refresh token."""
@@ -84,7 +87,7 @@ class FreshLogin(Resource):
 
     @api.doc(security=None)
     @api.marshal_with(jwt_response)
-    @api.response(401, "Wrong username or pasword.")
+    @api.response(HTTPStatus.UNAUTHORIZED, "Wrong username or pasword.")
     @api.expect(user_auth_model)
     def post(self):
         """Login with username and password to get a fresh token."""
@@ -102,16 +105,18 @@ class ChangePassword(Resource):
     """Resource to change user passsword."""
 
     @api.expect(password_change_model)
-    @api.response(401, "Not Authenticated")
+    @api.response(HTTPStatus.UNAUTHORIZED, "Not Authenticated")
     @jwt_required(fresh=True)
     def post(self):
         """Change user password."""
         user = User.get_user_by_name(get_jwt_identity())
+        if user is None:
+            abort()  # should not happen
         password = api.payload.get("password", None)
         if password is None:
-            abort(400, "Incorrect password or password_repeat.")
+            abort(HTTPStatus.BAD_REQUEST, "Incorrect password or password_repeat.")
         if password != api.payload.get("password_repeat", None):
-            abort(400, "Incorrect password or password_repeat.")
+            abort(HTTPStatus.BAD_REQUEST, "Incorrect password or password_repeat.")
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
@@ -122,7 +127,7 @@ class Check(Resource):
     """Resource to check access tokens."""
 
     @api.marshal_with(user_model)
-    @api.response(401, "Not Authenticated")
+    @api.response(HTTPStatus.UNAUTHORIZED, "Not Authenticated")
     @jwt_required()
     def get(self):
         """Check your current access token."""
@@ -138,15 +143,15 @@ class Refresh(Resource):
 
     @api.doc(security=["jwt-refresh"])
     @api.marshal_with(jwt_response)
-    @api.response(401, "Wrong username or pasword.")
+    @api.response(HTTPStatus.UNAUTHORIZED, "Wrong username or pasword.")
     @jwt_required(refresh=True)
     def post(self):
         """Create a new access token with a refresh token."""
         username = get_jwt_identity()
         user = User.get_user_by_name(username)
         if not user:
-            abort(401, "User doesn't exist.")
+            abort(HTTPStatus.UNAUTHORIZED, "User doesn't exist.")
         auth_logger.debug('User "%s" asked for a new access token.', username)
         new_token = create_access_token(identity=user, fresh=False)
         ret = {"access_token": new_token}
-        return ret, 200
+        return ret, HTTPStatus.OK

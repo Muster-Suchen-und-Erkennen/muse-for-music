@@ -18,7 +18,7 @@ from typing import (
 from flask import current_app
 from flask_restx.errors import ValidationError
 from flask_sqlalchemy.model import Model
-from sqlalchemy.orm import selectinload, MappedColumn
+from sqlalchemy.orm import MappedColumn, selectinload
 from sqlalchemy.sql import Select, select
 from typing_extensions import Self
 

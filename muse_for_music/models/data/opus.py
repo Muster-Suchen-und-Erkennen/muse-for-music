@@ -2,7 +2,6 @@ from sqlalchemy.orm import Mapped, MappedColumn, relationship
 from sqlalchemy.sql import select
 
 from ... import db
-
 from ..helper_classes import GetByID, UpdateableModelMixin
 from ..taxonomies import GattungNineteenthCentury, Grundton, Tonalitaet
 from .people import Person
@@ -38,15 +37,15 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
     composer_id: MappedColumn[int | None] = db.Column(
         db.Integer, db.ForeignKey(Person.id), nullable=True
     )
-    score_link = db.Column(db.Text, nullable=True)
-    first_printed_at = db.Column(db.String(191), nullable=True)
-    first_printed_in = db.Column(db.Integer, nullable=True)
-    composition_year = db.Column(db.Integer, nullable=True)
-    composition_place = db.Column(db.String(191), nullable=True)
-    first_played_at = db.Column(db.String(191), nullable=True)
-    first_played_in = db.Column(db.Integer, nullable=True)
-    notes = db.Column(db.Text, nullable=True)
-    movements = db.Column(db.Integer)
+    score_link: MappedColumn[str | None] = db.Column(db.Text, nullable=True)
+    first_printed_at: MappedColumn[str | None] = db.Column(db.String(191), nullable=True)
+    first_printed_in: MappedColumn[int | None] = db.Column(db.Integer, nullable=True)
+    composition_year: MappedColumn[int | None] = db.Column(db.Integer, nullable=True)
+    composition_place: MappedColumn[str | None] = db.Column(db.String(191), nullable=True)
+    first_played_at: MappedColumn[str | None] = db.Column(db.String(191), nullable=True)
+    first_played_in: MappedColumn[int | None] = db.Column(db.Integer, nullable=True)
+    notes: MappedColumn[str | None] = db.Column(db.Text, nullable=True)
+    movements: MappedColumn[int | None] = db.Column(db.Integer)
     genre_id: MappedColumn[int | None] = db.Column(
         db.Integer, db.ForeignKey(GattungNineteenthCentury.id, ondelete="RESTRICT")
     )
@@ -74,10 +73,10 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
 
     _eager_load = ["composer", "parts"]
 
-    def __init__(
+    def __init__(  # noqa: C901
         self,
         name: str,
-        composer: dict | int | None = None,
+        composer: Person | dict | int | None = None,
         movements: int = 1,
         printed: bool = False,
         **kwargs,
@@ -94,14 +93,18 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
                 setattr(self, key, kwargs[key])
 
         if composer:
-            composer_id = None
-            if isinstance(composer, int):
-                composer_id = composer
-            else:
-                composer_id = composer.get("id")
-            if composer_id is not None:
-                comp = Person.get_by_id(composer_id)
-                self.composer = comp
+            if isinstance(composer, Person):
+                self.composer = composer
+            elif isinstance(composer, int):
+                found_composer = Person.get_by_id(composer)
+                if found_composer is None:
+                    raise KeyError(f"Did not find person with Person.id=={composer}!")
+                self.composer = found_composer
+            elif isinstance(composer_id := composer.get("id"), int):
+                found_composer = Person.get_by_id(composer_id)
+                if found_composer is None:
+                    raise KeyError(f"Did not find person with Person.id=={composer_id}!")
+                self.composer = found_composer
             else:
                 self.composer = Person(**composer)
                 db.session.add(self.composer)
