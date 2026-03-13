@@ -37,20 +37,28 @@ from .tempo import *  # noqa
 from .voices import *  # noqa
 
 
-def generate_na_elements():
+def generate_na_elements(output: bool=False):
     """Generate all missing "na" elements."""
     taxonomies = get_taxonomies()
-    for taxonomy in taxonomies.values():
+    for name, taxonomy in taxonomies.items():
         try:
-            count_q = select(count(taxonomy))  # type: ignore
+            count_q = select(count(taxonomy.id))
             item_count = db.session.execute(count_q).scalar()
             if item_count == 0:
+                if output:
+                    click.echo(f'Skip NA item for "{name}" because it has no items.')
                 continue  # skip taxonomies without any entry
-        except Exception:
+        except Exception as err:
+            click.echo(f'Skip NA item for "{name}" because of an error.', err)
             continue  # skip non existing taxonomies
         na = taxonomy.not_applicable_item()
         if na is None:
+            if output:
+                click.echo(f'Add NA item for "{name}".')
             db.session.add(taxonomy(name="na", description=None))
+        else:
+            if output:
+                click.echo(f'"{name}" already has NA item.')
     db.session.commit()
 
 
@@ -87,7 +95,7 @@ def init_taxonomies(reload, folder_path: str):
         else:
             unmatched_csv_files.append(name)
     click.echo('Making sure every taxonomy has a "not applicable" element.')
-    generate_na_elements()
+    generate_na_elements(output=True)
     click.echo("Finished processing all taxonomies.")
     for name in unmatched_csv_files:
         click.echo('No taxonomy table found for name "{}"'.format(name))
@@ -98,7 +106,7 @@ def init_taxonomies(reload, folder_path: str):
 def add_na_elements():
     """Add all missing "na" elements."""
     click.echo('Making sure every taxonomy has a "not applicable" element.')
-    generate_na_elements()
+    generate_na_elements(output=True)
     click.echo("Finished processing all taxonomies.")
 
 
