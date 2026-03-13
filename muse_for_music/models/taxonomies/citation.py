@@ -81,6 +81,6 @@ class Tonmalerei(db.Model, TreeTaxonomy):
         lambda: Tonmalerei,
         passive_deletes="all",
         lazy="selectin",
-        join_depth=8,  # FIXME test!!!
+        join_depth=8,
         back_populates="parent",
     )
