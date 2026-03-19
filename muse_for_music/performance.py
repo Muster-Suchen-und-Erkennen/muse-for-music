@@ -37,7 +37,7 @@ class RequestPerformance:
         logger = getLogger("flask.app.perf")
         if self.duration > current_app.config.get("LONG_REQUEST_THRESHHOLD", 1):
             self.log_performance_record(logger.warning)
-        elif len(self.queries) > 15:
+        elif len(self.queries) > 100:
             self.log_performance_record(logger.warning)
         elif logger.getEffectiveLevel() <= INFO:
             self.log_performance_record(logger.info)
@@ -102,19 +102,30 @@ class RequestPerformance:
                 method=method,
                 url=url,
             )
+
+            threshold = current_app.config.get("LONG_REQUEST_THRESHHOLD", 1)
             methodToLogWith(log_msg)
             for q in self.queries:
-                if q.duration > current_app.config.get("LONG_REQUEST_THRESHHOLD", 1):
+                if q.duration > threshold:
                     log_msg_stmt = 'performance report: long query detected: duration {duration: 2.2f}s, statement "{statement}", params: {params}'.format(
                         duration=q.duration,
                         statement=q.statement,
                         params=q.params,
                     )
                     methodToLogWith(log_msg_stmt)
-            if len(self.queries) > 5:
-                queries = "\n\t".join(sorted(q.statement for q in self.queries))
+            if len(self.queries) > 100 or tot_query_duration > (threshold / 2):
+                query_tuples = sorted(
+                    (
+                        (q.duration * 1000, str(q.statement).replace("\n", " "), q.params)
+                        for q in self.queries
+                    ),
+                    key=lambda x: x[0],
+                )
+                queries = "\n\t".join(
+                    f"{q[0]: =7.2f}ms {q[1]} {q[2]}" for q in query_tuples
+                )
                 methodToLogWith(
-                    "performance report: too many queries {nr_queries}, url {method} {url}\n{queries}".format(
+                    "performance report: too many queries {nr_queries}, url {method} {url}\n\t{queries}".format(
                         queries=queries,
                         nr_queries=len(self.queries),
                         method=method,
