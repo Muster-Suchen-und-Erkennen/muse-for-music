@@ -8,7 +8,7 @@ from typing import Dict, Type
 import click
 from flask import current_app
 from flask.cli import with_appcontext
-from sqlalchemy.sql import select
+from sqlalchemy.sql import delete, select
 from sqlalchemy.sql.functions import count
 
 from .. import DB_CLI, DB_COMMAND_LOGGER, db
@@ -24,7 +24,7 @@ from .epoch import *  # noqa
 from .form import *  # noqa
 from .gattung import *  # noqa
 from .harmonics import *  # noqa
-from .helper_classes import Taxonomy  # noqa
+from .helper_classes import ListTaxonomy, Taxonomy, TreeTaxonomy  # noqa
 from .instruments import *  # noqa
 from .melody import *  # noqa
 from .misc import *  # noqa
@@ -37,7 +37,7 @@ from .tempo import *  # noqa
 from .voices import *  # noqa
 
 
-def generate_na_elements(output: bool=False):
+def generate_na_elements(output: bool = False):
     """Generate all missing "na" elements."""
     taxonomies = get_taxonomies()
     for name, taxonomy in taxonomies.items():
@@ -59,6 +59,30 @@ def generate_na_elements(output: bool=False):
         else:
             if output:
                 click.echo(f'"{name}" already has NA item.')
+    db.session.commit()
+
+
+def remove_unreachable_elements(output: bool = False):
+    taxonomies = get_taxonomies()
+    for name, taxonomy in taxonomies.items():
+        if not issubclass(taxonomy, TreeTaxonomy):
+            continue
+        root = taxonomy.get_root()
+        all_item_ids_q = select(taxonomy.id).where(taxonomy.name != "na")
+        all_item_ids = set(db.session.execute(all_item_ids_q).scalars().all())
+        stack = [root]
+        while stack:
+            current = stack.pop()
+            assert current is not None
+            all_item_ids.discard(current.id)
+            stack.extend(current.children)
+        if all_item_ids:
+            if output:
+                click.echo(
+                    f'Taxonomy "{name}" has {len(all_item_ids)} items that are not connected to the tree. Disconnected items: {all_item_ids}'
+                )
+            del_q = delete(taxonomy).where(taxonomy.id.in_(all_item_ids))
+            db.session.execute(del_q)
     db.session.commit()
 
 
@@ -96,6 +120,7 @@ def init_taxonomies(reload, folder_path: str):
             unmatched_csv_files.append(name)
     click.echo('Making sure every taxonomy has a "not applicable" element.')
     generate_na_elements(output=True)
+    remove_unreachable_elements(output=True)
     click.echo("Finished processing all taxonomies.")
     for name in unmatched_csv_files:
         click.echo('No taxonomy table found for name "{}"'.format(name))
@@ -108,6 +133,14 @@ def add_na_elements():
     click.echo('Making sure every taxonomy has a "not applicable" element.')
     generate_na_elements(output=True)
     click.echo("Finished processing all taxonomies.")
+
+
+@DB_CLI.cli.command("clean_disconnected_elements")
+@with_appcontext
+def clean_disconnected_elements():
+    click.echo("Making sure tree taxonomies have no disconnected elements.")
+    remove_unreachable_elements(output=True)
+    click.echo("Finished removing all disconnected elements.")
 
 
 @DB_CLI.cli.command("export_taxonomies")
@@ -137,7 +170,7 @@ def save_taxonomies(folder_path: str):
 def get_taxonomies() -> Dict[str, Type[Taxonomy]]:
     temp = {}
     for name, member in getmembers(sys.modules[__name__], isclass):
-        if member is Taxonomy:
+        if member is Taxonomy or member is TreeTaxonomy or member is ListTaxonomy:
             continue
         if issubclass(member, Taxonomy):
             temp[name.upper()] = member
