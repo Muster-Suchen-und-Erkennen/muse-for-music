@@ -303,7 +303,9 @@ def try_self_link(object, client, auth=None):
     result = client.get(url, headers=headers)
     assert result.status_code == 200, result.get_data().decode()
     obj2 = result.get_json()
-    assert object == obj2
+    assert compareObjects(
+        object, obj2
+    ), "object returned from self link does not match given object"
 
 
 def compareObjects(a, b):
