@@ -38,7 +38,7 @@ class HarmonischeEntwicklung(db.Model, TreeTaxonomy):
     children = relationship(
         lambda: HarmonischeEntwicklung,
         passive_deletes="all",
-        lazy="selectin",
+        lazy="select",
         join_depth=8,
         back_populates="parent",
     )
@@ -66,7 +66,7 @@ class Tonalitaet(db.Model, TreeTaxonomy):
     children = relationship(
         lambda: Tonalitaet,
         passive_deletes="all",
-        lazy="selectin",
+        lazy="select",
         join_depth=8,
         back_populates="parent",
     )
@@ -108,7 +108,7 @@ class HarmonischeStufe(db.Model, TreeTaxonomy):
     children = relationship(
         lambda: HarmonischeStufe,
         passive_deletes="all",
-        lazy="selectin",
+        lazy="select",
         join_depth=8,
         back_populates="parent",
     )
@@ -139,7 +139,7 @@ class HarmonischeFunktionVerwandschaft(db.Model, TreeTaxonomy):
     children = relationship(
         lambda: HarmonischeFunktionVerwandschaft,
         passive_deletes="all",
-        lazy="selectin",
+        lazy="select",
         join_depth=8,
         back_populates="parent",
     )
@@ -169,7 +169,7 @@ class HarmonischePhaenomene(db.Model, TreeTaxonomy):
     children = relationship(
         lambda: HarmonischePhaenomene,
         passive_deletes="all",
-        lazy="selectin",
+        lazy="select",
         join_depth=8,
         back_populates="parent",
     )

@@ -98,7 +98,7 @@ class AusdruckToRendition(db.Model):
     rendition: Mapped[Rendition] = relationship(
         Rendition, back_populates="_mood_markings"
     )
-    ausdruck: Mapped[Ausdruck] = relationship(Ausdruck)
+    ausdruck: Mapped[Ausdruck] = relationship(Ausdruck, lazy="selectin")
 
     def __init__(self, rendition, ausdruck, **kwargs):
         self.rendition = rendition
@@ -116,7 +116,7 @@ class ArtikulationToRendition(db.Model):
     rendition: Mapped[Rendition] = relationship(
         Rendition, back_populates="_articulation_markings"
     )
-    artikulation: Mapped[Artikulation] = relationship(Artikulation)
+    artikulation: Mapped[Artikulation] = relationship(Artikulation, lazy="selectin")
 
     def __init__(self, rendition, artikulation, **kwargs):
         self.rendition = rendition
@@ -134,7 +134,7 @@ class SpielanweisungToRendition(db.Model):
     rendition: Mapped[Rendition] = relationship(
         Rendition, back_populates="_technic_markings"
     )
-    spielanweisung: Mapped[Spielanweisung] = relationship(Spielanweisung)
+    spielanweisung: Mapped[Spielanweisung] = relationship(Spielanweisung, lazy="selectin")
 
     def __init__(self, rendition, spielanweisung, **kwargs):
         self.rendition = rendition

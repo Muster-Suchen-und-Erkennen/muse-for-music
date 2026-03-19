@@ -89,16 +89,16 @@ class DynamicContext(db.Model, GetByID, UpdateableModelMixin):
     )
 
     loudness_before: Mapped[Lautstaerke] = relationship(
-        Lautstaerke, foreign_keys=[loudness_before_id]
+        Lautstaerke, lazy="selectin", foreign_keys=[loudness_before_id]
     )
     loudness_after: Mapped[Lautstaerke] = relationship(
-        Lautstaerke, foreign_keys=[loudness_after_id]
+        Lautstaerke, lazy="selectin", foreign_keys=[loudness_after_id]
     )
     dynamic_trend_before: Mapped[LautstaerkeEinbettung] = relationship(
-        LautstaerkeEinbettung, foreign_keys=[dynamic_trend_before_id]
+        LautstaerkeEinbettung, lazy="selectin", foreign_keys=[dynamic_trend_before_id]
     )
     dynamic_trend_after: Mapped[LautstaerkeEinbettung] = relationship(
-        LautstaerkeEinbettung, foreign_keys=[dynamic_trend_after_id]
+        LautstaerkeEinbettung, lazy="selectin", foreign_keys=[dynamic_trend_after_id]
     )
 
 
@@ -119,8 +119,10 @@ class DynamicMarking(db.Model, GetByID, UpdateableModelMixin):
     )
 
     dynamic: Mapped[Dynamic] = relationship(Dynamic, back_populates="_dynamic_markings")
-    lautstaerke: Mapped[Lautstaerke] = relationship(Lautstaerke)
-    lautstaerke_zusatz: Mapped[LautstaerkeZusatz] = relationship(LautstaerkeZusatz)
+    lautstaerke: Mapped[Lautstaerke] = relationship(Lautstaerke, lazy="selectin")
+    lautstaerke_zusatz: Mapped[LautstaerkeZusatz] = relationship(
+        LautstaerkeZusatz, lazy="selectin"
+    )
 
     def __init__(self, dynamic, **kwargs):
         self.dynamic = dynamic
@@ -138,7 +140,7 @@ class LautstaerkeEntwicklungToDynamic(db.Model):
 
     dynamic: Mapped[Dynamic] = relationship(Dynamic, back_populates="_dynamic_changes")
     lautstaerke_entwicklung: Mapped[LautstaerkeEntwicklung] = relationship(
-        LautstaerkeEntwicklung
+        LautstaerkeEntwicklung, lazy="selectin"
     )
 
     def __init__(self, dynamic, lautstaerke_entwicklung, **kwargs):

@@ -31,12 +31,14 @@ class AmbitusGroup(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin):
     )
 
     highest_pitch: Mapped[Grundton] = relationship(
-        Grundton, foreign_keys=[highest_pitch_id]
+        Grundton, lazy="selectin", foreign_keys=[highest_pitch_id]
     )
     highest_octave: Mapped[Oktave] = relationship(
-        Oktave, foreign_keys=[highest_octave_id]
+        Oktave, lazy="selectin", foreign_keys=[highest_octave_id]
     )
     lowest_pitch: Mapped[Grundton] = relationship(
-        Grundton, foreign_keys=[lowest_pitch_id]
+        Grundton, lazy="selectin", foreign_keys=[lowest_pitch_id]
     )
-    lowest_octave: Mapped[Oktave] = relationship(Oktave, foreign_keys=[lowest_octave_id])
+    lowest_octave: Mapped[Oktave] = relationship(
+        Oktave, lazy="selectin", foreign_keys=[lowest_octave_id]
+    )

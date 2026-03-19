@@ -50,7 +50,7 @@ class InstumentationToInstrument(db.Model):
     instrumentation: Mapped[Instrumentation] = relationship(
         Instrumentation, back_populates="_instruments"
     )
-    instrument: Mapped[Instrument] = relationship(Instrument)
+    instrument: Mapped[Instrument] = relationship(Instrument, lazy="selectin")
 
     def __init__(self, instrumentation, instrument, **kwargs):
         self.instrumentation = instrumentation
@@ -92,24 +92,28 @@ class InstrumentationContext(db.Model, GetByID, UpdateableModelMixin):
     instrumentation_quantity_before: Mapped[InstrumentierungEinbettungQuantitaet] = (
         relationship(
             InstrumentierungEinbettungQuantitaet,
+            lazy="selectin",
             foreign_keys=[instr_quantity_before_id],
         )
     )
     instrumentation_quantity_after: Mapped[InstrumentierungEinbettungQuantitaet] = (
         relationship(
             InstrumentierungEinbettungQuantitaet,
+            lazy="selectin",
             foreign_keys=[instr_quantity_after_id],
         )
     )
     instrumentation_quality_before: Mapped[InstrumentierungEinbettungQualitaet] = (
         relationship(
             InstrumentierungEinbettungQualitaet,
+            lazy="selectin",
             foreign_keys=[instr_quality_before_id],
         )
     )
     instrumentation_quality_after: Mapped[InstrumentierungEinbettungQualitaet] = (
         relationship(
             InstrumentierungEinbettungQualitaet,
+            lazy="selectin",
             foreign_keys=[instr_quality_after_id],
         )
     )

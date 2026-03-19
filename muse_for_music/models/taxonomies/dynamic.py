@@ -58,7 +58,7 @@ class LautstaerkeEntwicklung(db.Model, TreeTaxonomy):
     children = relationship(
         lambda: LautstaerkeEntwicklung,
         passive_deletes="all",
-        lazy="selectin",
+        lazy="select",
         join_depth=8,
         back_populates="parent",
     )

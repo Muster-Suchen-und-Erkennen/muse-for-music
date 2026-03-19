@@ -6,7 +6,7 @@ from json import dumps
 from flask import request
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from flask_restx import Resource, marshal
-from sqlalchemy.sql import delete, select
+from sqlalchemy.sql import delete
 
 from ... import db
 from ...models.data.history import Backup, History, MethodEnum, TypeEnum
@@ -17,7 +17,15 @@ from ...user_api import RoleEnum, has_roles
 from ...util import abort
 from . import api
 from .backup import to_backup_json
-from .models import subpart_get, subpart_put, voice_get, voice_post, voice_put
+from .models import (
+    subpart_get,
+    subpart_put,
+    subpart_small,
+    voice_get,
+    voice_post,
+    voice_put,
+    voice_small,
+)
 
 ns = api.namespace("subpart", description="Resource for Subparts.", path="/subparts")
 
@@ -25,10 +33,10 @@ ns = api.namespace("subpart", description="Resource for Subparts.", path="/subpa
 @ns.route("/")
 class SubPartListResource(Resource):
 
-    @ns.marshal_list_with(subpart_get)
+    @ns.marshal_list_with(subpart_small)
     @jwt_required()
     def get(self):
-        q = select(SubPart)
+        q = SubPart.prepare_query(lazy=True)
         return db.session.execute(q).scalars().all()
 
 
@@ -99,15 +107,15 @@ class SubPartResource(Resource):
 @ns.route("/<int:subpart_id>/voices/")
 class SubPartVoiceListResource(Resource):
 
-    @ns.marshal_list_with(voice_get)
+    @ns.marshal_list_with(voice_small)
     @ns.response(HTTPStatus.NOT_FOUND, "Subpart not found.")
     @jwt_required()
     def get(self, subpart_id):
-        subpart = SubPart.get_by_id(subpart_id)
+        subpart = SubPart.get_by_id(subpart_id, lazy=True)
         if subpart is None:
             abort(HTTPStatus.NOT_FOUND, "Requested subpart not found!")
-        assert subpart is not None
-        return subpart.voices
+        q = Voice.prepare_query(lazy=True).where(Voice.subpart_id == subpart_id)
+        return db.session.execute(q).scalars().all()
 
     @ns.doc(model=voice_get, expect=[voice_post], validate=True)
     @ns.response(HTTPStatus.NOT_FOUND, "Subpart not found.")

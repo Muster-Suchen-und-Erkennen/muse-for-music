@@ -243,7 +243,7 @@ class HarmonicCenter(db.Model, UpdateableModelMixin):
     )
 
     harmonics: Mapped[Harmonics] = relationship(
-        Harmonics, back_populates="_harmonic_centers"
+        Harmonics, lazy="select", back_populates="_harmonic_centers"
     )
     grundton: Mapped[Grundton] = relationship(Grundton, lazy="selectin")
     tonalitaet: Mapped[Tonalitaet] = relationship(Tonalitaet, lazy="selectin")
@@ -272,7 +272,7 @@ class HarmonischePhaenomeneToHarmonics(db.Model):
         Harmonics, back_populates="_harmonic_phenomenons"
     )
     harmonische_phaenomene: Mapped[HarmonischePhaenomene] = relationship(
-        HarmonischePhaenomene
+        HarmonischePhaenomene, lazy="selectin"
     )
 
     def __init__(self, harmonics, harmonische_phaenomene, **kwargs):
@@ -292,7 +292,7 @@ class HarmonischeEntwicklungToHarmonics(db.Model):
         Harmonics, back_populates="_harmonic_changes"
     )
     harmonische_entwicklung: Mapped[HarmonischeEntwicklung] = relationship(
-        HarmonischeEntwicklung
+        HarmonischeEntwicklung, lazy="selectin"
     )
 
     def __init__(self, harmonics, harmonische_entwicklung, **kwargs):
@@ -311,7 +311,7 @@ class AkkordToHarmonics(db.Model):
     harmonics: Mapped[Harmonics] = relationship(
         Harmonics, back_populates="_special_chords"
     )
-    akkord: Mapped[Akkord] = relationship(Akkord)
+    akkord: Mapped[Akkord] = relationship(Akkord, lazy="selectin")
 
     def __init__(self, harmonics, akkord, **kwargs):
         self.harmonics = harmonics
@@ -327,7 +327,7 @@ class DissonanzenToHarmonics(db.Model):
     )
 
     harmonics: Mapped[Harmonics] = relationship(Harmonics, back_populates="_dissonances")
-    dissonanzen: Mapped[Dissonanzen] = relationship(Dissonanzen)
+    dissonanzen: Mapped[Dissonanzen] = relationship(Dissonanzen, lazy="selectin")
 
     def __init__(self, harmonics, dissonanzen, **kwargs):
         self.harmonics = harmonics
@@ -348,7 +348,7 @@ class HarmonischeFunktionToHarmonics(db.Model):
         Harmonics, back_populates="_harmonische_funktion"
     )
     harmonische_funktion: Mapped[HarmonischeFunktionVerwandschaft] = relationship(
-        HarmonischeFunktionVerwandschaft
+        HarmonischeFunktionVerwandschaft, lazy="selectin"
     )
 
     def __init__(self, harmonics, harmonische_funktion, **kwargs):

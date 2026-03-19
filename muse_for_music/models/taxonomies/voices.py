@@ -30,7 +30,7 @@ class MusikalischeFunktion(db.Model, TreeTaxonomy):
     children = relationship(
         lambda: MusikalischeFunktion,
         passive_deletes="all",
-        lazy="selectin",
+        lazy="select",
         join_depth=8,
         back_populates="parent",
     )
@@ -56,7 +56,7 @@ class Verzierung(db.Model, TreeTaxonomy):
     children = relationship(
         lambda: Verzierung,
         passive_deletes="all",
-        lazy="selectin",
+        lazy="select",
         join_depth=8,
         back_populates="parent",
     )

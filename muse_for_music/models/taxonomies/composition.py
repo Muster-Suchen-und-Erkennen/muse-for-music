@@ -28,7 +28,7 @@ class Verarbeitungstechnik(db.Model, TreeTaxonomy):
     children = relationship(
         lambda: Verarbeitungstechnik,
         passive_deletes="all",
-        lazy="selectin",
+        lazy="select",
         join_depth=8,
         back_populates="parent",
     )
@@ -58,7 +58,7 @@ class MusikalischeWendung(db.Model, TreeTaxonomy):
     children = relationship(
         lambda: MusikalischeWendung,
         passive_deletes="all",
-        lazy="selectin",
+        lazy="select",
         join_depth=8,
         back_populates="parent",
     )

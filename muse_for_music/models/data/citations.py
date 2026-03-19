@@ -201,8 +201,8 @@ class OpusCitation(db.Model, GetByID, UpdateableModelMixin):
     citations: Mapped[Citations] = relationship(
         Citations, back_populates="_opus_citations"
     )
-    opus: Mapped[Opus] = relationship(Opus)
-    citation_type: Mapped[Zitat] = relationship(Zitat)
+    opus: Mapped[Opus] = relationship(Opus, lazy="selectin")
+    citation_type: Mapped[Zitat] = relationship(Zitat, lazy="selectin")
 
     def __init__(self, citations, **kwargs):
         self.citations = citations
@@ -221,7 +221,7 @@ class EpocheToCitations(db.Model):
     citations: Mapped[Citations] = relationship(
         Citations, back_populates="_epoch_citations"
     )
-    epoche: Mapped[Epoche] = relationship(Epoche)
+    epoche: Mapped[Epoche] = relationship(Epoche, lazy="selectin")
 
     def __init__(self, citations, epoche):
         self.citations = citations
@@ -239,7 +239,7 @@ class GattungToCitations(db.Model):
     citations: Mapped[Citations] = relationship(
         Citations, back_populates="_gattung_citations"
     )
-    gattung: Mapped[Gattung] = relationship(Gattung)
+    gattung: Mapped[Gattung] = relationship(Gattung, lazy="selectin")
 
     def __init__(self, citations, gattung):
         self.citations = citations
@@ -259,7 +259,7 @@ class PersonToCitations(db.Model):
     citations: Mapped[Citations] = relationship(
         Citations, back_populates="_composer_citations"
     )
-    person: Mapped[Person] = relationship(Person)
+    person: Mapped[Person] = relationship(Person, lazy="selectin")
 
     def __init__(self, citations, person):
         self.citations = citations
@@ -277,7 +277,7 @@ class InstrumentToCitations(db.Model):
     citations: Mapped[Citations] = relationship(
         Citations, back_populates="_instrument_citations"
     )
-    instrument: Mapped[Instrument] = relationship(Instrument)
+    instrument: Mapped[Instrument] = relationship(Instrument, lazy="selectin")
 
     def __init__(self, citations, instrument):
         self.citations = citations
@@ -295,7 +295,9 @@ class ProgrammgegenstandToCitations(db.Model):
     citations: Mapped[Citations] = relationship(
         Citations, back_populates="_program_citations"
     )
-    programmgegenstand: Mapped[Programmgegenstand] = relationship(Programmgegenstand)
+    programmgegenstand: Mapped[Programmgegenstand] = relationship(
+        Programmgegenstand, lazy="selectin"
+    )
 
     def __init__(self, citations, programmgegenstand):
         self.citations = citations
@@ -313,7 +315,7 @@ class TonmalereiToCitations(db.Model):
     citations: Mapped[Citations] = relationship(
         Citations, back_populates="_tonmalerei_citations"
     )
-    tonmalerei: Mapped[Tonmalerei] = relationship(Tonmalerei)
+    tonmalerei: Mapped[Tonmalerei] = relationship(Tonmalerei, lazy="selectin")
 
     def __init__(self, citations, tonmalerei):
         self.citations = citations

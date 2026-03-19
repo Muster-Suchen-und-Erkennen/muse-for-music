@@ -33,16 +33,16 @@ class TempoContext(db.Model, GetByID, UpdateableModelMixin):
     )
 
     tempo_context_before: Mapped[TempoEinbettung] = relationship(
-        TempoEinbettung, foreign_keys=[tempo_context_before_id]
+        TempoEinbettung, lazy="selectin", foreign_keys=[tempo_context_before_id]
     )
     tempo_context_after: Mapped[TempoEinbettung] = relationship(
-        TempoEinbettung, foreign_keys=[tempo_context_after_id]
+        TempoEinbettung, lazy="selectin", foreign_keys=[tempo_context_after_id]
     )
     tempo_trend_before: Mapped[TempoEntwicklung] = relationship(
-        TempoEntwicklung, foreign_keys=[tempo_trend_before_id]
+        TempoEntwicklung, lazy="selectin", foreign_keys=[tempo_trend_before_id]
     )
     tempo_trend_after: Mapped[TempoEntwicklung] = relationship(
-        TempoEntwicklung, foreign_keys=[tempo_trend_after_id]
+        TempoEntwicklung, lazy="selectin", foreign_keys=[tempo_trend_after_id]
     )
 
 
@@ -109,7 +109,7 @@ class TempoToTempoGroup(db.Model):
     tempo_group: Mapped[TempoGroup] = relationship(
         TempoGroup, back_populates="_tempo_markings"
     )
-    tempo: Mapped[Tempo] = relationship(Tempo)
+    tempo: Mapped[Tempo] = relationship(Tempo, lazy="selectin")
 
     def __init__(self, tempo_group, tempo, **kwargs):
         self.tempo_group = tempo_group
@@ -127,7 +127,9 @@ class TempoEntwicklungToTempoGroup(db.Model):
     tempo_group: Mapped[TempoGroup] = relationship(
         TempoGroup, back_populates="_tempo_changes"
     )
-    tempo_entwicklung: Mapped[TempoEntwicklung] = relationship(TempoEntwicklung)
+    tempo_entwicklung: Mapped[TempoEntwicklung] = relationship(
+        TempoEntwicklung, lazy="selectin"
+    )
 
     def __init__(self, tempo_group, tempo_entwicklung, **kwargs):
         self.tempo_group = tempo_group

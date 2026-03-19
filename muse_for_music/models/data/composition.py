@@ -104,7 +104,7 @@ class CompositionTechniqueToComposition(db.Model):
         Composition, back_populates="_techniques"
     )
     verarbeitungstechnik: Mapped[Verarbeitungstechnik] = relationship(
-        Verarbeitungstechnik
+        Verarbeitungstechnik, lazy="selectin"
     )
 
     def __init__(self, composition, verarbeitungstechnik, **kwargs):

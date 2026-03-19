@@ -6,7 +6,7 @@ from json import dumps
 from flask import request
 from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
 from flask_restx import Resource, marshal
-from sqlalchemy.sql import delete, select
+from sqlalchemy.sql import delete
 
 from ... import db
 from ...models.data.history import Backup, History, MethodEnum, TypeEnum
@@ -17,7 +17,15 @@ from ...user_api import RoleEnum, has_roles
 from ...util import abort
 from . import api
 from .backup import to_backup_json
-from .models import part_get, part_put, part_small, subpart_get, subpart_post
+from .models import (
+    part_get,
+    part_put,
+    part_small,
+    part_small_get,
+    subpart_get,
+    subpart_post,
+    subpart_small,
+)
 
 ns = api.namespace("part", description="Resource for Parts.", path="/parts")
 
@@ -28,14 +36,14 @@ class PartsListResource(Resource):
     @ns.marshal_list_with(part_small)
     @jwt_required()
     def get(self):
-        q = select(Part)
+        q = Part.prepare_query(lazy=True)
         return db.session.execute(q).scalars().all()
 
 
 @ns.route("/<int:id>/")
 class PartResource(Resource):
 
-    @ns.marshal_with(part_get)
+    @ns.marshal_with(part_small_get)
     @ns.response(HTTPStatus.NOT_FOUND, "Part not found.")
     @jwt_required()
     def get(self, id):
@@ -44,7 +52,7 @@ class PartResource(Resource):
             abort(HTTPStatus.NOT_FOUND, "Requested part not found!")
         return part
 
-    @ns.doc(model=part_get, expect=[part_put], validate=True)
+    @ns.doc(model=part_small_get, expect=[part_put], validate=True)
     @ns.response(HTTPStatus.NOT_FOUND, "Part not found.")
     @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
@@ -96,10 +104,10 @@ class PartResource(Resource):
 @ns.route("/<int:id>/subparts/")
 class PartSubpartsResource(Resource):
 
-    @ns.marshal_list_with(subpart_get)
+    @ns.marshal_list_with(subpart_small)
     @jwt_required()
     def get(self, id):
-        q = select(SubPart).where(SubPart.part_id == id)
+        q = SubPart.prepare_query(lazy=True).where(SubPart.part_id == id)
         return db.session.execute(q).scalars().all()
 
     @ns.doc(model=subpart_get, expect=[subpart_post], validate=True)

@@ -80,21 +80,28 @@ class Part(
     )
     # occurence_in_movement = relationship(AuftretenSatz, lazy='selectin')
     instrumentation_context: Mapped[InstrumentationContext] = relationship(
-        InstrumentationContext, single_parent=True, cascade="all, delete-orphan"
+        InstrumentationContext,
+        lazy="select",
+        single_parent=True,
+        cascade="all, delete-orphan",
     )
     dynamic_context: Mapped[DynamicContext] = relationship(
-        DynamicContext, single_parent=True, cascade="all, delete-orphan"
+        DynamicContext, lazy="select", single_parent=True, cascade="all, delete-orphan"
     )
     tempo_context: Mapped[TempoContext] = relationship(
-        TempoContext, single_parent=True, cascade="all, delete-orphan"
+        TempoContext, lazy="select", single_parent=True, cascade="all, delete-orphan"
     )
     dramaturgic_context: Mapped[DramaturgicContext] = relationship(
-        DramaturgicContext, single_parent=True, cascade="all, delete-orphan"
+        DramaturgicContext,
+        lazy="select",
+        single_parent=True,
+        cascade="all, delete-orphan",
     )
 
     # cross-file backref: SubPart.part uses back_populates="subparts"
     subparts: Mapped[list["SubPart"]] = relationship(
         lambda: SubPart,
+        lazy="select",
         single_parent=True,
         cascade="all, delete-orphan",
         back_populates="part",
@@ -103,20 +110,22 @@ class Part(
     # backrefs for association tables
     _formal_functions: Mapped[list["FormaleFunktionToPart"]] = relationship(
         lambda: FormaleFunktionToPart,
-        lazy="selectin",
+        lazy="select",
         single_parent=True,
         cascade="all, delete-orphan",
         back_populates="part",
     )
     _occurence_in_movement: Mapped[list["AuftretenSatzToPart"]] = relationship(
         lambda: AuftretenSatzToPart,
-        lazy="selectin",
+        lazy="select",
         single_parent=True,
         cascade="all, delete-orphan",
         back_populates="part",
     )
 
     _eager_load = [
+        "_formal_functions",
+        "_occurence_in_movement",
         "dramaturgic_context",
         "tempo_context",
         "dynamic_context",
@@ -220,8 +229,12 @@ class FormaleFunktionToPart(db.Model):
         primary_key=True,
     )
 
-    part: Mapped[Part] = relationship(Part, back_populates="_formal_functions")
-    formale_funktion: Mapped[FormaleFunktion] = relationship(FormaleFunktion)
+    part: Mapped[Part] = relationship(
+        Part, lazy="select", back_populates="_formal_functions"
+    )
+    formale_funktion: Mapped[FormaleFunktion] = relationship(
+        FormaleFunktion, lazy="selectin"
+    )
 
     def __init__(self, part, formale_funktion, **kwargs):
         self.part = part
@@ -240,8 +253,10 @@ class AuftretenSatzToPart(db.Model):
         primary_key=True,
     )
 
-    part: Mapped[Part] = relationship(Part, back_populates="_occurence_in_movement")
-    auftreten_satz: Mapped[AuftretenSatz] = relationship(AuftretenSatz)
+    part: Mapped[Part] = relationship(
+        Part, lazy="select", back_populates="_occurence_in_movement"
+    )
+    auftreten_satz: Mapped[AuftretenSatz] = relationship(AuftretenSatz, lazy="selectin")
 
     def __init__(self, part, auftreten_satz, **kwargs):
         self.part = part

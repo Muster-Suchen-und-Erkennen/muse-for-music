@@ -18,7 +18,16 @@ from ...user_api import RoleEnum, has_roles
 from ...util import abort
 from . import api
 from .backup import to_backup_json
-from .models import opus_post, opus_put, opus_small, opus_small_get, part_get, part_post
+from .models import (
+    opus_post,
+    opus_put,
+    opus_small,
+    opus_small_get,
+    part_get,
+    part_post,
+    part_small,
+    part_small_get,
+)
 
 ns = api.namespace("opus", description="Resource for opuses.", path="/opuses")
 
@@ -125,14 +134,14 @@ class OpusResource(Resource):
 @ns.route("/<int:id>/parts/")
 class OpusPartsResource(Resource):
 
-    @ns.marshal_list_with(part_get)
+    @ns.marshal_list_with(part_small)
     @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def get(self, id):
-        q = select(Part).where(Part.opus_id == id)
+        q = Part.prepare_query(lazy=True).where(Part.opus_id == id)
         return db.session.execute(q).scalars().all()
 
-    @ns.doc(model=part_get, expect=[part_post], validate=True)
+    @ns.doc(model=part_small_get, expect=[part_post], validate=True)
     @jwt_required()
     @has_roles([RoleEnum.user, RoleEnum.admin])
     def post(self, id):

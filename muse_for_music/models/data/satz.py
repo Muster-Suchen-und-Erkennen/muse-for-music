@@ -84,7 +84,9 @@ class SatzartAllgemeinToSatz(db.Model):
     )
 
     satz: Mapped[Satz] = relationship(Satz, back_populates="_satzart_allgemein")
-    satzart_allgemein: Mapped[SatzartAllgemein] = relationship(SatzartAllgemein)
+    satzart_allgemein: Mapped[SatzartAllgemein] = relationship(
+        SatzartAllgemein, lazy="selectin"
+    )
 
     def __init__(self, satz, satzart_allgemein, **kwargs):
         self.satz = satz
@@ -100,7 +102,9 @@ class SatzartSpeziellToSatz(db.Model):
     )
 
     satz: Mapped[Satz] = relationship(Satz, back_populates="_satzart_speziell")
-    satzart_speziell: Mapped[SatzartSpeziell] = relationship(SatzartSpeziell)
+    satzart_speziell: Mapped[SatzartSpeziell] = relationship(
+        SatzartSpeziell, lazy="selectin"
+    )
 
     def __init__(self, satz, satzart_speziell, **kwargs):
         self.satz = satz

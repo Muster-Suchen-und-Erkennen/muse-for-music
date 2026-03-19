@@ -114,31 +114,31 @@ class Voice(
     )
     _instrumentation: Mapped[Instrumentation] = relationship(
         Instrumentation,
-        lazy="subquery",
+        lazy="select",
         single_parent=True,
         cascade="all, delete-orphan",
     )
     satz: Mapped[Satz] = relationship(
-        Satz, single_parent=True, cascade="all, delete-orphan"
+        Satz, lazy="select", single_parent=True, cascade="all, delete-orphan"
     )
     rhythm: Mapped[Rhythm] = relationship(
-        Rhythm, single_parent=True, cascade="all, delete-orphan"
+        Rhythm, lazy="select", single_parent=True, cascade="all, delete-orphan"
     )
     # stimmverlauf
-    melody_form: Mapped[Melodieform] = relationship(Melodieform)
+    melody_form: Mapped[Melodieform] = relationship(Melodieform, lazy="select")
     # Einsatz der Stimme
-    share: Mapped[Anteil] = relationship(Anteil)
+    share: Mapped[Anteil] = relationship(Anteil, lazy="select")
     occurence_in_part: Mapped[AuftretenWerkausschnitt] = relationship(
-        AuftretenWerkausschnitt
+        AuftretenWerkausschnitt, lazy="select"
     )
     composition: Mapped[Composition] = relationship(
-        Composition, single_parent=True, cascade="all, delete-orphan"
+        Composition, lazy="select", single_parent=True, cascade="all, delete-orphan"
     )
     rendition: Mapped[Rendition] = relationship(
-        Rendition, single_parent=True, cascade="all, delete-orphan"
+        Rendition, lazy="select", single_parent=True, cascade="all, delete-orphan"
     )
     citations: Mapped[Citations] = relationship(
-        Citations, single_parent=True, cascade="all, delete-orphan"
+        Citations, lazy="select", single_parent=True, cascade="all, delete-orphan"
     )
     measure_start: Mapped[Measure] = relationship(
         Measure,
@@ -161,35 +161,35 @@ class Voice(
     # backrefs
     _musicial_figures: Mapped[list["MusikalischeWendungToVoice"]] = relationship(
         lambda: MusikalischeWendungToVoice,
-        lazy="selectin",
+        lazy="select",
         single_parent=True,
         cascade="all, delete-orphan",
         back_populates="voice",
     )
     _musicial_function: Mapped[list["MusikalischeFunktionToVoice"]] = relationship(
         lambda: MusikalischeFunktionToVoice,
-        lazy="selectin",
+        lazy="select",
         single_parent=True,
         cascade="all, delete-orphan",
         back_populates="voice",
     )
     _ornaments: Mapped[list["VerzierungToVoice"]] = relationship(
         lambda: VerzierungToVoice,
-        lazy="selectin",
+        lazy="select",
         single_parent=True,
         cascade="all, delete-orphan",
         back_populates="voice",
     )
     _dominant_note_values: Mapped[list["NotenwertToVoice"]] = relationship(
         lambda: NotenwertToVoice,
-        lazy="selectin",
+        lazy="select",
         single_parent=True,
         cascade="all, delete-orphan",
         back_populates="voice",
     )
     _intervallik: Mapped[list["IntervallikToVoice"]] = relationship(
         lambda: IntervallikToVoice,
-        lazy="selectin",
+        lazy="select",
         single_parent=True,
         cascade="all, delete-orphan",
         back_populates="voice",
@@ -197,13 +197,30 @@ class Voice(
     _related_voices: Mapped[list["RelatedVoices"]] = relationship(
         lambda: RelatedVoices,
         primaryjoin=lambda: Voice.id == RelatedVoices.voice_id,
-        lazy="selectin",
+        lazy="select",
         single_parent=True,
         cascade="all, delete-orphan",
         back_populates="voice",
     )
 
-    _eager_load = ["satz", "rhythm", "composition", "rendition", "citations"]
+    _eager_load = [
+        "_instrumentation",
+        "satz",
+        "rhythm",
+        "melody_form",
+        "share",
+        "occurence_in_part",
+        "composition",
+        "rendition",
+        "citations",
+        "ambitus",
+        "_musicial_figures",
+        "_musicial_function",
+        "_ornaments",
+        "_dominant_note_values",
+        "_intervallik",
+        "_related_voices",
+    ]
 
     def __init__(self, subpart: Union[int, SubPart], name: str, **kwargs):
         if isinstance(subpart, SubPart):
@@ -329,7 +346,9 @@ class MusikalischeWendungToVoice(db.Model):
     )
 
     voice: Mapped[Voice] = relationship(Voice, back_populates="_musicial_figures")
-    musikalische_wendung: Mapped[MusikalischeWendung] = relationship(MusikalischeWendung)
+    musikalische_wendung: Mapped[MusikalischeWendung] = relationship(
+        MusikalischeWendung, lazy="selectin"
+    )
 
     def __init__(self, voice: Voice, musikalische_wendung: MusikalischeWendung, **kwargs):
         self.voice = voice
@@ -346,7 +365,7 @@ class MusikalischeFunktionToVoice(db.Model):
 
     voice: Mapped[Voice] = relationship(Voice, back_populates="_musicial_function")
     musikalische_funktion: Mapped[MusikalischeFunktion] = relationship(
-        MusikalischeFunktion
+        MusikalischeFunktion, lazy="selectin"
     )
 
     def __init__(
@@ -365,7 +384,7 @@ class VerzierungToVoice(db.Model):
     )
 
     voice: Mapped[Voice] = relationship(Voice, back_populates="_ornaments")
-    verzierung: Mapped[Verzierung] = relationship(Verzierung)
+    verzierung: Mapped[Verzierung] = relationship(Verzierung, lazy="selectin")
 
     def __init__(self, voice: Voice, verzierung: Verzierung, **kwargs):
         self.voice = voice
@@ -381,7 +400,7 @@ class NotenwertToVoice(db.Model):
     )
 
     voice: Mapped[Voice] = relationship(Voice, back_populates="_dominant_note_values")
-    notenwert: Mapped[Notenwert] = relationship(Notenwert)
+    notenwert: Mapped[Notenwert] = relationship(Notenwert, lazy="selectin")
 
     def __init__(self, voice: Voice, notenwert: Notenwert, **kwargs):
         self.voice = voice
@@ -397,7 +416,7 @@ class IntervallikToVoice(db.Model):
     )
 
     voice: Mapped[Voice] = relationship(Voice, back_populates="_intervallik")
-    intervallik: Mapped[Intervallik] = relationship(Intervallik)
+    intervallik: Mapped[Intervallik] = relationship(Intervallik, lazy="selectin")
 
     def __init__(self, voice: Voice, intervallik: Intervallik, **kwargs):
         self.voice = voice
@@ -422,9 +441,11 @@ class RelatedVoices(db.Model, GetByID, UpdateableModelMixin):
     voice: Mapped[Voice] = relationship(
         Voice, back_populates="_related_voices", foreign_keys=[voice_id]
     )
-    related_voice: Mapped[Voice] = relationship(Voice, foreign_keys=[related_voice_id])
+    related_voice: Mapped[Voice] = relationship(
+        Voice, lazy="selectin", foreign_keys=[related_voice_id]
+    )
     type_of_relationship: Mapped[VoiceToVoiceRelation] = relationship(
-        VoiceToVoiceRelation
+        VoiceToVoiceRelation, lazy="selectin"
     )
 
     def __init__(self, voice: Voice, **kwargs):

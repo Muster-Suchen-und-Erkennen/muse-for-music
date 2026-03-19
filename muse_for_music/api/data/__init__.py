@@ -8,3 +8,4 @@ from . import opus  # noqa
 from . import part  # noqa
 from . import people  # noqa
 from . import subpart  # noqa
+from . import voices  # noqa

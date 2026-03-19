@@ -62,37 +62,45 @@ class SubPart(
 
     part: Mapped[Part] = relationship(Part, lazy="select", back_populates="subparts")
     occurence_in_part: Mapped[AuftretenWerkausschnitt] = relationship(
-        AuftretenWerkausschnitt, lazy="selectin", single_parent=True
+        AuftretenWerkausschnitt, lazy="select", single_parent=True
     )
     share_of_part: Mapped[Anteil] = relationship(
-        Anteil, lazy="selectin", single_parent=True
+        Anteil, lazy="select", single_parent=True
     )
     _instrumentation: Mapped[Instrumentation] = relationship(
         Instrumentation,
-        lazy="subquery",
+        lazy="select",
         single_parent=True,
         cascade="all, delete-orphan",
     )
     dynamic: Mapped[Dynamic] = relationship(
-        Dynamic, single_parent=True, cascade="all, delete-orphan"
+        Dynamic, lazy="select", single_parent=True, cascade="all, delete-orphan"
     )
     harmonics: Mapped[Harmonics] = relationship(
-        Harmonics, single_parent=True, cascade="all, delete-orphan"
+        Harmonics, lazy="select", single_parent=True, cascade="all, delete-orphan"
     )
     tempo: Mapped[TempoGroup] = relationship(
-        TempoGroup, single_parent=True, cascade="all, delete-orphan"
+        TempoGroup, lazy="select", single_parent=True, cascade="all, delete-orphan"
     )
     # ambitus = relationship(AmbitusGroup, single_parent=True, cascade="all, delete-orphan")
 
     # cross-file backref: Voice.subpart uses back_populates="voices"
     voices: Mapped[list["Voice"]] = relationship(
         lambda: Voice,
+        lazy="select",
         single_parent=True,
         cascade="all, delete-orphan",
         back_populates="subpart",
     )
 
-    _eager_load = ["dynamic", "harmonics", "voices"]
+    _eager_load = [
+        "occurence_in_part",
+        "share_of_part",
+        "_instrumentation",
+        "dynamic",
+        "harmonics",
+        "tempo",
+    ]
 
     def __init__(self, part_id: Union[int, Part], label: str = "A", **kwargs):
         if isinstance(part_id, Part):

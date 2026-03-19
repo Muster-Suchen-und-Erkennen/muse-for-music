@@ -30,7 +30,7 @@ class AmbitusEntwicklung(db.Model, TreeTaxonomy):
     children = relationship(
         lambda: AmbitusEntwicklung,
         passive_deletes="all",
-        lazy="selectin",
+        lazy="select",
         join_depth=8,
         back_populates="parent",
     )

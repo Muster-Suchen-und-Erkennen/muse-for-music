@@ -38,20 +38,20 @@ class DramaturgicContext(db.Model, GetByID, UpdateableModelMixin):
     )
 
     ambitus_context_before: Mapped[AmbitusEinbettung] = relationship(
-        AmbitusEinbettung, foreign_keys=[ambitus_context_before_id]
+        AmbitusEinbettung, lazy="selectin", foreign_keys=[ambitus_context_before_id]
     )
     ambitus_context_after: Mapped[AmbitusEinbettung] = relationship(
-        AmbitusEinbettung, foreign_keys=[ambitus_context_after_id]
+        AmbitusEinbettung, lazy="selectin", foreign_keys=[ambitus_context_after_id]
     )
     ambitus_change_before: Mapped[AmbitusEntwicklung] = relationship(
-        AmbitusEntwicklung, foreign_keys=[ambitus_change_before_id]
+        AmbitusEntwicklung, lazy="selectin", foreign_keys=[ambitus_change_before_id]
     )
     ambitus_change_after: Mapped[AmbitusEntwicklung] = relationship(
-        AmbitusEntwicklung, foreign_keys=[ambitus_change_after_id]
+        AmbitusEntwicklung, lazy="selectin", foreign_keys=[ambitus_change_after_id]
     )
     melodic_line_before: Mapped[Melodiebewegung] = relationship(
-        Melodiebewegung, foreign_keys=[melodic_line_before_id]
+        Melodiebewegung, lazy="selectin", foreign_keys=[melodic_line_before_id]
     )
     melodic_line_after: Mapped[Melodiebewegung] = relationship(
-        Melodiebewegung, foreign_keys=[melodic_line_after_id]
+        Melodiebewegung, lazy="selectin", foreign_keys=[melodic_line_after_id]
     )

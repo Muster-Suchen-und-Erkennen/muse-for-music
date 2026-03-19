@@ -38,7 +38,7 @@ class Artikulation(db.Model, TreeTaxonomy):
     children = relationship(
         lambda: Artikulation,
         passive_deletes="all",
-        lazy="selectin",
+        lazy="select",
         join_depth=8,
         back_populates="parent",
     )
@@ -66,7 +66,7 @@ class Spielanweisung(db.Model, TreeTaxonomy):
     children = relationship(
         lambda: Spielanweisung,
         passive_deletes="all",
-        lazy="selectin",
+        lazy="select",
         join_depth=8,
         back_populates="parent",
     )

@@ -36,7 +36,7 @@ class Melodieform(db.Model, TreeTaxonomy):
     children = relationship(
         lambda: Melodieform,
         passive_deletes="all",
-        lazy="selectin",
+        lazy="select",
         join_depth=8,
         back_populates="parent",
     )

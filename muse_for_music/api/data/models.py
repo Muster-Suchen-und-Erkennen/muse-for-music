@@ -2413,6 +2413,18 @@ voice_put = api.inherit(
     ),
 )
 
+voice_small = api.inherit(
+    "VoiceSmall",
+    voice_post,
+    OrderedDict(
+        [
+            ("id", fields.Integer(default=1, readonly=True, example=1)),
+            ("subpart_id", fields.Integer(default=1, readonly=True, example=1)),
+            ("_links", NestedFields(voice_links)),
+        ]
+    ),
+)
+
 voice_get = api.inherit(
     "VoiceGET",
     voice_post,
@@ -2565,6 +2577,18 @@ voice_get = api.inherit(
     ),
 )
 
+subpart_small = api.inherit(
+    "SubPartSmall",
+    subpart_post,
+    OrderedDict(
+        [
+            ("id", fields.Integer(default=1, readonly=True, example=1)),
+            ("part_id", fields.Integer(default=1, readonly=True, example=1)),
+            ("_links", NestedFields(subpart_links)),
+        ]
+    ),
+)
+
 subpart_get = api.inherit(
     "SubPartGET",
     subpart_put,
@@ -2598,43 +2622,38 @@ subpart_get = api.inherit(
 
 part_small = api.inherit(
     "PartSmall",
+    part_post,
+    OrderedDict(
+        [
+            ("id", fields.Integer(default=1, required=False, readonly=True, example=1)),
+            ("opus_id", fields.Integer(default=1, readonly=True, example=1)),
+            ("_links", NestedFields(part_links)),
+        ]
+    ),
+)
+
+part_small_get = api.inherit(
+    "PartSmallGET",
     part_put,
     OrderedDict(
         [
             ("id", fields.Integer(default=1, required=False, readonly=True, example=1)),
             ("opus_id", fields.Integer(default=1, readonly=True, example=1)),
             ("_links", NestedFields(part_links)),
-            (
-                "occurence_in_movement",
-                fields.List(
-                    fields.Nested(taxonomy_item_ref),
-                    isArray=True,
-                    taxonomy="AuftretenSatz",
-                    title="Vorkommen im Werk",
-                ),
-            ),
-            ("instrumentation_context", fields.Nested(instrumentation_context_get)),
-            ("dynamic_context", fields.Nested(dynamic_context_get)),
-            ("tempo_context", fields.Nested(tempo_context_get)),
-            ("dramaturgic_context", fields.Nested(dramaturgic_context_get)),
-            (
-                "formal_functions",
-                fields.List(
-                    fields.Nested(taxonomy_item_get),
-                    isArray=True,
-                    taxonomy="FormaleFunktion",
-                    title="Formale Funktion",
-                ),
-            ),
+            ("subparts", fields.List(fields.Nested(subpart_small), default=[])),
+            *specification_provider_get,
         ]
     ),
 )
 
 part_get = api.inherit(
     "PartGET",
-    part_small,
+    part_put,
     OrderedDict(
         [
+            ("id", fields.Integer(default=1, required=False, readonly=True, example=1)),
+            ("opus_id", fields.Integer(default=1, readonly=True, example=1)),
+            ("_links", NestedFields(part_links)),
             ("subparts", fields.List(fields.Nested(subpart_get), default=[])),
             *specification_provider_get,
         ]

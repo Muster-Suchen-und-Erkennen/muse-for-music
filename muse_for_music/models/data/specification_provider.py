@@ -173,11 +173,13 @@ class SpecificationProviderMixin:
         cls._Specification = spec_class  # type: ignore assignment
         cls._specifications = relationship(
             spec_class,
-            lazy="selectin",
+            lazy="select",
             single_parent=True,
             cascade="all, delete-orphan",
             back_populates="parent",
         )
+
+        cls._eager_load = (*cls._eager_load, "_specifications")
 
     @property
     def specifications(self):

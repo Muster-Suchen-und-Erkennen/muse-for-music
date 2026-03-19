@@ -56,12 +56,12 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
         db.Integer, db.ForeignKey(Tonalitaet.id, ondelete="RESTRICT")
     )
 
-    composer: Mapped[Person] = relationship(Person, lazy="select")
+    composer: Mapped[Person] = relationship(Person, lazy="selectin")
     genre: Mapped[GattungNineteenthCentury] = relationship(
         GattungNineteenthCentury, lazy="selectin"
     )
-    grundton: Mapped[Grundton] = relationship(Grundton, lazy="selectin")
-    tonalitaet: Mapped[Tonalitaet] = relationship(Tonalitaet, lazy="selectin")
+    grundton: Mapped[Grundton] = relationship(Grundton, lazy="select")
+    tonalitaet: Mapped[Tonalitaet] = relationship(Tonalitaet, lazy="select")
 
     # cross-file backref: Part.opus uses back_populates="parts"
     parts: Mapped[list["Part"]] = relationship(
@@ -71,7 +71,12 @@ class Opus(db.Model, GetByID, UpdateableModelMixin):
     )
     # TODO metadata
 
-    _eager_load = ["composer", "parts"]
+    _eager_load = [
+        "composer",
+        "grundton",
+        "tonalitaet",
+        "parts",
+    ]
 
     def __init__(  # noqa: C901
         self,

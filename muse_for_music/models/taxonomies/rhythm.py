@@ -26,7 +26,7 @@ class Taktart(db.Model, TreeTaxonomy):
     children = relationship(
         lambda: Taktart,
         passive_deletes="all",
-        lazy="selectin",
+        lazy="select",
         join_depth=8,
         back_populates="parent",
     )
@@ -52,7 +52,7 @@ class Rhythmustyp(db.Model, TreeTaxonomy):
     children = relationship(
         lambda: Rhythmustyp,
         passive_deletes="all",
-        lazy="selectin",
+        lazy="select",
         join_depth=8,
         back_populates="parent",
     )
@@ -82,7 +82,7 @@ class RhythmischesPhaenomen(db.Model, TreeTaxonomy):
     children = relationship(
         lambda: RhythmischesPhaenomen,
         passive_deletes="all",
-        lazy="selectin",
+        lazy="select",
         join_depth=8,
         back_populates="parent",
     )

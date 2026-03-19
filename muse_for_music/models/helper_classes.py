@@ -35,12 +35,16 @@ class GetByID:
     id: MappedColumn[int]
 
     @classmethod
-    def prepare_query(cls: Type[Self], lazy: bool = False) -> Select[Tuple[Self]]:
+    def prepare_query(
+        cls: Type[Self], lazy: bool = False, ignore_eager: set[str] | None = None
+    ) -> Select[Tuple[Self]]:
         q = select(cls)
         if lazy:
             return q
         options = []
         for attr in cls._eager_load:
+            if ignore_eager and attr in ignore_eager:
+                continue
             column = getattr(cls, attr)
             options.append(selectinload(column))
 

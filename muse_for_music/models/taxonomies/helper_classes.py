@@ -4,7 +4,7 @@ from csv import DictReader, DictWriter
 from logging import Logger
 from typing import ClassVar, List, Sequence, Type, Union
 
-from sqlalchemy.orm import Mapped, MappedColumn
+from sqlalchemy.orm import Mapped, MappedColumn, selectinload
 from sqlalchemy.sql import select
 from typing_extensions import Self
 
@@ -129,6 +129,8 @@ class TreeTaxonomy(Taxonomy):
     parent: Mapped[Self | None]
     children: Mapped[List[Self]]
 
+    _eager_load = ["children"]
+
     def __init__(
         self, name: str, description: str | None = None, parent: Self | None = None
     ) -> None:
@@ -145,8 +147,14 @@ class TreeTaxonomy(Taxonomy):
     @classmethod
     def get_root(cls: Type[Self]) -> Self | None:
         """Get root node of taxonomy."""
-        q = select(cls).where(cls.name == "root").limit(1)
-        return db.session.execute(q).scalar_one_or_none()
+        # loading all items with recursion depth 1 and then selecting the root
+        # in python is faster than recursively loading the children
+        q = select(cls).options(selectinload(cls.children, recursion_depth=1))
+        all_items = db.session.execute(q).scalars().all()
+        for item in all_items:
+            if item.name == "root":
+                return item
+        return None
 
     items = get_root
 

@@ -91,7 +91,7 @@ class TaktartToRhythm(db.Model):
     )
 
     rhythm: Mapped[Rhythm] = relationship(Rhythm, back_populates="_measure_times")
-    taktart: Mapped[Taktart] = relationship(Taktart)
+    taktart: Mapped[Taktart] = relationship(Taktart, lazy="selectin")
 
     def __init__(self, rhythm, taktart, **kwargs):
         self.rhythm = rhythm
@@ -107,7 +107,7 @@ class RhythmustypToRhythm(db.Model):
     )
 
     rhythm: Mapped[Rhythm] = relationship(Rhythm, back_populates="_rhythm_types")
-    rhythmustyp: Mapped[Rhythmustyp] = relationship(Rhythmustyp)
+    rhythmustyp: Mapped[Rhythmustyp] = relationship(Rhythmustyp, lazy="selectin")
 
     def __init__(self, rhythm, rhythmustyp, **kwargs):
         self.rhythm = rhythm
@@ -124,7 +124,7 @@ class RhythmischesPhaenomenToRhythm(db.Model):
 
     rhythm: Mapped[Rhythm] = relationship(Rhythm, back_populates="_rhythmic_phenomenons")
     rhythmisches_phaenomen: Mapped[RhythmischesPhaenomen] = relationship(
-        RhythmischesPhaenomen
+        RhythmischesPhaenomen, lazy="selectin"
     )
 
     def __init__(self, rhythm, rhythmisches_phaenomen, **kwargs):
