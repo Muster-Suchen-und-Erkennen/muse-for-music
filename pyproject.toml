@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "muse_for_music"
-version = "0.3.2"
+version = "1.0.0"
 description = "A tool for managing data of historical music."
 authors = ["Fabian Bühler"]
 license = "Apache 2.0"
