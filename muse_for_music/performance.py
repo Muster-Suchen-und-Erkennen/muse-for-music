@@ -1,16 +1,14 @@
-from flask import g, request, current_app, Flask
-from time import time
-from functools import wraps
 from collections import namedtuple
-from sqlalchemy.engine import Engine
+from functools import wraps
+from logging import INFO, getLogger
+from time import time
+from typing import List
+
+from flask import Flask, current_app, g, request
 from sqlalchemy import event
-from logging import getLogger, INFO
+from sqlalchemy.engine import Engine
 
-
-from typing import Any, List
-
-
-QueryRecord = namedtuple('QueryRecord', ['duration', 'statement', 'write', 'params'])
+QueryRecord = namedtuple("QueryRecord", ["duration", "statement", "write", "params"])
 
 
 class RequestPerformance:
@@ -36,22 +34,23 @@ class RequestPerformance:
     def end_request(self):
         self.req_end = time()
         self.duration = self.req_end - self.req_start
-        logger = getLogger('flask.app.perf')
-        if self.duration > current_app.config.get('LONG_REQUEST_THRESHHOLD', 1):
+        logger = getLogger("flask.app.perf")
+        if self.duration > current_app.config.get("LONG_REQUEST_THRESHHOLD", 1):
             self.log_performance_record(logger.warning)
-        elif len(self.queries) > 15:
+        elif len(self.queries) > 100:
             self.log_performance_record(logger.warning)
         elif logger.getEffectiveLevel() <= INFO:
             self.log_performance_record(logger.info)
-
 
     def start_query(self):
         self.query_start = time()
 
     def end_query(self, statement, parameters):
         query_end = time()
-        write = not statement.upper().startswith('SELECT')
-        self.queries.append(QueryRecord(query_end - self.query_start, statement, write, parameters))
+        write = not statement.upper().startswith("SELECT")
+        self.queries.append(
+            QueryRecord(query_end - self.query_start, statement, write, parameters)
+        )
         self.query_start = query_end
 
     def start_view_function(self):
@@ -64,16 +63,18 @@ class RequestPerformance:
             self.view_end = time()
 
     def __repr__(self):
-        return '<RequestPerformance duration={}s, {} queries>'.format(self.duration, len(self.queries))
+        return "<RequestPerformance duration={}s, {} queries>".format(
+            self.duration, len(self.queries)
+        )
 
     def log_performance_record(self, methodToLogWith):
         url = request.url
         method = request.method
-        time_in_view = ''
+        time_in_view = ""
         if self.view_end is not None and self.view_end != self.view_start:
             duration_view = self.view_end - self.view_start
             duration_wo_view = self.duration - duration_view
-            time_in_view = 'time spent in view {duration_view: 2.2f}s, duration without view {duration_wo_view: 2.2f}s, '.format(
+            time_in_view = "time spent in view {duration_view: 2.2f}s, duration without view {duration_wo_view: 2.2f}s, ".format(
                 duration_view=duration_view,
                 duration_wo_view=duration_wo_view,
             )
@@ -85,11 +86,11 @@ class RequestPerformance:
             self.queries.sort(key=lambda q: q.duration)
             longest_query_duration = self.queries[0].duration
             log_msg = (
-                'performance report: duration {duration: 2.2f}s, '
-                '{time_in_view}duration without queries {duration_wo_queries: 2.2f}s, '
-                'query-duration {tot_query_duration: 2.2f}s, '
-                '{q_number: 2d} queries ({q_write_number: 2d} write), '
-                'longest query {longest_query_duration: 2.2f}s, url {method:6} {url}'
+                "performance report: duration {duration: 2.2f}s, "
+                "{time_in_view}duration without queries {duration_wo_queries: 2.2f}s, "
+                "query-duration {tot_query_duration: 2.2f}s, "
+                "{q_number: 2d} queries ({q_write_number: 2d} write), "
+                "longest query {longest_query_duration: 2.2f}s, url {method:6} {url}"
             ).format(
                 duration=self.duration,
                 time_in_view=time_in_view,
@@ -101,31 +102,45 @@ class RequestPerformance:
                 method=method,
                 url=url,
             )
+
+            threshold = current_app.config.get("LONG_REQUEST_THRESHHOLD", 1)
             methodToLogWith(log_msg)
             for q in self.queries:
-                if q.duration > current_app.config.get('LONG_REQUEST_THRESHHOLD', 1):
+                if q.duration > threshold:
                     log_msg_stmt = 'performance report: long query detected: duration {duration: 2.2f}s, statement "{statement}", params: {params}'.format(
                         duration=q.duration,
                         statement=q.statement,
                         params=q.params,
                     )
                     methodToLogWith(log_msg_stmt)
-            if len(self.queries) > 5:
-                statements = [q.statement for q in self.queries]
-                queries = '\n\t'.join(sorted(q.statement for q in self.queries))
-                methodToLogWith('performance report: too many queries {nr_queries}, url {method} {url}\n{queries}'.format(
-                    queries=queries,
-                    nr_queries=len(self.queries),
+            if len(self.queries) > 100 or tot_query_duration > (threshold / 2):
+                query_tuples = sorted(
+                    (
+                        (q.duration * 1000, str(q.statement).replace("\n", " "), q.params)
+                        for q in self.queries
+                    ),
+                    key=lambda x: x[0],
+                )
+                queries = "\n\t".join(
+                    f"{q[0]: =7.2f}ms {q[1]} {q[2]}" for q in query_tuples
+                )
+                methodToLogWith(
+                    "performance report: too many queries {nr_queries}, url {method} {url}\n\t{queries}".format(
+                        queries=queries,
+                        nr_queries=len(self.queries),
+                        method=method,
+                        url=url,
+                    )
+                )
+        else:
+            methodToLogWith(
+                "performance report: duration {duration: 2.2f}s, {time_in_view}url {method} {url}".format(
+                    duration=self.duration,
+                    time_in_view=time_in_view,
                     method=method,
                     url=url,
-                ))
-        else:
-            methodToLogWith('performance report: duration {duration: 2.2f}s, {time_in_view}url {method} {url}'.format(
-                duration=self.duration,
-                time_in_view=time_in_view,
-                method=method,
-                url=url,
-            ))
+                )
+            )
 
 
 def before_request(*args, **kwargs):
@@ -133,22 +148,22 @@ def before_request(*args, **kwargs):
 
 
 def after_request(request, *args, **kwargs):
-    r_perf: RequestPerformance = g.get('m4m_request_performance')
+    r_perf: RequestPerformance = g.get("m4m_request_performance")
     if r_perf is not None:
         r_perf.end_request()
     return request
 
 
-@event.listens_for(Engine, 'before_cursor_execute')
+@event.listens_for(Engine, "before_cursor_execute")
 def before_query(conn, cursor, statement, parameters, context, executemany):
-    r_perf: RequestPerformance = g.get('m4m_request_performance')
+    r_perf: RequestPerformance = g.get("m4m_request_performance")
     if r_perf is not None:
         r_perf.start_query()
 
 
-@event.listens_for(Engine, 'after_cursor_execute')
+@event.listens_for(Engine, "after_cursor_execute")
 def after_query(conn, cursor, statement, parameters, context, executemany):
-    r_perf: RequestPerformance = g.get('m4m_request_performance')
+    r_perf: RequestPerformance = g.get("m4m_request_performance")
     if r_perf is not None:
         r_perf.end_query(statement, parameters)
 
@@ -157,14 +172,16 @@ def record_view_performance():
     def record_view_performance_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            r_perf: RequestPerformance = g.get('m4m_request_performance')
+            r_perf: RequestPerformance = g.get("m4m_request_performance")
             if r_perf is not None:
                 r_perf.start_view_function()
             result = f(*args, **kwargs)
             if r_perf is not None:
                 r_perf.end_view_function()
             return result
+
         return wrapper
+
     return record_view_performance_decorator
 
 

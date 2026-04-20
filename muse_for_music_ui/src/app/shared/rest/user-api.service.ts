@@ -141,7 +141,7 @@ export class UserApiService implements OnInit, OnDestroy {
         if (token == null) {
             return undefined;
         }
-        return this.tokenToJson(token).identity;
+        return this.tokenToJson(token).sub;
     }
 
     get roles(): Set<string> {

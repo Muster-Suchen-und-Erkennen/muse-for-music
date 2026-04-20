@@ -1,24 +1,50 @@
 from collections import namedtuple
-from hypothesis import assume, reject, strategies as st
-from hypothesis import settings, Phase
-from flask_restx import fields, Model
 
+from flask_restx import Model, fields
+from hypothesis import Phase, settings
+from hypothesis import strategies as st
+from sqlalchemy import select
+
+from muse_for_music import db
 from muse_for_music.api import api
 from muse_for_music.models.taxonomies import get_taxonomies
 
-settings.register_profile('fast', max_examples=15, stateful_step_count=30, print_blob=True, phases=[Phase.explicit, Phase.reuse, Phase.generate])
-settings.register_profile('medium', max_examples=40, stateful_step_count=40, print_blob=True, phases=[Phase.explicit, Phase.reuse, Phase.generate])
-settings.register_profile('test', max_examples=500, stateful_step_count=60, print_blob=True, phases=[Phase.explicit, Phase.reuse, Phase.generate])
-settings.register_profile('full', max_examples=500, stateful_step_count=60)
-settings.register_profile('extensive', max_examples=1000, stateful_step_count=50)
+settings.register_profile(
+    "fast",
+    max_examples=15,
+    stateful_step_count=30,
+    print_blob=True,
+    phases=[Phase.explicit, Phase.reuse, Phase.generate],
+)
+settings.register_profile(
+    "medium",
+    max_examples=40,
+    stateful_step_count=40,
+    print_blob=True,
+    phases=[Phase.explicit, Phase.reuse, Phase.generate],
+)
+settings.register_profile(
+    "test",
+    max_examples=500,
+    stateful_step_count=60,
+    print_blob=True,
+    phases=[Phase.explicit, Phase.reuse, Phase.generate],
+)
+settings.register_profile("full", max_examples=500, stateful_step_count=60)
+settings.register_profile("extensive", max_examples=1000, stateful_step_count=50)
 
-ReferencePlaceholder = namedtuple('ReferencePlaceholder', ['type', 'nullable'])
-ReferenceListPlaceholder = namedtuple('ReferenceListPlaceholder', ['type', ])
+ReferencePlaceholder = namedtuple("ReferencePlaceholder", ["type", "nullable"])
+ReferenceListPlaceholder = namedtuple(
+    "ReferenceListPlaceholder",
+    [
+        "type",
+    ],
+)
 
 
 def auth_header(token: str):
     if token:
-        return {'Authorization': 'Bearer {}'.format(token)}
+        return {"Authorization": "Bearer {}".format(token)}
     return None
 
 
@@ -26,49 +52,60 @@ class AuthActions(object):
     def __init__(self, client):
         self._client = client
 
-    def login(self, username='admin', password='admin'):
-        url = get_hateoas_ref(self._client, 'login', root='user-api')
-        return self._client.post(url, json={'username': username, 'password': password})
+    def login(self, username="admin", password="admin"):
+        url = get_hateoas_ref(self._client, "login", root="user-api")
+        return self._client.post(url, json={"username": username, "password": password})
 
     def logout(self):
         return self._client.get("/auth/logout")
 
-    def add_role(self, role: str, username='admin', auth=None):
-        assert role in {'user', 'admin', 'taxonomy_editor'}
+    def add_role(self, role: str, username="admin", auth=None):
+        assert role in {"user", "admin", "taxonomy_editor"}
         if auth is None:
-            auth = self.login().get_json()['access_token']
-        users_url = get_hateoas_ref(self._client, 'management', 'user', root='user-api', auth=auth)
-        user = self._client.get('{}{}/'.format(users_url, username), headers=auth_header(auth)).get_json()
-        roles_url = get_hateoas_ref(self._client, 'roles', root=user)
-        result = self._client.post(roles_url, json={'role': role}, headers=auth_header(auth))
+            auth = self.login().get_json()["access_token"]
+        users_url = get_hateoas_ref(
+            self._client, "management", "user", root="user-api", auth=auth
+        )
+        user = self._client.get(
+            "{}{}/".format(users_url, username), headers=auth_header(auth)
+        ).get_json()
+        roles_url = get_hateoas_ref(self._client, "roles", root=user)
+        result = self._client.post(
+            roles_url, json={"role": role}, headers=auth_header(auth)
+        )
         assert result.status_code == 200
 
 
-def api_model_strategy(model: str, api = api):
+def api_model_strategy(model: str, api=api):
     m = api.models[model]
     return st.one_of(dict_model_example(m), dict_model_default(m), dict_model_strategy(m))
 
 
-SKIP_MODEL_KEYS = {'id', '_links'}
+SKIP_MODEL_KEYS = {"id", "_links"}
 
 
-def taxonomy_strategy(taxonomy: str, nullable: bool=False):
+def taxonomy_strategy(taxonomy: str, nullable: bool = False):
     choices = []
     if nullable:
-        choices.append({
-            'id': -1,
-            'name': 'null',
-            'description': 'null',
-        })
+        choices.append(
+            {
+                "id": -1,
+                "name": "null",
+                "description": "null",
+            }
+        )
     taxonomies = get_taxonomies()
     tax = taxonomies[taxonomy.upper()]
-    items = tax.query.all()
+    q = select(tax)
+    items = db.session.execute(q).scalars().all()
     for item in items:
-        choices.append({
-            'id': item.id,
-            'name': item.name if item.name is not None else '',
-            'description': item.description if item.description is not None else '',
-        })
+        choices.append(
+            {
+                "id": item.id,
+                "name": item.name if item.name is not None else "",
+                "description": item.description if item.description is not None else "",
+            }
+        )
     return st.sampled_from(choices)
 
 
@@ -105,22 +142,22 @@ def field_example_strategy(field: fields.Raw):
             return st.just(field.example)
     except AttributeError:
         pass
-    if field.extra_attributes.get('x-isArray', False):
+    if field.extra_attributes.get("x-isArray", False):
         if not isinstance(field, fields.List):
             # only works for lists...
-            assert False, 'Could not generate strategy for list field!'
+            assert False, "Could not generate strategy for list field!"
             return st.nothing()
-        return st.just([]) # simplification for example and default
+        return st.just([])  # simplification for example and default
     if isinstance(field, fields.Nested):
-        if 'x-reference' in field.extra_attributes:
-            reference_type = field.extra_attributes['x-reference']
-            nullable = field.extra_attributes.get('x-nullable', False)
+        if "x-reference" in field.extra_attributes:
+            reference_type = field.extra_attributes["x-reference"]
+            nullable = field.extra_attributes.get("x-nullable", False)
             return st.just(ReferencePlaceholder(reference_type, nullable))
-        elif 'x-taxonomy' in field.extra_attributes:
-            taxonomy = field.extra_attributes['x-taxonomy']
-            nullable = field.extra_attributes.get('x-nullable', False)
+        elif "x-taxonomy" in field.extra_attributes:
+            taxonomy = field.extra_attributes["x-taxonomy"]
+            nullable = field.extra_attributes.get("x-nullable", False)
             return st.deferred(lambda: taxonomy_strategy(taxonomy, nullable))
-        return(st.deferred(lambda: dict_model_example(field.model)))
+        return st.deferred(lambda: dict_model_example(field.model))
     return field_default_strategy(field)
 
 
@@ -135,22 +172,22 @@ def field_default_strategy(field: fields.Raw):
             return st.just(field.default)
     except AttributeError:
         pass
-    if field.extra_attributes.get('x-isArray', False):
+    if field.extra_attributes.get("x-isArray", False):
         if not isinstance(field, fields.List):
             # only works for lists...
-            assert False, 'Could not generate strategy for list field!'
+            assert False, "Could not generate strategy for list field!"
             return st.nothing()
-        return st.just([]) # simplification for example and default
+        return st.just([])  # simplification for example and default
     if isinstance(field, fields.Nested):
-        if 'x-reference' in field.extra_attributes:
-            reference_type = field.extra_attributes['x-reference']
-            nullable = field.extra_attributes.get('x-nullable', False)
+        if "x-reference" in field.extra_attributes:
+            reference_type = field.extra_attributes["x-reference"]
+            nullable = field.extra_attributes.get("x-nullable", False)
             return st.just(ReferencePlaceholder(reference_type, nullable))
-        elif 'x-taxonomy' in field.extra_attributes:
-            taxonomy = field.extra_attributes['x-taxonomy']
-            nullable = field.extra_attributes.get('x-nullable', False)
+        elif "x-taxonomy" in field.extra_attributes:
+            taxonomy = field.extra_attributes["x-taxonomy"]
+            nullable = field.extra_attributes.get("x-nullable", False)
             return st.deferred(lambda: taxonomy_strategy(taxonomy, nullable))
-        return(st.deferred(lambda: dict_model_default(field.model)))
+        return st.deferred(lambda: dict_model_default(field.model))
     return field_strategy(field)
 
 
@@ -167,73 +204,77 @@ def field_strategy(field: fields.Raw):
         max_size = 500 if field.max_length is None else field.max_length
         return st.text(min_size=min_size, max_size=max_size)
     elif isinstance(field, fields.Integer):
-        minimum = -(2 ** 31) if field.minimum is None else field.minimum
-        maximum = (2 ** 31) - 1 if field.maximum is None else field.maximum
+        minimum = -(2**31) if field.minimum is None else field.minimum
+        maximum = (2**31) - 1 if field.maximum is None else field.maximum
         return st.integers(min_value=minimum, max_value=maximum)
     elif isinstance(field, fields.Boolean):
         return st.booleans()
 
     # handle nested cases
-    if field.extra_attributes.get('x-isArray', False) or isinstance(field, fields.List):
+    if field.extra_attributes.get("x-isArray", False) or isinstance(field, fields.List):
         if not isinstance(field, fields.List):
             # only works for lists...
-            assert False, 'Could not generate strategy for list field!'
+            assert False, "Could not generate strategy for list field!"
             return st.nothing()
-        if 'x-taxonomy' in field.extra_attributes:
-            taxonomy = field.extra_attributes['x-taxonomy']
-            return st.lists(st.deferred(lambda: taxonomy_strategy(taxonomy, False)), unique_by=lambda x: x['id'])
-        if 'x-reference' in field.extra_attributes:
-            reference_type = field.extra_attributes['x-reference']
+        if "x-taxonomy" in field.extra_attributes:
+            taxonomy = field.extra_attributes["x-taxonomy"]
+            return st.lists(
+                st.deferred(lambda: taxonomy_strategy(taxonomy, False)),
+                unique_by=lambda x: x["id"],
+            )
+        if "x-reference" in field.extra_attributes:
+            reference_type = field.extra_attributes["x-reference"]
             return st.just(ReferenceListPlaceholder(reference_type))
         container_strategy = st.deferred(lambda: field_strategy(field.container))
         return st.lists(container_strategy)
     elif isinstance(field, fields.Nested):
-        if 'x-reference' in field.extra_attributes:
-            reference_type = field.extra_attributes['x-reference']
-            nullable = field.extra_attributes.get('x-nullable', False)
+        if "x-reference" in field.extra_attributes:
+            reference_type = field.extra_attributes["x-reference"]
+            nullable = field.extra_attributes.get("x-nullable", False)
             return st.just(ReferencePlaceholder(reference_type, nullable))
-        elif 'x-taxonomy' in field.extra_attributes:
-            taxonomy = field.extra_attributes['x-taxonomy']
-            nullable = field.extra_attributes.get('x-nullable', False)
+        elif "x-taxonomy" in field.extra_attributes:
+            taxonomy = field.extra_attributes["x-taxonomy"]
+            nullable = field.extra_attributes.get("x-nullable", False)
             return st.deferred(lambda: taxonomy_strategy(taxonomy, nullable))
         return st.deferred(lambda: dict_model_strategy(field.model))
-    assert False, 'Could not generate strategy for unknown field!'
+    assert False, "Could not generate strategy for unknown field!"
     return st.nothing()
 
 
 # Model Strategies:
 
-PERSON_POST = api_model_strategy('PersonPOST')
-PERSON_PUT = api_model_strategy('PersonPUT')
+PERSON_POST = api_model_strategy("PersonPOST")
+PERSON_PUT = api_model_strategy("PersonPUT")
 
-OPUS_POST = api_model_strategy('OpusPOST')
-OPUS_PUT = api_model_strategy('OpusPUT')
+OPUS_POST = api_model_strategy("OpusPOST")
+OPUS_PUT = api_model_strategy("OpusPUT")
 
-PART_POST = api_model_strategy('PartPOST')
-PART_PUT = api_model_strategy('PartPUT')
+PART_POST = api_model_strategy("PartPOST")
+PART_PUT = api_model_strategy("PartPUT")
 
-SUB_PART_POST = api_model_strategy('SubPartPOST')
-SUB_PART_PUT = api_model_strategy('SubPartPUT')
+SUB_PART_POST = api_model_strategy("SubPartPOST")
+SUB_PART_PUT = api_model_strategy("SubPartPUT")
 
-VOICE_POST = api_model_strategy('VoicePOST')
-VOICE_PUT = api_model_strategy('VoicePUT')
+VOICE_POST = api_model_strategy("VoicePOST")
+VOICE_PUT = api_model_strategy("VoicePUT")
 
 
 # Test methods
 
+
 def get_hateoas_ref_from_object(object, rel: str):
-    assert '_links' in object
-    links = object['_links']
+    assert "_links" in object
+    links = object["_links"]
     assert rel in links
     url = links[rel]
-    assert 'href' in url
-    return url['href']
+    assert "href" in url
+    return url["href"]
 
 
-def get_hateoas_ref(client, *rels, auth=None, root='api'):
-    url = ''
+def get_hateoas_ref(client, *rels, auth=None, root="api"):
+    url = ""
     if isinstance(root, str):
-        url = '/{}/'.format(root)
+        url = "/{}/".format(root)
     else:
         assert len(rels) > 0
         url = get_hateoas_ref_from_object(root, rels[0])
@@ -241,16 +282,16 @@ def get_hateoas_ref(client, *rels, auth=None, root='api'):
     headers = auth_header(auth)
     for rel in rels:
         if isinstance(rel, int):
-            url = url + '{}/'.format(rel)
+            url = url + "{}/".format(rel)
             continue
         result = client.get(url, headers=headers)
         json = result.get_json()
-        assert json is not None and '_links' in json, url + ' ' + str(result.data)
-        url = json['_links'][rel]['href']
+        assert json is not None and "_links" in json, url + " " + str(result.data)
+        url = json["_links"][rel]["href"]
     return url
 
 
-def get_hateoas_resource(client, *rels, auth=None, root='api'):
+def get_hateoas_resource(client, *rels, auth=None, root="api"):
     headers = auth_header(auth)
     url = get_hateoas_ref(client, *rels, auth=auth, root=root)
     return client.get(url, headers=headers)
@@ -258,11 +299,13 @@ def get_hateoas_resource(client, *rels, auth=None, root='api'):
 
 def try_self_link(object, client, auth=None):
     headers = auth_header(auth)
-    url = object['_links']['self']['href']
+    url = object["_links"]["self"]["href"]
     result = client.get(url, headers=headers)
     assert result.status_code == 200, result.get_data().decode()
     obj2 = result.get_json()
-    assert object == obj2
+    assert compareObjects(
+        object, obj2
+    ), "object returned from self link does not match given object"
 
 
 def compareObjects(a, b):

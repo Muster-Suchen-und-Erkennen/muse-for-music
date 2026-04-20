@@ -1,12 +1,11 @@
 """Module containing API Endpoints for data Resources."""
 
-from flask_restx import fields, Resource
+from flask_restx import Resource, fields  # noqa
 
-from .. import api
-
-from . import people
-from . import opus
-from . import part
-from . import subpart
-
-from . import history
+from .. import api  # noqa
+from . import history  # noqa
+from . import opus  # noqa
+from . import part  # noqa
+from . import people  # noqa
+from . import subpart  # noqa
+from . import voices  # noqa

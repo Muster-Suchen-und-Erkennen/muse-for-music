@@ -1,66 +1,115 @@
-from ... import db
-from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
-
 from typing import Union
 
-from .part import Part
-from .harmonics import Harmonics
-from .satz import Satz
+from sqlalchemy.orm import Mapped, MappedColumn, relationship
+
+from ... import db
+from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
+from ..taxonomies import Anteil, AuftretenWerkausschnitt
 from .dynamic import Dynamic
-from .tempo import TempoGroup
-from .ambitus import AmbitusGroup
-from .citations import Citations
+from .harmonics import Harmonics
 from .instrumentation import Instrumentation
+from .part import Part
+from .satz import Satz
 from .specification_provider import SpecificationProviderMixin
-from ..taxonomies import Anteil, AuftretenWerkausschnitt, MusikalischeWendung
-
-from typing import Union, Sequence, Dict
+from .tempo import TempoGroup
 
 
-class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, SpecificationProviderMixin):
+class SubPart(
+    db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, SpecificationProviderMixin
+):
 
-    _normal_attributes = (('label', str),
-                          ('measures', str),
-                          ('occurence_in_part', AuftretenWerkausschnitt),
-                          ('share_of_part', Anteil),
-                          ('is_tutti', bool),
-                          ('dynamic', Dynamic),
-                          ('harmonics', Harmonics),
-                          ('tempo', TempoGroup),)
+    _normal_attributes = (
+        ("label", str),
+        ("measures", str),
+        ("occurence_in_part", AuftretenWerkausschnitt),
+        ("share_of_part", Anteil),
+        ("is_tutti", bool),
+        ("dynamic", Dynamic),
+        ("harmonics", Harmonics),
+        ("tempo", TempoGroup),
+    )
 
-    _list_attributes = ('instrumentation', 'specifications')
+    _list_attributes = ("instrumentation", "specifications")
 
     __tablename__ = "sub_part"
 
     id = db.Column(db.Integer, primary_key=True)
-    part_id = db.Column(db.Integer, db.ForeignKey('part.id'), nullable=False)
-    label = db.Column(db.String(191), nullable=False, default='A')
-    measures = db.Column(db.Text, nullable=True)
-    occurence_in_part_id = db.Column(db.Integer, db.ForeignKey('auftreten_werkausschnitt.id'), nullable=True)
-    share_of_part_id = db.Column(db.Integer, db.ForeignKey('anteil.id'), nullable=True)
-    instrumentation_id = db.Column(db.Integer, db.ForeignKey('instrumentation.id'))
-    is_tutti = db.Column(db.Boolean, default=False)
-    dynamic_id = db.Column(db.Integer, db.ForeignKey('dynamic.id'), nullable=True)
-    harmonics_id = db.Column(db.Integer, db.ForeignKey('harmonics.id'), nullable=True)
-    tempo_id = db.Column(db.Integer, db.ForeignKey('tempo_group.id'), nullable=True)
+    part_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Part.id), nullable=False
+    )
+    label: MappedColumn[str] = db.Column(db.String(191), nullable=False, default="A")
+    measures: MappedColumn[str | None] = db.Column(db.Text, nullable=True)
+    occurence_in_part_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(AuftretenWerkausschnitt.id), nullable=True
+    )
+    share_of_part_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Anteil.id), nullable=True
+    )
+    instrumentation_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Instrumentation.id)
+    )
+    is_tutti: MappedColumn[bool] = db.Column(db.Boolean, default=False)
+    dynamic_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Dynamic.id), nullable=True
+    )
+    harmonics_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Harmonics.id), nullable=True
+    )
+    tempo_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(TempoGroup.id), nullable=True
+    )
     # ambitus_id = db.Column(db.Integer, db.ForeignKey('ambitus_group.id'), nullable=True)
 
-    part = db.relationship(Part, lazy='select', backref=db.backref('subparts', single_parent=True, cascade="all, delete-orphan"))
-    occurence_in_part = db.relationship(AuftretenWerkausschnitt, lazy='joined', single_parent=True)
-    share_of_part = db.relationship(Anteil, lazy='joined', single_parent=True)
-    _instrumentation = db.relationship('Instrumentation', lazy='subquery', single_parent=True, cascade="all, delete-orphan")  # type: Instrumentation
-    dynamic = db.relationship(Dynamic, single_parent=True, cascade="all, delete-orphan")
-    harmonics = db.relationship(Harmonics, single_parent=True, cascade="all, delete-orphan")
-    tempo = db.relationship(TempoGroup, single_parent=True, cascade="all, delete-orphan")
-    # ambitus = db.relationship(AmbitusGroup, single_parent=True, cascade="all, delete-orphan")
+    part: Mapped[Part] = relationship(Part, lazy="select", back_populates="subparts")
+    occurence_in_part: Mapped[AuftretenWerkausschnitt] = relationship(
+        AuftretenWerkausschnitt, lazy="select", single_parent=True
+    )
+    share_of_part: Mapped[Anteil] = relationship(
+        Anteil, lazy="select", single_parent=True
+    )
+    _instrumentation: Mapped[Instrumentation] = relationship(
+        Instrumentation,
+        lazy="select",
+        single_parent=True,
+        cascade="all, delete-orphan",
+    )
+    dynamic: Mapped[Dynamic] = relationship(
+        Dynamic, lazy="select", single_parent=True, cascade="all, delete-orphan"
+    )
+    harmonics: Mapped[Harmonics] = relationship(
+        Harmonics, lazy="select", single_parent=True, cascade="all, delete-orphan"
+    )
+    tempo: Mapped[TempoGroup] = relationship(
+        TempoGroup, lazy="select", single_parent=True, cascade="all, delete-orphan"
+    )
+    # ambitus = relationship(AmbitusGroup, single_parent=True, cascade="all, delete-orphan")
 
-    _subquery_load = ['dynamic', 'harmonics', 'voices']
+    # cross-file backref: Voice.subpart uses back_populates="voices"
+    voices: Mapped[list["Voice"]] = relationship(
+        lambda: Voice,
+        lazy="select",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="subpart",
+    )
 
-    def __init__(self, part_id: Union[int, Part], label: str = 'A', **kwargs):
+    _eager_load = [
+        "occurence_in_part",
+        "share_of_part",
+        "_instrumentation",
+        "dynamic",
+        "harmonics",
+        "tempo",
+    ]
+
+    def __init__(self, part_id: Union[int, Part], label: str = "A", **kwargs):
         if isinstance(part_id, Part):
             self.part = part_id
         else:
-            self.part = Part.get_by_id(part_id)
+            found_part = Part.get_by_id(part_id)
+            if found_part is None:
+                raise KeyError(f"Did not find a part with Part.id=={part_id}.")
+            self.part = found_part
         self.label = label
 
         self.satz = Satz()
@@ -76,3 +125,6 @@ class SubPart(db.Model, GetByID, UpdateableModelMixin, UpdateListMixin, Specific
     @instrumentation.setter
     def instrumentation(self, data: list):
         self._instrumentation.instruments = data
+
+
+from .voice import Voice  # noqa

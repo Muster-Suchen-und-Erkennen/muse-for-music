@@ -1,15 +1,13 @@
 """Module containing the root resource of the API."""
 
-from flask_restx import Resource
+from flask_restx import marshal
+
 from . import api
 from .models import root_model
 
-ns = api.namespace('default', path='/', description='Root Resource')
 
-@ns.route('/')
-@ns.doc(security=None)
-class RootResource(Resource):
+def render_root_custom():
+    return marshal(None, root_model)
 
-    @ns.marshal_with(root_model)
-    def get(self):
-        return 'TODO'
+
+api.render_root = render_root_custom  # type: ignore

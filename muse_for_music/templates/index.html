@@ -12,8 +12,8 @@
 
 <body>
     <script nonce="{{nonce}}">
-        window.apiBasePath = "{{url_for('api.default_root_resource', _external=True)}}";
-        window.userApiBasePath = "{{url_for('user_api.default_root_resource', _external=True)}}";
+        window.apiBasePath = "{{url_for('api.root', _external=True)}}";
+        window.userApiBasePath = "{{url_for('user_api.root', _external=True)}}";
     </script>
     <m4m-root class="h-100 flex flex-column"></m4m-root>
 

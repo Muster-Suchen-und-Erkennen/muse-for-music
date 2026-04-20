@@ -1,81 +1,93 @@
-from csv import DictReader, DictWriter
-from collections import OrderedDict
-from logging import Logger
 import re
+from collections import OrderedDict
+from csv import DictReader, DictWriter
+from logging import Logger
+from typing import ClassVar, List, Sequence, Type, Union
+
+from sqlalchemy.orm import Mapped, MappedColumn, selectinload
+from sqlalchemy.sql import select
+from typing_extensions import Self
+
 from ... import db
-from ..helper_classes import GetByID, X
-from typing import Dict, List, Sequence, Any, Type, TypeVar
+from ..helper_classes import GetByID
 
 
 class Taxonomy(GetByID):
 
-    taxonomy_type = None  # type: str
-    select_multiple = False  # type: bool
-    display_name = None  # type: str
-    specification = None # type: str
+    taxonomy_type: ClassVar[str]
+    select_multiple: ClassVar[bool] = False
+    display_name: ClassVar[str | None] = None
+    specification: ClassVar[str | None] = None
 
-    def __init__(self, name: str, description: None) -> None:
+    # common types
+    name: MappedColumn[str]
+    description: MappedColumn[str | None]
+
+    def __init__(self, name: str, description: str | None) -> None:
         """Create new List Taxonomy object."""
         self.name = name
         self.description = description
 
     @classmethod
     def clear_all(cls, logger: Logger):
-        objects = cls.query.all()
+        q = select(cls)
+        objects = db.session.execute(q).scalars().all()
         for obj in objects:
             db.session.delete(obj)
         db.session.commit()
 
     @classmethod
     def load(cls, input_data: DictReader, logger: Logger):
-        NotImplementedError
+        raise NotImplementedError
 
     @classmethod
     def save(cls, output_data: DictWriter, logger: Logger):
-        NotImplementedError
+        raise NotImplementedError
 
     @classmethod
-    def items(cls):
-        NotImplementedError
+    def items(cls) -> Union[Sequence[Self], Self, None]:
+        raise NotImplementedError
 
     @classmethod
     def not_applicable_item(cls):
-        return cls.query.filter_by(name='na').first()
+        q = select(cls).where(cls.name == "na").limit(1)
+        return db.session.execute(q).scalar_one_or_none()
 
 
 class ListTaxonomy(Taxonomy):
     """Base class for list taxonomies."""
 
-    taxonomy_type = 'list'  # type: str
+    taxonomy_type = "list"
 
     def __repr__(self):
         """Get repr of taxonomy."""
         return '<{} "{}">'.format(type(self).__name__, self.name)
 
     @classmethod
-    def get_all(cls: Type[X]) -> List[X]:
+    def get_all(cls: Type[Self]) -> Sequence[Self]:
         """Get all elements of taxonomy."""
-        return cls.query.filter(cls.name != 'na').all()
+        q = select(cls).where(cls.name != "na")
+        return db.session.execute(q).scalars().all()
 
     items = get_all
 
     @classmethod
     def load(cls, input_data: DictReader, logger: Logger):
         """Load taxonomy from csv file."""
-        items = OrderedDict()  # type: Dict[str, ListTaxonomy]
+        items: OrderedDict[str, ListTaxonomy] = OrderedDict()
+        row: dict[str, str]
         for row in input_data:
-            name = row['name']  # type: str
-            description = row.get('description')  # type: str
-            if name.upper() == 'ROOT':
+            name: str = row["name"]
+            description: str | None = row.get("description")
+            if name.upper() == "ROOT":
                 continue
             if name in items:
                 logger.warning('Duplicate names are not allowed! \
-                                Found "%s" but name is already used.',
-                               name)
+                                Found "%s" but name is already used.', name)
                 break
             items[name] = cls(name=name, description=description)
         else:
-            for name, value in items.items():
+            for value in items.values():
                 db.session.add(value)
             db.session.commit()
             return
@@ -84,75 +96,95 @@ class ListTaxonomy(Taxonomy):
     @classmethod
     def save(cls, output_data: DictWriter, logger: Logger):
         output_data.writeheader()
-        output_data.writerow({
-            'name': 'root',
-            'parent': '',
-            'description': '',
-        })
+        output_data.writerow(
+            {
+                "name": "root",
+                "parent": "",
+                "description": "",
+            }
+        )
         items = cls.get_all()
         names = set()
         for item in items:
             if item.name in names:
                 logger.warning('An item with name "%s" was already exported!', item.name)
             names.add(item.name)
-            output_data.writerow({
-                'name': item.name,
-                'parent': 'root',
-                'description': item.description,
-            })
-
+            output_data.writerow(
+                {
+                    "name": item.name,
+                    "parent": "root",
+                    "description": item.description,
+                }
+            )
 
 
 class TreeTaxonomy(Taxonomy):
     """Base class for tree taxonomies."""
 
-    taxonomy_type = 'tree'  # type: str
-    select_leafs_only = False  # type: bool
+    taxonomy_type = "tree"
+    select_leafs_only = False
 
-    children = []  # type: List[TreeTaxonomy]
+    # common types
+    parent_id: MappedColumn[int | None]
+    parent: Mapped[Self | None]
+    children: Mapped[List[Self]]
 
-    def __init__(self, name: str, description=None, parent: 'TreeTaxonomy'=None) -> None:
+    _eager_load = ["children"]
+
+    def __init__(
+        self, name: str, description: str | None = None, parent: Self | None = None
+    ) -> None:
         """Create new TreeTaxonomy object."""
         self.parent = parent
         super().__init__(name=name, description=description)
 
     def __repr__(self):
         """Get repr of taxonomy."""
-        return '<{} "{}", children {}>'.format(type(self).__name__, self.name,
-                                               [child.__repr__() for child in self.children])
+        return '<{} "{}", children {}>'.format(
+            type(self).__name__, self.name, [child.__repr__() for child in self.children]
+        )
 
     @classmethod
-    def get_root(cls: Type[X]) -> X:
+    def get_root(cls: Type[Self]) -> Self | None:
         """Get root node of taxonomy."""
-        return cls.query.filter_by(name='root').first()
+        # loading all items with recursion depth 1 and then selecting the root
+        # in python is faster than recursively loading the children
+        q = select(cls).options(selectinload(cls.children, recursion_depth=1))
+        all_items = db.session.execute(q).scalars().all()
+        for item in all_items:
+            if item.name == "root":
+                return item
+        return None
 
     items = get_root
 
     @classmethod
     def load(cls, input_data: DictReader, logger: Logger):
         """Load taxonomy from csv file."""
-        pattern = re.compile(r'^(\d+|\(\d+\)|\[\d+\]|\{\d+\}|<\d+>),?\s+')
-        items = OrderedDict()  # type: Dict[str, TreeTaxonomy]
+        pattern = re.compile(r"^(\d+|\(\d+\)|\[\d+\]|\{\d+\}|<\d+>),?\s+")
+        items: OrderedDict[str, TreeTaxonomy] = OrderedDict()
         for row in input_data:
-            name = row['name']  # type: str
-            description = row.get('description')  # type: str
+            name: str = row["name"]
+            description: str | None = row.get("description")
             if name in items:
                 logger.warning('Duplicate names are not allowed! \
-                                Found "%s" but "%r" is already used.',
-                               name, items[name])
+                                Found "%s" but "%r" is already used.', name, items[name])
                 break
-            if not row.get('parent'):
-                items[name] = cls(name=pattern.sub('', name))
+            if not row.get("parent"):
+                items[name] = cls(name=pattern.sub("", name))
             else:
-                parent_name = row['parent']
+                parent_name = row["parent"]
                 if parent_name not in items:
-                    logger.warning('Child "%s" defined before Parent "%s"!',
-                                   name, parent_name)
+                    logger.warning(
+                        'Child "%s" defined before Parent "%s"!', name, parent_name
+                    )
                     break
                 parent = items[parent_name]
-                items[name] = cls(name=pattern.sub('', name), parent=parent, description=description)
+                items[name] = cls(
+                    name=pattern.sub("", name), parent=parent, description=description
+                )
         else:
-            for name, value in items.items():
+            for value in items.values():
                 db.session.add(value)
             db.session.commit()
             return
@@ -172,11 +204,19 @@ class TreeTaxonomy(Taxonomy):
             if count == 1:
                 name_mappings[item.id] = item.name
             else:
-                name_mappings[item.id] = '({count}) {name}'.format(count=count, name=item.name)
-            output_data.writerow({
-                'name': name_mappings.get(item.id, item.name),
-                'parent': '' if item.name.upper() == 'ROOT' else name_mappings.get(item.parent.id, item.parent.name),
-                'description': item.description,
-            })
+                name_mappings[item.id] = "({count}) {name}".format(
+                    count=count, name=item.name
+                )
+            output_data.writerow(
+                {
+                    "name": name_mappings.get(item.id, item.name),
+                    "parent": (
+                        ""
+                        if item.name.upper() == "ROOT"
+                        else name_mappings.get(item.parent.id, item.parent.name)
+                    ),
+                    "description": item.description,
+                }
+            )
             for child in reversed(item.children):
                 stack.append(child)

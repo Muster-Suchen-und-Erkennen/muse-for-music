@@ -1,24 +1,86 @@
-from ... import db
-from ..taxonomies import Zitat, Epoche, Gattung, Instrument, Programmgegenstand, Tonmalerei
-from .people import Person
-from .opus import Opus
-from ..helper_classes import GetByID, UpdateListMixin, UpdateableModelMixin
+from typing import Sequence, Union
 
-from typing import Union, Sequence, List
+from sqlalchemy.orm import Mapped, MappedColumn, relationship
+
+from ... import db
+from ..helper_classes import GetByID, UpdateableModelMixin, UpdateListMixin
+from ..taxonomies import (
+    Epoche,
+    Gattung,
+    Instrument,
+    Programmgegenstand,
+    Tonmalerei,
+    Zitat,
+)
+from .opus import Opus
+from .people import Person
 
 
 class Citations(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
 
-    _list_attributes = ('opus_citations',
-                        'instrument_citations',
-                        'epoch_citations',
-                        'gattung_citations',
-                        'tonmalerei_citations',
-                        'program_citations',
-                        'composer_citations')
+    _list_attributes = (
+        "opus_citations",
+        "instrument_citations",
+        "epoch_citations",
+        "gattung_citations",
+        "tonmalerei_citations",
+        "program_citations",
+        "composer_citations",
+    )
 
-    __tablename__ = 'citations'
+    __tablename__ = "citations"
     id = db.Column(db.Integer, primary_key=True)
+
+    # backrefs (defined here explicitly; populated by association tables below)
+    _opus_citations: Mapped[list["OpusCitation"]] = relationship(
+        lambda: OpusCitation,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="citations",
+    )
+    _epoch_citations: Mapped[list["EpocheToCitations"]] = relationship(
+        lambda: EpocheToCitations,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="citations",
+    )
+    _gattung_citations: Mapped[list["GattungToCitations"]] = relationship(
+        lambda: GattungToCitations,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="citations",
+    )
+    _composer_citations: Mapped[list["PersonToCitations"]] = relationship(
+        lambda: PersonToCitations,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="citations",
+    )
+    _instrument_citations: Mapped[list["InstrumentToCitations"]] = relationship(
+        lambda: InstrumentToCitations,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="citations",
+    )
+    _program_citations: Mapped[list["ProgrammgegenstandToCitations"]] = relationship(
+        lambda: ProgrammgegenstandToCitations,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="citations",
+    )
+    _tonmalerei_citations: Mapped[list["TonmalereiToCitations"]] = relationship(
+        lambda: TonmalereiToCitations,
+        lazy="selectin",
+        single_parent=True,
+        cascade="all, delete-orphan",
+        back_populates="citations",
+    )
 
     @property
     def opus_citations(self):
@@ -36,73 +98,111 @@ class Citations(db.Model, GetByID, UpdateListMixin, UpdateableModelMixin):
     @epoch_citations.setter
     def epoch_citations(self, epoch_citations_list: Union[Sequence[int], Sequence[dict]]):
         old_items = {mapping.epoche.id: mapping for mapping in self._epoch_citations}
-        self.update_list(epoch_citations_list, old_items, EpocheToCitations,
-                         Epoche, 'epoche')
+        self.update_list(
+            epoch_citations_list, old_items, EpocheToCitations, Epoche, "epoche"
+        )
 
     @property
     def gattung_citations(self):
         return [mapping.gattung for mapping in self._gattung_citations]
 
     @gattung_citations.setter
-    def gattung_citations(self, gattung_citations_list: Union[Sequence[int], Sequence[dict]]):
+    def gattung_citations(
+        self, gattung_citations_list: Union[Sequence[int], Sequence[dict]]
+    ):
         old_items = {mapping.gattung.id: mapping for mapping in self._gattung_citations}
-        self.update_list(gattung_citations_list, old_items, GattungToCitations,
-                         Gattung, 'gattung')
+        self.update_list(
+            gattung_citations_list, old_items, GattungToCitations, Gattung, "gattung"
+        )
 
     @property
     def composer_citations(self):
         return [mapping.person for mapping in self._composer_citations]
 
     @composer_citations.setter
-    def composer_citations(self, composer_citations_list: Union[Sequence[int], Sequence[dict]]):
+    def composer_citations(
+        self, composer_citations_list: Union[Sequence[int], Sequence[dict]]
+    ):
         old_items = {mapping.person.id: mapping for mapping in self._composer_citations}
-        self.update_list(composer_citations_list, old_items, PersonToCitations,
-                         Person, 'person')
+        self.update_list(
+            composer_citations_list, old_items, PersonToCitations, Person, "person"
+        )
 
     @property
     def instrument_citations(self):
         return [mapping.instrument for mapping in self._instrument_citations]
 
     @instrument_citations.setter
-    def instrument_citations(self, instrument_citations_list: Union[Sequence[int], Sequence[dict]]):
-        old_items = {mapping.instrument.id: mapping for mapping in self._instrument_citations}
-        self.update_list(instrument_citations_list, old_items, InstrumentToCitations,
-                         Instrument, 'instrument')
+    def instrument_citations(
+        self, instrument_citations_list: Union[Sequence[int], Sequence[dict]]
+    ):
+        old_items = {
+            mapping.instrument.id: mapping for mapping in self._instrument_citations
+        }
+        self.update_list(
+            instrument_citations_list,
+            old_items,
+            InstrumentToCitations,
+            Instrument,
+            "instrument",
+        )
 
     @property
     def program_citations(self):
         return [mapping.programmgegenstand for mapping in self._program_citations]
 
     @program_citations.setter
-    def program_citations(self, program_citations_list: Union[Sequence[int], Sequence[dict]]):
-        old_items = {mapping.programmgegenstand.id: mapping for mapping in self._program_citations}
-        self.update_list(program_citations_list, old_items, ProgrammgegenstandToCitations,
-                         Programmgegenstand, 'programmgegenstand')
+    def program_citations(
+        self, program_citations_list: Union[Sequence[int], Sequence[dict]]
+    ):
+        old_items = {
+            mapping.programmgegenstand.id: mapping for mapping in self._program_citations
+        }
+        self.update_list(
+            program_citations_list,
+            old_items,
+            ProgrammgegenstandToCitations,
+            Programmgegenstand,
+            "programmgegenstand",
+        )
 
     @property
     def tonmalerei_citations(self):
         return [mapping.tonmalerei for mapping in self._tonmalerei_citations]
 
     @tonmalerei_citations.setter
-    def tonmalerei_citations(self, tonmalerei_citations_list: Union[Sequence[int], Sequence[dict]]):
-        old_items = {mapping.tonmalerei.id: mapping for mapping in self._tonmalerei_citations}
-        self.update_list(tonmalerei_citations_list, old_items, TonmalereiToCitations,
-                         Tonmalerei, 'tonmalerei')
+    def tonmalerei_citations(
+        self, tonmalerei_citations_list: Union[Sequence[int], Sequence[dict]]
+    ):
+        old_items = {
+            mapping.tonmalerei.id: mapping for mapping in self._tonmalerei_citations
+        }
+        self.update_list(
+            tonmalerei_citations_list,
+            old_items,
+            TonmalereiToCitations,
+            Tonmalerei,
+            "tonmalerei",
+        )
 
 
 class OpusCitation(db.Model, GetByID, UpdateableModelMixin):
 
-    _normal_attributes = (('citation_type', Zitat), ('opus', Opus))
-    _reference_only_attributes = ('opus', )
+    _normal_attributes = (("citation_type", Zitat), ("opus", Opus))
+    _reference_only_attributes = ("opus",)
 
-    id = db.Column(db.Integer, primary_key=True)
-    citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'))
-    opus_id = db.Column(db.Integer, db.ForeignKey('opus.id'), nullable=True)
-    citation_type_id = db.Column(db.Integer, db.ForeignKey('zitat.id'))
+    id: MappedColumn[int] = db.Column(db.Integer, primary_key=True)
+    citations_id: MappedColumn[int] = db.Column(db.Integer, db.ForeignKey(Citations.id))
+    opus_id: MappedColumn[int | None] = db.Column(
+        db.Integer, db.ForeignKey(Opus.id), nullable=True
+    )
+    citation_type_id: MappedColumn[int] = db.Column(db.Integer, db.ForeignKey(Zitat.id))
 
-    citations = db.relationship(Citations, backref=db.backref('_opus_citations', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
-    opus = db.relationship('Opus')
-    citation_type = db.relationship(Zitat)
+    citations: Mapped[Citations] = relationship(
+        Citations, back_populates="_opus_citations"
+    )
+    opus: Mapped[Opus] = relationship(Opus, lazy="selectin")
+    citation_type: Mapped[Zitat] = relationship(Zitat, lazy="selectin")
 
     def __init__(self, citations, **kwargs):
         self.citations = citations
@@ -110,13 +210,18 @@ class OpusCitation(db.Model, GetByID, UpdateableModelMixin):
             self.update(kwargs)
 
 
-
 class EpocheToCitations(db.Model):
-    citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), primary_key=True)
-    epoche_id = db.Column(db.Integer, db.ForeignKey('epoche.id'), primary_key=True)
+    citations_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Citations.id), primary_key=True
+    )
+    epoche_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Epoche.id), primary_key=True
+    )
 
-    citations = db.relationship(Citations, backref=db.backref('_epoch_citations', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
-    epoche = db.relationship('Epoche')
+    citations: Mapped[Citations] = relationship(
+        Citations, back_populates="_epoch_citations"
+    )
+    epoche: Mapped[Epoche] = relationship(Epoche, lazy="selectin")
 
     def __init__(self, citations, epoche):
         self.citations = citations
@@ -124,11 +229,17 @@ class EpocheToCitations(db.Model):
 
 
 class GattungToCitations(db.Model):
-    citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), primary_key=True)
-    gattung_id = db.Column(db.Integer, db.ForeignKey('gattung.id'), primary_key=True)
+    citations_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Citations.id), primary_key=True
+    )
+    gattung_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Gattung.id), primary_key=True
+    )
 
-    citations = db.relationship(Citations, backref=db.backref('_gattung_citations', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
-    gattung = db.relationship('Gattung')
+    citations: Mapped[Citations] = relationship(
+        Citations, back_populates="_gattung_citations"
+    )
+    gattung: Mapped[Gattung] = relationship(Gattung, lazy="selectin")
 
     def __init__(self, citations, gattung):
         self.citations = citations
@@ -136,13 +247,19 @@ class GattungToCitations(db.Model):
 
 
 class PersonToCitations(db.Model):
-    _reference_only_attributes = ('person', )
+    _reference_only_attributes = ("person",)
 
-    citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), primary_key=True)
-    person_id = db.Column(db.Integer, db.ForeignKey('person.id'), primary_key=True)
+    citations_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Citations.id), primary_key=True
+    )
+    person_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Person.id), primary_key=True
+    )
 
-    citations = db.relationship(Citations, backref=db.backref('_composer_citations', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
-    person = db.relationship('Person')
+    citations: Mapped[Citations] = relationship(
+        Citations, back_populates="_composer_citations"
+    )
+    person: Mapped[Person] = relationship(Person, lazy="selectin")
 
     def __init__(self, citations, person):
         self.citations = citations
@@ -150,11 +267,17 @@ class PersonToCitations(db.Model):
 
 
 class InstrumentToCitations(db.Model):
-    citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), primary_key=True)
-    instrument_id = db.Column(db.Integer, db.ForeignKey('instrument.id'), primary_key=True)
+    citations_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Citations.id), primary_key=True
+    )
+    instrument_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Instrument.id), primary_key=True
+    )
 
-    citations = db.relationship(Citations, backref=db.backref('_instrument_citations', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
-    instrument = db.relationship('Instrument')
+    citations: Mapped[Citations] = relationship(
+        Citations, back_populates="_instrument_citations"
+    )
+    instrument: Mapped[Instrument] = relationship(Instrument, lazy="selectin")
 
     def __init__(self, citations, instrument):
         self.citations = citations
@@ -162,11 +285,19 @@ class InstrumentToCitations(db.Model):
 
 
 class ProgrammgegenstandToCitations(db.Model):
-    citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), primary_key=True)
-    programmgegenstand_id = db.Column(db.Integer, db.ForeignKey('programmgegenstand.id'), primary_key=True)
+    citations_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Citations.id), primary_key=True
+    )
+    programmgegenstand_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Programmgegenstand.id), primary_key=True
+    )
 
-    citations = db.relationship(Citations, backref=db.backref('_program_citations', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
-    programmgegenstand = db.relationship('Programmgegenstand')
+    citations: Mapped[Citations] = relationship(
+        Citations, back_populates="_program_citations"
+    )
+    programmgegenstand: Mapped[Programmgegenstand] = relationship(
+        Programmgegenstand, lazy="selectin"
+    )
 
     def __init__(self, citations, programmgegenstand):
         self.citations = citations
@@ -174,13 +305,18 @@ class ProgrammgegenstandToCitations(db.Model):
 
 
 class TonmalereiToCitations(db.Model):
-    citations_id = db.Column(db.Integer, db.ForeignKey('citations.id'), primary_key=True)
-    tonmalerei_id = db.Column(db.Integer, db.ForeignKey('tonmalerei.id'), primary_key=True)
+    citations_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Citations.id), primary_key=True
+    )
+    tonmalerei_id: MappedColumn[int] = db.Column(
+        db.Integer, db.ForeignKey(Tonmalerei.id), primary_key=True
+    )
 
-    citations = db.relationship(Citations, backref=db.backref('_tonmalerei_citations', lazy='joined', single_parent=True, cascade="all, delete-orphan"))
-    tonmalerei = db.relationship('Tonmalerei')
+    citations: Mapped[Citations] = relationship(
+        Citations, back_populates="_tonmalerei_citations"
+    )
+    tonmalerei: Mapped[Tonmalerei] = relationship(Tonmalerei, lazy="selectin")
 
     def __init__(self, citations, tonmalerei):
         self.citations = citations
         self.tonmalerei = tonmalerei
-

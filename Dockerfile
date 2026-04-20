@@ -4,7 +4,7 @@ RUN cd muse_for_music_ui \
     && npm clean-install \
     && npm run build -- --configuration production --output-hashing=none --extract-licenses
 
-FROM python:3.10
+FROM python:3.12
 
 LABEL org.opencontainers.image.source="https://github.com/Muster-Suchen-und-Erkennen/muse-for-music"
 
