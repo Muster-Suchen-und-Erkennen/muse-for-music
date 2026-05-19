@@ -13,6 +13,7 @@ from ..helper_classes import GetByID
 
 
 class Taxonomy(GetByID):
+
     taxonomy_type: ClassVar[str]
     select_multiple: ClassVar[bool] = False
     display_name: ClassVar[str | None] = None
