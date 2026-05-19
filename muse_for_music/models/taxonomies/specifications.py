@@ -14,6 +14,7 @@ class SpecAnteil(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
 
 class SpecAuftreten(db.Model, ListTaxonomy):
@@ -24,6 +25,7 @@ class SpecAuftreten(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
 
 class SpecInstrument(db.Model, TreeTaxonomy):
@@ -37,6 +39,7 @@ class SpecInstrument(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: SpecInstrument,

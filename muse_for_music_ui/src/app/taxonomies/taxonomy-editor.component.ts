@@ -11,6 +11,7 @@ class TaxonomyItem {
     id: number;
     name: string;
     description?: string;
+    mapping?: string;
     data: any;
     depth: number;
     parents: number[];
@@ -20,6 +21,7 @@ class TaxonomyItem {
         this.id = data.id;
         this.name = data.name;
         this.description = data.description;
+        this.mapping = data.mapping;
         this.data = data;
         this.depth = 0;
         this.parents = [];

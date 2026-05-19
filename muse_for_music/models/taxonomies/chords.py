@@ -13,6 +13,7 @@ class Akkord(db.Model, TreeTaxonomy):
     parent_id = db.Column(db.Integer, db.ForeignKey("akkord.id", ondelete="CASCADE"))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: Akkord,

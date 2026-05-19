@@ -17,6 +17,7 @@ class Instrument(db.Model, TreeTaxonomy):
     parent_id = db.Column(db.Integer, db.ForeignKey("instrument.id", ondelete="CASCADE"))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: Instrument,
@@ -44,6 +45,7 @@ class InstrumentierungEinbettungQualitaet(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
 
 class InstrumentierungEinbettungQuantitaet(db.Model, ListTaxonomy):
@@ -56,3 +58,4 @@ class InstrumentierungEinbettungQuantitaet(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)

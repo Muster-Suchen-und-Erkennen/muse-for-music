@@ -43,6 +43,7 @@
                             </span>
                         </div>
                         <p class="mv0 min-w1">{{item.description}}</p>
+                        <p class="mv0 min-w1">Mapping: {{item.mapping}}</p>
                     </div>
                 </div>
                 <div class="flex items-center justify-center pa2 br-pill bg-near-white bg-animate hover-bg-light-silver pointer" *ngIf="!isTree && items?.length > 0" (click)="selectedParent = null; addItemDialog.open()">

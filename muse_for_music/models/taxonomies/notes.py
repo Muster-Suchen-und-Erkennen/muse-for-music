@@ -14,6 +14,7 @@ class Grundton(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
 
 class Oktave(db.Model, ListTaxonomy):
@@ -24,6 +25,7 @@ class Oktave(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
 
 class Notenwert(db.Model, ListTaxonomy):
@@ -34,6 +36,7 @@ class Notenwert(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
 
 class Intervall(db.Model, ListTaxonomy):
@@ -44,6 +47,7 @@ class Intervall(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
 
 class Intervallik(db.Model, TreeTaxonomy):
@@ -55,6 +59,7 @@ class Intervallik(db.Model, TreeTaxonomy):
     parent_id = db.Column(db.Integer, db.ForeignKey("intervallik.id", ondelete="CASCADE"))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: Intervallik,

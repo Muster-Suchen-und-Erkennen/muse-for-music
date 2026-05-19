@@ -33,7 +33,6 @@ taxonomies: Dict[str, Type[Taxonomy]] = get_taxonomies()
 
 @ns.route("/")
 class TaxonomyListResource(Resource):
-
     @ns.marshal_with(taxonomy_list_resource)
     @jwt_required()
     def get(self):
@@ -56,7 +55,6 @@ def get_taxonomy(taxonomy_type: str, taxonomy_name: str) -> Type[Taxonomy]:
 
 @ns.route("/<string:taxonomy_type>/<string:taxonomy>/", doc=False)
 class TaxonomyResource(Resource):
-
     @ns.marshal_with(taxonomy_model)
     @ns.response(HTTPStatus.BAD_REQUEST, "Mismatching taxonomy type.")
     @ns.response(HTTPStatus.NOT_FOUND, "Taxonomy not found.")
@@ -67,7 +65,6 @@ class TaxonomyResource(Resource):
 
 @ns.route("/list/<string:taxonomy>/")
 class ListTaxonomyResource(Resource):
-
     @ns.marshal_with(list_taxonomy_model)
     @ns.response(HTTPStatus.BAD_REQUEST, "Mismatching taxonomy type.")
     @ns.response(HTTPStatus.NOT_FOUND, "Taxonomy not found.")
@@ -95,7 +92,6 @@ class ListTaxonomyResource(Resource):
 
 @ns.route("/tree/<string:taxonomy>/")
 class TreeTaxonomyResource(Resource):
-
     @ns.response(HTTPStatus.OK, "success", tree_taxonomy_model_json)
     @ns.response(HTTPStatus.BAD_REQUEST, "Mismatching taxonomy type.")
     @ns.response(HTTPStatus.NOT_FOUND, "Taxonomy not found.")
@@ -145,6 +141,11 @@ def edit_taxonomy_item(item: Taxonomy, new_values: Dict):
         item.name = new_values["name"]
     if "description" in new_values:
         item.description = new_values["description"]
+    if "mapping" in new_values:
+        print(item.mapping)
+        item.mapping = new_values["mapping"]
+        print(item.mapping)
+
     db.session.commit()
 
 
@@ -167,7 +168,6 @@ def delete_taxonomy_item(taxonomy: Type[Taxonomy], item_id: int):
 
 @ns.route("/<string:taxonomy_type>/<string:taxonomy>/<int:item_id>/", doc=False)
 class TaxonomyItemResource(Resource):
-
     @ns.marshal_with(taxonomy_item_get)
     @ns.response(HTTPStatus.BAD_REQUEST, "Mismatching taxonomy type.")
     @ns.response(HTTPStatus.NOT_FOUND, "Taxonomy or Item not found.")
@@ -210,7 +210,6 @@ class TaxonomyItemResource(Resource):
 
 @ns.route("/list/<string:taxonomy>/<int:item_id>/")
 class ListTaxonomyItemResource(Resource):
-
     @ns.marshal_with(taxonomy_item_get)
     @ns.response(HTTPStatus.BAD_REQUEST, "Mismatching taxonomy type.")
     @ns.response(HTTPStatus.NOT_FOUND, "Taxonomy or Item not found.")
@@ -253,7 +252,6 @@ class ListTaxonomyItemResource(Resource):
 
 @ns.route("/tree/<string:taxonomy>/<int:item_id>/")
 class TreeTaxonomyItemResource(Resource):
-
     @ns.response(HTTPStatus.OK, "success", model=taxonomy_tree_item_get_json)
     @ns.response(HTTPStatus.BAD_REQUEST, "Mismatching taxonomy type.")
     @ns.response(HTTPStatus.NOT_FOUND, "Taxonomy or Item not found.")
@@ -264,7 +262,9 @@ class TreeTaxonomyItemResource(Resource):
             abort(HTTPStatus.NOT_FOUND, 'Taxonomy "{}" not found.'.format(taxonomy))
         return marshal(get_taxonomy_item(tax, item_id), taxonomy_tree_item_get)
 
-    @ns.doc(model=taxonomy_tree_item_get_json, expect=[taxonomy_item_post], validate=True)
+    @ns.doc(
+        model=taxonomy_tree_item_get_json, expect=[taxonomy_item_post], validate=True
+    )
     @jwt_required()
     @has_roles([RoleEnum.taxonomy_editor])
     def post(self, taxonomy: str, item_id: int):
@@ -283,7 +283,9 @@ class TreeTaxonomyItemResource(Resource):
 
     @ns.response(HTTPStatus.BAD_REQUEST, "Mismatching taxonomy type.")
     @ns.response(HTTPStatus.NOT_FOUND, "Taxonomy or Item not found.")
-    @ns.doc(model=taxonomy_tree_item_get_json, expect=[taxonomy_item_post], validate=True)
+    @ns.doc(
+        model=taxonomy_tree_item_get_json, expect=[taxonomy_item_post], validate=True
+    )
     @jwt_required()
     @has_roles([RoleEnum.taxonomy_editor])
     def put(self, taxonomy: str, item_id: int):

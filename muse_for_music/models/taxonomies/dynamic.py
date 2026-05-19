@@ -20,6 +20,7 @@ class Lautstaerke(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
 
 class LautstaerkeZusatz(db.Model, ListTaxonomy):
@@ -32,6 +33,7 @@ class LautstaerkeZusatz(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
 
 class LautstaerkeEntwicklung(db.Model, TreeTaxonomy):
@@ -47,6 +49,7 @@ class LautstaerkeEntwicklung(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: LautstaerkeEntwicklung,
@@ -74,3 +77,4 @@ class LautstaerkeEinbettung(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)

@@ -15,6 +15,7 @@ class Taktart(db.Model, TreeTaxonomy):
     parent_id = db.Column(db.Integer, db.ForeignKey("taktart.id", ondelete="CASCADE"))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: Taktart,
@@ -41,6 +42,7 @@ class Rhythmustyp(db.Model, TreeTaxonomy):
     parent_id = db.Column(db.Integer, db.ForeignKey("rhythmustyp.id", ondelete="CASCADE"))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: Rhythmustyp,
@@ -71,6 +73,7 @@ class RhythmischesPhaenomen(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: RhythmischesPhaenomen,
