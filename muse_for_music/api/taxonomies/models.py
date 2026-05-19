@@ -72,8 +72,14 @@ taxonomy_item_post = ns.model(
                     required=False,
                     nullable=True,
                     title="Mapping",
-                    description="Mapping",
-                    pattern="-?\\d+(?:\\.\\d+)?(?:\\s+-?\\d+(?:\\.\\d+)?)*",
+                    description=(
+                        "Ordnet dem Taxonomieeintrag numerische Werte zu.\n"
+                        "Erlaubt sind ein oder mehrere durch Leerzeichen getrennte Zahlen"
+                        "(ganzzahlig oder Dezimalzahlen mit Punkt als Trennzeichen,"
+                        "optional mit negativem Vorzeichen), z.B."
+                        "\"1\", \"-0.5 1.5\" oder \"-1 0 1\"."
+                    ),
+                    pattern="(?:-?\\d+(?:\\.\\d+)?(?:\\s+-?\\d+(?:\\.\\d+)?)*)?",
                 ),
             ),
         ]
@@ -203,9 +209,7 @@ taxonomy_model = ns.model(
         "taxonomy_type": fields.String(
             default="list", enum=["list", "tree"], discriminator=True, readonly=True
         ),
-        "select_only_leafs": fields.Boolean(
-            default=False, readonly=True, required=False
-        ),
+        "select_only_leafs": fields.Boolean(default=False, readonly=True, required=False),
         "select_multiple": fields.Boolean(default=False, readonly=True, required=False),
         "specification": fields.String(readonly=True, required=False),
         "items": TaxonomyItems(required=False),
@@ -266,8 +270,6 @@ taxonomy_list_resource = ns.model(
     "TaxonomyList",
     {
         "_links": NestedFields(taxonomy_list_links),
-        "taxonomies": fields.Nested(
-            taxonomy_model, attribute="taxonomies", as_list=True
-        ),
+        "taxonomies": fields.Nested(taxonomy_model, attribute="taxonomies", as_list=True),
     },
 )

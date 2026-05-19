@@ -42,8 +42,8 @@
                                 <i class="ml2 fa fa-trash"></i>
                             </span>
                         </div>
-                        <p class="mv0 min-w1">{{item.description}}</p>
-                        <p class="mv0 min-w1">Mapping: {{item.mapping}}</p>
+                        <p class="mv0 min-w1 ph2">{{item.description}}</p>
+                        <p class="mv0 min-w1 ph2" *ngIf="item.mapping"><strong>Mapping:</strong> {{item.mapping}}</p>
                     </div>
                 </div>
                 <div class="flex items-center justify-center pa2 br-pill bg-near-white bg-animate hover-bg-light-silver pointer" *ngIf="!isTree && items?.length > 0" (click)="selectedParent = null; addItemDialog.open()">
@@ -53,7 +53,7 @@
         </div>
     </m4m-box>
 
-    <m4m-dialog [closable]="true" [dialogType]="'save-cancel'" [icon]="'save'" [okCallback]="addItem" #addItemDialog>
+    <m4m-dialog [closable]="true" [dialogType]="'save-cancel'" [icon]="'save'" [valid]="valid" [okCallback]="addItem" #addItemDialog>
         <h1 class="mv0" title>Neuer Eintrag:</h1>
         <div class="w-100 ph3 pv2" body>
             <div *ngIf="selectedParent != null" >
@@ -64,14 +64,14 @@
         </div>
     </m4m-dialog>
 
-    <m4m-dialog [closable]="true" [dialogType]="'save-cancel'" [icon]="'save'" [okCallback]="editItem" #editItemDialog>
+    <m4m-dialog [closable]="true" [dialogType]="'save-cancel'" [icon]="'save'" [valid]="valid" [okCallback]="editItem" #editItemDialog>
         <h1 class="mv0" title>Eintrag bearbeiten:</h1>
         <div class="w-100 ph3 pv2" body>
             <dynamic-form [objectModel]="'TaxonomyItemPUT'" [startValues]="selectedItem" (valid)="onValidChange($event)" (data)="onDataChange($event)" [useSpecifications]="false" #form></dynamic-form>
         </div>
     </m4m-dialog>
 
-    <m4m-dialog [closable]="true" [dialogType]="'save-cancel'" [icon]="'save'" [okCallback]="editNaItem" #editNaItemDialog>
+    <m4m-dialog [closable]="true" [dialogType]="'save-cancel'" [icon]="'save'" [valid]="valid" [okCallback]="editNaItem" #editNaItemDialog>
         <h1 class="mv0" title>"Nicht Anwendbar" bearbeiten:</h1>
         <div class="w-100 ph3 pv2" body>
             <p>Bitte nur die Beschreibung anpassen!</p>

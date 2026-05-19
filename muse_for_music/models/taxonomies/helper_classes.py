@@ -82,11 +82,8 @@ class ListTaxonomy(Taxonomy):
             if name.upper() == "ROOT":
                 continue
             if name in items:
-                logger.warning(
-                    'Duplicate names are not allowed! \
-                                Found "%s" but name is already used.',
-                    name,
-                )
+                logger.warning('Duplicate names are not allowed! \
+                                Found "%s" but name is already used.', name)
                 break
             items[name] = cls(name=name, description=description)
         else:
@@ -110,9 +107,7 @@ class ListTaxonomy(Taxonomy):
         names = set()
         for item in items:
             if item.name in names:
-                logger.warning(
-                    'An item with name "%s" was already exported!', item.name
-                )
+                logger.warning('An item with name "%s" was already exported!', item.name)
             names.add(item.name)
             output_data.writerow(
                 {
@@ -146,9 +141,7 @@ class TreeTaxonomy(Taxonomy):
     def __repr__(self):
         """Get repr of taxonomy."""
         return '<{} "{}", children {}>'.format(
-            type(self).__name__,
-            self.name,
-            [child.__repr__() for child in self.children],
+            type(self).__name__, self.name, [child.__repr__() for child in self.children]
         )
 
     @classmethod
@@ -174,12 +167,8 @@ class TreeTaxonomy(Taxonomy):
             name: str = row["name"]
             description: str | None = row.get("description")
             if name in items:
-                logger.warning(
-                    'Duplicate names are not allowed! \
-                                Found "%s" but "%r" is already used.',
-                    name,
-                    items[name],
-                )
+                logger.warning('Duplicate names are not allowed! \
+                                Found "%s" but "%r" is already used.', name, items[name])
                 break
             if not row.get("parent"):
                 items[name] = cls(name=pattern.sub("", name))
