@@ -27,6 +27,7 @@ class HarmonischeEntwicklung(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: HarmonischeEntwicklung,
@@ -55,6 +56,7 @@ class Tonalitaet(db.Model, TreeTaxonomy):
     parent_id = db.Column(db.Integer, db.ForeignKey("tonalitaet.id", ondelete="CASCADE"))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: Tonalitaet,
@@ -82,6 +84,7 @@ class HarmonischeFunktion(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
 
 class HarmonischeStufe(db.Model, TreeTaxonomy):
@@ -97,6 +100,7 @@ class HarmonischeStufe(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: HarmonischeStufe,
@@ -128,6 +132,7 @@ class HarmonischeFunktionVerwandschaft(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: HarmonischeFunktionVerwandschaft,
@@ -158,6 +163,7 @@ class HarmonischePhaenomene(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: HarmonischePhaenomene,
@@ -185,6 +191,7 @@ class HarmonischeKomplexitaet(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
 
 class HarmonischeDichte(db.Model, ListTaxonomy):
@@ -197,6 +204,7 @@ class HarmonischeDichte(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
 
 class AnzahlMelodietoene(db.Model, ListTaxonomy):
@@ -207,3 +215,4 @@ class AnzahlMelodietoene(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)

@@ -17,6 +17,7 @@ class Verarbeitungstechnik(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: Verarbeitungstechnik,
@@ -47,6 +48,7 @@ class MusikalischeWendung(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: MusikalischeWendung,

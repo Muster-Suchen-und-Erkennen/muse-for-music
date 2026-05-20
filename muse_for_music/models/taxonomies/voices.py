@@ -19,6 +19,7 @@ class MusikalischeFunktion(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: MusikalischeFunktion,
@@ -45,6 +46,7 @@ class Verzierung(db.Model, TreeTaxonomy):
     parent_id = db.Column(db.Integer, db.ForeignKey("verzierung.id", ondelete="CASCADE"))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: Verzierung,
@@ -72,3 +74,4 @@ class VoiceToVoiceRelation(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)

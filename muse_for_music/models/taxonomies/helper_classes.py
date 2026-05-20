@@ -22,6 +22,7 @@ class Taxonomy(GetByID):
     # common types
     name: MappedColumn[str]
     description: MappedColumn[str | None]
+    mapping: MappedColumn[str | None]
 
     def __init__(self, name: str, description: str | None) -> None:
         """Create new List Taxonomy object."""

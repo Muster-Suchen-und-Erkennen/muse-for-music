@@ -15,6 +15,7 @@ class Zitat(db.Model, TreeTaxonomy):
     parent_id = db.Column(db.Integer, db.ForeignKey("zitat.id", ondelete="CASCADE"))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: Zitat,
@@ -43,6 +44,7 @@ class Programmgegenstand(db.Model, TreeTaxonomy):
     )
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: Programmgegenstand,
@@ -69,6 +71,7 @@ class Tonmalerei(db.Model, TreeTaxonomy):
     parent_id = db.Column(db.Integer, db.ForeignKey("tonmalerei.id", ondelete="CASCADE"))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: Tonmalerei,

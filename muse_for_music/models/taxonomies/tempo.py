@@ -15,6 +15,7 @@ class Tempo(db.Model, TreeTaxonomy):
     parent_id = db.Column(db.Integer, db.ForeignKey("tempo.id", ondelete="CASCADE"))
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
     parent = relationship(
         lambda: Tempo,
@@ -42,6 +43,7 @@ class TempoEntwicklung(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
 
 class TempoEinbettung(db.Model, ListTaxonomy):
@@ -54,3 +56,4 @@ class TempoEinbettung(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)

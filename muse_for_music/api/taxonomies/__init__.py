@@ -145,6 +145,8 @@ def edit_taxonomy_item(item: Taxonomy, new_values: Dict):
         item.name = new_values["name"]
     if "description" in new_values:
         item.description = new_values["description"]
+    if "mapping" in new_values:
+        item.mapping = new_values["mapping"]
     db.session.commit()
 
 

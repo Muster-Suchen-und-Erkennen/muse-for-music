@@ -18,6 +18,7 @@ class AuftretenWerkausschnitt(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
 
 class AuftretenSatz(db.Model, ListTaxonomy):
@@ -28,6 +29,7 @@ class AuftretenSatz(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
 
 class Anteil(db.Model, ListTaxonomy):
@@ -36,6 +38,7 @@ class Anteil(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
 
 class Frequenz(db.Model, ListTaxonomy):
@@ -44,6 +47,7 @@ class Frequenz(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
 
 
 class BewegungImTonraum(db.Model, ListTaxonomy):
@@ -56,3 +60,4 @@ class BewegungImTonraum(db.Model, ListTaxonomy):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120))
     description = db.Column(db.Text(), nullable=True)
+    mapping = db.Column(db.Text(), nullable=True)
