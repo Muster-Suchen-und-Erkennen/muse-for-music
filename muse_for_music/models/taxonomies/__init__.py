@@ -42,11 +42,10 @@ from .voices import *  # noqa
 def generate_na_elements(output: bool = False):
     """Generate all missing "na" elements."""
     taxonomies = get_taxonomies()
-    inspector = inspect(db.engine)
-    existing_tables = inspector.get_table_names()
+    existing_tables = inspect(db.engine).get_table_names()
     for name, taxonomy in taxonomies.items():
         try:
-            if taxonomy.__tablename__ not in existing_tables:
+            if taxonomy.__tablename__ not in existing_tables:  # type: ignore
                 if output:
                     click.echo(
                         f'Skip NA item for "{name}" because table does not exist.',
