@@ -1,5 +1,6 @@
 import csv
 import sys
+import traceback
 from glob import glob
 from inspect import getmembers, isclass
 from os import makedirs, path
@@ -8,6 +9,7 @@ from typing import Dict, Type
 import click
 from flask import current_app
 from flask.cli import with_appcontext
+from sqlalchemy import inspect
 from sqlalchemy.sql import delete, select
 from sqlalchemy.sql.functions import count
 
@@ -40,16 +42,26 @@ from .voices import *  # noqa
 def generate_na_elements(output: bool = False):
     """Generate all missing "na" elements."""
     taxonomies = get_taxonomies()
+    inspector = inspect(db.engine)
+    existing_tables = inspector.get_table_names()
     for name, taxonomy in taxonomies.items():
         try:
+            if taxonomy.__tablename__ not in existing_tables:
+                if output:
+                    click.echo(
+                        f'Skip NA item for "{name}" because table does not exist.',
+                        err=True,
+                    )
+                continue
             count_q = select(count(taxonomy.id))
             item_count = db.session.execute(count_q).scalar()
             if item_count == 0:
                 if output:
                     click.echo(f'Skip NA item for "{name}" because it has no items.')
                 continue  # skip taxonomies without any entry
-        except Exception as err:
-            click.echo(f'Skip NA item for "{name}" because of an error.', err)
+        except Exception:
+            click.echo(f'Skip NA item for "{name}" because of an error.', err=True)
+            click.echo(traceback.format_exc(), err=True)
             continue  # skip non existing taxonomies
         na = taxonomy.not_applicable_item()
         if na is None:
