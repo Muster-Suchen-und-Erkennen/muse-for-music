@@ -21,12 +21,15 @@ def upgrade():
     op.drop_table("other_to_citations")
     # ### end Alembic commands ###
 
-    try:
-        from muse_for_music.models.taxonomies import generate_na_elements
-
-        generate_na_elements()  # FIXME filter by available taxonomy tables at that time!
-    except Exception as err:
-        print("Could not generate NA elements in taxonomies. Please add them manually!")
+    # Not required in migrations as this happens during container initialization:
+    # before_docker_start -> upgrade_db -> fill_db (if the db is new) -> init_taxonomies -> generate_na_elements
+    #
+    # try:
+    #     from muse_for_music.models.taxonomies import generate_na_elements
+    #
+    #     generate_na_elements()  # FIXME filter by available taxonomy tables at that time!
+    # except Exception as err:
+    #     print("Could not generate NA elements in taxonomies. Please add them manually!")
 
 
 def downgrade():
