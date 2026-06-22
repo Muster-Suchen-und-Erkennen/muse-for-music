@@ -124,22 +124,7 @@ poetry run coverage html
 
 ## Install:
 
-WARNING: Install script is currently broken!
-
-Prerequisites:
-
- *  Python >3.6, Virtualenv, Pip
- *  npm, node >8
- *  Apache2, mod-wsgi or another wsgi compatible server
-
-Installation / Upgrade process for installations using apache:
-
- 1. Install Prerequisites
- 2. Download/Clone Repository
- 3. Copy `install.sh` to a different location outside of the repository
-     1. Make it executable
-     2. update the variables at the top of the script
- 4. execute `install.sh`
+Use the docker container!
 
 For use with MySql or other db engine:
 
@@ -148,13 +133,10 @@ For use with MySql or other db engine:
  2. Install a [driver](docs.sqlalchemy.org/en/latest/dialects/mysql.html) for your selected Database in the virtualenv
  3. Update the [database url](docs.sqlalchemy.org/en/latest/core/engines.html#database-urls) in the config file
      1. For MySql/Mariadb use [utf8mb4 charset](docs.sqlalchemy.org/en/latest/dialects/mysql.html?highlight=utf8mb4#charset-selection)
- 4. execute `install.sh` to generate database
 
 Troubleshooting:
 
- *  Check all file permissions (use `install.sh` as reference)
- *  Check AppArmor/Selinux permissions
  *  Check apache logs
  *  Check apache config
  *  Check M4M logs
- *  Check Python version (>3.6!)
+ *  Check Python version (>3.10!)
